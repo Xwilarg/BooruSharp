@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2026
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooruSharp", "BooruSharp\BooruSharp.csproj", "{76215AC0-5BEB-4B79-AE41-0027400900FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooruSharp.UnitTests", "BooruSharp.UnitTests\BooruSharp.UnitTests.csproj", "{2E4A5791-6CF6-4514-AED0-EBA120B6DE83}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{76215AC0-5BEB-4B79-AE41-0027400900FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76215AC0-5BEB-4B79-AE41-0027400900FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76215AC0-5BEB-4B79-AE41-0027400900FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76215AC0-5BEB-4B79-AE41-0027400900FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E4A5791-6CF6-4514-AED0-EBA120B6DE83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E4A5791-6CF6-4514-AED0-EBA120B6DE83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E4A5791-6CF6-4514-AED0-EBA120B6DE83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E4A5791-6CF6-4514-AED0-EBA120B6DE83}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3505C1CB-900A-4D40-96A6-B87F1EF22367}
+	EndGlobalSection
+EndGlobal
