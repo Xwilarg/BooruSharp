@@ -6,13 +6,14 @@ namespace BooruSharp.Booru
 {
     public abstract class Booru
     {
-        protected Booru(string url)
+        protected Booru(string url, int? maxLimit)
         {
             this.url = url;
             needInterrogation = (url.EndsWith(".xml"));
+            random = new Random();
         }
 
-        public uint GetNbImageMax(params string[] tags)
+        public int GetNbImage(params string[] tags)
         {
             XmlDocument xml = new XmlDocument();
             using (WebClient wc = new WebClient())
@@ -20,10 +21,15 @@ namespace BooruSharp.Booru
                 wc.Headers.Add("User-Agent: BooruSharp");
                 xml.LoadXml(wc.DownloadString(CreateUrl("limit=1", TagsToString(tags))));
             }
-            return (Convert.ToUInt32(xml.ChildNodes.Item(1).Attributes[0].InnerXml));
+            return (Convert.ToInt32(xml.ChildNodes.Item(1).Attributes[0].InnerXml));
         }
 
-        public Search.SearchResult GetImage(uint id, params string[] tags)
+        public int? GetLimit()
+        {
+            return maxLimit;
+        }
+
+        public Search.SearchResult GetImage(int id, params string[] tags)
         {
             XmlDocument xml = new XmlDocument();
             using (WebClient wc = new WebClient())
@@ -64,6 +70,17 @@ namespace BooruSharp.Booru
                                             rating));
         }
 
+        public Search.SearchResult GetRandomImage(params string[] tags)
+        {
+            int nbMax = GetNbImage(tags);
+            if (nbMax == 0)
+                throw new Search.InvalidTags();
+            if (GetLimit() != null && GetLimit() < nbMax)
+                nbMax = GetLimit().Value;
+            int randomNb = random.Next(((needInterrogation) ? (1) : (0)), nbMax + 1);
+            return (GetImage(randomNb, tags));
+        }
+
         private Search.Rating GetRating(char c)
         {
             switch (c)
@@ -87,5 +104,7 @@ namespace BooruSharp.Booru
 
         private readonly string url;
         private readonly bool needInterrogation;
+        private int maxLimit;
+        private Random random;
     }
 }

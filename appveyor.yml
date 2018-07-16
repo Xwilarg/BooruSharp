@@ -9,5 +9,5 @@ build:
   project: BooruSharp.sln
 
 test_script:
-- OpenCover.Console.exe -register:user -target:"%xunit20%\xunit.console.x86.exe" -targetargs:".\BooruSharp.UnitTests\bin\Debug\BooruSharp.UnitTests.dll -noshadow" -filter:"+[BooruSharp*]* -[BooruSharp-UnitTests*]*" -output:".\coverage.xml"
+- OpenCover.Console.exe -register:user -target:"%xunit20%\xunit.console.x86.exe" -targetargs:".\BooruSharp.UnitTests\bin\Debug\BooruSharp.UnitTests.dll -noshadow" -filter:"+[BooruSharp*]* -[BooruSharp.UnitTests*]*" -output:".\coverage.xml"
 - codecov -f "coverage.xml"

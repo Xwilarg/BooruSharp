@@ -1,4 +1,5 @@
 ﻿using BooruSharp.Booru;
+using System;
 using System.Net;
 using Xunit;
 
@@ -8,10 +9,10 @@ namespace BooruSharp.UnitTests
     {
         private void CheckCount(Booru.Booru booru)
         {
-            uint nbGeneral = booru.GetNbImageMax();
-            uint nbMed = booru.GetNbImageMax("wet");
-            uint nbMin = booru.GetNbImageMax("wet", "swimsuit");
-            Assert.NotEqual<uint>(0, nbMin);
+            int nbGeneral = booru.GetNbImage();
+            int nbMed = booru.GetNbImage("wet");
+            int nbMin = booru.GetNbImage("wet", "swimsuit");
+            Assert.NotEqual(0, nbMin);
             Assert.InRange(nbMed, nbMin, nbGeneral);
         }
 
@@ -122,6 +123,56 @@ namespace BooruSharp.UnitTests
         public void YandereGetById()
         {
             CheckGetById(new Yandere());
+        }
+
+        private void CheckGetRandom(Booru.Booru booru)
+        {
+            Search.SearchResult result = booru.GetRandomImage("school_swimsuit");
+            Assert.True(CheckUrl(result.fileUrl));
+            Assert.True(CheckUrl(result.previewUrl));
+            Assert.InRange(result.rating, Search.Rating.Safe, Search.Rating.Explicit);
+        }
+
+        [Fact]
+        public void GelbooruGetRandom()
+        {
+            CheckGetRandom(new Gelbooru());
+        }
+
+        [Fact]
+        public void SafebooruGetRandom()
+        {
+            CheckGetRandom(new Safebooru());
+        }
+
+        [Fact]
+        public void KonachanGetRandom()
+        {
+            CheckGetRandom(new Konachan());
+        }
+
+        [Fact]
+        public void E621GetRandom()
+        {
+            CheckGetRandom(new E621());
+        }
+
+        [Fact]
+        public void Rule34GetRandom()
+        {
+            CheckGetRandom(new Rule34());
+        }
+
+        [Fact]
+        public void LolibooruGetRandom()
+        {
+            CheckGetRandom(new Lolibooru());
+        }
+
+        [Fact]
+        public void YandereGetRandom()
+        {
+            CheckGetRandom(new Yandere());
         }
     }
 }

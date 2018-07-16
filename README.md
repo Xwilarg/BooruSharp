@@ -4,4 +4,24 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/xwilarg/boorusharp/badge)](https://www.codefactor.io/repository/github/xwilarg/boorusharp)
 
 # BooruSharp
-BooruSharp is a C# library to browse Booru websites (Gelbooru, Konachan, etc...) easily
+BooruSharp is a C# library to browse Booru websites easily<br/>
+BooruSharp currently handle the following websites:
+ - e621.net
+ - gelbooru.com
+ - konachan.com
+ - lolibooru.moe
+ - rule34.xxx
+ - safebooru.org
+ - yande.re
+
+# Examples
+
+Random image:
+```Cs
+BooruSharp.Booru.Gelbooru booru = new Gelbooru();
+BooruSharp.Search.SearchResult result = booru.GetRandomImage("hibiki_(kantai_collection)", "school_swimsuit");
+
+Console.WriteLine("Image preview URL: " + result.previewUrl + Environment.NewLine +
+                  "Image URL: " + result.fileUrl + Environment.NewLine +
+                  "Image is safe: " + (result.rating == BooruSharp.Search.Rating.Safe));
+```
