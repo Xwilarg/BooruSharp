@@ -1,2 +1,2 @@
 # BooruSharp
-BooruC# is a C# library to browse Booru websites (Gelbooru, Konachan, etc...) easily
+BooruSharp is a C# library to browse Booru websites (Gelbooru, Konachan, etc...) easily

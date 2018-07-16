@@ -40,7 +40,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Booru\Booru.cs" />
+    <Compile Include="Booru\E621.cs" />
     <Compile Include="Booru\Gelbooru.cs" />
+    <Compile Include="Booru\Konachan.cs" />
+    <Compile Include="Booru\Lolibooru.cs" />
+    <Compile Include="Booru\Rule34.cs" />
+    <Compile Include="Booru\Safebooru.cs" />
+    <Compile Include="Booru\Yandere.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
