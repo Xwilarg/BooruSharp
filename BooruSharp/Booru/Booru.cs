@@ -30,13 +30,13 @@ namespace BooruSharp.Booru
             return (maxLimit);
         }
 
-        public Search.SearchResult GetImage(int id, params string[] tagsArg)
+        public Search.SearchResult GetImage(int offset, params string[] tagsArg)
         {
             XmlDocument xml = new XmlDocument();
             using (WebClient wc = new WebClient())
             {
                 wc.Headers.Add("User-Agent: BooruSharp");
-                xml.LoadXml(wc.DownloadString(CreateUrl("limit=1", TagsToString(tagsArg), ((needInterrogation) ? ("page=") : ("pid=")) + id)));
+                xml.LoadXml(wc.DownloadString(CreateUrl("limit=1", TagsToString(tagsArg), ((needInterrogation) ? ("page=") : ("pid=")) + offset)));
             }
             string baseUrl = null, previewUrl = null, tags = null;
             Search.Rating rating = (Search.Rating)(-1);
