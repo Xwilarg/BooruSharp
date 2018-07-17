@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using System.Xml;
 
 namespace BooruSharp.Booru
@@ -8,12 +7,7 @@ namespace BooruSharp.Booru
     {
         public int GetNbImage(params string[] tags)
         {
-            XmlDocument xml = new XmlDocument();
-            using (WebClient wc = new WebClient())
-            {
-                wc.Headers.Add("User-Agent: BooruSharp");
-                xml.LoadXml(wc.DownloadString(CreateUrl("limit=1", TagsToString(tags))));
-            }
+            XmlDocument xml = GetXml(CreateImageUrl("limit=1", TagsToString(tags)));
             return (Convert.ToInt32(xml.ChildNodes.Item(1).Attributes[0].InnerXml));
         }
 
@@ -24,49 +18,13 @@ namespace BooruSharp.Booru
 
         public ImageSearch.SearchResult GetImage(int offset, params string[] tagsArg)
         {
-            XmlDocument xml = new XmlDocument();
-            using (WebClient wc = new WebClient())
-            {
-                wc.Headers.Add("User-Agent: BooruSharp");
-                xml.LoadXml(wc.DownloadString(CreateUrl("limit=1", TagsToString(tagsArg), ((needInterrogation) ? ("page=") : ("pid=")) + offset)));
-            }
-            string baseUrl = null, previewUrl = null, tags = null;
-            ImageSearch.Rating rating = (ImageSearch.Rating)(-1);
-            if (xml.ChildNodes.Item(1).FirstChild.Attributes.Count > 0)
-            {
-                baseUrl = xml.ChildNodes.Item(1).FirstChild.Attributes.GetNamedItem("file_url").InnerXml;
-                previewUrl = xml.ChildNodes.Item(1).FirstChild.Attributes.GetNamedItem("preview_url").InnerXml;
-                rating = GetRating(xml.ChildNodes.Item(1).FirstChild.Attributes.GetNamedItem("rating").InnerXml[0]);
-                tags = xml.ChildNodes.Item(1).FirstChild.Attributes.GetNamedItem("tags").InnerXml;
-            }
-            else
-            {
-                foreach (XmlNode node in xml.ChildNodes.Item(1).FirstChild.ChildNodes)
-                {
-                    switch (node.Name)
-                    {
-                        case "file_url":
-                            baseUrl = node.InnerXml;
-                            break;
-
-                        case "preview_url":
-                            previewUrl = node.InnerXml;
-                            break;
-
-                        case "rating":
-                            rating = GetRating(node.InnerXml[0]);
-                            break;
-
-                        case "tags":
-                            tags = node.InnerXml;
-                            break;
-                    }
-                }
-            }
-            return (new ImageSearch.SearchResult(((baseUrl.StartsWith("//")) ? ("https:") : ("")) + baseUrl,
-                                            ((previewUrl.StartsWith("//")) ? ("https:") : ("")) + previewUrl,
-                                            rating,
-                                            tags.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)));
+            XmlDocument xml = GetXml(CreateImageUrl("limit=1", TagsToString(tagsArg), ((needInterrogation) ? ("page=") : ("pid=")) + offset));
+            string[] args = GetStringFromXml(xml, "file_url", "preview_url", "rating", "tags");
+            return (new ImageSearch.SearchResult(((
+                args[0].StartsWith("//")) ? ("https:") : ("")) + args[0],
+                ((args[1].StartsWith("//")) ? ("https:") : ("")) + args[1],
+                GetRating(args[2][0]),
+                args[3].Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)));
         }
 
         public ImageSearch.SearchResult GetRandomImage(params string[] tags)

@@ -57,9 +57,10 @@
     <Compile Include="ImageSearch\InvalidTags.cs" />
     <Compile Include="ImageSearch\Rating.cs" />
     <Compile Include="ImageSearch\SearchResult.cs" />
+    <Compile Include="TagSearch\Booru.cs" />
+    <Compile Include="TagSearch\SearchResult.cs" />
+    <Compile Include="TagSearch\TagType.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="TagSearch\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

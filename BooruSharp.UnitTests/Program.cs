@@ -195,5 +195,84 @@ namespace BooruSharp.UnitTests
         {
             Assert.Throws<Booru.Custom.InvalidBooru>(delegate () { new Booru.Custom.CustomBooru("https://zirk.eu", UrlFormat.indexPhp); });
         }
+
+        private void CheckTag(Booru.Booru booru)
+        {
+            TagSearch.SearchResult result = booru.GetTag("pantyhose");
+            Assert.Equal("pantyhose", result.name);
+            Assert.InRange(result.type, TagSearch.TagType.Trivia, TagSearch.TagType.Metadata);
+            Assert.NotEqual((TagSearch.TagType)2, result.type);
+        }
+        [Fact]
+        public void GelbooruCheckTag()
+        {
+            CheckTag(new Gelbooru());
+        }
+
+        [Fact]
+        public void SafebooruCheckTag()
+        {
+            CheckTag(new Safebooru());
+        }
+
+        [Fact]
+        public void KonachanCheckTag()
+        {
+            CheckTag(new Konachan());
+        }
+
+        [Fact]
+        public void E621CheckTag()
+        {
+            CheckTag(new E621());
+        }
+
+        [Fact]
+        public void Rule34CheckTag()
+        {
+            CheckTag(new Rule34());
+        }
+
+        [Fact]
+        public void LolibooruCheckTag()
+        {
+            CheckTag(new Lolibooru());
+        }
+
+        [Fact]
+        public void YandereCheckTag()
+        {
+            CheckTag(new Yandere());
+        }
+
+        [Fact]
+        public void GelbooruTagCharacter()
+        {
+            Assert.Equal(TagSearch.TagType.Character, new Gelbooru().GetTag("cirno").type);
+        }
+
+        [Fact]
+        public void GelbooruTagCopyright()
+        {
+            Assert.Equal(TagSearch.TagType.Copyright, new Gelbooru().GetTag("kantai_collection").type);
+        }
+
+        [Fact]
+        public void GelbooruTagArtist()
+        {
+            Assert.Equal(TagSearch.TagType.Artist, new Gelbooru().GetTag("mtu_(orewamuzituda)").type);
+        }
+
+        [Fact]
+        public void GelbooruTagMetadata()
+        {
+            Assert.Equal(TagSearch.TagType.Metadata, new Gelbooru().GetTag("uncensored").type);
+        }
+
+        [Fact]
+        public void GelbooruTagTrivia()
+        {
+            Assert.Equal(TagSearch.TagType.Trivia, new Gelbooru().GetTag("futanari").type);
+        }
     }
 }
