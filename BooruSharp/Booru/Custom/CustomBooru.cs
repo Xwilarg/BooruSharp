@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Linq;
 
 namespace BooruSharp.Booru.Custom
 {
     public class CustomBooru : Booru
     {
-        public CustomBooru(string baseUrl, UrlFormat format, int? maxLimit = null, bool ignoreCheck = false) : base(baseUrl, format, maxLimit)
+        public CustomBooru(string baseUrl, UrlFormat format, int? maxLimit = null, params BooruOptions[] options) : base(baseUrl, format, maxLimit, (options.Contains(BooruOptions.useHttp)))
         {
-            if (!ignoreCheck)
+            if (!options.Contains(BooruOptions.ignoreCheck))
             {
                 try
                 {

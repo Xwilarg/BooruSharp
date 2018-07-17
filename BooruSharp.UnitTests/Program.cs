@@ -181,7 +181,7 @@ namespace BooruSharp.UnitTests
         [Fact]
         public void CustomBooru()
         {
-            new Booru.Custom.CustomBooru("furry.booru.org", UrlFormat.indexPhp);
+            new Booru.Custom.CustomBooru("furry.booru.org", UrlFormat.indexPhp, null, Booru.Custom.BooruOptions.useHttp);
         }
 
         [Fact]

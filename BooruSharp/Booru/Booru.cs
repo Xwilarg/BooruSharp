@@ -4,10 +4,10 @@ namespace BooruSharp.Booru
 {
     public abstract partial class Booru
     {
-        protected Booru(string baseUrl, UrlFormat format, int? maxLimit)
+        protected Booru(string baseUrl, UrlFormat format, int? maxLimit, bool useHttp = false)
         {
-            imageUrl = "https://" + baseUrl + "/" + GetImageUrl(format);
-            tagUrl = "https://" + baseUrl + "/" + GetTagUrl(format);
+            imageUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetImageUrl(format);
+            tagUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetTagUrl(format);
             needInterrogation = (imageUrl.EndsWith(".xml"));
             random = new Random();
             this.maxLimit = maxLimit;
