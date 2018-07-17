@@ -74,17 +74,17 @@ namespace BooruSharp.UnitTests
             return (false);
         }
 
-        private void CheckResult(Search.SearchResult result, string inputTag)
+        private void CheckResult(ImageSearch.SearchResult result, string inputTag)
         {
             Assert.True(CheckUrl(result.fileUrl));
             Assert.True(CheckUrl(result.previewUrl));
-            Assert.InRange(result.rating, Search.Rating.Safe, Search.Rating.Explicit);
+            Assert.InRange(result.rating, ImageSearch.Rating.Safe, ImageSearch.Rating.Explicit);
             Assert.Contains(inputTag, result.tags);
         }
 
         private void CheckGetById(Booru.Booru booru)
         {
-            Search.SearchResult result = booru.GetImage(2, "school_swimsuit");
+            ImageSearch.SearchResult result = booru.GetImage(2, "school_swimsuit");
             CheckResult(result, "school_swimsuit");
         }
 
@@ -132,7 +132,7 @@ namespace BooruSharp.UnitTests
 
         private void CheckGetRandom(Booru.Booru booru)
         {
-            Search.SearchResult result = booru.GetRandomImage("school_swimsuit");
+            ImageSearch.SearchResult result = booru.GetRandomImage("school_swimsuit");
             CheckResult(result, "school_swimsuit");
         }
 
@@ -181,19 +181,19 @@ namespace BooruSharp.UnitTests
         [Fact]
         public void CustomBooru()
         {
-            new Booru.Custom.CustomBooru("http://furry.booru.org/index.php?page=dapi&s=post&q=index");
+            new Booru.Custom.CustomBooru("furry.booru.org", UrlFormat.indexPhp);
         }
 
         [Fact]
         public void CustomBooruNotUrl()
         {
-            Assert.Throws<Booru.Custom.InvalidBooru>(delegate() { new Booru.Custom.CustomBooru("AWAWAWAWAWA"); });
+            Assert.Throws<Booru.Custom.InvalidBooru>(delegate() { new Booru.Custom.CustomBooru("AWAWAWAWAWA", UrlFormat.indexPhp); });
         }
 
         [Fact]
         public void CustomBooruBadUrl()
         {
-            Assert.Throws<Booru.Custom.InvalidBooru>(delegate () { new Booru.Custom.CustomBooru("https://zirk.eu"); });
+            Assert.Throws<Booru.Custom.InvalidBooru>(delegate () { new Booru.Custom.CustomBooru("https://zirk.eu", UrlFormat.indexPhp); });
         }
     }
 }

@@ -4,7 +4,7 @@ namespace BooruSharp.Booru.Custom
 {
     public class CustomBooru : Booru
     {
-        public CustomBooru(string baseUrl, int? maxLimit = null, bool ignoreCheck = false) : base(baseUrl, maxLimit)
+        public CustomBooru(string baseUrl, UrlFormat format, int? maxLimit = null, bool ignoreCheck = false) : base(baseUrl, format, maxLimit)
         {
             if (!ignoreCheck)
             {
@@ -14,7 +14,7 @@ namespace BooruSharp.Booru.Custom
                 }
                 catch (Exception ex)
                 {
-                    throw new InvalidBooru(baseUrl, ex);
+                    throw new InvalidBooru(imageUrl, ex);
                 }
             }
         }

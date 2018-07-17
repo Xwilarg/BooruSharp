@@ -2,7 +2,7 @@
 {
     public class Lolibooru : Booru
     {
-        public Lolibooru() : base("https://lolibooru.moe/post/index.xml", null)
+        public Lolibooru() : base("lolibooru.moe", UrlFormat.postIndexXml, null)
         { }
     }
 }

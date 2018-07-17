@@ -49,12 +49,16 @@
     <Compile Include="Booru\Lolibooru.cs" />
     <Compile Include="Booru\Rule34.cs" />
     <Compile Include="Booru\Safebooru.cs" />
+    <Compile Include="Booru\UrlFormat.cs" />
     <Compile Include="Booru\Yandere.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Search\InvalidTags.cs" />
-    <Compile Include="Search\Rating.cs" />
-    <Compile Include="Search\SearchResult.cs" />
+    <Compile Include="ImageSearch\Booru.cs" />
+    <Compile Include="ImageSearch\InvalidTags.cs" />
+    <Compile Include="ImageSearch\Rating.cs" />
+    <Compile Include="ImageSearch\SearchResult.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="TagSearch\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace BooruSharp.Search
+﻿namespace BooruSharp.ImageSearch
 {
     public struct SearchResult
     {
