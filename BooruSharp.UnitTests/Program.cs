@@ -1,5 +1,4 @@
 ﻿using BooruSharp.Booru;
-using System;
 using System.Net;
 using Xunit;
 
@@ -75,12 +74,18 @@ namespace BooruSharp.UnitTests
             return (false);
         }
 
-        private void CheckGetById(Booru.Booru booru)
+        private void CheckResult(Search.SearchResult result, string inputTag)
         {
-            Search.SearchResult result = booru.GetImage(2, "school_swimsuit");
             Assert.True(CheckUrl(result.fileUrl));
             Assert.True(CheckUrl(result.previewUrl));
             Assert.InRange(result.rating, Search.Rating.Safe, Search.Rating.Explicit);
+            Assert.Contains(inputTag, result.tags);
+        }
+
+        private void CheckGetById(Booru.Booru booru)
+        {
+            Search.SearchResult result = booru.GetImage(2, "school_swimsuit");
+            CheckResult(result, "school_swimsuit");
         }
 
         [Fact]
@@ -128,9 +133,7 @@ namespace BooruSharp.UnitTests
         private void CheckGetRandom(Booru.Booru booru)
         {
             Search.SearchResult result = booru.GetRandomImage("school_swimsuit");
-            Assert.True(CheckUrl(result.fileUrl));
-            Assert.True(CheckUrl(result.previewUrl));
-            Assert.InRange(result.rating, Search.Rating.Safe, Search.Rating.Explicit);
+            CheckResult(result, "school_swimsuit");
         }
 
         [Fact]
@@ -173,6 +176,24 @@ namespace BooruSharp.UnitTests
         public void YandereGetRandom()
         {
             CheckGetRandom(new Yandere());
+        }
+
+        [Fact]
+        public void CustomBooru()
+        {
+            new Booru.Custom.CustomBooru("http://furry.booru.org/index.php?page=dapi&s=post&q=index");
+        }
+
+        [Fact]
+        public void CustomBooruNotUrl()
+        {
+            Assert.Throws<Booru.Custom.InvalidBooru>(delegate() { new Booru.Custom.CustomBooru("AWAWAWAWAWA"); });
+        }
+
+        [Fact]
+        public void CustomBooruBadUrl()
+        {
+            Assert.Throws<Booru.Custom.InvalidBooru>(delegate () { new Booru.Custom.CustomBooru("https://zirk.eu"); });
         }
     }
 }

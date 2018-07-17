@@ -11,6 +11,7 @@ namespace BooruSharp.Booru
             this.url = url;
             needInterrogation = (url.EndsWith(".xml"));
             random = new Random();
+            this.maxLimit = maxLimit;
         }
 
         public int GetNbImage(params string[] tags)
@@ -26,24 +27,25 @@ namespace BooruSharp.Booru
 
         public int? GetLimit()
         {
-            return maxLimit;
+            return (maxLimit);
         }
 
-        public Search.SearchResult GetImage(int id, params string[] tags)
+        public Search.SearchResult GetImage(int id, params string[] tagsArg)
         {
             XmlDocument xml = new XmlDocument();
             using (WebClient wc = new WebClient())
             {
                 wc.Headers.Add("User-Agent: BooruSharp");
-                xml.LoadXml(wc.DownloadString(CreateUrl("limit=1", TagsToString(tags), ((needInterrogation) ? ("page=") : ("pid=")) + id)));
+                xml.LoadXml(wc.DownloadString(CreateUrl("limit=1", TagsToString(tagsArg), ((needInterrogation) ? ("page=") : ("pid=")) + id)));
             }
-            string baseUrl = null, previewUrl = null;
+            string baseUrl = null, previewUrl = null, tags = null;
             Search.Rating rating = (Search.Rating)(-1);
             if (xml.ChildNodes.Item(1).FirstChild.Attributes.Count > 0)
             {
                 baseUrl = xml.ChildNodes.Item(1).FirstChild.Attributes.GetNamedItem("file_url").InnerXml;
                 previewUrl = xml.ChildNodes.Item(1).FirstChild.Attributes.GetNamedItem("preview_url").InnerXml;
                 rating = GetRating(xml.ChildNodes.Item(1).FirstChild.Attributes.GetNamedItem("rating").InnerXml[0]);
+                tags = xml.ChildNodes.Item(1).FirstChild.Attributes.GetNamedItem("tags").InnerXml;
             }
             else
             {
@@ -62,12 +64,17 @@ namespace BooruSharp.Booru
                         case "rating":
                             rating = GetRating(node.InnerXml[0]);
                             break;
+
+                        case "tags":
+                            tags = node.InnerXml;
+                            break;
                     }
                 }
             }
             return (new Search.SearchResult(((baseUrl.StartsWith("//")) ? ("https:") : ("")) + baseUrl,
                                             ((previewUrl.StartsWith("//")) ? ("https:") : ("")) + previewUrl,
-                                            rating));
+                                            rating,
+                                            tags.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)));
         }
 
         public Search.SearchResult GetRandomImage(params string[] tags)
@@ -104,7 +111,7 @@ namespace BooruSharp.Booru
 
         private readonly string url;
         private readonly bool needInterrogation;
-        private int maxLimit;
+        private readonly int? maxLimit;
         private Random random;
     }
 }
