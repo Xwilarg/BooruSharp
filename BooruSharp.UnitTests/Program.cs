@@ -202,6 +202,7 @@ namespace BooruSharp.UnitTests
             Assert.Equal("pantyhose", result.name);
             Assert.InRange(result.type, TagSearch.TagType.Trivia, TagSearch.TagType.Metadata);
             Assert.NotEqual((TagSearch.TagType)2, result.type);
+            Assert.NotEqual<uint>(0, result.count);
         }
         [Fact]
         public void GelbooruCheckTag()

@@ -77,21 +77,21 @@ namespace BooruSharp.Booru
             return ("tags=" + String.Join("+", tags));
         }
 
-        private string[] GetStringFromXml(XmlDocument xml, params string[] tags)
+        private string[] GetStringFromXml(XmlNode xml, params string[] tags)
         {
             string[] vars = new string[tags.Length];
-            if (xml.ChildNodes.Item(1).FirstChild.Attributes.Count > 0)
+            if (xml.Attributes.Count > 0)
             {
                 int i = 0;
                 foreach (string s in tags)
                 {
-                    vars[i] = xml.ChildNodes.Item(1).FirstChild.Attributes.GetNamedItem(s).InnerXml;
+                    vars[i] = xml.Attributes.GetNamedItem(s).InnerXml;
                     i++;
                 }
             }
             else
             {
-                foreach (XmlNode node in xml.ChildNodes.Item(1).FirstChild.ChildNodes)
+                foreach (XmlNode node in xml.ChildNodes)
                 {
                     if (tags.Contains(node.Name))
                         vars[Array.IndexOf(tags, node.Name)] = node.InnerXml;

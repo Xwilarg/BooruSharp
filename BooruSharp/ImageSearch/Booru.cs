@@ -19,7 +19,7 @@ namespace BooruSharp.Booru
         public ImageSearch.SearchResult GetImage(int offset, params string[] tagsArg)
         {
             XmlDocument xml = GetXml(CreateImageUrl("limit=1", TagsToString(tagsArg), ((needInterrogation) ? ("page=") : ("pid=")) + offset));
-            string[] args = GetStringFromXml(xml, "file_url", "preview_url", "rating", "tags");
+            string[] args = GetStringFromXml(xml.ChildNodes.Item(1).FirstChild, "file_url", "preview_url", "rating", "tags");
             return (new ImageSearch.SearchResult(((
                 args[0].StartsWith("//")) ? ("https:") : ("")) + args[0],
                 ((args[1].StartsWith("//")) ? ("https:") : ("")) + args[1],
