@@ -1,4 +1,4 @@
-﻿namespace BooruSharp.TagSearch
+﻿namespace BooruSharp.Search.Tag
 {
     public struct SearchResult
     {
@@ -9,7 +9,6 @@
             this.type = type;
             this.count = count;
         }
-
         public uint id;
         public string name;
         public TagType type;

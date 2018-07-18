@@ -2,7 +2,7 @@
 {
     public class Safebooru : Booru
     {
-        public Safebooru() : base("safebooru.org", UrlFormat.indexPhp, null)
+        public Safebooru() : base("safebooru.org", UrlFormat.indexPhp, null, BooruOptions.noWiki)
         { }
     }
 }

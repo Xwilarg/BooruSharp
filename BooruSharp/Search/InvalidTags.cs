@@ -1,4 +1,4 @@
-﻿namespace BooruSharp.ImageSearch
+﻿namespace BooruSharp.Search
 {
     public class InvalidTags : System.ArgumentException
     {

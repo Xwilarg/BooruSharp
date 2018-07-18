@@ -1,4 +1,4 @@
-﻿namespace BooruSharp.TagSearch
+﻿namespace BooruSharp.Search.Tag
 {
     public enum TagType
     {
