@@ -19,16 +19,16 @@ BooruSharp currently handle the following websites:
 Random image:
 ```Cs
 BooruSharp.Booru.Gelbooru booru = new BooruSharp.Booru.Gelbooru();
-BooruSharp.Search.Image.SearchResult result = booru.GetRandomImage("hibiki_(kantai_collection)", "school_swimsuit");
+BooruSharp.Search.Post.SearchResult result = booru.GetRandomImage("hibiki_(kantai_collection)", "school_swimsuit");
 
 Console.WriteLine("Image preview URL: " + result.previewUrl + Environment.NewLine +
                   "Image URL: " + result.fileUrl + Environment.NewLine +
-                  "Image is safe: " + (result.rating == BooruSharp.Search.Image.Rating.Safe));
+                  "Image is safe: " + (result.rating == BooruSharp.Search.Post.Rating.Safe));
 ```
 
 Get tag:
 ```Cs
-BooruSharp.Booru.Gelbooru booru = new BooruSharp.Booru.Gelbooru();
+BooruSharp.Booru.Safebooru booru = new BooruSharp.Booru.Safebooru();
 BooruSharp.Search.Tag.SearchResult result = booru.GetTag("cirno");
 
 Console.WriteLine("Tag type: " + result.type + Environment.NewLine +
@@ -44,4 +44,12 @@ Console.WriteLine("Description: " + result.body + Environment.NewLine +
                   "ID: " + result.id + Environment.NewLine +
                   "Created at: " + result.creation.ToString("dd/MM/yy HH:mm:ss") + Environment.NewLine +
                   "Last update at: " + result.lastUpdate.ToString("dd/MM/yy HH:mm:ss"));
+```
+Get related tags:
+```Cs
+BooruSharp.Booru.Yandere booru = new BooruSharp.Booru.Yandere();
+BooruSharp.Search.Related.SearchResult[] results = booru.GetRelated("see_through");
+
+Console.WriteLine(String.Join(Environment.NewLine,
+    results.Select(delegate (BooruSharp.Search.Related.SearchResult res) { return ("Name: " + res.name +" (" + res.count + ")"); })));
 ```

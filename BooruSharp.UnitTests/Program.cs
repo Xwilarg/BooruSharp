@@ -75,17 +75,17 @@ namespace BooruSharp.UnitTests
             return (false);
         }
 
-        private void CheckResult(Search.Image.SearchResult result, string inputTag)
+        private void CheckResult(Search.Post.SearchResult result, string inputTag)
         {
             Assert.True(CheckUrl(result.fileUrl));
             Assert.True(CheckUrl(result.previewUrl));
-            Assert.InRange(result.rating, Search.Image.Rating.Safe, Search.Image.Rating.Explicit);
+            Assert.InRange(result.rating, Search.Post.Rating.Safe, Search.Post.Rating.Explicit);
             Assert.Contains(inputTag, result.tags);
         }
 
         private void CheckGetByOffset(Booru.Booru booru)
         {
-            Search.Image.SearchResult result = booru.GetImage(2, "school_swimsuit");
+            Search.Post.SearchResult result = booru.GetImage(2, "school_swimsuit");
             CheckResult(result, "school_swimsuit");
         }
 
@@ -133,7 +133,7 @@ namespace BooruSharp.UnitTests
 
         private void CheckGetRandom(Booru.Booru booru)
         {
-            Search.Image.SearchResult result = booru.GetRandomImage("school_swimsuit");
+            Search.Post.SearchResult result = booru.GetRandomImage("school_swimsuit");
             CheckResult(result, "school_swimsuit");
         }
 
@@ -337,6 +337,59 @@ namespace BooruSharp.UnitTests
             Search.Wiki.SearchResult result = new Yandere().GetWiki("futanari");
             Assert.Equal<uint>(167, result.id);
             CheckWiki(result);
+        }
+
+        private void CheckRelated(Search.Related.SearchResult[] result)
+        {
+            foreach (Search.Related.SearchResult res in result)
+                Assert.NotEqual<uint>(0, res.count);
+            Assert.NotEmpty(result);
+        }
+
+        [Fact]
+        public void GelbooruCheckRelated()
+        {
+            Assert.Throws<Search.Wiki.NoWiki>(delegate () { new Gelbooru().GetRelated("sky"); });
+        }
+
+        [Fact]
+        public void SafebooruCheckRelated()
+        {
+            Assert.Throws<Search.Wiki.NoWiki>(delegate () { new Safebooru().GetRelated("sky"); });
+        }
+
+        [Fact]
+        public void KonachanCheckRelated()
+        {
+            Search.Related.SearchResult[] result = new Konachan().GetRelated("sky");
+            CheckRelated(result);
+        }
+
+        [Fact]
+        public void E621CheckRelated()
+        {
+            Search.Related.SearchResult[] result = new E621().GetRelated("sky");
+            CheckRelated(result);
+        }
+
+        [Fact]
+        public void Rule34CheckRelated()
+        {
+            Assert.Throws<Search.Wiki.NoWiki>(delegate () { new Rule34().GetRelated("sky"); });
+        }
+
+        [Fact]
+        public void LolibooruCheckRelated()
+        {
+            Search.Related.SearchResult[] result = new Lolibooru().GetRelated("sky");
+            CheckRelated(result);
+        }
+
+        [Fact]
+        public void YandereCheckRelated()
+        {
+            Search.Related.SearchResult[] result = new Yandere().GetRelated("sky");
+            CheckRelated(result);
         }
     }
 }

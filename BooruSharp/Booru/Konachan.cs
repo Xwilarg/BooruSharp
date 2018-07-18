@@ -2,7 +2,7 @@
 {
     public class Konachan : Booru
     {
-        public Konachan() : base("konachan.com", UrlFormat.postXml, null)
+        public Konachan() : base("konachan.com", UrlFormat.postIndexXml, null)
         { }
     }
 }

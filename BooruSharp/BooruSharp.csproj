@@ -53,10 +53,12 @@
     <Compile Include="Booru\UrlFormat.cs" />
     <Compile Include="Booru\Yandere.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Search\Image\Booru.cs" />
+    <Compile Include="Search\Post\Booru.cs" />
     <Compile Include="Search\InvalidTags.cs" />
-    <Compile Include="Search\Image\Rating.cs" />
-    <Compile Include="Search\Image\SearchResult.cs" />
+    <Compile Include="Search\Post\Rating.cs" />
+    <Compile Include="Search\Post\SearchResult.cs" />
+    <Compile Include="Search\Related\Booru.cs" />
+    <Compile Include="Search\Related\SearchResult.cs" />
     <Compile Include="Search\Tag\Booru.cs" />
     <Compile Include="Search\Tag\SearchResult.cs" />
     <Compile Include="Search\Tag\TagType.cs" />

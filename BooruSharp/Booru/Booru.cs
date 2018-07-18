@@ -13,27 +13,30 @@ namespace BooruSharp.Booru
             imageUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "post");
             tagUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "tag");
             if (options.Contains(BooruOptions.noWiki))
+            {
                 wikiUrl = null;
+                relatedUrl = null;
+            }
             else
+            {
                 wikiUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "wiki");
+                relatedUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "tag", "related");
+            }
             needInterrogation = (imageUrl.EndsWith(".xml"));
             random = new Random();
             this.maxLimit = maxLimit;
             wikiSearchUseTitle = options.Contains(BooruOptions.wikiSearchUseTitle);
         }
 
-        private string GetUrl(UrlFormat format, string query)
+        private string GetUrl(UrlFormat format, string query, string squery = "index")
         {
             switch (format)
             {
                 case UrlFormat.postIndexXml:
-                    return (query + "/index.xml");
+                    return (query + "/" + squery +".xml");
 
                 case UrlFormat.indexPhp:
                     return ("index.php?page=dapi&s=" + query + "&q=index");
-
-                case UrlFormat.postXml:
-                    return (query + ".xml");
 
                 default:
                     throw new ArgumentException("Invalid URL format " + format);
@@ -84,7 +87,7 @@ namespace BooruSharp.Booru
             return (vars);
         }
 
-        protected readonly string imageUrl, tagUrl, wikiUrl;
+        protected readonly string imageUrl, tagUrl, wikiUrl, relatedUrl;
         private readonly bool needInterrogation;
         private readonly int? maxLimit;
         private Random random;
