@@ -275,5 +275,11 @@ namespace BooruSharp.UnitTests
         {
             Assert.Equal(TagSearch.TagType.Trivia, new Gelbooru().GetTag("futanari").type);
         }
+
+        [Fact]
+        public void GelbooruTagId()
+        {
+            Assert.Equal("hibiki_(kantai_collection)", new Safebooru().GetTag(316679).name);
+        }
     }
 }

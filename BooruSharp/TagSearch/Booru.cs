@@ -7,11 +7,21 @@ namespace BooruSharp.Booru
     {
         public TagSearch.SearchResult GetTag(string name)
         {
-            XmlDocument xml = GetXml(CreateTagUrl("name=" + name));
+            return (SearchTag(name, null));
+        }
+
+        public TagSearch.SearchResult GetTag(int id)
+        {
+            return (SearchTag(null, id));
+        }
+
+        public TagSearch.SearchResult SearchTag(string name, int? id)
+        {
+            XmlDocument xml = GetXml(CreateTagUrl(((name == null) ? ("id=" + id) : ("name=" + name))));
             foreach (XmlNode node in xml.ChildNodes.Item(1).ChildNodes)
             {
                 string[] args = GetStringFromXml(node, "id", "name", "type", "count");
-                if (args[1] == name)
+                if ((name == null && id.ToString() == args[0]) || (name != null && name == args[1]))
                     return (new TagSearch.SearchResult(
                         Convert.ToUInt32(args[0]),
                         args[1],

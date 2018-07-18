@@ -18,10 +18,19 @@ BooruSharp currently handle the following websites:
 
 Random image:
 ```Cs
-BooruSharp.Booru.Gelbooru booru = new Gelbooru();
-BooruSharp.Search.SearchResult result = booru.GetRandomImage("hibiki_(kantai_collection)", "school_swimsuit");
+BooruSharp.Booru.Gelbooru booru = new BooruSharp.Booru.Gelbooru();
+BooruSharp.ImageSearch.SearchResult result = booru.GetRandomImage("hibiki_(kantai_collection)", "school_swimsuit");
 
 Console.WriteLine("Image preview URL: " + result.previewUrl + Environment.NewLine +
                   "Image URL: " + result.fileUrl + Environment.NewLine +
-                  "Image is safe: " + (result.rating == BooruSharp.Search.Rating.Safe));
+                  "Image is safe: " + (result.rating == BooruSharp.ImageSearch.Rating.Safe));
+```
+<br/>
+Get tag:
+```Cs
+BooruSharp.Booru.Gelbooru booru = new BooruSharp.Booru.Gelbooru();
+BooruSharp.TagSearch.SearchResult result = booru.GetTag("cirno");
+
+Console.WriteLine("Tag type: " + result.type + Environment.NewLine +
+                  "ID: " + result.id);
 ```
