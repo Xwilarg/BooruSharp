@@ -5,9 +5,9 @@ using Xunit;
 
 namespace BooruSharp.UnitTests
 {
-    public class Program
+    public static class General
     {
-        private void CheckCount(Booru.Booru booru)
+        public static void CheckCount(Booru.Booru booru)
         {
             int nbGeneral = booru.GetNbImage();
             int nbMed = booru.GetNbImage("wet");
@@ -15,50 +15,7 @@ namespace BooruSharp.UnitTests
             Assert.NotEqual(0, nbMin);
             Assert.InRange(nbMed, nbMin, nbGeneral);
         }
-
-        [Fact]
-        public void GelbooruCount()
-        {
-            CheckCount(new Gelbooru());
-        }
-
-        [Fact]
-        public void SafebooruCount()
-        {
-            CheckCount(new Safebooru());
-        }
-
-        [Fact]
-        public void KonachanCount()
-        {
-            CheckCount(new Konachan());
-        }
-
-        [Fact]
-        public void E621Count()
-        {
-            CheckCount(new E621());
-        }
-
-        [Fact]
-        public void Rule34Count()
-        {
-            CheckCount(new Rule34());
-        }
-
-        [Fact]
-        public void LolibooruCount()
-        {
-            CheckCount(new Lolibooru());
-        }
-
-        [Fact]
-        public void YandereCount()
-        {
-            CheckCount(new Yandere());
-        }
-
-        private bool CheckUrl(string url)
+        private static bool CheckUrl(string url)
         {
             if (url.StartsWith("http://") || url.StartsWith("https://"))
             {
@@ -75,7 +32,7 @@ namespace BooruSharp.UnitTests
             return (false);
         }
 
-        private void CheckResult(Search.Post.SearchResult result, string inputTag)
+        public static void CheckResult(Search.Post.SearchResult result, string inputTag)
         {
             Assert.True(CheckUrl(result.fileUrl));
             Assert.True(CheckUrl(result.previewUrl));
@@ -83,102 +40,369 @@ namespace BooruSharp.UnitTests
             Assert.Contains(inputTag, result.tags);
         }
 
-        private void CheckGetByOffset(Booru.Booru booru)
+        public static void CheckGetByOffset(Booru.Booru booru)
         {
             Search.Post.SearchResult result = booru.GetImage(2, "school_swimsuit");
             CheckResult(result, "school_swimsuit");
         }
 
-        [Fact]
-        public void GelbooruGetByOffset()
-        {
-            CheckGetByOffset(new Gelbooru());
-        }
-
-        [Fact]
-        public void SafebooruGetByOffset()
-        {
-            CheckGetByOffset(new Safebooru());
-        }
-
-        [Fact]
-        public void KonachanGetByOffset()
-        {
-            CheckGetByOffset(new Konachan());
-        }
-
-        [Fact]
-        public void E621GetByOffset()
-        {
-            CheckGetByOffset(new E621());
-        }
-
-        [Fact]
-        public void Rule34GetByOffset()
-        {
-            CheckGetByOffset(new Rule34());
-        }
-
-        [Fact]
-        public void LolibooruGetByOffset()
-        {
-            CheckGetByOffset(new Lolibooru());
-        }
-
-        [Fact]
-        public void YandereGetByOffset()
-        {
-            CheckGetByOffset(new Yandere());
-        }
-
-        private void CheckGetRandom(Booru.Booru booru)
+        public static void CheckGetRandom(Booru.Booru booru)
         {
             Search.Post.SearchResult result = booru.GetRandomImage("school_swimsuit");
             CheckResult(result, "school_swimsuit");
         }
 
+        public static void CheckTag(Booru.Booru booru)
+        {
+            Search.Tag.SearchResult result = booru.GetTag("pantyhose");
+            Assert.Equal("pantyhose", result.name);
+            Assert.InRange(result.type, Search.Tag.TagType.Trivia, Search.Tag.TagType.Metadata);
+            Assert.NotEqual((Search.Tag.TagType)2, result.type);
+            Assert.NotEqual<uint>(0, result.count);
+        }
+
+        public static void CheckWiki(Search.Wiki.SearchResult result)
+        {
+            Assert.InRange(result.lastUpdate, result.creation, DateTime.Now);
+        }
+
+        public static void CheckRelated(Search.Related.SearchResult[] result)
+        {
+            foreach (Search.Related.SearchResult res in result)
+                Assert.NotEqual<uint>(0, res.count);
+            Assert.NotEmpty(result);
+        }
+    }
+
+    public class UnitGelbooru
+    {
+        [Fact]
+        public void GelbooruCount()
+        {
+            General.CheckCount(new Gelbooru());
+        }
+
+        [Fact]
+        public void GelbooruGetByOffset()
+        {
+            General.CheckGetByOffset(new Gelbooru());
+        }
+
         [Fact]
         public void GelbooruGetRandom()
         {
-            CheckGetRandom(new Gelbooru());
+            General.CheckGetRandom(new Gelbooru());
+        }
+
+        [Fact]
+        public void GelbooruCheckTag()
+        {
+            General.CheckTag(new Gelbooru());
+        }
+
+        [Fact]
+        public void GelbooruTagId()
+        {
+            Assert.Equal("hibiki_(kantai_collection)", new Gelbooru().GetTag(463392).name);
+        }
+
+        [Fact]
+        public void GelbooruCheckWiki()
+        {
+            Assert.Throws<Search.Wiki.NoWiki>(delegate () { new Gelbooru().GetWiki("futanari"); });
+        }
+
+        [Fact]
+        public void GelbooruCheckRelated()
+        {
+            Assert.Throws<Search.Wiki.NoWiki>(delegate () { new Gelbooru().GetRelated("sky"); });
+        }
+    }
+
+    public class UnitSafebooru
+    {
+        [Fact]
+        public void SafebooruCount()
+        {
+            General.CheckCount(new Safebooru());
+        }
+
+        [Fact]
+        public void SafebooruGetByOffset()
+        {
+            General.CheckGetByOffset(new Safebooru());
         }
 
         [Fact]
         public void SafebooruGetRandom()
         {
-            CheckGetRandom(new Safebooru());
+            General.CheckGetRandom(new Safebooru());
+        }
+
+        [Fact]
+        public void SafebooruCheckTag()
+        {
+            General.CheckTag(new Safebooru());
+        }
+
+        [Fact]
+        public void SafebooruTagId()
+        {
+            Assert.Equal("hibiki_(kantai_collection)", new Safebooru().GetTag(316679).name);
+        }
+
+        [Fact]
+        public void SafebooruCheckWiki()
+        {
+            Assert.Throws<Search.Wiki.NoWiki>(delegate () { new Safebooru().GetWiki("futanari"); });
+        }
+
+        [Fact]
+        public void SafebooruCheckRelated()
+        {
+            Assert.Throws<Search.Wiki.NoWiki>(delegate () { new Safebooru().GetRelated("sky"); });
+        }
+    }
+
+    public class UnitKonachan
+    {
+        [Fact]
+        public void KonachanCount()
+        {
+            General.CheckCount(new Konachan());
+        }
+
+        [Fact]
+        public void KonachanGetByOffset()
+        {
+            General.CheckGetByOffset(new Konachan());
         }
 
         [Fact]
         public void KonachanGetRandom()
         {
-            CheckGetRandom(new Konachan());
+            General.CheckGetRandom(new Konachan());
+        }
+
+        [Fact]
+        public void KonachanCheckTag()
+        {
+            General.CheckTag(new Konachan());
+        }
+
+        [Fact]
+        public void KonachanTagId()
+        {
+            Assert.Equal("hibiki_(kancolle)", new Konachan().GetTag(75885).name);
+        }
+
+        [Fact]
+        public void KonachanCheckWiki()
+        {
+            Search.Wiki.SearchResult result = new Konachan().GetWiki("futanari");
+            Assert.Equal<uint>(757, result.id);
+            General.CheckWiki(result);
+        }
+
+        [Fact]
+        public void KonachanCheckRelated()
+        {
+            Search.Related.SearchResult[] result = new Konachan().GetRelated("sky");
+            General.CheckRelated(result);
+        }
+    }
+
+    public class UnitE621
+    {
+        [Fact]
+        public void E621Count()
+        {
+            General.CheckCount(new E621());
+        }
+
+        [Fact]
+        public void E621GetByOffset()
+        {
+            General.CheckGetByOffset(new E621());
         }
 
         [Fact]
         public void E621GetRandom()
         {
-            CheckGetRandom(new E621());
+            General.CheckGetRandom(new E621());
+        }
+
+        [Fact]
+        public void E621CheckTag()
+        {
+            General.CheckTag(new E621());
+        }
+
+        [Fact]
+        public void E621TagId()
+        {
+            Assert.Equal("shimakaze_(kantai_collection)", new E621().GetTag(267881).name);
+        }
+
+        [Fact]
+        public void E621CheckWiki()
+        {
+            Search.Wiki.SearchResult result = new E621().GetWiki("futanari");
+            Assert.Equal<uint>(123, result.id);
+            General.CheckWiki(result);
+        }
+
+        [Fact]
+        public void E621CheckRelated()
+        {
+            Search.Related.SearchResult[] result = new E621().GetRelated("sky");
+            General.CheckRelated(result);
+        }
+    }
+
+    public class UnitRule34
+    {
+        [Fact]
+        public void Rule34Count()
+        {
+            General.CheckCount(new Rule34());
+        }
+
+        [Fact]
+        public void Rule34GetByOffset()
+        {
+            General.CheckGetByOffset(new Rule34());
         }
 
         [Fact]
         public void Rule34GetRandom()
         {
-            CheckGetRandom(new Rule34());
+            General.CheckGetRandom(new Rule34());
+        }
+
+        [Fact]
+        public void Rule34CheckTag()
+        {
+            General.CheckTag(new Rule34());
+        }
+
+        [Fact]
+        public void Rule34TagId()
+        {
+            Assert.Equal("hibiki_(kantai_collection)", new Rule34().GetTag(321239).name);
+        }
+
+        [Fact]
+        public void Rule34CheckWiki()
+        {
+            Assert.Throws<Search.Wiki.NoWiki>(delegate () { new Rule34().GetWiki("futanari"); });
+        }
+
+        [Fact]
+        public void Rule34CheckRelated()
+        {
+            Assert.Throws<Search.Wiki.NoWiki>(delegate () { new Rule34().GetRelated("sky"); });
+        }
+    }
+
+    public class UnitLolibooru
+    {
+        [Fact]
+        public void LolibooruCount()
+        {
+            General.CheckCount(new Lolibooru());
+        }
+
+        [Fact]
+        public void LolibooruGetByOffset()
+        {
+            General.CheckGetByOffset(new Lolibooru());
         }
 
         [Fact]
         public void LolibooruGetRandom()
         {
-            CheckGetRandom(new Lolibooru());
+            General.CheckGetRandom(new Lolibooru());
+        }
+
+        [Fact]
+        public void LolibooruCheckTag()
+        {
+            General.CheckTag(new Lolibooru());
+        }
+
+        [Fact]
+        public void LolibooruTagId()
+        {
+            Assert.Equal("hibiki_(kantai_collection)", new Lolibooru().GetTag(2939).name);
+        }
+
+        [Fact]
+        public void LolibooruCheckWiki()
+        {
+            Search.Wiki.SearchResult result = new Lolibooru().GetWiki("futanari");
+            Assert.Equal<uint>(158, result.id);
+            General.CheckWiki(result);
+        }
+
+        [Fact]
+        public void LolibooruCheckRelated()
+        {
+            Search.Related.SearchResult[] result = new Lolibooru().GetRelated("sky");
+            General.CheckRelated(result);
+        }
+    }
+
+    public class UnitYandere
+    {
+        [Fact]
+        public void YandereCount()
+        {
+            General.CheckCount(new Yandere());
+        }
+
+        [Fact]
+        public void YandereGetByOffset()
+        {
+            General.CheckGetByOffset(new Yandere());
         }
 
         [Fact]
         public void YandereGetRandom()
         {
-            CheckGetRandom(new Yandere());
+            General.CheckGetRandom(new Yandere());
         }
 
+        [Fact]
+        public void YandereCheckTag()
+        {
+            General.CheckTag(new Yandere());
+        }
+
+        [Fact]
+        public void YandereTagId()
+        {
+            Assert.Equal("hibiki_(kantai_collection)", new Yandere().GetTag(98153).name);
+        }
+
+        [Fact]
+        public void YandereCheckWiki()
+        {
+            Search.Wiki.SearchResult result = new Yandere().GetWiki("futanari");
+            Assert.Equal<uint>(167, result.id);
+            General.CheckWiki(result);
+        }
+
+        [Fact]
+        public void YandereCheckRelated()
+        {
+            Search.Related.SearchResult[] result = new Yandere().GetRelated("sky");
+            General.CheckRelated(result);
+        }
+    }
+
+    public class Other
+    {
         [Fact]
         public void CustomBooru()
         {
@@ -195,57 +419,6 @@ namespace BooruSharp.UnitTests
         public void CustomBooruBadUrl()
         {
             Assert.Throws<Booru.Custom.InvalidBooru>(delegate () { new Booru.Custom.CustomBooru("https://zirk.eu", UrlFormat.indexPhp); });
-        }
-
-        private void CheckTag(Booru.Booru booru)
-        {
-            Search.Tag.SearchResult result = booru.GetTag("pantyhose");
-            Assert.Equal("pantyhose", result.name);
-            Assert.InRange(result.type, Search.Tag.TagType.Trivia, Search.Tag.TagType.Metadata);
-            Assert.NotEqual((Search.Tag.TagType)2, result.type);
-            Assert.NotEqual<uint>(0, result.count);
-        }
-
-        [Fact]
-        public void GelbooruCheckTag()
-        {
-            CheckTag(new Gelbooru());
-        }
-
-        [Fact]
-        public void SafebooruCheckTag()
-        {
-            CheckTag(new Safebooru());
-        }
-
-        [Fact]
-        public void KonachanCheckTag()
-        {
-            CheckTag(new Konachan());
-        }
-
-        [Fact]
-        public void E621CheckTag()
-        {
-            CheckTag(new E621());
-        }
-
-        [Fact]
-        public void Rule34CheckTag()
-        {
-            CheckTag(new Rule34());
-        }
-
-        [Fact]
-        public void LolibooruCheckTag()
-        {
-            CheckTag(new Lolibooru());
-        }
-
-        [Fact]
-        public void YandereCheckTag()
-        {
-            CheckTag(new Yandere());
         }
 
         [Fact]
@@ -276,120 +449,6 @@ namespace BooruSharp.UnitTests
         public void GelbooruTagTrivia()
         {
             Assert.Equal(Search.Tag.TagType.Trivia, new Gelbooru().GetTag("futanari").type);
-        }
-
-        [Fact]
-        public void SafebooruTagId()
-        {
-            Assert.Equal("hibiki_(kantai_collection)", new Safebooru().GetTag(316679).name);
-        }
-
-        private void CheckWiki(Search.Wiki.SearchResult result)
-        {
-            Assert.InRange(result.lastUpdate, result.creation, DateTime.Now);
-        }
-
-        [Fact]
-        public void GelbooruCheckWiki()
-        {
-            Assert.Throws<Search.Wiki.NoWiki>(delegate() { new Gelbooru().GetWiki("futanari"); });
-        }
-
-        [Fact]
-        public void SafebooruCheckWiki()
-        {
-            Assert.Throws<Search.Wiki.NoWiki>(delegate () { new Safebooru().GetWiki("futanari"); });
-        }
-
-        [Fact]
-        public void KonachanCheckWiki()
-        {
-            Search.Wiki.SearchResult result = new Konachan().GetWiki("futanari");
-            Assert.Equal<uint>(757, result.id);
-            CheckWiki(result);
-        }
-
-        [Fact]
-        public void E621CheckWiki()
-        {
-            Search.Wiki.SearchResult result = new E621().GetWiki("futanari");
-            Assert.Equal<uint>(123, result.id);
-            CheckWiki(result);
-        }
-
-        [Fact]
-        public void Rule34CheckWiki()
-        {
-            Assert.Throws<Search.Wiki.NoWiki>(delegate () { new Rule34().GetWiki("futanari"); });
-        }
-
-        [Fact]
-        public void LolibooruCheckWiki()
-        {
-            Search.Wiki.SearchResult result = new Lolibooru().GetWiki("futanari");
-            Assert.Equal<uint>(158, result.id);
-            CheckWiki(result);
-        }
-
-        [Fact]
-        public void YandereCheckWiki()
-        {
-            Search.Wiki.SearchResult result = new Yandere().GetWiki("futanari");
-            Assert.Equal<uint>(167, result.id);
-            CheckWiki(result);
-        }
-
-        private void CheckRelated(Search.Related.SearchResult[] result)
-        {
-            foreach (Search.Related.SearchResult res in result)
-                Assert.NotEqual<uint>(0, res.count);
-            Assert.NotEmpty(result);
-        }
-
-        [Fact]
-        public void GelbooruCheckRelated()
-        {
-            Assert.Throws<Search.Wiki.NoWiki>(delegate () { new Gelbooru().GetRelated("sky"); });
-        }
-
-        [Fact]
-        public void SafebooruCheckRelated()
-        {
-            Assert.Throws<Search.Wiki.NoWiki>(delegate () { new Safebooru().GetRelated("sky"); });
-        }
-
-        [Fact]
-        public void KonachanCheckRelated()
-        {
-            Search.Related.SearchResult[] result = new Konachan().GetRelated("sky");
-            CheckRelated(result);
-        }
-
-        [Fact]
-        public void E621CheckRelated()
-        {
-            Search.Related.SearchResult[] result = new E621().GetRelated("sky");
-            CheckRelated(result);
-        }
-
-        [Fact]
-        public void Rule34CheckRelated()
-        {
-            Assert.Throws<Search.Wiki.NoWiki>(delegate () { new Rule34().GetRelated("sky"); });
-        }
-
-        [Fact]
-        public void LolibooruCheckRelated()
-        {
-            Search.Related.SearchResult[] result = new Lolibooru().GetRelated("sky");
-            CheckRelated(result);
-        }
-
-        [Fact]
-        public void YandereCheckRelated()
-        {
-            Search.Related.SearchResult[] result = new Yandere().GetRelated("sky");
-            CheckRelated(result);
         }
     }
 }
