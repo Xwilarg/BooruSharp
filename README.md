@@ -25,7 +25,7 @@ Console.WriteLine("Image preview URL: " + result.previewUrl + Environment.NewLin
                   "Image URL: " + result.fileUrl + Environment.NewLine +
                   "Image is safe: " + (result.rating == BooruSharp.ImageSearch.Rating.Safe));
 ```
-<br/>
+
 Get tag:
 ```Cs
 BooruSharp.Booru.Gelbooru booru = new BooruSharp.Booru.Gelbooru();
