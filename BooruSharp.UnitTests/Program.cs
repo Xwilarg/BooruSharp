@@ -38,6 +38,7 @@ namespace BooruSharp.UnitTests
             Assert.True(CheckUrl(result.previewUrl));
             Assert.InRange(result.rating, Search.Post.Rating.Safe, Search.Post.Rating.Explicit);
             Assert.Contains(inputTag, result.tags);
+            Assert.NotEqual<uint>(0, result.id);
         }
 
         public static void CheckGetByOffset(Booru.Booru booru)
@@ -382,7 +383,7 @@ namespace BooruSharp.UnitTests
         [Fact]
         public void YandereTagId()
         {
-            Assert.Equal("hibiki_(kantai_collection)", new Yandere().GetTag(98153).name);
+            Assert.Equal("hibiki_(kancolle)", new Yandere().GetTag(98153).name);
         }
 
         [Fact]

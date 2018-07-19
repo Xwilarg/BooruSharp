@@ -23,7 +23,8 @@ BooruSharp.Search.Post.SearchResult result = booru.GetRandomImage("hibiki_(kanta
 
 Console.WriteLine("Image preview URL: " + result.previewUrl + Environment.NewLine +
                   "Image URL: " + result.fileUrl + Environment.NewLine +
-                  "Image is safe: " + (result.rating == BooruSharp.Search.Post.Rating.Safe));
+                  "Image is safe: " + (result.rating == BooruSharp.Search.Post.Rating.Safe) + Environment.NewLine +
+                  "Tags on the image: " + String.Join(", ", result.tags));
 ```
 
 Get tag:

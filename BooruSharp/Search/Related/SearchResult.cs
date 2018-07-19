@@ -7,7 +7,7 @@
             this.name = name;
             this.count = count;
         }
-        public string name;
-        public uint count;
+        public readonly string name;
+        public readonly uint count;
     }
 }

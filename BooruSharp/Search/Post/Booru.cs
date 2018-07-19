@@ -19,12 +19,13 @@ namespace BooruSharp.Booru
         public Search.Post.SearchResult GetImage(int offset, params string[] tagsArg)
         {
             XmlDocument xml = GetXml(CreateUrl(imageUrl, "limit=1", TagsToString(tagsArg), ((needInterrogation) ? ("page=") : ("pid=")) + offset));
-            string[] args = GetStringFromXml(xml.ChildNodes.Item(1).FirstChild, "file_url", "preview_url", "rating", "tags");
+            string[] args = GetStringFromXml(xml.ChildNodes.Item(1).FirstChild, "file_url", "preview_url", "rating", "tags", "id");
             return (new Search.Post.SearchResult(((
                 args[0].StartsWith("//")) ? ("https:") : ("")) + args[0],
                 ((args[1].StartsWith("//")) ? ("https:") : ("")) + args[1],
                 GetRating(args[2][0]),
-                args[3].Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)));
+                args[3].Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries),
+                Convert.ToUInt32(args[4])));
         }
 
         public Search.Post.SearchResult GetRandomImage(params string[] tags)

@@ -9,9 +9,9 @@
             this.type = type;
             this.count = count;
         }
-        public uint id;
-        public string name;
-        public TagType type;
-        public uint count;
+        public readonly uint id;
+        public readonly string name;
+        public readonly TagType type;
+        public readonly uint count;
     }
 }

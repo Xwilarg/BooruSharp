@@ -12,10 +12,10 @@ namespace BooruSharp.Search.Wiki
             this.lastUpdate = lastUpdate;
             this.body = body;
         }
-        public uint id;
-        public string title;
-        public DateTime creation;
-        public DateTime lastUpdate;
-        public string body;
+        public readonly uint id;
+        public readonly string title;
+        public readonly DateTime creation;
+        public readonly DateTime lastUpdate;
+        public readonly string body;
     }
 }
