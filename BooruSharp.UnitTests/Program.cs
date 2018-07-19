@@ -73,6 +73,18 @@ namespace BooruSharp.UnitTests
                 Assert.NotEqual<uint>(0, res.count);
             Assert.NotEmpty(result);
         }
+        public static void CheckComment(Search.Comment.SearchResult[] result)
+        {
+            foreach (Search.Comment.SearchResult res in result)
+            {
+                Assert.NotEqual<uint>(0, res.authorId);
+                Assert.NotEqual<uint>(0, res.commentId);
+                Assert.NotEqual<uint>(0, res.postId);
+                Assert.NotEmpty(res.body);
+                Assert.NotEmpty(res.authorName);
+            }
+            Assert.NotEmpty(result);
+        }
     }
 
     public class UnitGelbooru
@@ -118,6 +130,12 @@ namespace BooruSharp.UnitTests
         {
             Assert.Throws<Search.FeatureUnavailable>(delegate () { new Gelbooru().GetRelated("sky"); });
         }
+
+        [Fact]
+        public void GelbooruCheckComment()
+        {
+            General.CheckComment(new Gelbooru().GetComment(3988284));
+        }
     }
 
     public class UnitSafebooru
@@ -162,6 +180,12 @@ namespace BooruSharp.UnitTests
         public void SafebooruCheckRelated()
         {
             Assert.Throws<Search.FeatureUnavailable>(delegate () { new Safebooru().GetRelated("sky"); });
+        }
+
+        [Fact]
+        public void SafebooruCheckComment()
+        {
+            Assert.Throws<Search.FeatureUnavailable>(delegate () { new Safebooru().GetComment(132); });
         }
     }
 
@@ -211,6 +235,12 @@ namespace BooruSharp.UnitTests
             Search.Related.SearchResult[] result = new Konachan().GetRelated("sky");
             General.CheckRelated(result);
         }
+
+        [Fact]
+        public void KonachanCheckComment()
+        {
+            General.CheckComment(new Konachan().GetComment(142938));
+        }
     }
 
     public class UnitE621
@@ -259,6 +289,12 @@ namespace BooruSharp.UnitTests
             Search.Related.SearchResult[] result = new E621().GetRelated("sky");
             General.CheckRelated(result);
         }
+
+        [Fact]
+        public void E621CheckComment()
+        {
+            Assert.Throws<Search.FeatureUnavailable>(delegate () { new E621().GetComment(59432); });
+        }
     }
 
     public class UnitRule34
@@ -303,6 +339,12 @@ namespace BooruSharp.UnitTests
         public void Rule34CheckRelated()
         {
             Assert.Throws<Search.FeatureUnavailable>(delegate () { new Rule34().GetRelated("sky"); });
+        }
+
+        [Fact]
+        public void Rule34CheckComment()
+        {
+            Assert.Throws<Search.FeatureUnavailable>(delegate () { new Rule34().GetComment(1556058); });
         }
     }
 
@@ -352,6 +394,12 @@ namespace BooruSharp.UnitTests
             Search.Related.SearchResult[] result = new Lolibooru().GetRelated("sky");
             General.CheckRelated(result);
         }
+
+        [Fact]
+        public void LolibooruCheckComment()
+        {
+            General.CheckComment(new Lolibooru().GetComment(134097));
+        }
     }
 
     public class UnitYandere
@@ -399,6 +447,12 @@ namespace BooruSharp.UnitTests
         {
             Search.Related.SearchResult[] result = new Yandere().GetRelated("sky");
             General.CheckRelated(result);
+        }
+
+        [Fact]
+        public void YandereCheckComment()
+        {
+            Assert.Throws<Search.FeatureUnavailable>(delegate () { new Yandere().GetComment(405923); });
         }
     }
 

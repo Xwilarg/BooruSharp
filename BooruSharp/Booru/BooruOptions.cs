@@ -5,6 +5,8 @@
         ignoreCheck,
         useHttp,
         noWiki,
+        noRelated,
+        noComment,
         wikiSearchUseTitle
     }
 }

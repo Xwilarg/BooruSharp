@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Xml;
@@ -7,9 +8,17 @@ namespace BooruSharp.Booru
 {
     public abstract partial class Booru
     {
-        public bool HaveAdvancedFeatures()
+        public bool HaveRelatedAPI()
+        {
+            return (relatedUrl != null);
+        }
+        public bool HaveWikiAPI()
         {
             return (wikiUrl != null);
+        }
+        public bool HaveCommentAPI()
+        {
+            return (commentUrl != null);
         }
 
         protected Booru(string baseUrl, UrlFormat format, int? maxLimit, params BooruOptions[] options)
@@ -18,15 +27,17 @@ namespace BooruSharp.Booru
             imageUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "post");
             tagUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "tag");
             if (options.Contains(BooruOptions.noWiki))
-            {
                 wikiUrl = null;
-                relatedUrl = null;
-            }
             else
-            {
                 wikiUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "wiki");
+            if (options.Contains(BooruOptions.noRelated))
+                relatedUrl = null;
+            else
                 relatedUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "tag", "related");
-            }
+            if (options.Contains(BooruOptions.noComment))
+                commentUrl = null;
+            else
+                commentUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "comment");
             needInterrogation = (imageUrl.EndsWith(".xml"));
             random = new Random();
             this.maxLimit = maxLimit;
@@ -92,7 +103,17 @@ namespace BooruSharp.Booru
             return (vars);
         }
 
-        protected readonly string imageUrl, tagUrl, wikiUrl, relatedUrl;
+        private DateTime ParseDateTime(string dt)
+        {
+            DateTime res;
+            if (DateTime.TryParseExact(dt, "yyyy-MM-dd HH:mm:ss UTC", CultureInfo.InvariantCulture, DateTimeStyles.None, out res))
+                return (res);
+            if (DateTime.TryParseExact(dt, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out res))
+                return (res);
+            return (DateTime.ParseExact(dt, "yyyy-MM-ddTHH:mm:ss+00:00", CultureInfo.InvariantCulture));
+        }
+
+        protected readonly string imageUrl, tagUrl, wikiUrl, relatedUrl, commentUrl;
         private readonly bool needInterrogation;
         private readonly int? maxLimit;
         private Random random;

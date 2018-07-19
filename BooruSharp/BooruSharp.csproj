@@ -53,6 +53,8 @@
     <Compile Include="Booru\UrlFormat.cs" />
     <Compile Include="Booru\Yandere.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Search\Comment\Booru.cs" />
+    <Compile Include="Search\Comment\SearchResult.cs" />
     <Compile Include="Search\Post\Booru.cs" />
     <Compile Include="Search\InvalidTags.cs" />
     <Compile Include="Search\Post\Rating.cs" />
@@ -63,7 +65,7 @@
     <Compile Include="Search\Tag\SearchResult.cs" />
     <Compile Include="Search\Tag\TagType.cs" />
     <Compile Include="Search\Wiki\Booru.cs" />
-    <Compile Include="Search\Wiki\NoWiki.cs" />
+    <Compile Include="Search\FeatureUnavailable.cs" />
     <Compile Include="Search\Wiki\SearchResult.cs" />
   </ItemGroup>
   <ItemGroup />

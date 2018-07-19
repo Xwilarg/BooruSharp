@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Xml;
 
 namespace BooruSharp.Booru
@@ -23,16 +22,6 @@ namespace BooruSharp.Booru
                         args[4]));
             }
             throw new Search.InvalidTags();
-        }
-
-        private DateTime ParseDateTime(string dt)
-        {
-            DateTime res;
-            if (DateTime.TryParseExact(dt, "yyyy-MM-dd HH:mm:ss UTC", CultureInfo.InvariantCulture, DateTimeStyles.None, out res))
-                return (res);
-            if (DateTime.TryParseExact(dt, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out res))
-                return (res);
-            return (DateTime.ParseExact(dt, "yyyy-MM-ddTHH:mm:ss+00:00", CultureInfo.InvariantCulture));
         }
     }
 }
