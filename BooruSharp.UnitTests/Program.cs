@@ -110,13 +110,13 @@ namespace BooruSharp.UnitTests
         [Fact]
         public void GelbooruCheckWiki()
         {
-            Assert.Throws<Search.Wiki.NoWiki>(delegate () { new Gelbooru().GetWiki("futanari"); });
+            Assert.Throws<Search.FeatureUnavailable>(delegate () { new Gelbooru().GetWiki("futanari"); });
         }
 
         [Fact]
         public void GelbooruCheckRelated()
         {
-            Assert.Throws<Search.Wiki.NoWiki>(delegate () { new Gelbooru().GetRelated("sky"); });
+            Assert.Throws<Search.FeatureUnavailable>(delegate () { new Gelbooru().GetRelated("sky"); });
         }
     }
 
@@ -155,13 +155,13 @@ namespace BooruSharp.UnitTests
         [Fact]
         public void SafebooruCheckWiki()
         {
-            Assert.Throws<Search.Wiki.NoWiki>(delegate () { new Safebooru().GetWiki("futanari"); });
+            Assert.Throws<Search.FeatureUnavailable>(delegate () { new Safebooru().GetWiki("futanari"); });
         }
 
         [Fact]
         public void SafebooruCheckRelated()
         {
-            Assert.Throws<Search.Wiki.NoWiki>(delegate () { new Safebooru().GetRelated("sky"); });
+            Assert.Throws<Search.FeatureUnavailable>(delegate () { new Safebooru().GetRelated("sky"); });
         }
     }
 
@@ -296,13 +296,13 @@ namespace BooruSharp.UnitTests
         [Fact]
         public void Rule34CheckWiki()
         {
-            Assert.Throws<Search.Wiki.NoWiki>(delegate () { new Rule34().GetWiki("futanari"); });
+            Assert.Throws<Search.FeatureUnavailable>(delegate () { new Rule34().GetWiki("futanari"); });
         }
 
         [Fact]
         public void Rule34CheckRelated()
         {
-            Assert.Throws<Search.Wiki.NoWiki>(delegate () { new Rule34().GetRelated("sky"); });
+            Assert.Throws<Search.FeatureUnavailable>(delegate () { new Rule34().GetRelated("sky"); });
         }
     }
 

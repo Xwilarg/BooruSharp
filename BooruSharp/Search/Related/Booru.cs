@@ -8,7 +8,7 @@ namespace BooruSharp.Booru
         public Search.Related.SearchResult[] GetRelated(string tag)
         {
             if (wikiUrl == null)
-                throw new Search.Wiki.NoWiki();
+                throw new Search.FeatureUnavailable();
             XmlDocument xml = GetXml(CreateUrl(relatedUrl, "tags=" + tag));
             int i = 0;
             Search.Related.SearchResult[] results = new Search.Related.SearchResult[xml.ChildNodes.Item(1).FirstChild.ChildNodes.Count];

@@ -9,7 +9,7 @@ namespace BooruSharp.Booru
         public Search.Wiki.SearchResult GetWiki(string query)
         {
             if (wikiUrl == null)
-                throw new Search.Wiki.NoWiki();
+                throw new Search.FeatureUnavailable();
             XmlDocument xml = GetXml(CreateUrl(wikiUrl, ((wikiSearchUseTitle) ? ("title=") : ("query=")) + query));
             foreach (XmlNode node in xml.ChildNodes.Item(1).ChildNodes)
             {

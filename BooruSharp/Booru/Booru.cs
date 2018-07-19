@@ -7,6 +7,11 @@ namespace BooruSharp.Booru
 {
     public abstract partial class Booru
     {
+        public bool HaveAdvancedFeatures()
+        {
+            return (wikiUrl != null);
+        }
+
         protected Booru(string baseUrl, UrlFormat format, int? maxLimit, params BooruOptions[] options)
         {
             bool useHttp = options.Contains(BooruOptions.useHttp);
