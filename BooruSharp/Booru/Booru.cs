@@ -110,6 +110,8 @@ namespace BooruSharp.Booru
                 return (res);
             if (DateTime.TryParseExact(dt, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out res))
                 return (res);
+            if (DateTime.TryParseExact(dt, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out res))
+                return (res);
             return (DateTime.ParseExact(dt, "yyyy-MM-ddTHH:mm:ss+00:00", CultureInfo.InvariantCulture));
         }
 

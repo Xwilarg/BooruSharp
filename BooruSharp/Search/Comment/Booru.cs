@@ -7,7 +7,7 @@ namespace BooruSharp.Booru
     {
         public Search.Comment.SearchResult[] GetComment(int postId)
         {
-            if (wikiUrl == null)
+            if (commentUrl == null)
                 throw new Search.FeatureUnavailable();
             XmlDocument xml = GetXml(CreateUrl(commentUrl, "post_id=" + postId));
             int i = 0;
