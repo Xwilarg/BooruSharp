@@ -21,6 +21,11 @@ namespace BooruSharp.Booru
             return (commentUrl != null);
         }
 
+        public bool HaveTagByIdAPI()
+        {
+            return (searchTagById);
+        }
+
         protected Booru(string baseUrl, UrlFormat format, int? maxLimit, params BooruOptions[] options)
         {
             bool useHttp = options.Contains(BooruOptions.useHttp);
@@ -38,6 +43,7 @@ namespace BooruSharp.Booru
                 commentUrl = null;
             else
                 commentUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "comment");
+            searchTagById = !options.Contains(BooruOptions.noTagById);
             needInterrogation = (imageUrl.EndsWith(".xml"));
             random = new Random();
             this.maxLimit = maxLimit;
@@ -116,6 +122,7 @@ namespace BooruSharp.Booru
         }
 
         protected readonly string imageUrl, tagUrl, wikiUrl, relatedUrl, commentUrl;
+        private bool searchTagById;
         private readonly bool needInterrogation;
         private readonly int? maxLimit;
         private Random random;

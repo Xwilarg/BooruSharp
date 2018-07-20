@@ -12,6 +12,8 @@ namespace BooruSharp.Booru
 
         public Search.Tag.SearchResult GetTag(int id)
         {
+            if (!searchTagById)
+                throw new Search.FeatureUnavailable();
             return (SearchTag(null, id));
         }
 

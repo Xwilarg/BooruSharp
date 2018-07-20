@@ -272,7 +272,7 @@ namespace BooruSharp.UnitTests
         [Fact]
         public void E621TagId()
         {
-            Assert.Equal("shimakaze_(kantai_collection)", new E621().GetTag(267881).name);
+            Assert.Throws<Search.FeatureUnavailable>(delegate () { new E621().GetTag(267881); });
         }
 
         [Fact]

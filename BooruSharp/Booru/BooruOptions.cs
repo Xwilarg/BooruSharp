@@ -7,6 +7,7 @@
         noWiki,
         noRelated,
         noComment,
+        noTagById,
         wikiSearchUseTitle
     }
 }
