@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace BooruSharp.Booru
@@ -66,13 +66,13 @@ namespace BooruSharp.Booru
             }
         }
 
-        private XmlDocument GetXml(string url)
+        private async Task<XmlDocument> GetXml(string url)
         {
             XmlDocument xml = new XmlDocument();
             using (HttpClient hc = new HttpClient())
             {
                 hc.DefaultRequestHeaders.Add("User-Agent", "BooruSharp");
-                xml.LoadXml(hc.GetAsync(url).GetAwaiter().GetResult().Content.ReadAsStringAsync().GetAwaiter().GetResult());
+                xml.LoadXml(await (await hc.GetAsync(url)).Content.ReadAsStringAsync());
             }
             return (xml);
         }

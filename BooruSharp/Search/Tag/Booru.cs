@@ -1,25 +1,26 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace BooruSharp.Booru
 {
     public abstract partial class Booru
     {
-        public Search.Tag.SearchResult GetTag(string name)
+        public async Task<Search.Tag.SearchResult> GetTag(string name)
         {
-            return (SearchTag(name, null));
+            return (await SearchTag(name, null));
         }
 
-        public Search.Tag.SearchResult GetTag(int id)
+        public async Task<Search.Tag.SearchResult> GetTag(int id)
         {
             if (!searchTagById)
                 throw new Search.FeatureUnavailable();
-            return (SearchTag(null, id));
+            return (await SearchTag(null, id));
         }
 
-        private Search.Tag.SearchResult SearchTag(string name, int? id)
+        private async Task<Search.Tag.SearchResult> SearchTag(string name, int? id)
         {
-            XmlDocument xml = GetXml(CreateUrl(tagUrl, ((name == null) ? ("id=" + id) : ("name=" + name))));
+            XmlDocument xml = await GetXml(CreateUrl(tagUrl, ((name == null) ? ("id=" + id) : ("name=" + name))));
             foreach (XmlNode node in xml.ChildNodes.Item(1).ChildNodes)
             {
                 string[] args = GetStringFromXml(node, "id", "name", "type", "count");

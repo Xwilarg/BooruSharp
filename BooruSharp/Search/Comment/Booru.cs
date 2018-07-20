@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace BooruSharp.Booru
 {
     public abstract partial class Booru
     {
-        public Search.Comment.SearchResult[] GetComment(int postId)
+        public async Task<Search.Comment.SearchResult[]> GetComment(int postId)
         {
             if (commentUrl == null)
                 throw new Search.FeatureUnavailable();
-            XmlDocument xml = GetXml(CreateUrl(commentUrl, "post_id=" + postId));
+            XmlDocument xml = await GetXml(CreateUrl(commentUrl, "post_id=" + postId));
             int i = 0;
             Search.Comment.SearchResult[] results = new Search.Comment.SearchResult[xml.ChildNodes.Item(1).ChildNodes.Count];
             foreach (XmlNode node in xml.ChildNodes.Item(1).ChildNodes)

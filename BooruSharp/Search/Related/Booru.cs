@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace BooruSharp.Booru
 {
     public abstract partial class Booru
     {
-        public Search.Related.SearchResult[] GetRelated(string tag)
+        public async Task<Search.Related.SearchResult[]> GetRelated(string tag)
         {
             if (wikiUrl == null)
                 throw new Search.FeatureUnavailable();
-            XmlDocument xml = GetXml(CreateUrl(relatedUrl, "tags=" + tag));
+            XmlDocument xml = await GetXml(CreateUrl(relatedUrl, "tags=" + tag));
             int i = 0;
             Search.Related.SearchResult[] results = new Search.Related.SearchResult[xml.ChildNodes.Item(1).FirstChild.ChildNodes.Count];
             foreach (XmlNode node in xml.ChildNodes.Item(1).FirstChild.ChildNodes)

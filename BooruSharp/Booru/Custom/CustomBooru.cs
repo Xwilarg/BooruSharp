@@ -11,7 +11,7 @@ namespace BooruSharp.Booru.Custom
             {
                 try
                 {
-                    GetNbImage();
+                    GetNbImage().GetAwaiter().GetResult();
                 }
                 catch (Exception ex)
                 {

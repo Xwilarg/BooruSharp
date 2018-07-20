@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace BooruSharp.Booru
 {
     public abstract partial class Booru
     {
-        public Search.Wiki.SearchResult GetWiki(string query)
+        public async Task<Search.Wiki.SearchResult> GetWiki(string query)
         {
             if (wikiUrl == null)
                 throw new Search.FeatureUnavailable();
-            XmlDocument xml = GetXml(CreateUrl(wikiUrl, ((wikiSearchUseTitle) ? ("title=") : ("query=")) + query));
+            XmlDocument xml = await GetXml(CreateUrl(wikiUrl, ((wikiSearchUseTitle) ? ("title=") : ("query=")) + query));
             foreach (XmlNode node in xml.ChildNodes.Item(1).ChildNodes)
             {
                 string[] args = GetStringFromXml(node, "id", "title", "created_at", "updated_at", "body");
