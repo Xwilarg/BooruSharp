@@ -28,7 +28,7 @@ namespace BooruSharp.UnitTests
                     return (null);
                 }
                 catch (WebException ex)
-                { return (ex.Message); }
+                { return (ex.Message + " for " + url); }
             }
             return (url + " doesn't start with http:// or https://");
         }
