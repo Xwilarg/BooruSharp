@@ -8,7 +8,7 @@ namespace BooruSharp.Booru
     {
         public async Task<Search.Related.SearchResult[]> GetRelated(string tag)
         {
-            if (wikiUrl == null)
+            if (relatedUrl == null)
                 throw new Search.FeatureUnavailable();
             XmlDocument xml = await GetXml(CreateUrl(relatedUrl, "tags=" + tag));
             int i = 0;

@@ -16,7 +16,7 @@ namespace BooruSharp.UnitTests
             Assert.NotEqual(0, nbMin);
             Assert.InRange(nbMed, nbMin, nbGeneral);
         }
-        private static bool CheckUrl(string url)
+        private static string CheckUrl(string url)
         {
             if (url.StartsWith("http://") || url.StartsWith("https://"))
             {
@@ -25,18 +25,20 @@ namespace BooruSharp.UnitTests
                     WebRequest request = WebRequest.Create(url);
                     request.Method = "HEAD";
                     request.GetResponse();
-                    return (true);
+                    return (null);
                 }
-                catch (WebException)
-                { }
+                catch (WebException ex)
+                { return (ex.Message); }
             }
-            return (false);
+            return (url + " doesn't start with http:// or https://");
         }
 
         public static void CheckResult(Search.Post.SearchResult result, string inputTag)
         {
-            Assert.True(CheckUrl(result.fileUrl));
-            Assert.True(CheckUrl(result.previewUrl));
+            string resFile = CheckUrl(result.fileUrl);
+            string resPreview = CheckUrl(result.previewUrl);
+            Assert.True(resFile == null, resFile);
+            Assert.True(resPreview == null, resPreview);
             Assert.InRange(result.rating, Search.Post.Rating.Safe, Search.Post.Rating.Explicit);
             Assert.Contains(inputTag, result.tags);
             Assert.NotEqual<uint>(0, result.id);
@@ -392,8 +394,7 @@ namespace BooruSharp.UnitTests
         [Fact]
         public async Task LolibooruCheckRelated()
         {
-            Search.Related.SearchResult[] result = await new Lolibooru().GetRelated("sky");
-            General.CheckRelated(result);
+            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Lolibooru().GetRelated("sky"); });
         }
 
         [Fact]
