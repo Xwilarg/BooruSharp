@@ -456,6 +456,60 @@ namespace BooruSharp.UnitTests
         }
     }
 
+    public class UnitE926
+    {
+        [Fact]
+        public void E926Count()
+        {
+            General.CheckCount(new E926());
+        }
+
+        [Fact]
+        public void E926GetByOffset()
+        {
+            General.CheckGetByOffset(new E926());
+        }
+
+        [Fact]
+        public void E926GetRandom()
+        {
+            General.CheckGetRandom(new E926());
+        }
+
+        [Fact]
+        public void E926CheckTag()
+        {
+            General.CheckTag(new E926());
+        }
+
+        [Fact]
+        public void E926TagId()
+        {
+            Assert.Throws<Search.FeatureUnavailable>(delegate () { new E926().GetTag(1329650); });
+        }
+
+        [Fact]
+        public void E926CheckWiki()
+        {
+            Search.Wiki.SearchResult result = new E926().GetWiki("futanari");
+            Assert.Equal<uint>(123, result.id);
+            General.CheckWiki(result);
+        }
+
+        [Fact]
+        public void E926CheckRelated()
+        {
+            Search.Related.SearchResult[] result = new E926().GetRelated("sky");
+            General.CheckRelated(result);
+        }
+
+        [Fact]
+        public void E926CheckComment()
+        {
+            Assert.Throws<Search.FeatureUnavailable>(delegate () { new E926().GetComment(541858); });
+        }
+    }
+
     public class Other
     {
         [Fact]

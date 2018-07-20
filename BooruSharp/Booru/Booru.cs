@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Xml;
 
 namespace BooruSharp.Booru
@@ -68,10 +69,10 @@ namespace BooruSharp.Booru
         private XmlDocument GetXml(string url)
         {
             XmlDocument xml = new XmlDocument();
-            using (WebClient wc = new WebClient())
+            using (HttpClient hc = new HttpClient())
             {
-                wc.Headers.Add("User-Agent: BooruSharp");
-                xml.LoadXml(wc.DownloadString(url));
+                hc.DefaultRequestHeaders.Add("User-Agent", "BooruSharp");
+                xml.LoadXml(hc.GetAsync(url).GetAwaiter().GetResult().Content.ReadAsStringAsync().GetAwaiter().GetResult());
             }
             return (xml);
         }
