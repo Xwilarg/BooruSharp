@@ -1,6 +1,7 @@
 ﻿using BooruSharp.Booru;
 using System;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -22,9 +23,11 @@ namespace BooruSharp.UnitTests
             {
                 try
                 {
-                    WebRequest request = WebRequest.Create(url);
-                    request.Method = "HEAD";
-                    await request.GetResponseAsync();
+                    using (HttpClient hc = new HttpClient())
+                    {
+                        hc.DefaultRequestHeaders.Add("User-Agent", "BooruSharp");
+                        await hc.SendAsync(new HttpRequestMessage(new HttpMethod("HEAD"), url));
+                    }
                     return (null);
                 }
                 catch (WebException ex)
