@@ -20,13 +20,21 @@ namespace BooruSharp.Booru
         public async Task<Search.Post.SearchResult> GetImage(int offset, params string[] tagsArg)
         {
             XmlDocument xml = await GetXml(CreateUrl(imageUrl, "limit=1", TagsToString(tagsArg), ((needInterrogation) ? ("page=") : ("pid=")) + offset));
-            string[] args = GetStringFromXml(xml.ChildNodes.Item(1).FirstChild, "file_url", "preview_url", "rating", "tags", "id");
+            string[] args = GetStringFromXml(xml.ChildNodes.Item(1).FirstChild, "file_url", "preview_url", "rating", "tags", "id",
+                                            "file_size", "height", "width", "preview_height", "preview_width", "created_at", "source");
             return (new Search.Post.SearchResult(((
                 args[0].StartsWith("//")) ? ("https:") : ("")) + args[0].Replace(" ", "%20"),
                 ((args[1].StartsWith("//")) ? ("https:") : ("")) + args[1],
                 GetRating(args[2][0]),
                 args[3].Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries),
-                Convert.ToUInt32(args[4])));
+                Convert.ToUInt32(args[4]),
+                (args[5] == null) ? ((uint?)null) : (Convert.ToUInt32(args[5])),
+                Convert.ToUInt32(args[6]),
+                Convert.ToUInt32(args[7]),
+                Convert.ToUInt32(args[8]),
+                Convert.ToUInt32(args[9]),
+                ParseDateTime(args[10]),
+                (args[11] == "") ? (null) : (args[11])));
         }
 
         public async Task<Search.Post.SearchResult> GetRandomImage(params string[] tags)

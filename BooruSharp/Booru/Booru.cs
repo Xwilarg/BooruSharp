@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -95,7 +96,9 @@ namespace BooruSharp.Booru
                 int i = 0;
                 foreach (string s in tags)
                 {
-                    vars[i] = xml.Attributes.GetNamedItem(s).InnerXml;
+                    XmlNode node = xml.Attributes.GetNamedItem(s);
+                    if (node != null)
+                        vars[i] = node.InnerXml;
                     i++;
                 }
             }
@@ -113,13 +116,17 @@ namespace BooruSharp.Booru
         private DateTime ParseDateTime(string dt)
         {
             DateTime res;
-            if (DateTime.TryParseExact(dt, "yyyy-MM-dd HH:mm:ss UTC", CultureInfo.InvariantCulture, DateTimeStyles.None, out res))
-                return (res);
+            dt = Regex.Replace(dt, "[+][0-9]{2}:[0-9]{2}", "");
+            dt = dt.Replace(" UTC", "");
+            dt = Regex.Replace(dt, " [-+][0-9]{4}", "");
+            if (dt.Length > 10 && dt[10] == 'T') dt = dt.Substring(0, 10) + " " + dt.Substring(11, dt.Length - 11);
             if (DateTime.TryParseExact(dt, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out res))
                 return (res);
             if (DateTime.TryParseExact(dt, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out res))
                 return (res);
-            return (DateTime.ParseExact(dt, "yyyy-MM-ddTHH:mm:ss+00:00", CultureInfo.InvariantCulture));
+            if (DateTime.TryParseExact(dt, "ddd MMM dd HH:mm:ss yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out res))
+                return (res);
+            return (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(Convert.ToInt64(dt)));
         }
 
         protected readonly string imageUrl, tagUrl, wikiUrl, relatedUrl, commentUrl;

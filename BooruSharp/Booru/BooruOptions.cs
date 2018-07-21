@@ -2,7 +2,6 @@
 {
     public enum BooruOptions
     {
-        ignoreCheck,
         useHttp,
         noWiki,
         noRelated,

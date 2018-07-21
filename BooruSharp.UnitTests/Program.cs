@@ -40,11 +40,22 @@ namespace BooruSharp.UnitTests
         {
             string resFile = await CheckUrl(result.fileUrl);
             string resPreview = await CheckUrl(result.previewUrl);
+            if (result.sourceUrl != null)
+            {
+                string resSource = await CheckUrl(result.sourceUrl);
+                Assert.True(resSource == null, resSource);
+            }
             Assert.True(resFile == null, resFile);
             Assert.True(resPreview == null, resPreview);
             Assert.InRange(result.rating, Search.Post.Rating.Safe, Search.Post.Rating.Explicit);
             Assert.Contains(inputTag, result.tags);
             Assert.NotEqual<uint>(0, result.id);
+            if (result.size.HasValue)
+                Assert.NotEqual<uint>(0, result.size.Value);
+            Assert.NotEqual<uint>(0, result.height);
+            Assert.NotEqual<uint>(0, result.width);
+            Assert.NotEqual<uint>(0, result.previewHeight);
+            Assert.NotEqual<uint>(0, result.previewWidth);
         }
 
         public static async Task CheckGetByOffset(Booru.Booru booru, string s1 = "school_swimsuit")
@@ -571,7 +582,7 @@ namespace BooruSharp.UnitTests
 
     public class Other
     {
-        [Fact]
+        /*[Fact]
         public void CustomBooru()
         {
             new Booru.Custom.CustomBooru("furry.booru.org", UrlFormat.indexPhp, null, Booru.BooruOptions.useHttp);
@@ -587,7 +598,7 @@ namespace BooruSharp.UnitTests
         public void CustomBooruBadUrl()
         {
             Assert.Throws<Booru.Custom.InvalidBooru>(delegate () { new Booru.Custom.CustomBooru("https://zirk.eu", UrlFormat.indexPhp); });
-        }
+        }*/
 
         [Fact]
         public async Task GelbooruTagCharacter()
