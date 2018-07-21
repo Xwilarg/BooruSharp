@@ -16,7 +16,7 @@ namespace BooruSharp.UnitTests
             Assert.NotEqual(0, nbMin);
             Assert.InRange(nbMed, nbMin, nbGeneral);
         }
-        private static string CheckUrl(string url)
+        private static async Task<string> CheckUrl(string url)
         {
             if (url.StartsWith("http://") || url.StartsWith("https://"))
             {
@@ -24,7 +24,7 @@ namespace BooruSharp.UnitTests
                 {
                     WebRequest request = WebRequest.Create(url);
                     request.Method = "HEAD";
-                    request.GetResponse();
+                    await request.GetResponseAsync();
                     return (null);
                 }
                 catch (WebException ex)
@@ -33,10 +33,10 @@ namespace BooruSharp.UnitTests
             return (url + " doesn't start with http:// or https://");
         }
 
-        public static void CheckResult(Search.Post.SearchResult result, string inputTag)
+        public static async Task CheckResult(Search.Post.SearchResult result, string inputTag)
         {
-            string resFile = CheckUrl(result.fileUrl);
-            string resPreview = CheckUrl(result.previewUrl);
+            string resFile = await CheckUrl(result.fileUrl);
+            string resPreview = await CheckUrl(result.previewUrl);
             Assert.True(resFile == null, resFile);
             Assert.True(resPreview == null, resPreview);
             Assert.InRange(result.rating, Search.Post.Rating.Safe, Search.Post.Rating.Explicit);
@@ -47,13 +47,13 @@ namespace BooruSharp.UnitTests
         public static async Task CheckGetByOffset(Booru.Booru booru, string s1 = "school_swimsuit")
         {
             Search.Post.SearchResult result = await booru.GetImage(2, s1);
-            CheckResult(result, s1);
+            await CheckResult(result, s1);
         }
 
         public static async Task CheckGetRandom(Booru.Booru booru, string s1 = "school_swimsuit")
         {
             Search.Post.SearchResult result = await booru.GetRandomImage(s1);
-            CheckResult(result, s1);
+            await CheckResult(result, s1);
         }
 
         public static async Task CheckTag(Booru.Booru booru, string s1 = "pantyhose")
