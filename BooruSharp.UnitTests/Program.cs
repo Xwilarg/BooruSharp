@@ -301,7 +301,7 @@ namespace BooruSharp.UnitTests
         [Fact]
         public async Task E621CheckComment()
         {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new E621().GetComment(59432); });
+            General.CheckComment(await new E621().GetComment(59432));
         }
     }
 
@@ -352,7 +352,7 @@ namespace BooruSharp.UnitTests
         [Fact]
         public async Task Rule34CheckComment()
         {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Rule34().GetComment(1556058); });
+            General.CheckComment(await new Rule34().GetComment(2840746));
         }
     }
 
@@ -513,7 +513,58 @@ namespace BooruSharp.UnitTests
         [Fact]
         public async Task E926CheckComment()
         {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new E926().GetComment(541858); });
+            General.CheckComment(await new E926().GetComment(541858));
+        }
+    }
+
+    public class UnitXbooru
+    {
+        [Fact]
+        public async Task XbooruCount()
+        {
+            await General.CheckCount(new Xbooru());
+        }
+
+        [Fact]
+        public async Task XbooruGetByOffset()
+        {
+            await General.CheckGetByOffset(new Xbooru());
+        }
+
+        [Fact]
+        public async Task XbooruGetRandom()
+        {
+            await General.CheckGetRandom(new Xbooru());
+        }
+
+        [Fact]
+        public async Task XbooruCheckTag()
+        {
+            await General.CheckTag(new Xbooru());
+        }
+
+        [Fact]
+        public async Task XbooruTagId()
+        {
+            Assert.Equal("hibiki_(kantai_collection)", (await new Xbooru().GetTag(151883)).name);
+        }
+
+        [Fact]
+        public async Task XbooruCheckWiki()
+        {
+            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Xbooru().GetWiki("futanari"); });
+        }
+
+        [Fact]
+        public async Task XbooruCheckRelated()
+        {
+            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Xbooru().GetRelated("sky"); });
+        }
+
+        [Fact]
+        public async Task XbooruCheckComment()
+        {
+            General.CheckComment(await new Xbooru().GetComment(740157));
         }
     }
 

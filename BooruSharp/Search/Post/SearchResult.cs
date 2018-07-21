@@ -5,7 +5,7 @@ namespace BooruSharp.Search.Post
     public struct SearchResult
     {
         public SearchResult(Uri fileUrl, Uri previewUrl, Rating rating, string[] tags, uint id,
-                            uint? size, uint height, uint width, uint previewHeight, uint previewWidth, DateTime creation, string source)
+                            uint? size, uint height, uint width, uint previewHeight, uint previewWidth, DateTime creation, string source, uint score)
         {
             this.fileUrl = fileUrl;
             this.previewUrl = previewUrl;
@@ -19,6 +19,7 @@ namespace BooruSharp.Search.Post
             this.previewWidth = previewWidth;
             this.creation = creation;
             this.source = source;
+            this.score = score;
         }
         public readonly Uri fileUrl;
         public readonly Uri previewUrl;
@@ -32,5 +33,6 @@ namespace BooruSharp.Search.Post
         public readonly uint previewWidth;
         public readonly DateTime creation;
         public readonly string source;
+        public readonly uint score;
     }
 }
