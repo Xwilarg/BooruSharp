@@ -51,6 +51,7 @@
     <Compile Include="Booru\Lolibooru.cs" />
     <Compile Include="Booru\Rule34.cs" />
     <Compile Include="Booru\Safebooru.cs" />
+    <Compile Include="Booru\Sakugabooru.cs" />
     <Compile Include="Booru\UrlFormat.cs" />
     <Compile Include="Booru\Yandere.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

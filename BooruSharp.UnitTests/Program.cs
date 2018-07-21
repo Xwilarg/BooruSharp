@@ -8,11 +8,11 @@ namespace BooruSharp.UnitTests
 {
     public static class General
     {
-        public static async Task CheckCount(Booru.Booru booru)
+        public static async Task CheckCount(Booru.Booru booru, string s1 = "wet", string s2 = "swimsuit")
         {
             int nbGeneral = await booru.GetNbImage();
-            int nbMed = await booru.GetNbImage("wet");
-            int nbMin = await booru.GetNbImage("wet", "swimsuit");
+            int nbMed = await booru.GetNbImage(s1);
+            int nbMin = await booru.GetNbImage(s1, s2);
             Assert.NotEqual(0, nbMin);
             Assert.InRange(nbMed, nbMin, nbGeneral);
         }
@@ -44,22 +44,22 @@ namespace BooruSharp.UnitTests
             Assert.NotEqual<uint>(0, result.id);
         }
 
-        public static async Task CheckGetByOffset(Booru.Booru booru)
+        public static async Task CheckGetByOffset(Booru.Booru booru, string s1 = "school_swimsuit")
         {
-            Search.Post.SearchResult result = await booru.GetImage(2, "school_swimsuit");
-            CheckResult(result, "school_swimsuit");
+            Search.Post.SearchResult result = await booru.GetImage(2, s1);
+            CheckResult(result, s1);
         }
 
-        public static async Task CheckGetRandom(Booru.Booru booru)
+        public static async Task CheckGetRandom(Booru.Booru booru, string s1 = "school_swimsuit")
         {
-            Search.Post.SearchResult result = await booru.GetRandomImage("school_swimsuit");
-            CheckResult(result, "school_swimsuit");
+            Search.Post.SearchResult result = await booru.GetRandomImage(s1);
+            CheckResult(result, s1);
         }
 
-        public static async Task CheckTag(Booru.Booru booru)
+        public static async Task CheckTag(Booru.Booru booru, string s1 = "pantyhose")
         {
-            Search.Tag.SearchResult result = await booru.GetTag("pantyhose");
-            Assert.Equal("pantyhose", result.name);
+            Search.Tag.SearchResult result = await booru.GetTag(s1);
+            Assert.Equal(s1, result.name);
             Assert.InRange(result.type, Search.Tag.TagType.Trivia, Search.Tag.TagType.Metadata);
             Assert.NotEqual((Search.Tag.TagType)2, result.type);
             Assert.NotEqual<uint>(0, result.count);
@@ -509,6 +509,60 @@ namespace BooruSharp.UnitTests
         public async Task E926CheckComment()
         {
             await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new E926().GetComment(541858); });
+        }
+    }
+
+    public class UnitSakugabooru
+    {
+        [Fact]
+        public async Task SakugabooruCount()
+        {
+            await General.CheckCount(new Sakugabooru(), "kantai_collection", "animated");
+        }
+
+        [Fact]
+        public async Task SakugabooruGetByOffset()
+        {
+            await General.CheckGetByOffset(new Sakugabooru(), "kantai_collection");
+        }
+
+        [Fact]
+        public async Task SakugabooruGetRandom()
+        {
+            await General.CheckGetRandom(new Sakugabooru(), "kantai_collection");
+        }
+
+        [Fact]
+        public async Task SakugabooruCheckTag()
+        {
+            await General.CheckTag(new Sakugabooru(), "kantai_collection");
+        }
+
+        [Fact]
+        public async Task SakugabooruTagId()
+        {
+            Assert.Equal("kantai_collection", (await new Sakugabooru().GetTag(7148)).name);
+        }
+
+        [Fact]
+        public async Task SakugabooruCheckWiki()
+        {
+            Search.Wiki.SearchResult result = await new Sakugabooru().GetWiki("animated");
+            Assert.Equal<uint>(13, result.id);
+            General.CheckWiki(result);
+        }
+
+        [Fact]
+        public async Task SakugabooruCheckRelated()
+        {
+            Search.Related.SearchResult[] result = await new Sakugabooru().GetRelated("kantai_collection");
+            General.CheckRelated(result);
+        }
+
+        [Fact]
+        public async Task SakugabooruCheckComment()
+        {
+            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Sakugabooru().GetComment(38886); });
         }
     }
 
