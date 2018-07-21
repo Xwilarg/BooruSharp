@@ -17,34 +17,25 @@ namespace BooruSharp.UnitTests
             Assert.NotEqual(0, nbMin);
             Assert.InRange(nbMed, nbMin, nbGeneral);
         }
-        private static async Task<string> CheckUrl(string url)
+        private static async Task<string> CheckUrl(Uri url)
         {
-            if (url.StartsWith("http://") || url.StartsWith("https://"))
+            try
             {
-                try
+                using (HttpClient hc = new HttpClient())
                 {
-                    using (HttpClient hc = new HttpClient())
-                    {
-                        hc.DefaultRequestHeaders.Add("User-Agent", "BooruSharp");
-                        await hc.SendAsync(new HttpRequestMessage(new HttpMethod("HEAD"), url));
-                    }
-                    return (null);
+                    hc.DefaultRequestHeaders.Add("User-Agent", "BooruSharp");
+                    await hc.SendAsync(new HttpRequestMessage(new HttpMethod("HEAD"), url));
                 }
-                catch (WebException ex)
-                { return (ex.Message + " for " + url); }
+                return (null);
             }
-            return (url + " doesn't start with http:// or https://");
+            catch (WebException ex)
+            { return (ex.Message + " for " + url); }
         }
 
         public static async Task CheckResult(Search.Post.SearchResult result, string inputTag)
         {
             string resFile = await CheckUrl(result.fileUrl);
             string resPreview = await CheckUrl(result.previewUrl);
-            if (result.sourceUrl != null)
-            {
-                string resSource = await CheckUrl(result.sourceUrl);
-                Assert.True(resSource == null, resSource);
-            }
             Assert.True(resFile == null, resFile);
             Assert.True(resPreview == null, resPreview);
             Assert.InRange(result.rating, Search.Post.Rating.Safe, Search.Post.Rating.Explicit);

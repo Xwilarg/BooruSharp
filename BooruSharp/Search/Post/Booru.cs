@@ -22,9 +22,9 @@ namespace BooruSharp.Booru
             XmlDocument xml = await GetXml(CreateUrl(imageUrl, "limit=1", TagsToString(tagsArg), ((needInterrogation) ? ("page=") : ("pid=")) + offset));
             string[] args = GetStringFromXml(xml.ChildNodes.Item(1).FirstChild, "file_url", "preview_url", "rating", "tags", "id",
                                             "file_size", "height", "width", "preview_height", "preview_width", "created_at", "source");
-            return (new Search.Post.SearchResult(((
-                args[0].StartsWith("//")) ? ("https:") : ("")) + args[0].Replace(" ", "%20"),
-                ((args[1].StartsWith("//")) ? ("https:") : ("")) + args[1],
+            return (new Search.Post.SearchResult(
+                new Uri(((args[0].StartsWith("//")) ? ("https:") : ("")) + args[0].Replace(" ", "%20")),
+                new Uri(((args[1].StartsWith("//")) ? ("https:") : ("")) + args[1]),
                 GetRating(args[2][0]),
                 args[3].Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries),
                 Convert.ToUInt32(args[4]),
