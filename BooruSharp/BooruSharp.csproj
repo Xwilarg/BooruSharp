@@ -46,9 +46,11 @@
     <Compile Include="Booru\Custom\InvalidBooru.cs" />
     <Compile Include="Booru\E621.cs" />
     <Compile Include="Booru\E926.cs" />
+    <Compile Include="Booru\Furrybooru.cs" />
     <Compile Include="Booru\Gelbooru.cs" />
     <Compile Include="Booru\Konachan.cs" />
     <Compile Include="Booru\Lolibooru.cs" />
+    <Compile Include="Booru\Realbooru.cs" />
     <Compile Include="Booru\Rule34.cs" />
     <Compile Include="Booru\Safebooru.cs" />
     <Compile Include="Booru\Sakugabooru.cs" />

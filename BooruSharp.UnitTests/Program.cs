@@ -568,6 +568,108 @@ namespace BooruSharp.UnitTests
         }
     }
 
+    public class UnitFurrybooru
+    {
+        [Fact]
+        public async Task FurrybooruCount()
+        {
+            await General.CheckCount(new Furrybooru());
+        }
+
+        [Fact]
+        public async Task FurrybooruGetByOffset()
+        {
+            await General.CheckGetByOffset(new Furrybooru());
+        }
+
+        [Fact]
+        public async Task FurrybooruGetRandom()
+        {
+            await General.CheckGetRandom(new Furrybooru());
+        }
+
+        [Fact]
+        public async Task FurrybooruCheckTag()
+        {
+            await General.CheckTag(new Furrybooru());
+        }
+
+        [Fact]
+        public async Task FurrybooruTagId()
+        {
+            Assert.Equal("kantai_collection", (await new Furrybooru().GetTag(151628)).name);
+        }
+
+        [Fact]
+        public async Task FurrybooruCheckWiki()
+        {
+            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Furrybooru().GetWiki("futanari"); });
+        }
+
+        [Fact]
+        public async Task FurrybooruCheckRelated()
+        {
+            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Furrybooru().GetRelated("sky"); });
+        }
+
+        [Fact]
+        public async Task FurrybooruCheckComment()
+        {
+            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Furrybooru().GetComment(720658); });
+        }
+    }
+
+    public class UnitRealbooru
+    {
+        [Fact]
+        public async Task RealbooruCount()
+        {
+            await General.CheckCount(new Realbooru());
+        }
+
+        [Fact]
+        public async Task RealbooruGetByOffset()
+        {
+            await General.CheckGetByOffset(new Realbooru());
+        }
+
+        [Fact]
+        public async Task RealbooruGetRandom()
+        {
+            await General.CheckGetRandom(new Realbooru());
+        }
+
+        [Fact]
+        public async Task RealbooruCheckTag()
+        {
+            await General.CheckTag(new Realbooru());
+        }
+
+        [Fact]
+        public async Task RealbooruTagId()
+        {
+            Assert.Equal("kantai_collection", (await new Realbooru().GetTag(688290)).name);
+        }
+
+        [Fact]
+        public async Task RealbooruCheckWiki()
+        {
+            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Realbooru().GetWiki("futanari"); });
+        }
+
+        [Fact]
+        public async Task RealbooruCheckRelated()
+        {
+            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Realbooru().GetRelated("sky"); });
+        }
+
+        [Fact]
+        public async Task RealbooruCheckComment()
+        {
+            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Realbooru().GetComment(646911); });
+        }
+    }
+
     public class UnitSakugabooru
     {
         [Fact]
