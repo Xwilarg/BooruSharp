@@ -72,6 +72,8 @@
     <Compile Include="Search\FeatureUnavailable.cs" />
     <Compile Include="Search\Wiki\SearchResult.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
