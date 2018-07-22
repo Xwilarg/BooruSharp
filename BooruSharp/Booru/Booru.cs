@@ -52,7 +52,7 @@ namespace BooruSharp.Booru
             wikiSearchUseTitle = options.Contains(BooruOptions.wikiSearchUseTitle);
         }
 
-        private string GetUrl(UrlFormat format, string query, string squery = "index")
+        protected static string GetUrl(UrlFormat format, string query, string squery = "index")
         {
             switch (format)
             {
