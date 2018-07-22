@@ -10,7 +10,19 @@ namespace BooruSharp.Booru
         {
             if (commentUrl == null)
                 throw new Search.FeatureUnavailable();
-            XmlDocument xml = await GetXml(CreateUrl(commentUrl, "post_id=" + postId));
+            return (await GetCommentInternal(CreateUrl(commentUrl, "post_id=" + postId)));
+        }
+
+        public async Task<Search.Comment.SearchResult[]> GetLastComment()
+        {
+            if (commentUrl == null)
+                throw new Search.FeatureUnavailable();
+            return (await GetCommentInternal(CreateUrl(commentUrl)));
+        }
+
+        private async Task<Search.Comment.SearchResult[]> GetCommentInternal(string url)
+        {
+            XmlDocument xml = await GetXml(url);
             int i = 0;
             Search.Comment.SearchResult[] results = new Search.Comment.SearchResult[xml.ChildNodes.Item(1).ChildNodes.Count];
             foreach (XmlNode node in xml.ChildNodes.Item(1).ChildNodes)

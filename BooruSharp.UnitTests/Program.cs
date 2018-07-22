@@ -145,15 +145,6 @@ namespace BooruSharp.UnitTests
         {
             General.CheckComment(await new Gelbooru().GetComment(3988284));
         }
-
-        [Fact]
-        public async Task GelbooruCustom()
-        {
-            List<BooruOptions> options = await Booru.Custom.CustomBooru.GetOptions("gelbooru.com", UrlFormat.indexPhp);
-            Assert.Contains(BooruOptions.noWiki, options);
-            Assert.Contains(BooruOptions.noRelated, options);
-            Assert.Equal(2, options.Count);
-        }
     }
 
     public class UnitSafebooru
@@ -204,16 +195,6 @@ namespace BooruSharp.UnitTests
         public async Task SafebooruCheckComment()
         {
             await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Safebooru().GetComment(132); });
-        }
-
-        [Fact]
-        public async Task SafebooruCustom()
-        {
-            List<BooruOptions> options = await Booru.Custom.CustomBooru.GetOptions("safebooru.org", UrlFormat.indexPhp);
-            Assert.Contains(BooruOptions.noWiki, options);
-            Assert.Contains(BooruOptions.noRelated, options);
-            Assert.Contains(BooruOptions.noComment, options);
-            Assert.Equal(3, options.Count);
         }
     }
 
@@ -269,13 +250,6 @@ namespace BooruSharp.UnitTests
         {
             General.CheckComment(await new Konachan().GetComment(142938));
         }
-
-        [Fact]
-        public async Task KonachanCustom()
-        {
-            List<BooruOptions> options = await Booru.Custom.CustomBooru.GetOptions("konachan.com", UrlFormat.postIndexXml);
-            Assert.Empty(options);
-        }
     }
 
     public class UnitE621
@@ -330,15 +304,6 @@ namespace BooruSharp.UnitTests
         {
             General.CheckComment(await new E621().GetComment(59432));
         }
-
-        [Fact]
-        public async Task E621Custom()
-        {
-            List<BooruOptions> options = await Booru.Custom.CustomBooru.GetOptions("e621.net", UrlFormat.postIndexXml);
-            Assert.Contains(BooruOptions.wikiSearchUseTitle, options);
-            Assert.Contains(BooruOptions.noTagById, options);
-            Assert.Equal(2, options.Count);
-        }
     }
 
     public class UnitRule34
@@ -389,15 +354,6 @@ namespace BooruSharp.UnitTests
         public async Task Rule34CheckComment()
         {
             General.CheckComment(await new Rule34().GetComment(2840746));
-        }
-
-        [Fact]
-        public async Task Rule34Custom()
-        {
-            List<BooruOptions> options = await Booru.Custom.CustomBooru.GetOptions("rule34.xxx", UrlFormat.indexPhp);
-            Assert.Contains(BooruOptions.noWiki, options);
-            Assert.Contains(BooruOptions.noRelated, options);
-            Assert.Equal(2, options.Count);
         }
     }
 
@@ -451,14 +407,6 @@ namespace BooruSharp.UnitTests
         public async Task LolibooruCheckComment()
         {
             General.CheckComment(await new Lolibooru().GetComment(134097));
-        }
-
-        [Fact]
-        public async Task LolibooruCustom()
-        {
-            List<BooruOptions> options = await Booru.Custom.CustomBooru.GetOptions("lolibooru.moe", UrlFormat.postIndexXml);
-            Assert.Contains(BooruOptions.noRelated, options);
-            Assert.Single(options);
         }
     }
 
@@ -514,14 +462,6 @@ namespace BooruSharp.UnitTests
         {
             await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Yandere().GetComment(405923); });
         }
-
-        [Fact]
-        public async Task YandereCustom()
-        {
-            List<BooruOptions> options = await Booru.Custom.CustomBooru.GetOptions("yande.re", UrlFormat.postIndexXml);
-            Assert.Contains(BooruOptions.noComment, options);
-            Assert.Single(options);
-        }
     }
 
     public class UnitE926
@@ -576,15 +516,6 @@ namespace BooruSharp.UnitTests
         {
             General.CheckComment(await new E926().GetComment(541858));
         }
-
-        [Fact]
-        public async Task E926Custom()
-        {
-            List<BooruOptions> options = await Booru.Custom.CustomBooru.GetOptions("e926.net", UrlFormat.postIndexXml);
-            Assert.Contains(BooruOptions.wikiSearchUseTitle, options);
-            Assert.Contains(BooruOptions.noTagById, options);
-            Assert.Equal(2, options.Count);
-        }
     }
 
     public class UnitXbooru
@@ -636,15 +567,6 @@ namespace BooruSharp.UnitTests
         {
             General.CheckComment(await new Xbooru().GetComment(740157));
         }
-
-        [Fact]
-        public async Task XbooruCustom()
-        {
-            List<BooruOptions> options = await Booru.Custom.CustomBooru.GetOptions("xbooru.com", UrlFormat.indexPhp);
-            Assert.Contains(BooruOptions.noWiki, options);
-            Assert.Contains(BooruOptions.noRelated, options);
-            Assert.Equal(2, options.Count);
-        }
     }
 
     public class UnitFurrybooru
@@ -694,18 +616,7 @@ namespace BooruSharp.UnitTests
         [Fact]
         public async Task FurrybooruCheckComment()
         {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Furrybooru().GetComment(720658); });
-        }
-
-        [Fact]
-        public async Task FurrybooruCustom()
-        {
-            List<BooruOptions> options = await Booru.Custom.CustomBooru.GetOptions("furry.booru.org", UrlFormat.indexPhp);
-            Assert.Contains(BooruOptions.noWiki, options);
-            Assert.Contains(BooruOptions.noRelated, options);
-            Assert.Contains(BooruOptions.noComment, options);
-            Assert.Contains(BooruOptions.useHttp, options);
-            Assert.Equal(4, options.Count);
+            General.CheckComment(await new Furrybooru().GetComment(1282210));
         }
     }
 
@@ -757,16 +668,6 @@ namespace BooruSharp.UnitTests
         public async Task RealbooruCheckComment()
         {
             await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Realbooru().GetComment(646911); });
-        }
-
-        [Fact]
-        public async Task RealbooruCustom()
-        {
-            List<BooruOptions> options = await Booru.Custom.CustomBooru.GetOptions("realbooru.com", UrlFormat.indexPhp);
-            Assert.Contains(BooruOptions.noWiki, options);
-            Assert.Contains(BooruOptions.noRelated, options);
-            Assert.Contains(BooruOptions.noComment, options);
-            Assert.Equal(3, options.Count);
         }
     }
 
@@ -826,18 +727,6 @@ namespace BooruSharp.UnitTests
 
     public class Other
     {
-        [Fact]
-        public async Task CustomBooruNotUrl()
-        {
-            await Assert.ThrowsAsync<Booru.Custom.InvalidBooru>(async delegate() { await Booru.Custom.CustomBooru.GetOptions("AWAWAWAWAWA", UrlFormat.indexPhp); });
-        }
-
-        [Fact]
-        public async Task CustomBooruBadUrl()
-        {
-            await Assert.ThrowsAsync<Booru.Custom.InvalidBooru>(async delegate () { await Booru.Custom.CustomBooru.GetOptions("https://zirk.eu", UrlFormat.indexPhp); });
-        }
-
         [Fact]
         public async Task GelbooruTagCharacter()
         {
