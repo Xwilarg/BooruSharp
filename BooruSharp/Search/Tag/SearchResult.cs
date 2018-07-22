@@ -2,16 +2,16 @@
 {
     public struct SearchResult
     {
-        public SearchResult(uint id, string name, TagType type, uint count)
+        public SearchResult(int id, string name, TagType type, int count)
         {
             this.id = id;
             this.name = name;
             this.type = type;
             this.count = count;
         }
-        public readonly uint id;
+        public readonly int id;
         public readonly string name;
         public readonly TagType type;
-        public readonly uint count;
+        public readonly int count;
     }
 }

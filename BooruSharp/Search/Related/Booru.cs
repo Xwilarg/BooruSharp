@@ -16,7 +16,7 @@ namespace BooruSharp.Booru
             foreach (XmlNode node in xml.ChildNodes.Item(1).FirstChild.ChildNodes)
             {
                 string[] args = GetStringFromXml(node, "name", "count");
-                results[i] = new Search.Related.SearchResult(args[0], Convert.ToUInt32(args[1]));
+                results[i] = new Search.Related.SearchResult(args[0], Convert.ToInt32(args[1]));
                 i++;
             }
             return (results);

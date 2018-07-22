@@ -16,7 +16,7 @@ namespace BooruSharp.Booru
                 string[] args = GetStringFromXml(node, "id", "title", "created_at", "updated_at", "body");
                 if (args[1] == query)
                     return (new Search.Wiki.SearchResult(
-                        Convert.ToUInt32(args[0]),
+                        Convert.ToInt32(args[0]),
                         args[1],
                         ParseDateTime(args[2]),
                         ParseDateTime(args[3]),

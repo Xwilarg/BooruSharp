@@ -41,13 +41,13 @@ namespace BooruSharp.UnitTests
             Assert.True(resPreview == null, resPreview);
             Assert.InRange(result.rating, Search.Post.Rating.Safe, Search.Post.Rating.Explicit);
             Assert.Contains(inputTag, result.tags);
-            Assert.NotEqual<uint>(0, result.id);
+            Assert.NotEqual(0, result.id);
             if (result.size.HasValue)
-                Assert.NotEqual<uint>(0, result.size.Value);
-            Assert.NotEqual<uint>(0, result.height);
-            Assert.NotEqual<uint>(0, result.width);
-            Assert.NotEqual<uint>(0, result.previewHeight);
-            Assert.NotEqual<uint>(0, result.previewWidth);
+                Assert.NotEqual(0, result.size.Value);
+            Assert.NotEqual(0, result.height);
+            Assert.NotEqual(0, result.width);
+            Assert.NotEqual(0, result.previewHeight);
+            Assert.NotEqual(0, result.previewWidth);
         }
 
         public static async Task CheckGetByOffset(Booru.Booru booru, string s1 = "school_swimsuit")
@@ -68,7 +68,7 @@ namespace BooruSharp.UnitTests
             Assert.Equal(s1, result.name);
             Assert.InRange(result.type, Search.Tag.TagType.Trivia, Search.Tag.TagType.Metadata);
             Assert.NotEqual((Search.Tag.TagType)2, result.type);
-            Assert.NotEqual<uint>(0, result.count);
+            Assert.NotEqual(0, result.count);
         }
 
         public static void CheckWiki(Search.Wiki.SearchResult result)
@@ -79,16 +79,16 @@ namespace BooruSharp.UnitTests
         public static void CheckRelated(Search.Related.SearchResult[] result)
         {
             foreach (Search.Related.SearchResult res in result)
-                Assert.NotEqual<uint>(0, res.count);
+                Assert.NotEqual(0, res.count);
             Assert.NotEmpty(result);
         }
         public static void CheckComment(Search.Comment.SearchResult[] result)
         {
             foreach (Search.Comment.SearchResult res in result)
             {
-                Assert.NotEqual<uint>(0, res.authorId);
-                Assert.NotEqual<uint>(0, res.commentId);
-                Assert.NotEqual<uint>(0, res.postId);
+                Assert.NotEqual(0, res.authorId);
+                Assert.NotEqual(0, res.commentId);
+                Assert.NotEqual(0, res.postId);
                 Assert.NotEmpty(res.body);
                 Assert.NotEmpty(res.authorName);
             }
@@ -234,7 +234,7 @@ namespace BooruSharp.UnitTests
         public async Task KonachanCheckWiki()
         {
             Search.Wiki.SearchResult result = await new Konachan().GetWiki("futanari");
-            Assert.Equal<uint>(757, result.id);
+            Assert.Equal(757, result.id);
             General.CheckWiki(result);
         }
 
@@ -288,7 +288,7 @@ namespace BooruSharp.UnitTests
         public async Task E621CheckWiki()
         {
             Search.Wiki.SearchResult result = await new E621().GetWiki("futanari");
-            Assert.Equal<uint>(123, result.id);
+            Assert.Equal(123, result.id);
             General.CheckWiki(result);
         }
 
@@ -393,7 +393,7 @@ namespace BooruSharp.UnitTests
         public async Task LolibooruCheckWiki()
         {
             Search.Wiki.SearchResult result = await new Lolibooru().GetWiki("futanari");
-            Assert.Equal<uint>(158, result.id);
+            Assert.Equal(158, result.id);
             General.CheckWiki(result);
         }
 
@@ -446,7 +446,7 @@ namespace BooruSharp.UnitTests
         public async Task YandereCheckWiki()
         {
             Search.Wiki.SearchResult result = await new Yandere().GetWiki("futanari");
-            Assert.Equal<uint>(167, result.id);
+            Assert.Equal(167, result.id);
             General.CheckWiki(result);
         }
 
@@ -500,7 +500,7 @@ namespace BooruSharp.UnitTests
         public async Task E926CheckWiki()
         {
             Search.Wiki.SearchResult result = await new E926().GetWiki("futanari");
-            Assert.Equal<uint>(123, result.id);
+            Assert.Equal(123, result.id);
             General.CheckWiki(result);
         }
 
@@ -707,7 +707,7 @@ namespace BooruSharp.UnitTests
         public async Task SakugabooruCheckWiki()
         {
             Search.Wiki.SearchResult result = await new Sakugabooru().GetWiki("animated");
-            Assert.Equal<uint>(13, result.id);
+            Assert.Equal(13, result.id);
             General.CheckWiki(result);
         }
 

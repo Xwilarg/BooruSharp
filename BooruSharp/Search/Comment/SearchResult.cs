@@ -4,7 +4,7 @@ namespace BooruSharp.Search.Comment
 {
     public struct SearchResult
     {
-        public SearchResult(uint commentId, uint postId, uint authorId, DateTime creation, string authorName, string body)
+        public SearchResult(int commentId, int postId, int authorId, DateTime creation, string authorName, string body)
         {
             this.commentId = commentId;
             this.postId = postId;
@@ -13,9 +13,9 @@ namespace BooruSharp.Search.Comment
             this.authorName = authorName;
             this.body = body;
         }
-        public readonly uint commentId;
-        public readonly uint postId;
-        public readonly uint authorId;
+        public readonly int commentId;
+        public readonly int postId;
+        public readonly int authorId;
         public readonly DateTime creation;
         public readonly string authorName;
         public readonly string body;

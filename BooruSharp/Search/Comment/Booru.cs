@@ -29,9 +29,9 @@ namespace BooruSharp.Booru
             {
                 string[] args = GetStringFromXml(node, "id", "post_id", "creator_id", "created_at", "creator", "body");
                 results[i] = new Search.Comment.SearchResult(
-                    Convert.ToUInt32(args[0]),
-                    Convert.ToUInt32(args[1]),
-                    Convert.ToUInt32(args[2]),
+                    Convert.ToInt32(args[0]),
+                    Convert.ToInt32(args[1]),
+                    Convert.ToInt32(args[2]),
                     ParseDateTime(args[3]),
                     args[4],
                     args[5]);

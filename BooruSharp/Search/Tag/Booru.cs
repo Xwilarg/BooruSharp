@@ -26,10 +26,10 @@ namespace BooruSharp.Booru
                 string[] args = GetStringFromXml(node, "id", "name", "type", "count");
                 if ((name == null && id.ToString() == args[0]) || (name != null && name == args[1]))
                     return (new Search.Tag.SearchResult(
-                        Convert.ToUInt32(args[0]),
+                        Convert.ToInt32(args[0]),
                         args[1],
                         (Search.Tag.TagType)Convert.ToInt32(args[2]),
-                        Convert.ToUInt32(args[3])));
+                        Convert.ToInt32(args[3])));
             }
             throw new Search.InvalidTags();
         }
