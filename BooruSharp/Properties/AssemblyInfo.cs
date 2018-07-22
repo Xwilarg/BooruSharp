@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("BooruSharp")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("BooruSharp is a C# library to browse Booru websites (Gelbooru, Konachan, etc...) easily")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Zirk")]
 [assembly: AssemblyProduct("BooruSharp")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyCopyright("GNU General Public License v3.0")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
