@@ -2,17 +2,20 @@
 <package >
   <metadata>
     <id>BooruSharp</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <authors>Xwilarg</authors>
     <owners>Xwilarg</owners>
     <licenseUrl>https://github.com/Xwilarg/BooruSharp/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/Xwilarg/BooruSharp</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>BooruSharp is a C# library to browse Booru websites (Gelbooru, Konachan, etc...) easily</description>
-    <releaseNotes>First release</releaseNotes>
+    <releaseNotes>Fix nuget package</releaseNotes>
     <copyright>GNU General Public License v3.0</copyright>
     <tags>Booru Gelbooru Image C-Sharp</tags>
     <dependencies>
     </dependencies>
   </metadata>
+  <files>
+    <file src="BooruSharp\bin\Release\*.*" target="lib/net45" />
+  </files>
 </package>
