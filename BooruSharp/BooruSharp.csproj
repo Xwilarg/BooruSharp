@@ -43,7 +43,6 @@
     <Compile Include="Booru\Booru.cs" />
     <Compile Include="Booru\BooruOptions.cs" />
     <Compile Include="Booru\Custom\CustomBooru.cs" />
-    <Compile Include="Booru\Custom\InvalidBooru.cs" />
     <Compile Include="Booru\E621.cs" />
     <Compile Include="Booru\E926.cs" />
     <Compile Include="Booru\Furrybooru.cs" />
