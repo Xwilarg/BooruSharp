@@ -15,9 +15,9 @@ BooruSharp currently handle the following websites:
  - yande.re
  - e926.net
  - sakugabooru.com
- - Xbooru
- - Furrybooru
- - Realbooru
+ - xbooru.com
+ - furry.booru.org
+ - realbooru.com
 
 # Examples
 
