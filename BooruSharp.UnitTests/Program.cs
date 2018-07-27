@@ -144,6 +144,12 @@ namespace BooruSharp.UnitTests
         {
             General.CheckComment(await new Gelbooru().GetComment(3988284));
         }
+
+        [Fact]
+        public async Task GelbooruCheckTags()
+        {
+            Assert.NotEmpty(await new Gelbooru().GetTags("hibiki"));
+        }
     }
 
     public class UnitSafebooru
@@ -194,6 +200,12 @@ namespace BooruSharp.UnitTests
         public async Task SafebooruCheckComment()
         {
             await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Safebooru().GetComment(132); });
+        }
+
+        [Fact]
+        public async Task SafebooruCheckTags()
+        {
+            Assert.NotEmpty(await new Safebooru().GetTags("hibiki"));
         }
     }
 
@@ -249,6 +261,12 @@ namespace BooruSharp.UnitTests
         {
             General.CheckComment(await new Konachan().GetComment(142938));
         }
+
+        [Fact]
+        public async Task KonachanCheckTags()
+        {
+            Assert.NotInRange((await new Konachan().GetTags("hibiki")).Length, 0, 1);
+        }
     }
 
     public class UnitE621
@@ -303,6 +321,12 @@ namespace BooruSharp.UnitTests
         {
             General.CheckComment(await new E621().GetComment(59432));
         }
+
+        [Fact]
+        public async Task E621CheckTags()
+        {
+            Assert.NotEmpty(await new E621().GetTags("hibiki"));
+        }
     }
 
     public class UnitRule34
@@ -353,6 +377,12 @@ namespace BooruSharp.UnitTests
         public async Task Rule34CheckComment()
         {
             General.CheckComment(await new Rule34().GetComment(2840746));
+        }
+
+        [Fact]
+        public async Task Rule34CheckTags()
+        {
+            Assert.NotEmpty(await new Rule34().GetTags("hibiki"));
         }
     }
 
@@ -406,6 +436,12 @@ namespace BooruSharp.UnitTests
         public async Task LolibooruCheckComment()
         {
             General.CheckComment(await new Lolibooru().GetComment(134097));
+        }
+
+        [Fact]
+        public async Task LolibooruCheckTags()
+        {
+            Assert.NotInRange((await new Lolibooru().GetTags("hibiki")).Length, 0, 1);
         }
     }
 
@@ -461,6 +497,12 @@ namespace BooruSharp.UnitTests
         {
             await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Yandere().GetComment(405923); });
         }
+
+        [Fact]
+        public async Task YandereCheckTags()
+        {
+            Assert.NotInRange((await new Yandere().GetTags("hibiki")).Length, 0, 1);
+        }
     }
 
     public class UnitE926
@@ -515,6 +557,12 @@ namespace BooruSharp.UnitTests
         {
             General.CheckComment(await new E926().GetComment(541858));
         }
+
+        [Fact]
+        public async Task E926CheckTags()
+        {
+            Assert.NotEmpty(await new E926().GetTags("hibiki"));
+        }
     }
 
     public class UnitXbooru
@@ -565,6 +613,12 @@ namespace BooruSharp.UnitTests
         public async Task XbooruCheckComment()
         {
             General.CheckComment(await new Xbooru().GetComment(740157));
+        }
+
+        [Fact]
+        public async Task XbooruCheckTags()
+        {
+            Assert.NotEmpty(await new Xbooru().GetTags("hibiki"));
         }
     }
 
@@ -617,6 +671,12 @@ namespace BooruSharp.UnitTests
         {
             General.CheckComment(await new Furrybooru().GetComment(1282210));
         }
+
+        [Fact]
+        public async Task FurrybooruCheckTags()
+        {
+            Assert.NotEmpty(await new Furrybooru().GetTags("hibiki"));
+        }
     }
 
     public class UnitRealbooru
@@ -667,6 +727,12 @@ namespace BooruSharp.UnitTests
         public async Task RealbooruCheckComment()
         {
             await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Realbooru().GetComment(646911); });
+        }
+
+        [Fact]
+        public async Task RaelbooruCheckTags()
+        {
+            Assert.NotEmpty(await new Realbooru().GetTags("female"));
         }
     }
 
@@ -721,6 +787,12 @@ namespace BooruSharp.UnitTests
         public async Task SakugabooruCheckComment()
         {
             await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Sakugabooru().GetComment(38886); });
+        }
+
+        [Fact]
+        public async Task SakugabooruCheckTags()
+        {
+            Assert.NotInRange((await new Sakugabooru().GetTags("kantai")).Length, 0, 1);
         }
     }
 
