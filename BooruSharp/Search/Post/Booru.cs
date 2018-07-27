@@ -9,6 +9,11 @@ namespace BooruSharp.Booru
         public async Task<int> GetNbImage(params string[] tags)
         {
             XmlDocument xml = await GetXml(CreateUrl(imageUrl, "limit=1", TagsToString(tags)));
+            return (GetNbImageInternal(xml));
+        }
+
+        private int GetNbImageInternal(XmlDocument xml)
+        {
             return (Convert.ToInt32(xml.ChildNodes.Item(1).Attributes[0].InnerXml));
         }
 
@@ -20,6 +25,8 @@ namespace BooruSharp.Booru
         public async Task<Search.Post.SearchResult> GetImage(int offset, params string[] tagsArg)
         {
             XmlDocument xml = await GetXml(CreateUrl(imageUrl, "limit=1", ((needInterrogation) ? ("page=") : ("pid=")) + offset, TagsToString(tagsArg)));
+            if (GetNbImageInternal(xml) == 0)
+                throw new Search.InvalidTags();
             string[] args = GetStringFromXml(xml.ChildNodes.Item(1).FirstChild, "file_url", "preview_url", "rating", "tags", "id",
                                             "file_size", "height", "width", "preview_height", "preview_width", "created_at", "source", "score");
             return (new Search.Post.SearchResult(

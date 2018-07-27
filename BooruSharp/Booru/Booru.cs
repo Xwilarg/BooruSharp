@@ -91,7 +91,7 @@ namespace BooruSharp.Booru
         private string[] GetStringFromXml(XmlNode xml, params string[] tags)
         {
             string[] vars = new string[tags.Length];
-            if (xml.Attributes.Count > 0)
+            if (xml.Attributes != null && xml.Attributes.Count > 0)
             {
                 int i = 0;
                 foreach (string s in tags)
