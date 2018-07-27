@@ -20,7 +20,7 @@ BooruSharp currently handle the following websites:
  - furry.booru.org
  - realbooru.com
 
-# Examples
+# Basic examples
 
 Random image:
 ```Cs
@@ -67,4 +67,15 @@ BooruSharp.Search.Comment.SearchResult[] results = await booru.GetComment(134097
 
 Console.WriteLine(String.Join(Environment.NewLine,
     results.Select(delegate (BooruSharp.Search.Comment.SearchResult res) { return ("Author: " + res.authorName + ", the " + res.creation.ToString("dd/MM/yy HH:mm:ss") + " - " + res.body); })));
+```
+
+# Advanced examples
+
+Get all character tags containing a string:
+```Cs
+BooruSharp.Booru.Yandere yandere = new BooruSharp.Booru.Yandere();
+BooruSharp.Search.Tag.SearchResult[] results = await yandere.GetTags("tsukiko");
+Console.WriteLine(String.Join(Environment.NewLine,
+	results.Where(delegate (BooruSharp.Search.Tag.SearchResult res) { return (res.type == BooruSharp.Search.Tag.TagType.Character); })
+           .Select(delegate (BooruSharp.Search.Tag.SearchResult res) { return (res.name); })));
 ```
