@@ -4,5 +4,10 @@
     {
         public Rule34() : base("rule34.xxx", UrlFormat.indexPhp, 20000, BooruOptions.noWiki, BooruOptions.noRelated)
         { }
+
+        public override bool IsSafe()
+        {
+            return (false);
+        }
     }
 }

@@ -4,5 +4,10 @@
     {
         public Gelbooru() : base("gelbooru.com", UrlFormat.indexPhp, 20000, BooruOptions.noWiki, BooruOptions.noRelated)
         { }
+
+        public override bool IsSafe()
+        {
+            return (false);
+        }
     }
 }

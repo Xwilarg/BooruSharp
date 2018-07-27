@@ -4,5 +4,10 @@
     {
         public Realbooru() : base("realbooru.com", UrlFormat.indexPhp, 200000, BooruOptions.noRelated, BooruOptions.noWiki, BooruOptions.noComment)
         { }
+
+        public override bool IsSafe()
+        {
+            return (false);
+        }
     }
 }

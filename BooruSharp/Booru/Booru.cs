@@ -10,6 +10,8 @@ namespace BooruSharp.Booru
 {
     public abstract partial class Booru
     {
+        public abstract bool IsSafe();
+
         public bool HaveRelatedAPI()
         {
             return (relatedUrl != null);

@@ -4,5 +4,10 @@
     {
         public Yandere() : base("yande.re", UrlFormat.postIndexXml, null, BooruOptions.noComment)
         { }
+
+        public override bool IsSafe()
+        {
+            return (false);
+        }
     }
 }

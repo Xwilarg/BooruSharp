@@ -4,5 +4,10 @@
     {
         public E621() : base("e621.net", UrlFormat.postIndexXml, 750, BooruOptions.wikiSearchUseTitle, BooruOptions.noTagById)
         { }
+
+        public override bool IsSafe()
+        {
+            return (false);
+        }
     }
 }

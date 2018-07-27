@@ -4,5 +4,10 @@
     {
         public Konachan() : base("konachan.com", UrlFormat.postIndexXml, null)
         { }
+
+        public override bool IsSafe()
+        {
+            return (false);
+        }
     }
 }
