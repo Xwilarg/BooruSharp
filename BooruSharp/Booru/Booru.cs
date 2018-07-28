@@ -87,7 +87,7 @@ namespace BooruSharp.Booru
 
         private string TagsToString(string[] tags)
         {
-            return ("tags=" + String.Join("+", tags));
+            return (("tags=" + String.Join("+", tags)).ToLower());
         }
 
         private string[] GetStringFromXml(XmlNode xml, params string[] tags)
