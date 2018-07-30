@@ -34,19 +34,25 @@ namespace BooruSharp.UnitTests
 
         public static async Task CheckResult(Search.Post.SearchResult result, string inputTag)
         {
-            string resFile = await CheckUrl(result.fileUrl);
-            string resPreview = await CheckUrl(result.previewUrl);
-            Assert.True(resFile == null, resFile);
-            Assert.True(resPreview == null, resPreview);
+            if (result.fileUrl != null)
+            {
+                string resFile = await CheckUrl(result.fileUrl);
+                string resPreview = await CheckUrl(result.previewUrl);
+                Assert.True(resFile == null, resFile);
+                Assert.True(resPreview == null, resPreview);
+                Assert.NotEqual(0, result.height);
+                Assert.NotEqual(0, result.width);
+                if (result.previewHeight != null)
+                {
+                    Assert.NotEqual(0, result.previewHeight);
+                    Assert.NotEqual(0, result.previewWidth);
+                }
+            }
             Assert.InRange(result.rating, Search.Post.Rating.Safe, Search.Post.Rating.Explicit);
             Assert.Contains(inputTag, result.tags);
             Assert.NotEqual(0, result.id);
             if (result.size.HasValue)
                 Assert.NotEqual(0, result.size.Value);
-            Assert.NotEqual(0, result.height);
-            Assert.NotEqual(0, result.width);
-            Assert.NotEqual(0, result.previewHeight);
-            Assert.NotEqual(0, result.previewWidth);
         }
 
         public static async Task CheckGetByOffset(Booru.Booru booru, string s1 = "school_swimsuit")
@@ -793,6 +799,124 @@ namespace BooruSharp.UnitTests
         public async Task SakugabooruCheckTags()
         {
             Assert.NotInRange((await new Sakugabooru().GetTags("kantai")).Length, 0, 1);
+        }
+    }
+
+    public class UnitDanbooruDonmai
+    {
+        [Fact]
+        public async Task DanbooruDonmaiCount()
+        {
+            await General.CheckCount(new DanbooruDonmai());
+        }
+
+        [Fact]
+        public async Task DanbooruDonmaiGetByOffset()
+        {
+            await General.CheckGetByOffset(new DanbooruDonmai());
+        }
+
+        [Fact]
+        public async Task DanbooruDonmaiGetRandom()
+        {
+            await General.CheckGetRandom(new DanbooruDonmai());
+        }
+
+        [Fact]
+        public async Task DanbooruDonmaiCheckTag()
+        {
+            await General.CheckTag(new DanbooruDonmai());
+        }
+
+        [Fact]
+        public async Task DanbooruDonmaiTagId()
+        {
+            Assert.Equal("hibiki_(kantai_collection)", (await new DanbooruDonmai().GetTag(1240738)).name);
+        }
+
+        [Fact]
+        public async Task DanbooruDonmaiCheckWiki()
+        {
+            Search.Wiki.SearchResult result = await new DanbooruDonmai().GetWiki("futanari");
+            Assert.Equal(3589, result.id);
+            General.CheckWiki(result);
+        }
+
+        [Fact]
+        public async Task DanbooruDonmaiCheckRelated()
+        {
+            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new DanbooruDonmai().GetRelated("sky"); });
+        }
+
+        [Fact]
+        public async Task DanbooruDonmaiCheckComment()
+        {
+            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new DanbooruDonmai().GetComment(3193008); });
+        }
+
+        [Fact]
+        public async Task DanbooruDonmaiCheckTags()
+        {
+            Assert.Empty(await new DanbooruDonmai().GetTags("hibiki"));
+        }
+    }
+
+    public class UnitAtfbooru
+    {
+        [Fact]
+        public async Task AtfbooruCount()
+        {
+            await General.CheckCount(new Atfbooru());
+        }
+
+        [Fact]
+        public async Task AtfbooruGetByOffset()
+        {
+            await General.CheckGetByOffset(new Atfbooru());
+        }
+
+        [Fact]
+        public async Task AtfbooruGetRandom()
+        {
+            await General.CheckGetRandom(new Atfbooru());
+        }
+
+        [Fact]
+        public async Task AtfbooruCheckTag()
+        {
+            await General.CheckTag(new Atfbooru());
+        }
+
+        [Fact]
+        public async Task AtfbooruTagId()
+        {
+            Assert.Equal("hibiki_(kantai_collection)", (await new Atfbooru().GetTag(2033)).name);
+        }
+
+        [Fact]
+        public async Task AtfbooruCheckWiki()
+        {
+            Search.Wiki.SearchResult result = await new Atfbooru().GetWiki("highres");
+            Assert.Equal(82, result.id);
+            General.CheckWiki(result);
+        }
+
+        [Fact]
+        public async Task AtfbooruCheckRelated()
+        {
+            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Atfbooru().GetRelated("sky"); });
+        }
+
+        [Fact]
+        public async Task AtfbooruCheckComment()
+        {
+            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Atfbooru().GetComment(3193008); });
+        }
+
+        [Fact]
+        public async Task AtfbooruCheckTags()
+        {
+            Assert.Empty(await new Atfbooru().GetTags("hibi"));
         }
     }
 

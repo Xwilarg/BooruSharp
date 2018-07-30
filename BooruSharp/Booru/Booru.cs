@@ -33,10 +33,14 @@ namespace BooruSharp.Booru
         protected Booru(string baseUrl, UrlFormat format, int? maxLimit, params BooruOptions[] options)
         {
             bool useHttp = options.Contains(BooruOptions.useHttp);
+            this.baseUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl;
+            this.format = format;
             imageUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "post");
             tagUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "tag");
             if (options.Contains(BooruOptions.noWiki))
                 wikiUrl = null;
+            else if (format == UrlFormat.danbooru)
+                wikiUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "wiki_page");
             else
                 wikiUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "wiki");
             if (options.Contains(BooruOptions.noRelated))
@@ -48,7 +52,6 @@ namespace BooruSharp.Booru
             else
                 commentUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "comment");
             searchTagById = !options.Contains(BooruOptions.noTagById);
-            needInterrogation = (imageUrl.EndsWith(".xml"));
             random = new Random();
             this.maxLimit = maxLimit;
             wikiSearchUseTitle = options.Contains(BooruOptions.wikiSearchUseTitle);
@@ -63,6 +66,9 @@ namespace BooruSharp.Booru
 
                 case UrlFormat.indexPhp:
                     return ("index.php?page=dapi&s=" + query + "&q=index");
+
+                case UrlFormat.danbooru:
+                    return (query + "s.xml");
 
                 default:
                     throw new ArgumentException("Invalid URL format " + format);
@@ -82,12 +88,39 @@ namespace BooruSharp.Booru
 
         private string CreateUrl(string url, params string[] args)
         {
-            return (url + ((needInterrogation) ? ("?") : ("&")) + String.Join("&", args));
+            if (format == UrlFormat.indexPhp)
+                return (url + "&" + String.Join("&", args));
+            else
+                return (url + "?" + String.Join("&", args));
         }
 
         private string TagsToString(string[] tags)
         {
             return (("tags=" + String.Join("+", tags)).ToLower());
+        }
+
+        private int GetFirstPage()
+        {
+            if (format == UrlFormat.indexPhp)
+                return (0);
+            else
+                return (1);
+        }
+
+        private string SearchArg(string value)
+        {
+            if (format == UrlFormat.danbooru)
+                return ("search[" + value + "]=");
+            else
+                return (value + "=");
+        }
+
+        private string GetPage()
+        {
+            if (format == UrlFormat.indexPhp)
+                return ("pid=");
+            else
+                return ("page=");
         }
 
         private string[] GetStringFromXml(XmlNode xml, params string[] tags)
@@ -118,7 +151,7 @@ namespace BooruSharp.Booru
         private DateTime ParseDateTime(string dt)
         {
             DateTime res;
-            dt = Regex.Replace(dt, "[+][0-9]{2}:[0-9]{2}", "");
+            dt = Regex.Replace(dt, "[-+][0-9]{2}:[0-9]{2}", "");
             dt = dt.Replace(" UTC", "");
             dt = Regex.Replace(dt, " [-+][0-9]{4}", "");
             if (dt.Length > 10 && dt[10] == 'T') dt = dt.Substring(0, 10) + " " + dt.Substring(11, dt.Length - 11);
@@ -131,11 +164,12 @@ namespace BooruSharp.Booru
             return (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(Convert.ToInt64(dt)));
         }
 
-        protected readonly string imageUrl, tagUrl, wikiUrl, relatedUrl, commentUrl;
-        private bool searchTagById;
-        private readonly bool needInterrogation;
+        private readonly string baseUrl;
+        private readonly string imageUrl, tagUrl, wikiUrl, relatedUrl, commentUrl;
+        private readonly bool searchTagById;
         private readonly int? maxLimit;
         private Random random;
-        private bool wikiSearchUseTitle;
+        private readonly bool wikiSearchUseTitle;
+        private readonly UrlFormat format;
     }
 }

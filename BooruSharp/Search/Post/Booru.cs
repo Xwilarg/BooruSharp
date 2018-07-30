@@ -8,13 +8,21 @@ namespace BooruSharp.Booru
     {
         public async Task<int> GetNbImage(params string[] tags)
         {
-            XmlDocument xml = await GetXml(CreateUrl(imageUrl, "limit=1", TagsToString(tags)));
+            string url;
+            if (format == UrlFormat.danbooru)
+                url = baseUrl + "/counts/posts.xml";
+            else
+                url = CreateUrl(imageUrl, "limit=1", TagsToString(tags));
+            XmlDocument xml = await GetXml(url);
             return (GetNbImageInternal(xml));
         }
 
         private int GetNbImageInternal(XmlDocument xml)
         {
-            return (Convert.ToInt32(xml.ChildNodes.Item(1).Attributes[0].InnerXml));
+            if (format == UrlFormat.danbooru)
+                return (Convert.ToInt32(xml.ChildNodes.Item(1).FirstChild.InnerXml));
+            else
+                return (Convert.ToInt32(xml.ChildNodes.Item(1).Attributes[0].InnerXml));
         }
 
         public int? GetLimit()
@@ -24,25 +32,26 @@ namespace BooruSharp.Booru
 
         public async Task<Search.Post.SearchResult> GetImage(int offset, params string[] tagsArg)
         {
-            XmlDocument xml = await GetXml(CreateUrl(imageUrl, "limit=1", ((needInterrogation) ? ("page=") : ("pid=")) + offset, TagsToString(tagsArg)));
+            XmlDocument xml = await GetXml(CreateUrl(imageUrl, "limit=1", GetPage() + offset, TagsToString(tagsArg)));
             if (xml.ChildNodes.Item(1).ChildNodes.Count == 0)
                 throw new Search.InvalidTags();
-            string[] args = GetStringFromXml(xml.ChildNodes.Item(1).FirstChild, "file_url", "preview_url", "rating", "tags", "id",
-                                            "file_size", "height", "width", "preview_height", "preview_width", "created_at", "source", "score");
+            string[] args = GetStringFromXml(xml.ChildNodes.Item(1).FirstChild, "file_url", "file-url", "preview_url", "preview-file-url",
+                "rating", "tags", "tag-string", "id", "file_size", "file-size",
+                "height", "image-height", "width", "image-width", "preview_height", "preview_width", "created_at", "created-at", "source", "score");
             return (new Search.Post.SearchResult(
-                new Uri(((args[0].StartsWith("//")) ? ("https:") : ("")) + args[0].Replace(" ", "%20")),
-                new Uri(((args[1].StartsWith("//")) ? ("https:") : ("")) + args[1]),
-                GetRating(args[2][0]),
-                args[3].Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries),
-                Convert.ToInt32(args[4]),
-                (args[5] == null) ? ((int?)null) : (Convert.ToInt32(args[5])),
-                Convert.ToInt32(args[6]),
+                (args[0] == null && args[1] == null) ? (null) : (new Uri((((args[0] ?? args[1]).StartsWith("//")) ? ("https:") : ("")) + (args[0] ?? args[1]).Replace(" ", "%20"))),
+                (args[2] == null && args[3] == null) ? (null) : (new Uri((((args[2] ?? args[3]).StartsWith("//")) ? ("https:") : ("")) + (args[2] ?? args[3]))),
+                GetRating(args[4][0]),
+                (args[5] ?? args[6]).Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries),
                 Convert.ToInt32(args[7]),
-                Convert.ToInt32(args[8]),
-                Convert.ToInt32(args[9]),
-                ParseDateTime(args[10]),
-                (args[11] == "") ? (null) : (args[11]),
-                Convert.ToInt32(args[12])));
+                (args[8] == null && args[9] == null) ? ((int?)null) : (Convert.ToInt32(args[8] ?? args[9])),
+                Convert.ToInt32(args[10] ?? args[11]),
+                Convert.ToInt32(args[12] ?? args[13]),
+                (args[12] == null) ? ((int?)null) : (Convert.ToInt32(args[14])),
+                (args[13] == null) ? ((int?)null) : (Convert.ToInt32(args[15])),
+                ParseDateTime(args[16] ?? args[17]),
+                (args[18] == "") ? (null) : (args[18]),
+                Convert.ToInt32(args[19])));
         }
 
         public async Task<Search.Post.SearchResult> GetRandomImage(params string[] tags)
@@ -52,7 +61,7 @@ namespace BooruSharp.Booru
                 throw new Search.InvalidTags();
             if (GetLimit() != null && GetLimit() < nbMax)
                 nbMax = GetLimit().Value;
-            int randomNb = random.Next(((needInterrogation) ? (1) : (0)), nbMax + 1);
+            int randomNb = random.Next(GetFirstPage(), nbMax + 1);
             return (await GetImage(randomNb, tags));
         }
 

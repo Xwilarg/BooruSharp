@@ -10,7 +10,7 @@ namespace BooruSharp.Booru
         {
             if (relatedUrl == null)
                 throw new Search.FeatureUnavailable();
-            XmlDocument xml = await GetXml(CreateUrl(relatedUrl, "tags=" + tag));
+            XmlDocument xml = await GetXml(CreateUrl(relatedUrl, SearchArg("tags") + tag));
             int i = 0;
             Search.Related.SearchResult[] results = new Search.Related.SearchResult[xml.ChildNodes.Item(1).FirstChild.ChildNodes.Count];
             foreach (XmlNode node in xml.ChildNodes.Item(1).FirstChild.ChildNodes)

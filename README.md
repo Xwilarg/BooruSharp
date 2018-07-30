@@ -19,6 +19,8 @@ BooruSharp currently handle the following websites:
  - xbooru.com
  - furry.booru.org
  - realbooru.com
+ - danbooru.donmai.us
+ - atfbooru.ninja
 
 # Basic examples
 

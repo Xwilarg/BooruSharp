@@ -10,7 +10,7 @@ namespace BooruSharp.Booru
         {
             if (commentUrl == null)
                 throw new Search.FeatureUnavailable();
-            return (await GetCommentInternal(CreateUrl(commentUrl, "post_id=" + postId)));
+            return (await GetCommentInternal(CreateUrl(commentUrl, SearchArg("post_id") + postId)));
         }
 
         public async Task<Search.Comment.SearchResult[]> GetLastComment()
