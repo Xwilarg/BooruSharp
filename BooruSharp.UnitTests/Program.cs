@@ -845,7 +845,8 @@ namespace BooruSharp.UnitTests
         [Fact]
         public async Task DanbooruDonmaiCheckRelated()
         {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new DanbooruDonmai().GetRelated("sky"); });
+            Search.Related.SearchResult[] result = await new DanbooruDonmai().GetRelated("kantai_collection");
+            General.CheckRelated(result);
         }
 
         [Fact]
@@ -904,7 +905,8 @@ namespace BooruSharp.UnitTests
         [Fact]
         public async Task AtfbooruCheckRelated()
         {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Atfbooru().GetRelated("sky"); });
+            Search.Related.SearchResult[] result = await new Atfbooru().GetRelated("kantai_collection");
+            General.CheckRelated(result);
         }
 
         [Fact]
