@@ -7,20 +7,20 @@
 # BooruSharp
 BooruSharp is a C# library to browse Booru websites easily<br/>
 BooruSharp currently handle the following websites:
+ - atfbooru.ninja
+ - danbooru.donmai.us
  - e621.net
+ - e926.net
+ - furry.booru.org
  - gelbooru.com
  - konachan.com
  - lolibooru.moe
+ - realbooru.com
  - rule34.xxx
  - safebooru.org
- - yande.re
- - e926.net
  - sakugabooru.com
  - xbooru.com
- - furry.booru.org
- - realbooru.com
- - danbooru.donmai.us
- - atfbooru.ninja
+ - yande.re
 
 # Basic examples
 
