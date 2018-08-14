@@ -156,6 +156,12 @@ namespace BooruSharp.UnitTests
         {
             Assert.NotEmpty(await new Gelbooru().GetTags("hibiki"));
         }
+
+        [Fact]
+        public void GelbooruCheckAvailable()
+        {
+            new Gelbooru().CheckAvailability();
+        }
     }
 
     public class UnitSafebooru
@@ -212,6 +218,12 @@ namespace BooruSharp.UnitTests
         public async Task SafebooruCheckTags()
         {
             Assert.NotEmpty(await new Safebooru().GetTags("hibiki"));
+        }
+
+        [Fact]
+        public void SafebooruCheckAvailable()
+        {
+            new Safebooru().CheckAvailability();
         }
     }
 
@@ -273,6 +285,12 @@ namespace BooruSharp.UnitTests
         {
             Assert.NotInRange((await new Konachan().GetTags("hibiki")).Length, 0, 1);
         }
+
+        [Fact]
+        public void KonachanCheckAvailable()
+        {
+            new Konachan().CheckAvailability();
+        }
     }
 
     public class UnitE621
@@ -333,6 +351,12 @@ namespace BooruSharp.UnitTests
         {
             Assert.NotEmpty(await new E621().GetTags("hibiki"));
         }
+
+        [Fact]
+        public void E621CheckAvailable()
+        {
+            new E621().CheckAvailability();
+        }
     }
 
     public class UnitRule34
@@ -389,6 +413,12 @@ namespace BooruSharp.UnitTests
         public async Task Rule34CheckTags()
         {
             Assert.NotEmpty(await new Rule34().GetTags("hibiki"));
+        }
+
+        [Fact]
+        public void Rule34CheckAvailable()
+        {
+            new Rule34().CheckAvailability();
         }
     }
 
@@ -448,6 +478,12 @@ namespace BooruSharp.UnitTests
         public async Task LolibooruCheckTags()
         {
             Assert.NotInRange((await new Lolibooru().GetTags("hibiki")).Length, 0, 1);
+        }
+
+        [Fact]
+        public void LolibooruCheckAvailable()
+        {
+            new Lolibooru().CheckAvailability();
         }
     }
 
@@ -509,6 +545,12 @@ namespace BooruSharp.UnitTests
         {
             Assert.NotInRange((await new Yandere().GetTags("hibiki")).Length, 0, 1);
         }
+
+        [Fact]
+        public void YandereCheckAvailable()
+        {
+            new Yandere().CheckAvailability();
+        }
     }
 
     public class UnitE926
@@ -569,6 +611,12 @@ namespace BooruSharp.UnitTests
         {
             Assert.NotEmpty(await new E926().GetTags("hibiki"));
         }
+
+        [Fact]
+        public void E926CheckAvailable()
+        {
+            new E926().CheckAvailability();
+        }
     }
 
     public class UnitXbooru
@@ -625,6 +673,12 @@ namespace BooruSharp.UnitTests
         public async Task XbooruCheckTags()
         {
             Assert.NotEmpty(await new Xbooru().GetTags("hibiki"));
+        }
+
+        [Fact]
+        public void XBooruCheckAvailable()
+        {
+            new Xbooru().CheckAvailability();
         }
     }
 
@@ -683,6 +737,12 @@ namespace BooruSharp.UnitTests
         {
             Assert.NotEmpty(await new Furrybooru().GetTags("hibiki"));
         }
+
+        [Fact]
+        public void FurrybooruCheckAvailable()
+        {
+            new Furrybooru().CheckAvailability();
+        }
     }
 
     public class UnitRealbooru
@@ -739,6 +799,12 @@ namespace BooruSharp.UnitTests
         public async Task RaelbooruCheckTags()
         {
             Assert.NotEmpty(await new Realbooru().GetTags("female"));
+        }
+
+        [Fact]
+        public void RealbooruCheckAvailable()
+        {
+            new Realbooru().CheckAvailability();
         }
     }
 
@@ -800,6 +866,12 @@ namespace BooruSharp.UnitTests
         {
             Assert.NotInRange((await new Sakugabooru().GetTags("kantai")).Length, 0, 1);
         }
+
+        [Fact]
+        public void SakugabooruCheckAvailable()
+        {
+            new Sakugabooru().CheckAvailability();
+        }
     }
 
     public class UnitDanbooruDonmai
@@ -860,6 +932,12 @@ namespace BooruSharp.UnitTests
         {
             Assert.Empty(await new DanbooruDonmai().GetTags("hibiki"));
         }
+
+        [Fact]
+        public void DanbooruDonmaiCheckAvailable()
+        {
+            new DanbooruDonmai().CheckAvailability();
+        }
     }
 
     public class UnitAtfbooru
@@ -919,6 +997,12 @@ namespace BooruSharp.UnitTests
         public async Task AtfbooruCheckTags()
         {
             Assert.Empty(await new Atfbooru().GetTags("hibi"));
+        }
+
+        [Fact]
+        public void AtfbooruCheckAvailable()
+        {
+            new Atfbooru().CheckAvailability();
         }
     }
 

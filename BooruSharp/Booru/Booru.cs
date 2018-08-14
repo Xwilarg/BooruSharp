@@ -30,6 +30,15 @@ namespace BooruSharp.Booru
             return (searchTagById);
         }
 
+        public void CheckAvailability()
+        {
+            using (HttpClient hc = new HttpClient())
+            {
+                hc.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
+                hc.SendAsync(new HttpRequestMessage(HttpMethod.Head, imageUrl));
+            }
+        }
+
         protected Booru(string baseUrl, UrlFormat format, int? maxLimit, params BooruOptions[] options)
         {
             bool useHttp = options.Contains(BooruOptions.useHttp);
@@ -80,7 +89,7 @@ namespace BooruSharp.Booru
             XmlDocument xml = new XmlDocument();
             using (HttpClient hc = new HttpClient())
             {
-                hc.DefaultRequestHeaders.Add("User-Agent", "BooruSharp");
+                hc.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
                 xml.LoadXml(await (await hc.GetAsync(url)).Content.ReadAsStringAsync());
             }
             return (xml);
