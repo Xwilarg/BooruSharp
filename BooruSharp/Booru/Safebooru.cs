@@ -7,7 +7,7 @@
 
         public override bool IsSafe()
         {
-            return (false);
+            return (true);
         }
     }
 }
