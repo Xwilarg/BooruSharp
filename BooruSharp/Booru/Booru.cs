@@ -41,7 +41,7 @@ namespace BooruSharp.Booru
 
         protected Booru(string baseUrl, UrlFormat format, int? maxLimit, params BooruOptions[] options)
         {
-            bool useHttp = options.Contains(BooruOptions.useHttp);
+            useHttp = options.Contains(BooruOptions.useHttp);
             this.baseUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl;
             this.format = format;
             imageUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "post");
@@ -178,6 +178,7 @@ namespace BooruSharp.Booru
         private readonly int? maxLimit;
         private readonly bool wikiSearchUseTitle;
         private readonly UrlFormat format;
+        private readonly bool useHttp;
         private static readonly Random random = new Random();
     }
 }
