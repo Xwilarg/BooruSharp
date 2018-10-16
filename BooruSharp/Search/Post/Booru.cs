@@ -39,8 +39,8 @@ namespace BooruSharp.Booru
                 "rating", "tags", "tag-string", "id", "file_size", "file-size",
                 "height", "image-height", "width", "image-width", "preview_height", "preview_width", "created_at", "created-at", "source", "score");
             return (new Search.Post.SearchResult(
-                (args[0] == null && args[1] == null) ? (null) : (new Uri((((args[0] ?? args[1]).StartsWith("//")) ? ("https:") : ("")) + (args[0] ?? args[1]).Replace(" ", "%20"))),
-                (args[2] == null && args[3] == null) ? (null) : (new Uri((((args[2] ?? args[3]).StartsWith("//")) ? ("https:") : ("")) + (args[2] ?? args[3]))),
+                (args[0] == null && args[1] == null) ? (null) : (new Uri((((args[0] ?? args[1]).StartsWith("//")) ? ("http" + ((useHttp) ? ("") : ("s")) + ":") : ("")) + (args[0] ?? args[1]).Replace(" ", "%20"))),
+                (args[2] == null && args[3] == null) ? (null) : (new Uri((((args[2] ?? args[3]).StartsWith("//")) ? ("http" + ((useHttp) ? ("") : ("s")) + ":") : ("")) + (args[2] ?? args[3]))),
                 GetRating(args[4][0]),
                 (args[5] ?? args[6]).Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries),
                 Convert.ToInt32(args[7]),

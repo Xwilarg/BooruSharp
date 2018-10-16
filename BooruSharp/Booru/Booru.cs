@@ -41,7 +41,7 @@ namespace BooruSharp.Booru
 
         protected Booru(string baseUrl, UrlFormat format, int? maxLimit, params BooruOptions[] options)
         {
-            bool useHttp = options.Contains(BooruOptions.useHttp);
+            useHttp = options.Contains(BooruOptions.useHttp);
             this.baseUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl;
             this.format = format;
             imageUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "post");
@@ -61,7 +61,6 @@ namespace BooruSharp.Booru
             else
                 commentUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "comment");
             searchTagById = !options.Contains(BooruOptions.noTagById);
-            random = new Random();
             this.maxLimit = maxLimit;
             wikiSearchUseTitle = options.Contains(BooruOptions.wikiSearchUseTitle);
         }
@@ -105,7 +104,7 @@ namespace BooruSharp.Booru
 
         private string TagsToString(string[] tags)
         {
-            return (("tags=" + String.Join("+", tags)).ToLower());
+            return ((tags == null) ? ("") : ("tags=" + String.Join("+", tags)).ToLower());
         }
 
         private int GetFirstPage()
@@ -177,8 +176,9 @@ namespace BooruSharp.Booru
         private readonly string imageUrl, tagUrl, wikiUrl, relatedUrl, commentUrl;
         private readonly bool searchTagById;
         private readonly int? maxLimit;
-        private Random random;
         private readonly bool wikiSearchUseTitle;
         private readonly UrlFormat format;
+        private readonly bool useHttp;
+        private static readonly Random random = new Random();
     }
 }
