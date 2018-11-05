@@ -9,7 +9,7 @@ namespace BooruSharp.UnitTests
 {
     public static class General
     {
-        public static async Task CheckCount(Booru.Booru booru, string s1 = "wet", string s2 = "swimsuit")
+        public static async Task CheckCount(Booru.Booru booru, string s1, string s2)
         {
             int nbGeneral = await booru.GetNbImage();
             int nbMed = await booru.GetNbImage(s1);
@@ -55,13 +55,13 @@ namespace BooruSharp.UnitTests
                 Assert.NotEqual(0, result.size.Value);
         }
 
-        public static async Task CheckGetByOffset(Booru.Booru booru, string s1 = "school_swimsuit")
+        public static async Task CheckGetByOffset(Booru.Booru booru, string s1)
         {
             Search.Post.SearchResult result = await booru.GetImage(2, s1);
             await CheckResult(result, s1);
         }
 
-        public static async Task CheckGetRandom(Booru.Booru booru, string s1 = "school_swimsuit")
+        public static async Task CheckGetRandom(Booru.Booru booru, string s1)
         {
             Search.Post.SearchResult result = await booru.GetRandomImage(s1);
             await CheckResult(result, s1);
@@ -87,6 +87,7 @@ namespace BooruSharp.UnitTests
                 Assert.NotEqual(0, res.count);
             Assert.NotEmpty(result);
         }
+
         public static void CheckComment(Search.Comment.SearchResult[] result)
         {
             foreach (Search.Comment.SearchResult res in result)
@@ -101,910 +102,232 @@ namespace BooruSharp.UnitTests
         }
     }
 
-    public class UnitGelbooru
+    public class BooruTests
     {
-        [Fact]
-        public async Task GelbooruCount()
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926))]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru))]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru), "kantai_collection", "animated")]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
+        public async Task Count(Type t, string tag1 = "wet", string tag2 = "school_swimsuit")
         {
-            await General.CheckCount(new Gelbooru());
+            await General.CheckCount((Booru.Booru)Activator.CreateInstance(t), tag1, tag2);
         }
 
-        [Fact]
-        public async Task GelbooruGetByOffset()
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926))]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru))]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru), "kantai_collection")]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
+        public async Task GetByOffset(Type t, string tag = "school_swimsuit")
         {
-            await General.CheckGetByOffset(new Gelbooru());
+            await General.CheckGetByOffset((Booru.Booru)Activator.CreateInstance(t), tag);
         }
 
-        [Fact]
-        public async Task GelbooruGetRandom()
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926))]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru))]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru), "kantai_collection")]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
+        public async Task GetRandom(Type t, string tag = "school_swimsuit")
         {
-            await General.CheckGetRandom(new Gelbooru());
+            await General.CheckGetRandom((Booru.Booru)Activator.CreateInstance(t), tag);
         }
 
-        [Fact]
-        public async Task GelbooruCheckTag()
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926))]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru))]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru), "kantai_collection")]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
+        public async Task CheckTag(Type t, string tag = "pantyhose")
         {
-            await General.CheckTag(new Gelbooru());
+            await General.CheckTag((Booru.Booru)Activator.CreateInstance(t), tag);
+        }
+        
+        [Theory]
+        [InlineData(typeof(Atfbooru), "hibiki_(kantai_collection)", 2033)]
+        [InlineData(typeof(DanbooruDonmai), "hibiki_(kantai_collection)", 1240738)]
+        [InlineData(typeof(E621), null, 267881)]
+        [InlineData(typeof(E926), null, 1329650)]
+        [InlineData(typeof(Furrybooru), "kantai_collection", 151628)]
+        [InlineData(typeof(Gelbooru), "hibiki_(kantai_collection)", 463392)]
+        [InlineData(typeof(Konachan), "hibiki_(kancolle)", 75885)]
+        [InlineData(typeof(Lolibooru), "hibiki_(kantai_collection)", 2939)]
+        [InlineData(typeof(Realbooru), "kantai_collection", 688290)]
+        [InlineData(typeof(Rule34), "hibiki_(kantai_collection)", 321239)]
+        [InlineData(typeof(Safebooru), "hibiki_(kantai_collection)", 316679)]
+        [InlineData(typeof(Sakugabooru), "kantai_collection", 7148)]
+        [InlineData(typeof(Xbooru), "hibiki_(kantai_collection)", 151883)]
+        [InlineData(typeof(Yandere), "hibiki_(kancolle)", 98153)]
+        public async Task TagId(Type t, string tag, int tagId)
+        {
+            if (tag == null)
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t)).GetTag(tagId); });
+            else
+                Assert.Equal(tag, (await ((Booru.Booru)Activator.CreateInstance(t)).GetTag(tagId)).name);
         }
 
-        [Fact]
-        public async Task GelbooruTagId()
+        [Theory]
+        [InlineData(typeof(Atfbooru), "highres", 82)]
+        [InlineData(typeof(DanbooruDonmai), "futanari", 3589)]
+        [InlineData(typeof(E621), "futanari", 123)]
+        [InlineData(typeof(E926), "futanari", 123)]
+        [InlineData(typeof(Furrybooru), "futanari", null)]
+        [InlineData(typeof(Gelbooru), "futanari", null)]
+        [InlineData(typeof(Konachan), "futanari", 757)]
+        [InlineData(typeof(Lolibooru), "futanari", 158)]
+        [InlineData(typeof(Realbooru), "futanari", null)]
+        [InlineData(typeof(Rule34), "futanari", null)]
+        [InlineData(typeof(Safebooru), "futanari", null)]
+        [InlineData(typeof(Sakugabooru), "animated", 13)]
+        [InlineData(typeof(Xbooru), "futanari", null)]
+        [InlineData(typeof(Yandere), "futanari", 167)]
+        public async Task CheckWiki(Type t, string tag, int? id)
         {
-            Assert.Equal("hibiki_(kantai_collection)", (await new Gelbooru().GetTag(463392)).name);
+            if (id == null)
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t)).GetWiki(tag); });
+            else
+            {
+                Search.Wiki.SearchResult result = await ((Booru.Booru)Activator.CreateInstance(t)).GetWiki(tag);
+                Assert.Equal(id, result.id);
+                General.CheckWiki(result);
+            }
         }
 
-        [Fact]
-        public async Task GelbooruCheckWiki()
+        [Theory]
+        [InlineData(typeof(Atfbooru), "kantai_collection", true)]
+        [InlineData(typeof(DanbooruDonmai), "kantai_collection", true)]
+        [InlineData(typeof(E621), "sky", true)]
+        [InlineData(typeof(E926), "sky", true)]
+        [InlineData(typeof(Furrybooru), "sky", false)]
+        [InlineData(typeof(Gelbooru), "sky", false)]
+        [InlineData(typeof(Konachan), "sky", true)]
+        [InlineData(typeof(Lolibooru), "sky", false)]
+        [InlineData(typeof(Realbooru), "sky", false)]
+        [InlineData(typeof(Rule34), "sky", false)]
+        [InlineData(typeof(Safebooru), "sky", false)]
+        [InlineData(typeof(Sakugabooru), "kantai_collection", true)]
+        [InlineData(typeof(Xbooru), "sky", false)]
+        [InlineData(typeof(Yandere), "sky", true)]
+        public async Task CheckRelated(Type t, string tag, bool isAvailable) // TODO: Check if suppose to be alone
         {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Gelbooru().GetWiki("futanari"); });
+            if (!isAvailable)
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t)).GetRelated(tag); });
+            else
+            {
+                Search.Related.SearchResult[] result = await ((Booru.Booru)Activator.CreateInstance(t)).GetRelated(tag);
+                General.CheckRelated(result);
+            }
         }
 
-        [Fact]
-        public async Task GelbooruCheckRelated()
+        [Theory]
+        [InlineData(typeof(Atfbooru), 3193008, false)]
+        [InlineData(typeof(DanbooruDonmai), 3193008, false)]
+        [InlineData(typeof(E621), 59432, true)]
+        [InlineData(typeof(E926), 541858, true)]
+        [InlineData(typeof(Furrybooru), 1282210, true)]
+        [InlineData(typeof(Gelbooru), 3988284, true)]
+        [InlineData(typeof(Konachan), 142938, true)]
+        [InlineData(typeof(Lolibooru), 134097, true)]
+        [InlineData(typeof(Realbooru), 646911, false)]
+        [InlineData(typeof(Rule34), 2840746, true)]
+        [InlineData(typeof(Safebooru), 132, false)]
+        [InlineData(typeof(Sakugabooru), 38886, false)]
+        [InlineData(typeof(Xbooru), 740157, true)]
+        [InlineData(typeof(Yandere), 405923, false)]
+        public async Task CheckComment(Type t, int id, bool isAvailable)
         {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Gelbooru().GetRelated("sky"); });
+            if (!isAvailable)
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t)).GetComment(id); });
+            else
+                General.CheckComment(await ((Booru.Booru)Activator.CreateInstance(t)).GetComment(id));
+        }
+        
+        [Theory]
+        [InlineData(typeof(Atfbooru), "hibi", true)]
+        [InlineData(typeof(DanbooruDonmai), "hibiki", true)]
+        [InlineData(typeof(E621), "hibiki", true)]
+        [InlineData(typeof(E926), "hibiki", true)]
+        [InlineData(typeof(Furrybooru), "hibiki", true)]
+        [InlineData(typeof(Gelbooru), "hibiki", true)]
+        [InlineData(typeof(Konachan), "hibiki", false)]
+        [InlineData(typeof(Lolibooru), "hibiki", false)]
+        [InlineData(typeof(Realbooru), "female", true)]
+        [InlineData(typeof(Rule34), "hibiki", true)]
+        [InlineData(typeof(Safebooru), "hibiki", true)]
+        [InlineData(typeof(Sakugabooru), "kantai", false)]
+        [InlineData(typeof(Xbooru), "hibiki", true)]
+        [InlineData(typeof(Yandere), "hibiki", false)]
+        public async Task CheckTags(Type t, string tag, bool onlyOnce)
+        {
+            if (onlyOnce)
+                Assert.NotEmpty(await ((Booru.Booru)Activator.CreateInstance(t)).GetTags(tag));
+            else
+                Assert.NotInRange((await ((Booru.Booru)Activator.CreateInstance(t)).GetTags(tag)).Length, 0, 1);
         }
 
-        [Fact]
-        public async Task GelbooruCheckComment()
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926))]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru))]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru))]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
+        public void CheckAvailable(Type t)
         {
-            General.CheckComment(await new Gelbooru().GetComment(3988284));
-        }
-
-        [Fact]
-        public async Task GelbooruCheckTags()
-        {
-            Assert.NotEmpty(await new Gelbooru().GetTags("hibiki"));
-        }
-
-        [Fact]
-        public void GelbooruCheckAvailable()
-        {
-            new Gelbooru().CheckAvailability();
+            ((Booru.Booru)Activator.CreateInstance(t)).CheckAvailability();
         }
     }
 
-    public class UnitSafebooru
-    {
-        [Fact]
-        public async Task SafebooruCount()
-        {
-            await General.CheckCount(new Safebooru());
-        }
-
-        [Fact]
-        public async Task SafebooruGetByOffset()
-        {
-            await General.CheckGetByOffset(new Safebooru());
-        }
-
-        [Fact]
-        public async Task SafebooruGetRandom()
-        {
-            await General.CheckGetRandom(new Safebooru());
-        }
-
-        [Fact]
-        public async Task SafebooruCheckTag()
-        {
-            await General.CheckTag(new Safebooru());
-        }
-
-        [Fact]
-        public async Task SafebooruTagId()
-        {
-            Assert.Equal("hibiki_(kantai_collection)", (await new Safebooru().GetTag(316679)).name);
-        }
-
-        [Fact]
-        public async Task SafebooruCheckWiki()
-        {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Safebooru().GetWiki("futanari"); });
-        }
-
-        [Fact]
-        public async Task SafebooruCheckRelated()
-        {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Safebooru().GetRelated("sky"); });
-        }
-
-        [Fact]
-        public async Task SafebooruCheckComment()
-        {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Safebooru().GetComment(132); });
-        }
-
-        [Fact]
-        public async Task SafebooruCheckTags()
-        {
-            Assert.NotEmpty(await new Safebooru().GetTags("hibiki"));
-        }
-
-        [Fact]
-        public void SafebooruCheckAvailable()
-        {
-            new Safebooru().CheckAvailability();
-        }
-    }
-
-    public class UnitKonachan
-    {
-        [Fact]
-        public async Task KonachanCount()
-        {
-            await General.CheckCount(new Konachan());
-        }
-
-        [Fact]
-        public async Task KonachanGetByOffset()
-        {
-            await General.CheckGetByOffset(new Konachan());
-        }
-
-        [Fact]
-        public async Task KonachanGetRandom()
-        {
-            await General.CheckGetRandom(new Konachan());
-        }
-
-        [Fact]
-        public async Task KonachanCheckTag()
-        {
-            await General.CheckTag(new Konachan());
-        }
-
-        [Fact]
-        public async Task KonachanTagId()
-        {
-            Assert.Equal("hibiki_(kancolle)", (await new Konachan().GetTag(75885)).name);
-        }
-
-        [Fact]
-        public async Task KonachanCheckWiki()
-        {
-            Search.Wiki.SearchResult result = await new Konachan().GetWiki("futanari");
-            Assert.Equal(757, result.id);
-            General.CheckWiki(result);
-        }
-
-        [Fact]
-        public async Task KonachanCheckRelated()
-        {
-            Search.Related.SearchResult[] result = await new Konachan().GetRelated("sky");
-            General.CheckRelated(result);
-        }
-
-        [Fact]
-        public async Task KonachanCheckComment()
-        {
-            General.CheckComment(await new Konachan().GetComment(142938));
-        }
-
-        [Fact]
-        public async Task KonachanCheckTags()
-        {
-            Assert.NotInRange((await new Konachan().GetTags("hibiki")).Length, 0, 1);
-        }
-
-        [Fact]
-        public void KonachanCheckAvailable()
-        {
-            new Konachan().CheckAvailability();
-        }
-    }
-
-    public class UnitE621
-    {
-        [Fact]
-        public async Task E621Count()
-        {
-            await General.CheckCount(new E621());
-        }
-
-        [Fact]
-        public async Task E621GetByOffset()
-        {
-            await General.CheckGetByOffset(new E621());
-        }
-
-        [Fact]
-        public async Task E621GetRandom()
-        {
-            await General.CheckGetRandom(new E621());
-        }
-
-        [Fact]
-        public async Task E621CheckTag()
-        {
-            await General.CheckTag(new E621());
-        }
-
-        [Fact]
-        public async Task E621TagId()
-        {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new E621().GetTag(267881); });
-        }
-
-        [Fact]
-        public async Task E621CheckWiki()
-        {
-            Search.Wiki.SearchResult result = await new E621().GetWiki("futanari");
-            Assert.Equal(123, result.id);
-            General.CheckWiki(result);
-        }
-
-        [Fact]
-        public async Task E621CheckRelated()
-        {
-            Search.Related.SearchResult[] result = await new E621().GetRelated("sky");
-            General.CheckRelated(result);
-        }
-
-        [Fact]
-        public async Task E621CheckComment()
-        {
-            General.CheckComment(await new E621().GetComment(59432));
-        }
-
-        [Fact]
-        public async Task E621CheckTags()
-        {
-            Assert.NotEmpty(await new E621().GetTags("hibiki"));
-        }
-
-        [Fact]
-        public void E621CheckAvailable()
-        {
-            new E621().CheckAvailability();
-        }
-    }
-
-    public class UnitRule34
-    {
-        [Fact]
-        public async Task Rule34Count()
-        {
-            await General.CheckCount(new Rule34());
-        }
-
-        [Fact]
-        public async Task Rule34GetByOffset()
-        {
-            await General.CheckGetByOffset(new Rule34());
-        }
-
-        [Fact]
-        public async Task Rule34GetRandom()
-        {
-            await General.CheckGetRandom(new Rule34());
-        }
-
-        [Fact]
-        public async Task Rule34CheckTag()
-        {
-            await General.CheckTag(new Rule34());
-        }
-
-        [Fact]
-        public async Task Rule34TagId()
-        {
-            Assert.Equal("hibiki_(kantai_collection)", (await new Rule34().GetTag(321239)).name);
-        }
-
-        [Fact]
-        public async Task Rule34CheckWiki()
-        {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Rule34().GetWiki("futanari"); });
-        }
-
-        [Fact]
-        public async Task Rule34CheckRelated()
-        {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Rule34().GetRelated("sky"); });
-        }
-
-        [Fact]
-        public async Task Rule34CheckComment()
-        {
-            General.CheckComment(await new Rule34().GetComment(2840746));
-        }
-
-        [Fact]
-        public async Task Rule34CheckTags()
-        {
-            Assert.NotEmpty(await new Rule34().GetTags("hibiki"));
-        }
-
-        [Fact]
-        public void Rule34CheckAvailable()
-        {
-            new Rule34().CheckAvailability();
-        }
-    }
-
-    public class UnitLolibooru
-    {
-        [Fact]
-        public async Task LolibooruCount()
-        {
-            await General.CheckCount(new Lolibooru());
-        }
-
-        [Fact]
-        public async Task LolibooruGetByOffset()
-        {
-            await General.CheckGetByOffset(new Lolibooru());
-        }
-
-        [Fact]
-        public async Task LolibooruGetRandom()
-        {
-            await General.CheckGetRandom(new Lolibooru());
-        }
-
-        [Fact]
-        public async Task LolibooruCheckTag()
-        {
-            await General.CheckTag(new Lolibooru());
-        }
-
-        [Fact]
-        public async Task LolibooruTagId()
-        {
-            Assert.Equal("hibiki_(kantai_collection)", (await new Lolibooru().GetTag(2939)).name);
-        }
-
-        [Fact]
-        public async Task LolibooruCheckWiki()
-        {
-            Search.Wiki.SearchResult result = await new Lolibooru().GetWiki("futanari");
-            Assert.Equal(158, result.id);
-            General.CheckWiki(result);
-        }
-
-        [Fact]
-        public async Task LolibooruCheckRelated()
-        {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Lolibooru().GetRelated("sky"); });
-        }
-
-        [Fact]
-        public async Task LolibooruCheckComment()
-        {
-            General.CheckComment(await new Lolibooru().GetComment(134097));
-        }
-
-        [Fact]
-        public async Task LolibooruCheckTags()
-        {
-            Assert.NotInRange((await new Lolibooru().GetTags("hibiki")).Length, 0, 1);
-        }
-
-        [Fact]
-        public void LolibooruCheckAvailable()
-        {
-            new Lolibooru().CheckAvailability();
-        }
-    }
-
-    public class UnitYandere
-    {
-        [Fact]
-        public async Task YandereCount()
-        {
-            await General.CheckCount(new Yandere());
-        }
-
-        [Fact]
-        public async Task YandereGetByOffset()
-        {
-            await General.CheckGetByOffset(new Yandere());
-        }
-
-        [Fact]
-        public async Task YandereGetRandom()
-        {
-            await General.CheckGetRandom(new Yandere());
-        }
-
-        [Fact]
-        public async Task YandereCheckTag()
-        {
-            await General.CheckTag(new Yandere());
-        }
-
-        [Fact]
-        public async Task YandereTagId()
-        {
-            Assert.Equal("hibiki_(kancolle)", (await new Yandere().GetTag(98153)).name);
-        }
-
-        [Fact]
-        public async Task YandereCheckWiki()
-        {
-            Search.Wiki.SearchResult result = await new Yandere().GetWiki("futanari");
-            Assert.Equal(167, result.id);
-            General.CheckWiki(result);
-        }
-
-        [Fact]
-        public async Task YandereCheckRelated()
-        {
-            Search.Related.SearchResult[] result = await new Yandere().GetRelated("sky");
-            General.CheckRelated(result);
-        }
-
-        [Fact]
-        public async Task YandereCheckComment()
-        {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Yandere().GetComment(405923); });
-        }
-
-        [Fact]
-        public async Task YandereCheckTags()
-        {
-            Assert.NotInRange((await new Yandere().GetTags("hibiki")).Length, 0, 1);
-        }
-
-        [Fact]
-        public void YandereCheckAvailable()
-        {
-            new Yandere().CheckAvailability();
-        }
-    }
-
-    public class UnitE926
-    {
-        [Fact]
-        public async Task E926Count()
-        {
-            await General.CheckCount(new E926());
-        }
-
-        [Fact]
-        public async Task E926GetByOffset()
-        {
-            await General.CheckGetByOffset(new E926());
-        }
-
-        [Fact]
-        public async Task E926GetRandom()
-        {
-            await General.CheckGetRandom(new E926());
-        }
-
-        [Fact]
-        public async Task E926CheckTag()
-        {
-            await General.CheckTag(new E926());
-        }
-
-        [Fact]
-        public async Task E926TagId()
-        {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new E926().GetTag(1329650); });
-        }
-
-        [Fact]
-        public async Task E926CheckWiki()
-        {
-            Search.Wiki.SearchResult result = await new E926().GetWiki("futanari");
-            Assert.Equal(123, result.id);
-            General.CheckWiki(result);
-        }
-
-        [Fact]
-        public async Task E926CheckRelated()
-        {
-            Search.Related.SearchResult[] result = await new E926().GetRelated("sky");
-            General.CheckRelated(result);
-        }
-
-        [Fact]
-        public async Task E926CheckComment()
-        {
-            General.CheckComment(await new E926().GetComment(541858));
-        }
-
-        [Fact]
-        public async Task E926CheckTags()
-        {
-            Assert.NotEmpty(await new E926().GetTags("hibiki"));
-        }
-
-        [Fact]
-        public void E926CheckAvailable()
-        {
-            new E926().CheckAvailability();
-        }
-    }
-
-    public class UnitXbooru
-    {
-        [Fact]
-        public async Task XbooruCount()
-        {
-            await General.CheckCount(new Xbooru());
-        }
-
-        [Fact]
-        public async Task XbooruGetByOffset()
-        {
-            await General.CheckGetByOffset(new Xbooru());
-        }
-
-        [Fact]
-        public async Task XbooruGetRandom()
-        {
-            await General.CheckGetRandom(new Xbooru());
-        }
-
-        [Fact]
-        public async Task XbooruCheckTag()
-        {
-            await General.CheckTag(new Xbooru());
-        }
-
-        [Fact]
-        public async Task XbooruTagId()
-        {
-            Assert.Equal("hibiki_(kantai_collection)", (await new Xbooru().GetTag(151883)).name);
-        }
-
-        [Fact]
-        public async Task XbooruCheckWiki()
-        {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Xbooru().GetWiki("futanari"); });
-        }
-
-        [Fact]
-        public async Task XbooruCheckRelated()
-        {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Xbooru().GetRelated("sky"); });
-        }
-
-        [Fact]
-        public async Task XbooruCheckComment()
-        {
-            General.CheckComment(await new Xbooru().GetComment(740157));
-        }
-
-        [Fact]
-        public async Task XbooruCheckTags()
-        {
-            Assert.NotEmpty(await new Xbooru().GetTags("hibiki"));
-        }
-
-        [Fact]
-        public void XBooruCheckAvailable()
-        {
-            new Xbooru().CheckAvailability();
-        }
-    }
-
-    public class UnitFurrybooru
-    {
-        [Fact]
-        public async Task FurrybooruCount()
-        {
-            await General.CheckCount(new Furrybooru());
-        }
-
-        [Fact]
-        public async Task FurrybooruGetByOffset()
-        {
-            await General.CheckGetByOffset(new Furrybooru());
-        }
-
-        [Fact]
-        public async Task FurrybooruGetRandom()
-        {
-            await General.CheckGetRandom(new Furrybooru());
-        }
-
-        [Fact]
-        public async Task FurrybooruCheckTag()
-        {
-            await General.CheckTag(new Furrybooru());
-        }
-
-        [Fact]
-        public async Task FurrybooruTagId()
-        {
-            Assert.Equal("kantai_collection", (await new Furrybooru().GetTag(151628)).name);
-        }
-
-        [Fact]
-        public async Task FurrybooruCheckWiki()
-        {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Furrybooru().GetWiki("futanari"); });
-        }
-
-        [Fact]
-        public async Task FurrybooruCheckRelated()
-        {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Furrybooru().GetRelated("sky"); });
-        }
-
-        [Fact]
-        public async Task FurrybooruCheckComment()
-        {
-            General.CheckComment(await new Furrybooru().GetComment(1282210));
-        }
-
-        [Fact]
-        public async Task FurrybooruCheckTags()
-        {
-            Assert.NotEmpty(await new Furrybooru().GetTags("hibiki"));
-        }
-
-        [Fact]
-        public void FurrybooruCheckAvailable()
-        {
-            new Furrybooru().CheckAvailability();
-        }
-    }
-
-    public class UnitRealbooru
-    {
-        [Fact]
-        public async Task RealbooruCount()
-        {
-            await General.CheckCount(new Realbooru());
-        }
-
-        [Fact]
-        public async Task RealbooruGetByOffset()
-        {
-            await General.CheckGetByOffset(new Realbooru());
-        }
-
-        [Fact]
-        public async Task RealbooruGetRandom()
-        {
-            await General.CheckGetRandom(new Realbooru());
-        }
-
-        [Fact]
-        public async Task RealbooruCheckTag()
-        {
-            await General.CheckTag(new Realbooru());
-        }
-
-        [Fact]
-        public async Task RealbooruTagId()
-        {
-            Assert.Equal("kantai_collection", (await new Realbooru().GetTag(688290)).name);
-        }
-
-        [Fact]
-        public async Task RealbooruCheckWiki()
-        {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Realbooru().GetWiki("futanari"); });
-        }
-
-        [Fact]
-        public async Task RealbooruCheckRelated()
-        {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Realbooru().GetRelated("sky"); });
-        }
-
-        [Fact]
-        public async Task RealbooruCheckComment()
-        {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Realbooru().GetComment(646911); });
-        }
-
-        [Fact]
-        public async Task RaelbooruCheckTags()
-        {
-            Assert.NotEmpty(await new Realbooru().GetTags("female"));
-        }
-
-        [Fact]
-        public void RealbooruCheckAvailable()
-        {
-            new Realbooru().CheckAvailability();
-        }
-    }
-
-    public class UnitSakugabooru
-    {
-        [Fact]
-        public async Task SakugabooruCount()
-        {
-            await General.CheckCount(new Sakugabooru(), "kantai_collection", "animated");
-        }
-
-        [Fact]
-        public async Task SakugabooruGetByOffset()
-        {
-            await General.CheckGetByOffset(new Sakugabooru(), "kantai_collection");
-        }
-
-        [Fact]
-        public async Task SakugabooruGetRandom()
-        {
-            await General.CheckGetRandom(new Sakugabooru(), "kantai_collection");
-        }
-
-        [Fact]
-        public async Task SakugabooruCheckTag()
-        {
-            await General.CheckTag(new Sakugabooru(), "kantai_collection");
-        }
-
-        [Fact]
-        public async Task SakugabooruTagId()
-        {
-            Assert.Equal("kantai_collection", (await new Sakugabooru().GetTag(7148)).name);
-        }
-
-        [Fact]
-        public async Task SakugabooruCheckWiki()
-        {
-            Search.Wiki.SearchResult result = await new Sakugabooru().GetWiki("animated");
-            Assert.Equal(13, result.id);
-            General.CheckWiki(result);
-        }
-
-        [Fact]
-        public async Task SakugabooruCheckRelated()
-        {
-            Search.Related.SearchResult[] result = await new Sakugabooru().GetRelated("kantai_collection");
-            General.CheckRelated(result);
-        }
-
-        [Fact]
-        public async Task SakugabooruCheckComment()
-        {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Sakugabooru().GetComment(38886); });
-        }
-
-        [Fact]
-        public async Task SakugabooruCheckTags()
-        {
-            Assert.NotInRange((await new Sakugabooru().GetTags("kantai")).Length, 0, 1);
-        }
-
-        [Fact]
-        public void SakugabooruCheckAvailable()
-        {
-            new Sakugabooru().CheckAvailability();
-        }
-    }
-
-    public class UnitDanbooruDonmai
-    {
-        [Fact]
-        public async Task DanbooruDonmaiCount()
-        {
-            await General.CheckCount(new DanbooruDonmai());
-        }
-
-        [Fact]
-        public async Task DanbooruDonmaiGetByOffset()
-        {
-            await General.CheckGetByOffset(new DanbooruDonmai());
-        }
-
-        [Fact]
-        public async Task DanbooruDonmaiGetRandom()
-        {
-            await General.CheckGetRandom(new DanbooruDonmai());
-        }
-
-        [Fact]
-        public async Task DanbooruDonmaiCheckTag()
-        {
-            await General.CheckTag(new DanbooruDonmai());
-        }
-
-        [Fact]
-        public async Task DanbooruDonmaiTagId()
-        {
-            Assert.Equal("hibiki_(kantai_collection)", (await new DanbooruDonmai().GetTag(1240738)).name);
-        }
-
-        [Fact]
-        public async Task DanbooruDonmaiCheckWiki()
-        {
-            Search.Wiki.SearchResult result = await new DanbooruDonmai().GetWiki("futanari");
-            Assert.Equal(3589, result.id);
-            General.CheckWiki(result);
-        }
-
-        [Fact]
-        public async Task DanbooruDonmaiCheckRelated()
-        {
-            Search.Related.SearchResult[] result = await new DanbooruDonmai().GetRelated("kantai_collection");
-            General.CheckRelated(result);
-        }
-
-        [Fact]
-        public async Task DanbooruDonmaiCheckComment()
-        {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new DanbooruDonmai().GetComment(3193008); });
-        }
-
-        [Fact]
-        public async Task DanbooruDonmaiCheckTags()
-        {
-            Assert.Empty(await new DanbooruDonmai().GetTags("hibiki"));
-        }
-
-        [Fact]
-        public void DanbooruDonmaiCheckAvailable()
-        {
-            new DanbooruDonmai().CheckAvailability();
-        }
-    }
-
-    public class UnitAtfbooru
-    {
-        [Fact]
-        public async Task AtfbooruCount()
-        {
-            await General.CheckCount(new Atfbooru());
-        }
-
-        [Fact]
-        public async Task AtfbooruGetByOffset()
-        {
-            await General.CheckGetByOffset(new Atfbooru());
-        }
-
-        [Fact]
-        public async Task AtfbooruGetRandom()
-        {
-            await General.CheckGetRandom(new Atfbooru());
-        }
-
-        [Fact]
-        public async Task AtfbooruCheckTag()
-        {
-            await General.CheckTag(new Atfbooru());
-        }
-
-        [Fact]
-        public async Task AtfbooruTagId()
-        {
-            Assert.Equal("hibiki_(kantai_collection)", (await new Atfbooru().GetTag(2033)).name);
-        }
-
-        [Fact]
-        public async Task AtfbooruCheckWiki()
-        {
-            Search.Wiki.SearchResult result = await new Atfbooru().GetWiki("highres");
-            Assert.Equal(82, result.id);
-            General.CheckWiki(result);
-        }
-
-        [Fact]
-        public async Task AtfbooruCheckRelated()
-        {
-            Search.Related.SearchResult[] result = await new Atfbooru().GetRelated("kantai_collection");
-            General.CheckRelated(result);
-        }
-
-        [Fact]
-        public async Task AtfbooruCheckComment()
-        {
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await new Atfbooru().GetComment(3193008); });
-        }
-
-        [Fact]
-        public async Task AtfbooruCheckTags()
-        {
-            Assert.Empty(await new Atfbooru().GetTags("hibi"));
-        }
-
-        [Fact]
-        public void AtfbooruCheckAvailable()
-        {
-            new Atfbooru().CheckAvailability();
-        }
-    }
+    // TODO: Find a way to check if commands are available on website or not
 
     public class Other
     {
