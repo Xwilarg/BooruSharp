@@ -70,7 +70,7 @@ namespace BooruSharp.Booru
             switch (format)
             {
                 case UrlFormat.postIndexXml:
-                    return (query + "/" + squery +".xml");
+                    return (query + "/" + squery + ".xml");
 
                 case UrlFormat.indexPhp:
                     return ("index.php?page=dapi&s=" + query + "&q=index");

@@ -8,5 +8,5 @@
         noComment,
         noTagById,
         wikiSearchUseTitle
-    }
+    } // TODO: can guess some options depending of UrlFormat
 }
