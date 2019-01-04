@@ -104,7 +104,7 @@ namespace BooruSharp.Booru
 
         private string TagsToString(string[] tags)
         {
-            return ((tags == null) ? ("") : ("tags=" + String.Join("+", tags)).ToLower());
+            return ((tags == null) ? ("") : ("tags=" + Uri.EscapeDataString(String.Join("+", tags)).ToLower()));
         }
 
         private int GetFirstPage()
