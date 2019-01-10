@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -20,7 +21,10 @@ namespace BooruSharp.Booru
 
         public async Task<Search.Tag.SearchResult[]> GetTags(string name)
         {
-            XmlDocument xml = await GetXml(CreateUrl(tagUrl, SearchArg("name") + name));
+            List<string> urlTags = new List<string>() { SearchArg("name") + name };
+            if (format != UrlFormat.danbooru)
+                urlTags.Add("limit=0");
+            XmlDocument xml = await GetXml(CreateUrl(tagUrl, urlTags.ToArray()));
             int i = 0;
             Search.Tag.SearchResult[] results = new Search.Tag.SearchResult[xml.ChildNodes.Item(1).ChildNodes.Count];
             foreach (XmlNode node in xml.ChildNodes.Item(1).ChildNodes)
@@ -38,7 +42,14 @@ namespace BooruSharp.Booru
 
         private async Task<Search.Tag.SearchResult> SearchTag(string name, int? id)
         {
-            XmlDocument xml = await GetXml(CreateUrl(tagUrl, ((name == null) ? (SearchArg("id") + id) : (SearchArg("name") + name))));
+            List<string> urlTags = new List<string>();
+            if (name == null)
+                urlTags.Add(SearchArg("id") + id);
+            else
+                urlTags.Add(SearchArg("name") + name);
+            if (format != UrlFormat.danbooru)
+                urlTags.Add("limit=0");
+            XmlDocument xml = await GetXml(CreateUrl(tagUrl, urlTags.ToArray()));
             foreach (XmlNode node in xml.ChildNodes.Item(1).ChildNodes)
             {
                 string[] args = GetStringFromXml(node, "id", "name", "type", "count", "post-count");
