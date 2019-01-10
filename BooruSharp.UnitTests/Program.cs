@@ -284,8 +284,8 @@ namespace BooruSharp.UnitTests
         }
         
         [Theory]
-        [InlineData(typeof(Atfbooru), "hibi", true)]
-        [InlineData(typeof(DanbooruDonmai), "hibiki", true)]
+        [InlineData(typeof(Atfbooru), "female", true)]
+        [InlineData(typeof(DanbooruDonmai), "hibi", true)]
         [InlineData(typeof(E621), "hibiki", true)]
         [InlineData(typeof(E926), "hibiki", true)]
         [InlineData(typeof(Furrybooru), "hibiki", true)]
