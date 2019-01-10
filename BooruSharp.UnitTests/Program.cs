@@ -183,7 +183,7 @@ namespace BooruSharp.UnitTests
         {
             await General.CheckTag((Booru.Booru)Activator.CreateInstance(t), tag);
         }
-        
+
         [Theory]
         [InlineData(typeof(Atfbooru), "hibiki_(kantai_collection)", 2033)]
         [InlineData(typeof(DanbooruDonmai), "hibiki_(kantai_collection)", 1240738)]
@@ -282,7 +282,7 @@ namespace BooruSharp.UnitTests
             else
                 General.CheckComment(await ((Booru.Booru)Activator.CreateInstance(t)).GetComment(id));
         }
-        
+
         [Theory]
         [InlineData(typeof(Atfbooru), "female", true)]
         [InlineData(typeof(DanbooruDonmai), "hibi", true)]
@@ -324,6 +324,39 @@ namespace BooruSharp.UnitTests
         public void CheckAvailable(Type t)
         {
             ((Booru.Booru)Activator.CreateInstance(t)).CheckAvailability();
+        }
+
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926), "breast")]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru))]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru), "breast")]
+        [InlineData(typeof(Sakugabooru), "another")]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
+        public async Task CheckIsSafe(Type t, string explicitTag="pussy")
+        {
+            Booru.Booru b = (Booru.Booru)Activator.CreateInstance(t);
+            bool isSafe = b.IsSafe();
+            bool foundExplicit = false;
+            for (int i = 0; i < 10; i++)
+            {
+                var rating = (await b.GetRandomImage(explicitTag)).rating;
+                if (isSafe)
+                    Assert.NotEqual(Search.Post.Rating.Explicit, rating);
+                if (rating == Search.Post.Rating.Explicit)
+                    foundExplicit = true;
+            }
+            if (!isSafe)
+                Assert.True(foundExplicit);
+
         }
     }
 
