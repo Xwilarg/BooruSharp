@@ -2,7 +2,7 @@
 {
     public class Safebooru : Booru
     {
-        public Safebooru() : base("safebooru.org", UrlFormat.indexPhp, null, BooruOptions.noWiki, BooruOptions.noRelated, BooruOptions.noComment)
+        public Safebooru(BooruAuth auth = null) : base("safebooru.org", auth, UrlFormat.indexPhp, null, BooruOptions.noWiki, BooruOptions.noRelated, BooruOptions.noComment)
         { }
 
         public override bool IsSafe()

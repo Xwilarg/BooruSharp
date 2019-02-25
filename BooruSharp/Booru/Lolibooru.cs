@@ -2,7 +2,7 @@
 {
     public class Lolibooru : Booru
     {
-        public Lolibooru() : base("lolibooru.moe", UrlFormat.postIndexXml, null, BooruOptions.noRelated)
+        public Lolibooru(BooruAuth auth = null) : base("lolibooru.moe", auth, UrlFormat.postIndexXml, null, BooruOptions.noRelated)
         { }
 
         public override bool IsSafe()

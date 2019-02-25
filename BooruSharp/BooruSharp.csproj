@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Booru\Atfbooru.cs" />
     <Compile Include="Booru\Booru.cs" />
+    <Compile Include="Booru\BooruAuth.cs" />
     <Compile Include="Booru\BooruOptions.cs" />
     <Compile Include="Booru\Custom\CustomBooru.cs" />
     <Compile Include="Booru\DanbooruDonmai.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="Booru\Xbooru.cs" />
     <Compile Include="Booru\Yandere.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Search\AuthentificationRequired.cs" />
     <Compile Include="Search\Comment\Booru.cs" />
     <Compile Include="Search\Comment\SearchResult.cs" />
     <Compile Include="Search\Post\Booru.cs" />

@@ -2,7 +2,7 @@
 {
     public class Konachan : Booru
     {
-        public Konachan() : base("konachan.com", UrlFormat.postIndexXml, null)
+        public Konachan(BooruAuth auth = null) : base("konachan.com", auth, UrlFormat.postIndexXml, null)
         { }
 
         public override bool IsSafe()

@@ -1,6 +1,8 @@
-﻿using System;
+﻿using BooruSharp.Search;
+using System;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -39,8 +41,9 @@ namespace BooruSharp.Booru
             }
         }
 
-        protected Booru(string baseUrl, UrlFormat format, int? maxLimit, params BooruOptions[] options)
+        protected Booru(string baseUrl, BooruAuth auth, UrlFormat format, int? maxLimit, params BooruOptions[] options)
         {
+            this.auth = auth;
             useHttp = options.Contains(BooruOptions.useHttp);
             this.baseUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl;
             this.format = format;
@@ -89,22 +92,28 @@ namespace BooruSharp.Booru
             using (HttpClient hc = new HttpClient())
             {
                 hc.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
-                xml.LoadXml(await (await hc.GetAsync(url)).Content.ReadAsStringAsync());
+                HttpResponseMessage msg = await hc.GetAsync(url);
+                if (msg.StatusCode == HttpStatusCode.Forbidden)
+                    throw new AuthentificationRequired();
+                xml.LoadXml(await msg.Content.ReadAsStringAsync());
             }
             return (xml);
         }
 
         private string CreateUrl(string url, params string[] args)
         {
+            string authArgs = "";
+            if (auth != null)
+                authArgs = "&login=" + auth.Login + "&password_hash=" + auth.PasswordHash;
             if (format == UrlFormat.indexPhp)
-                return (url + "&" + String.Join("&", args));
+                return (url + "&" + string.Join("&", args) + authArgs);
             else
-                return (url + "?" + String.Join("&", args));
+                return (url + "?" + string.Join("&", args) + authArgs);
         }
 
         private string TagsToString(string[] tags)
         {
-            return ((tags == null) ? ("") : ("tags=" + String.Join("+", tags.Select(x => Uri.EscapeDataString(x))).ToLower()));
+            return ((tags == null) ? ("") : ("tags=" + string.Join("+", tags.Select(x => Uri.EscapeDataString(x))).ToLower()));
         }
 
         private int GetFirstPage()
@@ -172,6 +181,7 @@ namespace BooruSharp.Booru
             return (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(Convert.ToInt64(dt)));
         }
 
+        private readonly BooruAuth auth;
         private readonly string baseUrl;
         private readonly string imageUrl, tagUrl, wikiUrl, relatedUrl, commentUrl;
         private readonly bool searchTagById;

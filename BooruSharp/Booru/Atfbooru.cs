@@ -2,7 +2,7 @@
 {
     public class Atfbooru : Booru
     {
-        public Atfbooru() : base("atfbooru.ninja", UrlFormat.danbooru, 1000, BooruOptions.wikiSearchUseTitle, BooruOptions.noComment)
+        public Atfbooru(BooruAuth auth = null) : base("atfbooru.ninja", auth, UrlFormat.danbooru, 1000, BooruOptions.wikiSearchUseTitle, BooruOptions.noComment)
         { }
 
         public override bool IsSafe()
