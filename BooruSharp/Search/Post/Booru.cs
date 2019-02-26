@@ -47,11 +47,11 @@ namespace BooruSharp.Booru
                 (args[8] == null && args[9] == null) ? ((int?)null) : (Convert.ToInt32(args[8] ?? args[9])),
                 Convert.ToInt32(args[10] ?? args[11]),
                 Convert.ToInt32(args[12] ?? args[13]),
-                (args[12] == null) ? ((int?)null) : (Convert.ToInt32(args[14])),
-                (args[13] == null) ? ((int?)null) : (Convert.ToInt32(args[15])),
+                (args[14] == null) ? ((int?)null) : (Convert.ToInt32(args[14])),
+                (args[15] == null) ? ((int?)null) : (Convert.ToInt32(args[15])),
                 ParseDateTime(args[16] ?? args[17]),
                 (args[18] == "") ? (null) : (args[18]),
-                Convert.ToInt32(args[19])));
+                (args[19] == "") ? (0) : (Convert.ToInt32(args[19]))));
         }
 
         public async Task<Search.Post.SearchResult> GetRandomImage(params string[] tags)
