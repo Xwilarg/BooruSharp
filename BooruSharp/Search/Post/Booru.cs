@@ -61,7 +61,8 @@ namespace BooruSharp.Booru
                 throw new Search.InvalidTags();
             if (GetLimit() != null && GetLimit() < nbMax)
                 nbMax = GetLimit().Value;
-            int randomNb = random.Next(GetFirstPage(), nbMax + 1);
+            int firstPage = GetFirstPage();
+            int randomNb = random.Next(firstPage, nbMax + firstPage);
             return (await GetImage(randomNb, tags));
         }
 
