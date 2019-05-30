@@ -10,7 +10,7 @@ namespace BooruSharp.Booru
         {
             string url;
             if (format == UrlFormat.danbooru)
-                url = baseUrl + "/counts/posts.xml";
+                url = baseUrl + "/counts/posts.xml?" + TagsToString(tags);
             else
                 url = CreateUrl(imageUrl, "limit=1", TagsToString(tags));
             XmlDocument xml = await GetXml(url);
