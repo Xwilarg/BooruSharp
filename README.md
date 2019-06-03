@@ -6,6 +6,10 @@
 
 # BooruSharp
 BooruSharp is a C# library to browse Booru websites easily<br/>
+You can download it from [NuGet](https://www.nuget.org/packages/BooruSharp):
+```
+Install-Package BooruSharp
+```
 BooruSharp currently handle the following websites:
  - atfbooru.ninja
  - danbooru.donmai.us
