@@ -32,12 +32,13 @@ namespace BooruSharp.Booru
             return (searchTagById);
         }
 
-        public void CheckAvailability()
+        /// <exception cref="HttpRequestException">Service not available</exception>
+        public async Task CheckAvailability()
         {
             using (HttpClient hc = new HttpClient())
             {
                 hc.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
-                hc.SendAsync(new HttpRequestMessage(HttpMethod.Head, imageUrl));
+                await hc.SendAsync(new HttpRequestMessage(HttpMethod.Head, imageUrl));
             }
         }
 

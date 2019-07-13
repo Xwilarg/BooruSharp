@@ -105,7 +105,6 @@ namespace BooruSharp.UnitTests
     public class BooruTests
     {
         [Theory]
-        [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
         [InlineData(typeof(E926))]
@@ -125,7 +124,6 @@ namespace BooruSharp.UnitTests
         }
 
         [Theory]
-        [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
         [InlineData(typeof(E926))]
@@ -145,7 +143,6 @@ namespace BooruSharp.UnitTests
         }
 
         [Theory]
-        [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
         [InlineData(typeof(E926))]
@@ -165,7 +162,6 @@ namespace BooruSharp.UnitTests
         }
 
         [Theory]
-        [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
         [InlineData(typeof(E926))]
@@ -185,7 +181,6 @@ namespace BooruSharp.UnitTests
         }
 
         [Theory]
-        [InlineData(typeof(Atfbooru), "hibiki_(kantai_collection)", 2033)]
         [InlineData(typeof(DanbooruDonmai), "hibiki_(kantai_collection)", 1240738)]
         [InlineData(typeof(E621), null, 267881)]
         [InlineData(typeof(E926), null, 1329650)]
@@ -208,7 +203,6 @@ namespace BooruSharp.UnitTests
         }
 
         [Theory]
-        [InlineData(typeof(Atfbooru), "highres", 82)]
         [InlineData(typeof(DanbooruDonmai), "futanari", 3589)]
         [InlineData(typeof(E621), "futanari", 123)]
         [InlineData(typeof(E926), "futanari", 123)]
@@ -242,7 +236,6 @@ namespace BooruSharp.UnitTests
         }
 
         [Theory]
-        [InlineData(typeof(Atfbooru), "kantai_collection", AvailableStatus.Ok)]
         [InlineData(typeof(DanbooruDonmai), "kantai_collection", AvailableStatus.Ok)]
         [InlineData(typeof(E621), "sky", AvailableStatus.AuthRequired)]
         [InlineData(typeof(E926), "sky", AvailableStatus.AuthRequired)]
@@ -286,7 +279,6 @@ namespace BooruSharp.UnitTests
         }
 
         [Theory]
-        [InlineData(typeof(Atfbooru), 3193008, false)]
         [InlineData(typeof(DanbooruDonmai), 3193008, false)]
         [InlineData(typeof(E621), 59432, true)]
         [InlineData(typeof(E926), 541858, true)]
@@ -309,7 +301,6 @@ namespace BooruSharp.UnitTests
         }
 
         [Theory]
-        [InlineData(typeof(Atfbooru), "female", true)]
         [InlineData(typeof(DanbooruDonmai), "hibi", true)]
         [InlineData(typeof(E621), "hibiki", true)]
         [InlineData(typeof(E926), "hibiki", true)]
@@ -332,7 +323,6 @@ namespace BooruSharp.UnitTests
         }
 
         [Theory]
-        [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
         [InlineData(typeof(E926))]
@@ -346,13 +336,19 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Sakugabooru))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
-        public void CheckAvailable(Type t)
+        public async Task CheckAvailable(Type t)
         {
-            ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).CheckAvailability();
+            await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).CheckAvailability();
         }
 
         [Theory]
         [InlineData(typeof(Atfbooru))]
+        public async Task CheckNotAvailable(Type t)
+        {
+            await Assert.ThrowsAsync<HttpRequestException>(async () => await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).CheckAvailability());
+        }
+
+        [Theory]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
         [InlineData(typeof(E926), "breast")]
