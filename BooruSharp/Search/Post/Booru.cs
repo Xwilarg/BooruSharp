@@ -20,10 +20,13 @@ namespace BooruSharp.Booru
         private int GetNbImageInternal(XmlDocument xml)
         {
             if (format == UrlFormat.danbooru)
-                return (Convert.ToInt32(xml.ChildNodes.Item(1).FirstChild.InnerXml));
+                return ClampMinZero(Convert.ToInt32(xml.ChildNodes.Item(1).FirstChild.InnerXml));
             else
-                return (Convert.ToInt32(xml.ChildNodes.Item(1).Attributes[0].InnerXml));
+                return ClampMinZero(Convert.ToInt32(xml.ChildNodes.Item(1).Attributes[0].InnerXml));
         }
+
+        private int ClampMinZero(int nb)
+            => nb < 0 ? 0 : nb;
 
         public int? GetLimit()
         {
