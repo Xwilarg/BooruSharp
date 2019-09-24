@@ -242,8 +242,8 @@ namespace BooruSharp.UnitTests
         }
 
         [Theory]
-        [InlineData(typeof(Atfbooru), "kantai_collection", AvailableStatus.Ok)]
-        [InlineData(typeof(DanbooruDonmai), "kantai_collection", AvailableStatus.Ok)]
+        [InlineData(typeof(Atfbooru), "kantai_collection", AvailableStatus.NotAvailable)]
+        [InlineData(typeof(DanbooruDonmai), "kantai_collection", AvailableStatus.NotAvailable)]
         [InlineData(typeof(E621), "sky", AvailableStatus.AuthRequired)]
         [InlineData(typeof(E926), "sky", AvailableStatus.AuthRequired)]
         [InlineData(typeof(Furrybooru), "sky", AvailableStatus.NotAvailable)]
