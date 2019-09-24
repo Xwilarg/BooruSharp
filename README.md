@@ -11,6 +11,7 @@ You can download it from [NuGet](https://www.nuget.org/packages/BooruSharp):
 Install-Package BooruSharp
 ```
 BooruSharp currently handle the following websites:
+ - booru.allthefallen.moe
  - danbooru.donmai.us
  - e621.net
  - e926.net
