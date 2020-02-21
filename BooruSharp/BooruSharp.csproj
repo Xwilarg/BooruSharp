@@ -2,6 +2,25 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.4.8</Version>
+    <Authors>Xwilarg</Authors>
+    <Company />
+    <Description>BooruSharp is a C# library to browse Booru websites (Gelbooru, Konachan, etc...) easily</Description>
+    <Copyright>GNU General Public License v3.0</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/Xwilarg/BooruSharp</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Xwilarg/BooruSharp</RepositoryUrl>
+    <RepositoryType>Library</RepositoryType>
+    <PackageReleaseNotes>Port project to .NET Standard</PackageReleaseNotes>
+    <PackageTags>Booru Gelbooru Image C-Sharp Atfbooru DanbooruDonmai Danbooru E621 E926 FurryBooru Konachan Lolibooru Realbooru Rule34 Safebooru Sakugabooru Xbooru Yandere</PackageTags>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>
