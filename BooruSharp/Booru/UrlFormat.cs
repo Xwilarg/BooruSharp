@@ -2,8 +2,9 @@
 {
     public enum UrlFormat
     {
-        postIndexXml, //post/index.xml
-        indexPhp, // index.php?page=dapi&s=post&q=index
-        danbooru // posts.xml
+        postIndexJson, //post/index.json
+        indexPhp, // index.php?page=dapi&s=post&q=index&json=1
+        danbooru, // posts.json
+        sankaku
     }
 }

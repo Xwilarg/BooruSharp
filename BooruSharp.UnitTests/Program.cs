@@ -117,6 +117,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Rule34))]
         [InlineData(typeof(Safebooru))]
         [InlineData(typeof(Sakugabooru), "kantai_collection", "animated")]
+        [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         public async Task Count(Type t, string tag1 = "wet", string tag2 = "school_swimsuit")
@@ -137,6 +138,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Rule34))]
         [InlineData(typeof(Safebooru))]
         [InlineData(typeof(Sakugabooru), "kantai_collection")]
+        [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         public async Task GetByOffset(Type t, string tag = "school_swimsuit")
@@ -157,6 +159,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Rule34))]
         [InlineData(typeof(Safebooru))]
         [InlineData(typeof(Sakugabooru), "kantai_collection")]
+        [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         public async Task GetRandom(Type t, string tag = "school_swimsuit")
@@ -177,6 +180,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Rule34))]
         [InlineData(typeof(Safebooru))]
         [InlineData(typeof(Sakugabooru), "kantai_collection")]
+        [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         public async Task CheckTag(Type t, string tag = "pantyhose")
@@ -197,6 +201,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Rule34), "hibiki_(kantai_collection)", 321239)]
         [InlineData(typeof(Safebooru), "hibiki_(kantai_collection)", 316679)]
         [InlineData(typeof(Sakugabooru), "kantai_collection", 7148)]
+        [InlineData(typeof(SankakuComplex), "kantai_collection", -1)]
         [InlineData(typeof(Xbooru), "hibiki_(kantai_collection)", 151883)]
         [InlineData(typeof(Yandere), "hibiki_(kancolle)", 98153)]
         public async Task TagId(Type t, string tag, int tagId)
@@ -220,6 +225,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Rule34), "futanari", null)]
         [InlineData(typeof(Safebooru), "futanari", null)]
         [InlineData(typeof(Sakugabooru), "animated", 13)]
+        [InlineData(typeof(SankakuComplex), "futanari", -1)]
         [InlineData(typeof(Xbooru), "futanari", null)]
         [InlineData(typeof(Yandere), "futanari", 167)]
         public async Task CheckWiki(Type t, string tag, int? id)
@@ -254,6 +260,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Rule34), "sky", AvailableStatus.NotAvailable)]
         [InlineData(typeof(Safebooru), "sky", AvailableStatus.NotAvailable)]
         [InlineData(typeof(Sakugabooru), "kantai_collection", AvailableStatus.Ok)]
+        [InlineData(typeof(SankakuComplex), "sky", AvailableStatus.Ok)]
         [InlineData(typeof(Xbooru), "sky", AvailableStatus.NotAvailable)]
         [InlineData(typeof(Yandere), "sky", AvailableStatus.Ok)]
         public async Task CheckRelated(Type t, string tag, AvailableStatus isAvailable) // TODO: Check if suppose to be alone
@@ -298,6 +305,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Rule34), 2840746, true)]
         [InlineData(typeof(Safebooru), 132, false)]
         [InlineData(typeof(Sakugabooru), 38886, false)]
+        [InlineData(typeof(SankakuComplex), -1, false)]
         [InlineData(typeof(Xbooru), 740157, true)]
         [InlineData(typeof(Yandere), 405923, false)]
         public async Task CheckComment(Type t, int id, bool isAvailable)
@@ -321,6 +329,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Rule34), "hibiki", true)]
         [InlineData(typeof(Safebooru), "hibiki", true)]
         [InlineData(typeof(Sakugabooru), "kantai", false)]
+        [InlineData(typeof(SankakuComplex), "hibiki", false)]
         [InlineData(typeof(Xbooru), "hibiki", true)]
         [InlineData(typeof(Yandere), "hibiki", false)]
         public async Task CheckTags(Type t, string tag, bool onlyOnce)
@@ -344,6 +353,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Rule34))]
         [InlineData(typeof(Safebooru))]
         [InlineData(typeof(Sakugabooru))]
+        [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         public async Task CheckAvailable(Type t)
@@ -358,6 +368,7 @@ namespace BooruSharp.UnitTests
         }*/
 
         [Theory]
+        [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
         [InlineData(typeof(E926), "breast")]
@@ -369,6 +380,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Rule34))]
         [InlineData(typeof(Safebooru), "breast")]
         [InlineData(typeof(Sakugabooru), "another")]
+        [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         public async Task CheckIsSafe(Type t, string explicitTag="pussy")

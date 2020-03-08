@@ -73,14 +73,17 @@ namespace BooruSharp.Booru
         {
             switch (format)
             {
-                case UrlFormat.postIndexXml:
-                    return (query + "/" + squery + ".xml");
+                case UrlFormat.postIndexJson:
+                    return query + "/" + squery + ".json";
 
                 case UrlFormat.indexPhp:
-                    return ("index.php?page=dapi&s=" + query + "&q=index");
+                    return "index.php?page=dapi&s=" + query + "&q=index&json=1";
 
                 case UrlFormat.danbooru:
-                    return (query + "s.xml");
+                    return query + "s.json";
+
+                case UrlFormat.sankaku:
+                    return query + "s";
 
                 default:
                     throw new ArgumentException("Invalid URL format " + format);
