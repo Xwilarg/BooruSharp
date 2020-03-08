@@ -8,8 +8,6 @@ namespace BooruSharp.Booru
         { }
 
         public override bool IsSafe()
-        {
-            return (false);
-        }
+            => false;
     }
 }

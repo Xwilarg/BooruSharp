@@ -6,8 +6,6 @@
         { }
 
         public override bool IsSafe()
-        {
-            return (true);
-        }
+            => true;
     }
 }

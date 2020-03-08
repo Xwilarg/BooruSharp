@@ -8,14 +8,10 @@
         }
 
         public override bool IsSafe()
-        {
-            return (isSafe);
-        }
+            => isSafe;
 
         public void SetIsSafe(bool value)
-        {
-            isSafe = value;
-        }
+            => isSafe = value;
 
         private bool isSafe;
     }
