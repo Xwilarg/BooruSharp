@@ -21,6 +21,7 @@ namespace BooruSharp.Search.Post
             this.source = source;
             this.score = score;
         }
+
         public readonly Uri fileUrl;
         public readonly Uri previewUrl;
         public readonly Rating rating;

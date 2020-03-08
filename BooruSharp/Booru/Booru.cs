@@ -90,7 +90,7 @@ namespace BooruSharp.Booru
             }
         }
 
-        private async Task<XmlDocument> GetXml(string url)
+        private async Task<string> GetJsonAsync(string url)
         {
             XmlDocument xml = new XmlDocument();
             using (HttpClient hc = new HttpClient())
@@ -99,9 +99,8 @@ namespace BooruSharp.Booru
                 HttpResponseMessage msg = await hc.GetAsync(url);
                 if (msg.StatusCode == HttpStatusCode.Forbidden)
                     throw new AuthentificationRequired();
-                xml.LoadXml(await msg.Content.ReadAsStringAsync());
+                return await msg.Content.ReadAsStringAsync();
             }
-            return (xml);
         }
 
         private string CreateUrl(string url, params string[] args)
