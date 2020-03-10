@@ -7,17 +7,6 @@ namespace BooruSharp.Booru
 {
     public abstract partial class Booru
     {
-        public async Task<int> GetNbImage(params string[] tags)
-        {
-            string url;
-            if (format == UrlFormat.danbooru)
-                url = baseUrl + "/counts/posts.xml?" + TagsToString(tags);
-            else
-                url = CreateUrl(imageUrl, "limit=1", TagsToString(tags));
-            XmlDocument xml = await GetXml(url);
-            return (GetNbImageInternal(xml));
-        }
-
         private int GetNbImageInternal(XmlDocument xml)
         {
             if (format == UrlFormat.danbooru)
@@ -36,7 +25,20 @@ namespace BooruSharp.Booru
 
         public async Task<Search.Post.SearchResult> GetImageAsync(int offset, params string[] tagsArg)
         {
-            var results = JsonConvert.DeserializeObject<Search.Post.SearchResultJson[]>(await GetJsonAsync(CreateUrl(imageUrl, "limit=1", GetPage() + offset, TagsToString(tagsArg))));
+            return await GetSearchResultFromUrl(CreateUrl(imageUrl, "limit=1", GetPage() + offset, TagsToString(tagsArg)));
+        }
+
+        public async Task<Search.Post.SearchResult> GetRandomImageAsync(params string[] tagsArg)
+        {
+            if (format == UrlFormat.indexPhp)
+                return null;
+            else
+                return await GetSearchResultFromUrl(CreateUrl(imageUrl, "limit=1", TagsToString(tagsArg) + "+order:random"));
+        }
+
+        private async Task<Search.Post.SearchResult> GetSearchResultFromUrl(string url)
+        {
+            var results = JsonConvert.DeserializeObject<Search.Post.SearchResultJson[]>(await GetJsonAsync(url));
             if (results.Length == 0)
                 throw new Search.InvalidTags();
             var result = results[0];
@@ -54,18 +56,6 @@ namespace BooruSharp.Booru
                 ParseDateTime(result.createdAt),
                 result.source,
                 result.score == "" ? 0 : Convert.ToInt32(result.score));
-        }
-
-        public async Task<Search.Post.SearchResult> GetRandomImageAsync(params string[] tags)
-        {
-            int nbMax = await GetNbImage(tags);
-            if (nbMax == 0)
-                throw new Search.InvalidTags();
-            if (GetLimit() != null && GetLimit() < nbMax)
-                nbMax = GetLimit().Value;
-            int firstPage = GetFirstPage();
-            int randomNb = random.Next(firstPage, nbMax + firstPage);
-            return (await GetImage(randomNb, tags));
         }
 
         private Search.Post.Rating GetRating(char c)
