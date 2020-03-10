@@ -31,7 +31,7 @@ namespace BooruSharp.Booru
         public async Task<Search.Post.SearchResult> GetRandomImageAsync(params string[] tagsArg)
         {
             if (format == UrlFormat.indexPhp)
-                return null;
+                return await GetSearchResultFromUrl(CreateUrl(imageUrl, "limit=1", GetPage() + await GetRandomIdAsync(), TagsToString(tagsArg)));
             else
                 return await GetSearchResultFromUrl(CreateUrl(imageUrl, "limit=1", TagsToString(tagsArg) + "+order:random"));
         }

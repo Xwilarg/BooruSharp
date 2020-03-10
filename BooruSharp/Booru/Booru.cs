@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using System.Xml;
 
 namespace BooruSharp.Booru
@@ -92,7 +93,6 @@ namespace BooruSharp.Booru
 
         private async Task<string> GetJsonAsync(string url)
         {
-            XmlDocument xml = new XmlDocument();
             using (HttpClient hc = new HttpClient())
             {
                 hc.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
@@ -100,6 +100,16 @@ namespace BooruSharp.Booru
                 if (msg.StatusCode == HttpStatusCode.Forbidden)
                     throw new AuthentificationRequired();
                 return await msg.Content.ReadAsStringAsync();
+            }
+        }
+
+        private async Task<string> GetRandomIdAsync()
+        {
+            using (HttpClient hc = new HttpClient())
+            {
+                hc.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
+                HttpResponseMessage msg = await hc.GetAsync(baseUrl + "/" + "index.php?page=post&s=random");
+                return HttpUtility.ParseQueryString(msg.RequestMessage.RequestUri.Query).Get("id");
             }
         }
 
