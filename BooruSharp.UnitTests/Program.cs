@@ -9,14 +9,6 @@ namespace BooruSharp.UnitTests
 {
     public static class General
     {
-        public static async Task CheckCount(Booru.Booru booru, string s1, string s2)
-        {
-            int nbGeneral = await booru.GetNbImage();
-            int nbMed = await booru.GetNbImage(s1);
-            int nbMin = await booru.GetNbImage(s1, s2);
-            Assert.NotEqual(0, nbMin);
-            Assert.InRange(nbMed, nbMin, nbGeneral);
-        }
         private static async Task<string> CheckUrl(Uri url)
         {
             try
@@ -57,13 +49,15 @@ namespace BooruSharp.UnitTests
 
         public static async Task CheckGetByOffset(Booru.Booru booru, string s1)
         {
-            Search.Post.SearchResult result = await booru.GetImage(2, s1);
+            Search.Post.SearchResult result = await booru.GetImageAsync(2, s1);
             await CheckResult(result, s1);
         }
 
         public static async Task CheckGetRandom(Booru.Booru booru, string s1)
         {
-            Search.Post.SearchResult result = await booru.GetRandomImage(s1);
+            Search.Post.SearchResult result = await booru.GetRandomImageAsync(s1);
+            Search.Post.SearchResult result2 = await booru.GetRandomImageAsync(s1);
+            Assert.NotEqual(result.fileUrl, result2.fileUrl);
             await CheckResult(result, s1);
         }
 
@@ -104,27 +98,6 @@ namespace BooruSharp.UnitTests
 
     public class BooruTests
     {
-        [Theory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621))]
-        [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan))]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru))]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru), "kantai_collection", "animated")]
-        [InlineData(typeof(SankakuComplex))]
-        [InlineData(typeof(Xbooru))]
-        [InlineData(typeof(Yandere))]
-        public async Task Count(Type t, string tag1 = "wet", string tag2 = "school_swimsuit")
-        {
-            await General.CheckCount((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null), tag1, tag2);
-        }
-
         [Theory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
@@ -390,7 +363,7 @@ namespace BooruSharp.UnitTests
             bool foundExplicit = false;
             for (int i = 0; i < 10; i++)
             {
-                var rating = (await b.GetRandomImage(explicitTag)).rating;
+                var rating = (await b.GetRandomImageAsync(explicitTag)).rating;
                 if (isSafe)
                     Assert.NotEqual(Search.Post.Rating.Explicit, rating);
                 if (rating == Search.Post.Rating.Explicit)
