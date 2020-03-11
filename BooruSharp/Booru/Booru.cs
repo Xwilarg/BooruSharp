@@ -38,6 +38,7 @@ namespace BooruSharp.Booru
         {
             this.auth = auth;
             useHttp = options.Contains(BooruOptions.useHttp);
+            this.baseUrlRaw = baseUrl;
             this.baseUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl;
             this.format = format;
             imageUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "post");
@@ -146,6 +147,7 @@ namespace BooruSharp.Booru
         }
 
         private readonly BooruAuth auth;
+        private readonly string baseUrlRaw;
         private readonly string baseUrl;
         private readonly string imageUrl, tagUrl, wikiUrl, relatedUrl, commentUrl;
         private readonly bool searchTagById;

@@ -5,7 +5,7 @@ namespace BooruSharp.Search.Post
     public struct SearchResult
     {
         public SearchResult(Uri fileUrl, Uri previewUrl, Rating rating, string[] tags, int id,
-                            int? size, int height, int width, int? previewHeight, int? previewWidth, DateTime creation, string source, int score)
+                            int? size, int height, int width, int? previewHeight, int? previewWidth, DateTime? creation, string source, int score)
         {
             this.fileUrl = fileUrl;
             this.previewUrl = previewUrl;
@@ -75,7 +75,7 @@ namespace BooruSharp.Search.Post
         /// <summary>
         /// When was the post created
         /// </summary>
-        public readonly DateTime creation;
+        public readonly DateTime? creation;
 
         /// <summary>
         /// Where the image is coming from

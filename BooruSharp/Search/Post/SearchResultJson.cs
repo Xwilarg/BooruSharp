@@ -11,11 +11,17 @@ namespace BooruSharp.Search.Post
         public string fileUrl
         {
             set { fileUrlInternal = value; }
-            get { return fileUrlInternal ?? fileUrl2; }
+            get { return fileUrlInternal ?? fileUrl2 ?? fileUrl3; }
         }
 
         [JsonProperty("file-url")]
         public string fileUrl2;
+
+        [JsonProperty("image")]
+        public string fileUrl3;
+
+        [JsonProperty]
+        public string directory;
 
         private string previewUrlInternal;
 
@@ -26,7 +32,7 @@ namespace BooruSharp.Search.Post
             get { return previewUrlInternal ?? previewUrl2; }
         }
 
-        [JsonProperty("preview-file-url")]
+        [JsonProperty("preview_file_url")]
         public string previewUrl2;
 
         [JsonProperty]
@@ -41,7 +47,7 @@ namespace BooruSharp.Search.Post
             get { return tagsInternal ?? tags2; }
         }
 
-        [JsonProperty("tag-string")]
+        [JsonProperty("tag_string")]
         public string tags2;
 
         [JsonProperty]

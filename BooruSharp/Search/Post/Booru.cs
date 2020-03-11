@@ -29,14 +29,13 @@ namespace BooruSharp.Booru
 
         private async Task<Search.Post.SearchResult> GetSearchResultFromUrlAsync(string url)
         {
-            System.Console.WriteLine(url);
-            var results = JsonConvert.DeserializeObject<Search.Post.SearchResultJson[]>(await GetJsonAsync(url));
+            var results = JsonConvert.DeserializeObject<Search.Post.SearchResultJson[]>(await GetJsonAsync(url)); // TODO: xbooru manage samples differently
             if (results.Length == 0)
                 throw new Search.InvalidTags();
             var result = results[0];
             return new Search.Post.SearchResult(
-                new Uri((result.fileUrl.StartsWith("//") ? "http" + (useHttp ? "" : "s") + ":" : "") + result.fileUrl.Replace(" ", "%20")),
-                result.previewUrl != null ? new Uri((result.previewUrl.StartsWith("//") ? "http" + (useHttp ? "" : "s") + ":" : "") + result.previewUrl.Replace(" ", "%20")) : null,
+                CreateUri(result.fileUrl, result.directory),
+                result.previewUrl != null ? CreateUri(result.previewUrl, result.directory) : null,
                 GetRating(result.rating[0]),
                 result.tags.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries),
                 Convert.ToInt32(result.id),
@@ -45,9 +44,18 @@ namespace BooruSharp.Booru
                 Convert.ToInt32(result.width),
                 Convert.ToInt32(result.previewHeight),
                 Convert.ToInt32(result.previewWidth),
-                ParseDateTime(result.createdAt),
+                result.createdAt != null ? ParseDateTime(result.createdAt) : (DateTime?)null,
                 result.source,
                 result.score == "" ? 0 : Convert.ToInt32(result.score));
+        }
+
+        private Uri CreateUri(string value, string directory)
+        {
+            if (value.StartsWith("//"))
+                return new Uri("http" + (useHttp ? "" : "s") + ":" + value.Replace(" ", "%20"));
+            if (!value.StartsWith("http"))
+                return new Uri("http" + (useHttp ? "" : "s") + "://img." + baseUrlRaw + "//images/" + directory + "/" + value); // Xbooru
+            return new Uri(value.Replace(" ", "%20"));
         }
 
         private Search.Post.Rating GetRating(char c)
