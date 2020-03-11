@@ -14,21 +14,22 @@ namespace BooruSharp.Booru
             return maxLimit;
         }
 
-        public async Task<Search.Post.SearchResult> GetImageAsync(int offset, params string[] tagsArg)
+        public async Task<Search.Post.SearchResult> GetImageAsync(int id)
         {
-            return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", GetPage() + offset, TagsToString(tagsArg)));
+            return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", "id=" + id));
         }
 
         public async Task<Search.Post.SearchResult> GetRandomImageAsync(params string[] tagsArg)
         {
             if (format == UrlFormat.indexPhp)
-                return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", GetPage() + await GetRandomIdAsync(), TagsToString(tagsArg)));
+                return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", "id=" + await GetRandomIdAsync(TagsToString(tagsArg))));
             else
                 return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", TagsToString(tagsArg) + "+order:random"));
         }
 
         private async Task<Search.Post.SearchResult> GetSearchResultFromUrlAsync(string url)
         {
+            System.Console.WriteLine(url);
             var results = JsonConvert.DeserializeObject<Search.Post.SearchResultJson[]>(await GetJsonAsync(url));
             if (results.Length == 0)
                 throw new Search.InvalidTags();

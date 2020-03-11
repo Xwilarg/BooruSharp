@@ -47,12 +47,6 @@ namespace BooruSharp.UnitTests
                 Assert.NotEqual(0, result.size.Value);
         }
 
-        public static async Task CheckGetByOffset(Booru.Booru booru, string s1)
-        {
-            Search.Post.SearchResult result = await booru.GetImageAsync(2, s1);
-            await CheckResult(result, s1);
-        }
-
         public static async Task CheckGetRandom(Booru.Booru booru, string s1)
         {
             Search.Post.SearchResult result = await booru.GetRandomImageAsync(s1);
@@ -110,13 +104,16 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Realbooru))]
         [InlineData(typeof(Rule34))]
         [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru), "kantai_collection")]
+        [InlineData(typeof(Sakugabooru))]
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
-        public async Task GetByOffset(Type t, string tag = "school_swimsuit")
+        public async Task GetByOffset(Type t)
         {
-            await General.CheckGetByOffset((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null), tag);
+            var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
+            var result1 = await booru.GetRandomImageAsync();
+            var result2 = await booru.GetImageAsync(result1.id);
+            Assert.Equal(result1, result2);
         }
 
         [Theory]

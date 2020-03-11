@@ -94,12 +94,12 @@ namespace BooruSharp.Booru
             }
         }
 
-        private async Task<string> GetRandomIdAsync()
+        private async Task<string> GetRandomIdAsync(string tags)
         {
             using (HttpClient hc = new HttpClient())
             {
                 hc.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
-                HttpResponseMessage msg = await hc.GetAsync(baseUrl + "/" + "index.php?page=post&s=random");
+                HttpResponseMessage msg = await hc.GetAsync(baseUrl + "/" + "index.php?page=post&s=random&tags=" + tags);
                 return HttpUtility.ParseQueryString(msg.RequestMessage.RequestUri.Query).Get("id");
             }
         }
@@ -126,14 +126,6 @@ namespace BooruSharp.Booru
                 return "search[" + value + "]=";
             else
                 return value + "=";
-        }
-
-        private string GetPage()
-        {
-            if (format == UrlFormat.indexPhp)
-                return "pid=";
-            else
-                return "page=";
         }
 
         private DateTime ParseDateTime(string dt)
