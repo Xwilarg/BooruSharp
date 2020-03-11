@@ -14,11 +14,13 @@ namespace BooruSharp.Search.Tag
         [JsonProperty]
         public int type;
 
+        private int? countInternal;
+
         [JsonProperty]
-        public int count
+        public int? count
         {
-            set { count = value; }
-            get { return count == 0 ? count2 : count; }
+            set { countInternal = value; }
+            get { return countInternal ?? count2; }
         }
 
         [JsonProperty("post-count")]

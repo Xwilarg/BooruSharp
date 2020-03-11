@@ -11,21 +11,25 @@ namespace BooruSharp.Search.Wiki
         [JsonProperty]
         public string title;
 
+        private string creationInternal;
+
         [JsonProperty("created_at")]
         public string creation
         {
-            set { creation = value; }
-            get { return creation ?? creation2; }
+            set { creationInternal = value; }
+            get { return creationInternal ?? creation2; }
         }
 
         [JsonProperty("created-at")]
         public string creation2;
 
+        private string lastUpdateInternal;
+
         [JsonProperty("updated_at")]
         public string lastUpdate
         {
-            set { lastUpdate = value; }
-            get { return lastUpdate ?? lastUpdate2; }
+            set { lastUpdateInternal = value; }
+            get { return lastUpdateInternal ?? lastUpdate2; }
         }
 
         [JsonProperty("updated-at")]

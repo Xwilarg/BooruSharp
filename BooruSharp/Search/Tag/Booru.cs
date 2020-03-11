@@ -32,7 +32,7 @@ namespace BooruSharp.Booru
                         json.id,
                         json.name,
                         (Search.Tag.TagType)json.type,
-                        json.count);
+                        json.count.Value);
                 i++;
             }
             return results;
@@ -55,7 +55,7 @@ namespace BooruSharp.Booru
                         json.id,
                         json.name,
                         (Search.Tag.TagType)json.type,
-                        json.count);
+                        json.count.Value);
             }
             throw new Search.InvalidTags();
         }
