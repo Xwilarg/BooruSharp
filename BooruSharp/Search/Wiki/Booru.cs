@@ -5,7 +5,7 @@ namespace BooruSharp.Booru
 {
     public abstract partial class Booru
     {
-        public async Task<Search.Wiki.SearchResult> GetWiki(string query)
+        public async Task<Search.Wiki.SearchResult> GetWikiAsync(string query)
         {
             if (wikiUrl == null)
                 throw new Search.FeatureUnavailable();

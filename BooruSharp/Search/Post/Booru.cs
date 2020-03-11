@@ -1,20 +1,11 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace BooruSharp.Booru
 {
     public abstract partial class Booru
     {
-        private int GetNbImageInternal(XmlDocument xml)
-        {
-            if (format == UrlFormat.danbooru)
-                return ClampMinZero(Convert.ToInt32(xml.ChildNodes.Item(1).FirstChild.InnerXml));
-            else
-                return ClampMinZero(Convert.ToInt32(xml.ChildNodes.Item(1).Attributes[0].InnerXml));
-        }
-
         private int ClampMinZero(int nb)
             => nb < 0 ? 0 : nb;
 
@@ -25,18 +16,18 @@ namespace BooruSharp.Booru
 
         public async Task<Search.Post.SearchResult> GetImageAsync(int offset, params string[] tagsArg)
         {
-            return await GetSearchResultFromUrl(CreateUrl(imageUrl, "limit=1", GetPage() + offset, TagsToString(tagsArg)));
+            return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", GetPage() + offset, TagsToString(tagsArg)));
         }
 
         public async Task<Search.Post.SearchResult> GetRandomImageAsync(params string[] tagsArg)
         {
             if (format == UrlFormat.indexPhp)
-                return await GetSearchResultFromUrl(CreateUrl(imageUrl, "limit=1", GetPage() + await GetRandomIdAsync(), TagsToString(tagsArg)));
+                return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", GetPage() + await GetRandomIdAsync(), TagsToString(tagsArg)));
             else
-                return await GetSearchResultFromUrl(CreateUrl(imageUrl, "limit=1", TagsToString(tagsArg) + "+order:random"));
+                return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", TagsToString(tagsArg) + "+order:random"));
         }
 
-        private async Task<Search.Post.SearchResult> GetSearchResultFromUrl(string url)
+        private async Task<Search.Post.SearchResult> GetSearchResultFromUrlAsync(string url)
         {
             var results = JsonConvert.DeserializeObject<Search.Post.SearchResultJson[]>(await GetJsonAsync(url));
             if (results.Length == 0)

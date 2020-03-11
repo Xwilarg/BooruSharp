@@ -7,7 +7,6 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
-using System.Xml;
 
 namespace BooruSharp.Booru
 {
@@ -16,25 +15,17 @@ namespace BooruSharp.Booru
         public abstract bool IsSafe();
 
         public bool HaveRelatedAPI()
-        {
-            return (relatedUrl != null);
-        }
+            => relatedUrl != null;
         public bool HaveWikiAPI()
-        {
-            return (wikiUrl != null);
-        }
+            => wikiUrl != null;
         public bool HaveCommentAPI()
-        {
-            return (commentUrl != null);
-        }
+            => commentUrl != null;
 
         public bool HaveTagByIdAPI()
-        {
-            return (searchTagById);
-        }
+            => searchTagById;
 
         /// <exception cref="HttpRequestException">Service not available</exception>
-        public async Task CheckAvailability()
+        public async Task CheckAvailabilityAsync()
         {
             using (HttpClient hc = new HttpClient())
             {
@@ -47,24 +38,24 @@ namespace BooruSharp.Booru
         {
             this.auth = auth;
             useHttp = options.Contains(BooruOptions.useHttp);
-            this.baseUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl;
+            this.baseUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl;
             this.format = format;
-            imageUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "post");
-            tagUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "tag");
+            imageUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "post");
+            tagUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag");
             if (options.Contains(BooruOptions.noWiki))
                 wikiUrl = null;
             else if (format == UrlFormat.danbooru)
-                wikiUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "wiki_page");
+                wikiUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "wiki_page");
             else
-                wikiUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "wiki");
+                wikiUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "wiki");
             if (options.Contains(BooruOptions.noRelated))
                 relatedUrl = null;
             else
-                relatedUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "tag", "related");
+                relatedUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag", "related");
             if (options.Contains(BooruOptions.noComment))
                 commentUrl = null;
             else
-                commentUrl = "http" + ((useHttp) ? ("") : ("s")) + "://" + baseUrl + "/" + GetUrl(format, "comment");
+                commentUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "comment");
             searchTagById = !options.Contains(BooruOptions.noTagById);
             this.maxLimit = maxLimit;
             wikiSearchUseTitle = options.Contains(BooruOptions.wikiSearchUseTitle);
@@ -126,56 +117,23 @@ namespace BooruSharp.Booru
 
         private string TagsToString(string[] tags)
         {
-            return ((tags == null) ? ("") : ("tags=" + string.Join("+", tags.Select(x => Uri.EscapeDataString(x))).ToLower()));
-        }
-
-        private int GetFirstPage()
-        {
-            if (format == UrlFormat.indexPhp)
-                return (0);
-            else
-                return (1);
+            return tags == null ? "" : "tags=" + string.Join("+", tags.Select(x => Uri.EscapeDataString(x))).ToLower();
         }
 
         private string SearchArg(string value)
         {
             if (format == UrlFormat.danbooru)
-                return ("search[" + value + "]=");
+                return "search[" + value + "]=";
             else
-                return (value + "=");
+                return value + "=";
         }
 
         private string GetPage()
         {
             if (format == UrlFormat.indexPhp)
-                return ("pid=");
+                return "pid=";
             else
-                return ("page=");
-        }
-
-        private string[] GetStringFromXml(XmlNode xml, params string[] tags)
-        {
-            string[] vars = new string[tags.Length];
-            if (xml.Attributes.Count > 0)
-            {
-                int i = 0;
-                foreach (string s in tags)
-                {
-                    XmlNode node = xml.Attributes.GetNamedItem(s);
-                    if (node != null)
-                        vars[i] = node.InnerXml;
-                    i++;
-                }
-            }
-            else
-            {
-                foreach (XmlNode node in xml.ChildNodes)
-                {
-                    if (tags.Contains(node.Name))
-                        vars[Array.IndexOf(tags, node.Name)] = node.InnerXml;
-                }
-            }
-            return (vars);
+                return "page=";
         }
 
         private DateTime ParseDateTime(string dt)
@@ -186,12 +144,12 @@ namespace BooruSharp.Booru
             dt = Regex.Replace(dt, " [-+][0-9]{4}", "");
             if (dt.Length > 10 && dt[10] == 'T') dt = dt.Substring(0, 10) + " " + dt.Substring(11, dt.Length - 11);
             if (DateTime.TryParseExact(dt, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out res))
-                return (res);
+                return res;
             if (DateTime.TryParseExact(dt, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out res))
-                return (res);
+                return res;
             if (DateTime.TryParseExact(dt, "ddd MMM dd HH:mm:ss yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out res))
-                return (res);
-            return (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(Convert.ToInt64(dt)));
+                return res;
+            return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(Convert.ToInt64(dt));
         }
 
         private readonly BooruAuth auth;

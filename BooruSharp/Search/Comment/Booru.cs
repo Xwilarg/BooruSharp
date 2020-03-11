@@ -5,21 +5,21 @@ namespace BooruSharp.Booru
 {
     public abstract partial class Booru
     {
-        public async Task<Search.Comment.SearchResult[]> GetComment(int postId)
+        public async Task<Search.Comment.SearchResult[]> GetCommentAsync(int postId)
         {
             if (commentUrl == null)
                 throw new Search.FeatureUnavailable();
-            return (await GetCommentInternal(CreateUrl(commentUrl, SearchArg("post_id") + postId)));
+            return await GetCommentInternalAsync(CreateUrl(commentUrl, SearchArg("post_id") + postId));
         }
 
-        public async Task<Search.Comment.SearchResult[]> GetLastComment()
+        public async Task<Search.Comment.SearchResult[]> GetLastCommentAsync()
         {
             if (commentUrl == null)
                 throw new Search.FeatureUnavailable();
-            return (await GetCommentInternal(CreateUrl(commentUrl)));
+            return (await GetCommentInternalAsync(CreateUrl(commentUrl)));
         }
 
-        private async Task<Search.Comment.SearchResult[]> GetCommentInternal(string url)
+        private async Task<Search.Comment.SearchResult[]> GetCommentInternalAsync(string url)
         {
             var jsons = JsonConvert.DeserializeObject<Search.Comment.SearchResultJson[]>(await GetJsonAsync(url));
             Search.Comment.SearchResult[] results = new Search.Comment.SearchResult[jsons.Length];
@@ -35,7 +35,7 @@ namespace BooruSharp.Booru
                     json.body);
                 i++;
             }
-            return (results);
+            return results;
         }
     }
 }

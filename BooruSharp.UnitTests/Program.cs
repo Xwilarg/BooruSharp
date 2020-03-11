@@ -18,10 +18,10 @@ namespace BooruSharp.UnitTests
                     hc.DefaultRequestHeaders.Add("User-Agent", "BooruSharp");
                     await hc.SendAsync(new HttpRequestMessage(new HttpMethod("HEAD"), url));
                 }
-                return (null);
+                return null;
             }
             catch (WebException ex)
-            { return (ex.Message + " for " + url); }
+            { return ex.Message + " for " + url; }
         }
 
         public static async Task CheckResult(Search.Post.SearchResult result, string inputTag)
@@ -204,10 +204,10 @@ namespace BooruSharp.UnitTests
         public async Task CheckWiki(Type t, string tag, int? id)
         {
             if (id == null)
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetWiki(tag); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetWikiAsync(tag); });
             else
             {
-                Search.Wiki.SearchResult result = await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetWiki(tag);
+                Search.Wiki.SearchResult result = await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetWikiAsync(tag);
                 Assert.Equal(id, result.id);
                 General.CheckWiki(result);
             }
@@ -239,12 +239,12 @@ namespace BooruSharp.UnitTests
         public async Task CheckRelated(Type t, string tag, AvailableStatus isAvailable) // TODO: Check if suppose to be alone
         {
             if (isAvailable == AvailableStatus.NotAvailable)
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetRelated(tag); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetRelatedAsync(tag); });
             else if (isAvailable == AvailableStatus.AuthRequired)
-                await Assert.ThrowsAsync<Search.AuthentificationRequired>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetRelated(tag); });
+                await Assert.ThrowsAsync<Search.AuthentificationRequired>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetRelatedAsync(tag); });
             else
             {
-                Search.Related.SearchResult[] result = await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetRelated(tag);
+                Search.Related.SearchResult[] result = await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetRelatedAsync(tag);
                 General.CheckRelated(result);
             }
         }
@@ -253,7 +253,7 @@ namespace BooruSharp.UnitTests
         public async Task CheckRelatedE621()
         {
             Search.Related.SearchResult[] result = await new E621(
-                new BooruAuth(Environment.GetEnvironmentVariable("E621_API_LOGIN"), Environment.GetEnvironmentVariable("E621_API_KEY"))).GetRelated("sky");
+                new BooruAuth(Environment.GetEnvironmentVariable("E621_API_LOGIN"), Environment.GetEnvironmentVariable("E621_API_KEY"))).GetRelatedAsync("sky");
             General.CheckRelated(result);
         }
 
@@ -261,7 +261,7 @@ namespace BooruSharp.UnitTests
         public async Task CheckRelatedE926()
         {
             Search.Related.SearchResult[] result = await new E926(
-                new BooruAuth(Environment.GetEnvironmentVariable("E621_API_LOGIN"), Environment.GetEnvironmentVariable("E621_API_KEY"))).GetRelated("sky");
+                new BooruAuth(Environment.GetEnvironmentVariable("E621_API_LOGIN"), Environment.GetEnvironmentVariable("E621_API_KEY"))).GetRelatedAsync("sky");
             General.CheckRelated(result);
         }
 
@@ -284,9 +284,9 @@ namespace BooruSharp.UnitTests
         public async Task CheckComment(Type t, int id, bool isAvailable)
         {
             if (!isAvailable)
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetComment(id); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetCommentAsync(id); });
             else
-                General.CheckComment(await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetComment(id));
+                General.CheckComment(await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetCommentAsync(id));
         }
 
         [Theory]
@@ -308,9 +308,9 @@ namespace BooruSharp.UnitTests
         public async Task CheckTags(Type t, string tag, bool onlyOnce)
         {
             if (onlyOnce)
-                Assert.NotEmpty(await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetTags(tag));
+                Assert.NotEmpty(await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetTagsAsync(tag));
             else
-                Assert.NotInRange((await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetTags(tag)).Length, 0, 1);
+                Assert.NotInRange((await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetTagsAsync(tag)).Length, 0, 1);
         }
 
         [Theory]
@@ -331,7 +331,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Yandere))]
         public async Task CheckAvailable(Type t)
         {
-            await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).CheckAvailability();
+            await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).CheckAvailabilityAsync();
         }
 
         /*[Theory]

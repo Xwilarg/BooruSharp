@@ -8,17 +8,17 @@ namespace BooruSharp.Booru
     {
         public async Task<Search.Tag.SearchResult> GetTag(string name)
         {
-            return await SearchTag(name, null);
+            return await SearchTagAsync(name, null);
         }
 
         public async Task<Search.Tag.SearchResult> GetTag(int id)
         {
             if (!searchTagById)
                 throw new Search.FeatureUnavailable();
-            return await SearchTag(null, id);
+            return await SearchTagAsync(null, id);
         }
 
-        public async Task<Search.Tag.SearchResult[]> GetTags(string name)
+        public async Task<Search.Tag.SearchResult[]> GetTagsAsync(string name)
         {
             List<string> urlTags = new List<string>() { SearchArg("name") + name };
             if (format != UrlFormat.danbooru)
@@ -38,7 +38,7 @@ namespace BooruSharp.Booru
             return results;
         }
 
-        private async Task<Search.Tag.SearchResult> SearchTag(string name, int? id)
+        private async Task<Search.Tag.SearchResult> SearchTagAsync(string name, int? id)
         {
             List<string> urlTags = new List<string>();
             if (name == null)
