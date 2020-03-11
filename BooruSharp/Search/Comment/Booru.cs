@@ -16,7 +16,7 @@ namespace BooruSharp.Booru
         {
             if (commentUrl == null)
                 throw new Search.FeatureUnavailable();
-            return (await GetCommentInternalAsync(CreateUrl(commentUrl)));
+            return await GetCommentInternalAsync(CreateUrl(commentUrl));
         }
 
         private async Task<Search.Comment.SearchResult[]> GetCommentInternalAsync(string url)

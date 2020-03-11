@@ -290,6 +290,30 @@ namespace BooruSharp.UnitTests
         }
 
         [Theory]
+        [InlineData(typeof(Atfbooru), false)]
+        [InlineData(typeof(DanbooruDonmai), false)]
+        [InlineData(typeof(E621), true)]
+        [InlineData(typeof(E926), true)]
+        [InlineData(typeof(Furrybooru), true)]
+        [InlineData(typeof(Gelbooru), true)]
+        [InlineData(typeof(Konachan), true)]
+        [InlineData(typeof(Lolibooru), true)]
+        [InlineData(typeof(Realbooru), false)]
+        [InlineData(typeof(Rule34), true)]
+        [InlineData(typeof(Safebooru), false)]
+        [InlineData(typeof(Sakugabooru), false)]
+        [InlineData(typeof(SankakuComplex), false)]
+        [InlineData(typeof(Xbooru), true)]
+        [InlineData(typeof(Yandere), false)]
+        public async Task CheckLastComment(Type t, bool isAvailable)
+        {
+            if (!isAvailable)
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetLastCommentAsync(); });
+            else
+                General.CheckComment(await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetLastCommentAsync());
+        }
+
+        [Theory]
         [InlineData(typeof(Atfbooru), "female", true)]
         [InlineData(typeof(DanbooruDonmai), "hibi", true)]
         [InlineData(typeof(E621), "hibiki", true)]
