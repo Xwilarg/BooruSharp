@@ -36,7 +36,7 @@ namespace BooruSharp.Booru
             var result = results[0];
             return new Search.Post.SearchResult(
                 new Uri((result.fileUrl.StartsWith("//") ? "http" + (useHttp ? "" : "s") + ":" : "") + result.fileUrl.Replace(" ", "%20")),
-                new Uri((result.previewUrl.StartsWith("//") ? "http" + (useHttp ? "" : "s") + ":" : "") + result.previewUrl.Replace(" ", "%20")),
+                result.previewUrl != null ? new Uri((result.previewUrl.StartsWith("//") ? "http" + (useHttp ? "" : "s") + ":" : "") + result.previewUrl.Replace(" ", "%20")) : null,
                 GetRating(result.rating[0]),
                 result.tags.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries),
                 Convert.ToInt32(result.id),

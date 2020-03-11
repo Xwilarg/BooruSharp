@@ -57,7 +57,7 @@ namespace BooruSharp.UnitTests
 
         public static async Task CheckTag(Booru.Booru booru, string s1 = "pantyhose")
         {
-            Search.Tag.SearchResult result = await booru.GetTag(s1);
+            Search.Tag.SearchResult result = await booru.GetTagAsync(s1);
             Assert.Equal(s1, result.name);
             Assert.InRange(result.type, Search.Tag.TagType.Trivia, Search.Tag.TagType.Metadata);
             Assert.NotEqual((Search.Tag.TagType)2, result.type);
@@ -177,9 +177,9 @@ namespace BooruSharp.UnitTests
         public async Task TagId(Type t, string tag, int tagId)
         {
             if (tag == null)
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetTag(tagId); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetTagAsync(tagId); });
             else
-                Assert.Equal(tag, (await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetTag(tagId)).name);
+                Assert.Equal(tag, (await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetTagAsync(tagId)).name);
         }
 
         [Theory]
@@ -403,31 +403,31 @@ namespace BooruSharp.UnitTests
         [Fact]
         public async Task GelbooruTagCharacter()
         {
-            Assert.Equal(Search.Tag.TagType.Character, (await new Gelbooru().GetTag("cirno")).type);
+            Assert.Equal(Search.Tag.TagType.Character, (await new Gelbooru().GetTagAsync("cirno")).type);
         }
 
         [Fact]
         public async Task GelbooruTagCopyright()
         {
-            Assert.Equal(Search.Tag.TagType.Copyright, (await new Gelbooru().GetTag("kantai_collection")).type);
+            Assert.Equal(Search.Tag.TagType.Copyright, (await new Gelbooru().GetTagAsync("kantai_collection")).type);
         }
 
         [Fact]
         public async Task GelbooruTagArtist()
         {
-            Assert.Equal(Search.Tag.TagType.Artist, (await new Gelbooru().GetTag("mtu_(orewamuzituda)")).type);
+            Assert.Equal(Search.Tag.TagType.Artist, (await new Gelbooru().GetTagAsync("mtu_(orewamuzituda)")).type);
         }
 
         [Fact]
         public async Task GelbooruTagMetadata()
         {
-            Assert.Equal(Search.Tag.TagType.Metadata, (await new Gelbooru().GetTag("uncensored")).type);
+            Assert.Equal(Search.Tag.TagType.Metadata, (await new Gelbooru().GetTagAsync("uncensored")).type);
         }
 
         [Fact]
         public async Task GelbooruTagTrivia()
         {
-            Assert.Equal(Search.Tag.TagType.Trivia, (await new Gelbooru().GetTag("futanari")).type);
+            Assert.Equal(Search.Tag.TagType.Trivia, (await new Gelbooru().GetTagAsync("futanari")).type);
         }
     }
 }

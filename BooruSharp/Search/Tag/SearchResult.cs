@@ -9,9 +9,25 @@
             this.type = type;
             this.count = count;
         }
+
+        /// <summary>
+        /// If of the tag
+        /// </summary>
         public readonly int id;
+
+        /// <summary>
+        /// Name of the tag
+        /// </summary>
         public readonly string name;
+
+        /// <summary>
+        /// Type of the tag (character, copyright, etc...)
+        /// </summary>
         public readonly TagType type;
+
+        /// <summary>
+        /// Number of occurences of the tag
+        /// </summary>
         public readonly int count;
     }
 }

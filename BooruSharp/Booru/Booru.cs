@@ -131,9 +131,10 @@ namespace BooruSharp.Booru
         private DateTime ParseDateTime(string dt)
         {
             DateTime res;
-            dt = Regex.Replace(dt, "[-+][0-9]{2}:[0-9]{2}", "");
+            dt = Regex.Replace(dt, "[-+][0-9]{2}:[0-9]{2}", ""); // TODO: manage timezones
             dt = dt.Replace(" UTC", "");
             dt = Regex.Replace(dt, " [-+][0-9]{4}", "");
+            dt = Regex.Replace(dt, "\\.[0-9]{3}", ""); // Ignore ms
             if (dt.Length > 10 && dt[10] == 'T') dt = dt.Substring(0, 10) + " " + dt.Substring(11, dt.Length - 11);
             if (DateTime.TryParseExact(dt, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out res))
                 return res;
