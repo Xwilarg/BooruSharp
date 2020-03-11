@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace BooruSharp.Booru
 {
@@ -10,32 +10,17 @@ namespace BooruSharp.Booru
         {
             if (relatedUrl == null)
                 throw new Search.FeatureUnavailable();
-            if (format == UrlFormat.danbooru)
-                return (await GetRelatedDanbooru(tag));
-            else
-                return (await GetRelatedOther(tag));
+            return await GetRelatedAsync(tag);
         }
 
-        private async Task<Search.Related.SearchResult[]> GetRelatedDanbooru(string tag)
+        private async Task<Search.Related.SearchResult[]> GetRelatedAsync(string tag)
         {
-            XmlDocument xml = await GetXml(CreateUrl(tagUrl, SearchArg("name") + tag));
-            string arg = GetStringFromXml(xml.ChildNodes.Item(1).FirstChild, "related-tags")[0];
-            string[] allTags = arg.Split(' ');
-            Search.Related.SearchResult[] result = new Search.Related.SearchResult[allTags.Length / 2];
-            for (int i = 0; i < allTags.Length; i += 2)
-                result[i / 2] = new Search.Related.SearchResult(allTags[i], null);
-            return (result);
-        }
-
-        private async Task<Search.Related.SearchResult[]> GetRelatedOther(string tag)
-        {
-            XmlDocument xml = await GetXml(CreateUrl(relatedUrl, SearchArg("tags") + tag));
+            var jsons = JsonConvert.DeserializeObject<Search.Related.SearchResultJson[]>(await GetJsonAsync(CreateUrl(relatedUrl, SearchArg("tags") + tag)));
             int i = 0;
-            Search.Related.SearchResult[] results = new Search.Related.SearchResult[xml.ChildNodes.Item(1).FirstChild.ChildNodes.Count];
-            foreach (XmlNode node in xml.ChildNodes.Item(1).FirstChild.ChildNodes)
+            Search.Related.SearchResult[] results = new Search.Related.SearchResult[jsons.Length];
+            foreach (var json in jsons)
             {
-                string[] args = GetStringFromXml(node, "name", "count");
-                results[i] = new Search.Related.SearchResult(args[0], Convert.ToInt32(args[1]));
+                results[i] = new Search.Related.SearchResult(json.name, json.count);
                 i++;
             }
             return (results);
