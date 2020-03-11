@@ -2,6 +2,7 @@
 
 namespace BooruSharp.Search.Post
 {
+#pragma warning disable 0649
     internal class SearchResultJson
     {
         [JsonProperty("file_url")]
@@ -90,4 +91,5 @@ namespace BooruSharp.Search.Post
         [JsonProperty]
         public string score;
     }
+#pragma warning restore 0649
 }

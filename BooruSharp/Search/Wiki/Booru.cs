@@ -1,6 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace BooruSharp.Booru
 {
@@ -10,17 +9,16 @@ namespace BooruSharp.Booru
         {
             if (wikiUrl == null)
                 throw new Search.FeatureUnavailable();
-            XmlDocument xml = await GetXml(CreateUrl(wikiUrl, SearchArg((wikiSearchUseTitle) ? ("title") : ("query")) + query));
-            foreach (XmlNode node in xml.ChildNodes.Item(1).ChildNodes)
+            var jsons = JsonConvert.DeserializeObject<Search.Wiki.SearchResultJson[]>(await GetJsonAsync(CreateUrl(wikiUrl, SearchArg(wikiSearchUseTitle ? "title" : "query") + query)));
+            foreach (var json in jsons)
             {
-                string[] args = GetStringFromXml(node, "id", "title", "created_at", "created-at", "updated_at", "updated-at", "body");
-                if (args[1] == query)
-                    return (new Search.Wiki.SearchResult(
-                        Convert.ToInt32(args[0]),
-                        args[1],
-                        ParseDateTime(args[2] ?? args[3]),
-                        ParseDateTime(args[4] ?? args[5]),
-                        args[6]));
+                if (json.title == query)
+                    return new Search.Wiki.SearchResult(
+                        json.id,
+                        json.title,
+                        ParseDateTime(json.creation),
+                        ParseDateTime(json.lastUpdate),
+                        json.body);
             }
             throw new Search.InvalidTags();
         }

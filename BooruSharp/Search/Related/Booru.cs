@@ -6,7 +6,7 @@ namespace BooruSharp.Booru
 {
     public abstract partial class Booru
     {
-        public async Task<Search.Related.SearchResult[]> GetRelated(string tag) // TODO: E621 and E926 now need authentification to check related tags
+        public async Task<Search.Related.SearchResult[]> GetRelated(string tag)
         {
             if (relatedUrl == null)
                 throw new Search.FeatureUnavailable();

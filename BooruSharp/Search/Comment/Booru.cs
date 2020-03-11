@@ -1,6 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace BooruSharp.Booru
 {
@@ -22,19 +21,18 @@ namespace BooruSharp.Booru
 
         private async Task<Search.Comment.SearchResult[]> GetCommentInternal(string url)
         {
-            XmlDocument xml = await GetXml(url);
+            var jsons = JsonConvert.DeserializeObject<Search.Comment.SearchResultJson[]>(await GetJsonAsync(url));
+            Search.Comment.SearchResult[] results = new Search.Comment.SearchResult[jsons.Length];
             int i = 0;
-            Search.Comment.SearchResult[] results = new Search.Comment.SearchResult[xml.ChildNodes.Item(1).ChildNodes.Count];
-            foreach (XmlNode node in xml.ChildNodes.Item(1).ChildNodes)
+            foreach (var json in jsons)
             {
-                string[] args = GetStringFromXml(node, "id", "post_id", "creator_id", "created_at", "creator", "body");
                 results[i] = new Search.Comment.SearchResult(
-                    Convert.ToInt32(args[0]),
-                    Convert.ToInt32(args[1]),
-                    Convert.ToInt32(args[2]),
-                    ParseDateTime(args[3]),
-                    args[4],
-                    args[5]);
+                    json.commentId,
+                    json.postId,
+                    json.authorId,
+                    ParseDateTime(json.creation),
+                    json.authorName,
+                    json.body);
                 i++;
             }
             return (results);
