@@ -7,7 +7,7 @@ namespace BooruSharp.Booru
 {
     public sealed class Gelbooru : Booru
     {
-        public Gelbooru(BooruAuth auth = null) : base("gelbooru.com", auth, UrlFormat.indexPhp, 20000, BooruOptions.noWiki, BooruOptions.noRelated)
+        public Gelbooru(BooruAuth auth = null) : base("gelbooru.com", auth, UrlFormat.indexPhp, BooruOptions.noWiki, BooruOptions.noRelated, BooruOptions.limitOf200000)
         { }
 
         public override bool IsSafe()

@@ -2,7 +2,7 @@
 {
     public class CustomBooru : Booru
     {
-        public CustomBooru(string baseUrl, UrlFormat format, BooruAuth auth = null, int? maxLimit = null, params BooruOptions[] options) : base(baseUrl, auth, format, maxLimit, options)
+        public CustomBooru(string baseUrl, UrlFormat format, BooruAuth auth = null, params BooruOptions[] options) : base(baseUrl, auth, format, options)
         {
             isSafe = false;
         }

@@ -7,6 +7,7 @@
         noRelated,
         noComment,
         noTagById,
-        wikiSearchUseTitle
+        wikiSearchUseTitle,
+        limitOf200000
     } // TODO: can guess some options depending of UrlFormat
 }

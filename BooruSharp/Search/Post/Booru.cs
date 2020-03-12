@@ -8,11 +8,6 @@ namespace BooruSharp.Booru
 {
     public abstract partial class Booru
     {
-        public int? GetLimit()
-        {
-            return maxLimit;
-        }
-
         public async Task<Search.Post.SearchResult> GetImageAsync(int id)
         {
             return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", "id=" + id));
@@ -31,8 +26,8 @@ namespace BooruSharp.Booru
                     string url = CreateUrl(imageUrlXml, "limit=1", TagsToString(tagsArg));
                     XmlDocument xml = await GetXmlAsync(url);
                     int max = int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
-                    if (maxLimit.HasValue && max > maxLimit)
-                        max = maxLimit.Value + 1;
+                    if (maxLimit)
+                        max = 200001;
                     return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", TagsToString(tagsArg), "pid=" + random.Next(0, max)));
                 }
             }

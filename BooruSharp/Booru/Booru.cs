@@ -48,10 +48,11 @@ namespace BooruSharp.Booru
             }
         }
 
-        protected Booru(string baseUrl, BooruAuth auth, UrlFormat format, int? maxLimit, params BooruOptions[] options)
+        protected Booru(string baseUrl, BooruAuth auth, UrlFormat format, params BooruOptions[] options)
         {
             this.auth = auth;
             useHttp = options.Contains(BooruOptions.useHttp);
+            maxLimit = options.Contains(BooruOptions.limitOf200000);
             this.baseUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl;
             this.format = format;
             imageUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "post");
@@ -72,7 +73,6 @@ namespace BooruSharp.Booru
             else
                 commentUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "comment");
             searchTagById = !options.Contains(BooruOptions.noTagById);
-            this.maxLimit = maxLimit;
             wikiSearchUseTitle = options.Contains(BooruOptions.wikiSearchUseTitle);
         }
 
@@ -160,7 +160,7 @@ namespace BooruSharp.Booru
         private readonly string baseUrl;
         private readonly string imageUrlXml, imageUrl, tagUrl, wikiUrl, relatedUrl, commentUrl;
         private readonly bool searchTagById;
-        private readonly int? maxLimit;
+        private readonly bool maxLimit;
         private readonly bool wikiSearchUseTitle;
         private readonly UrlFormat format;
         protected readonly bool useHttp;

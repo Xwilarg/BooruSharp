@@ -7,7 +7,7 @@ namespace BooruSharp.Booru.Template
 {
     public class E621 : Booru
     {
-        public E621(string url, BooruAuth auth = null) : base(url, auth, UrlFormat.danbooru, 750, BooruOptions.wikiSearchUseTitle, BooruOptions.noTagById)
+        public E621(string url, BooruAuth auth = null) : base(url, auth, UrlFormat.danbooru, BooruOptions.wikiSearchUseTitle, BooruOptions.noTagById)
         { }
 
         public override bool IsSafe()
