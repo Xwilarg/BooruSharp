@@ -20,8 +20,8 @@ namespace BooruSharp.Booru.Template
             if (elem == null)
                 throw new Search.InvalidTags();
             return new Search.Post.SearchResult(
-                    new Uri("https://" + url + "//images/" + elem["directory"].Value<string>() + "/" + elem["image"].Value<string>()),
-                    new Uri("https://" + url + "//thumbnails/" + elem["directory"].Value<string>() + "/thumbnails_" + elem["image"].Value<string>()),
+                    new Uri("http" + (useHttp ? "" : "s") + "://" + url + "//images/" + elem["directory"].Value<string>() + "/" + elem["image"].Value<string>()),
+                    new Uri("http" + (useHttp ? "" : "s") + "://" + url + "//thumbnails/" + elem["directory"].Value<string>() + "/thumbnails_" + elem["image"].Value<string>()),
                     GetRating(elem["rating"].Value<string>()[0]),
                     elem["tags"].Value<string>().Split(' '),
                     elem["id"].Value<int>(),

@@ -163,7 +163,7 @@ namespace BooruSharp.Booru
         private readonly int? maxLimit;
         private readonly bool wikiSearchUseTitle;
         private readonly UrlFormat format;
-        private readonly bool useHttp;
+        protected readonly bool useHttp;
         private static readonly Random random = new Random();
     }
 }
