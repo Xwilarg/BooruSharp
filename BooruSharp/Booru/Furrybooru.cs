@@ -1,8 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Linq;
-
-namespace BooruSharp.Booru
+﻿namespace BooruSharp.Booru
 {
     public sealed class Furrybooru : Template.Gelbooru02
     {
