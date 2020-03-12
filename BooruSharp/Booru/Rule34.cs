@@ -1,8 +1,8 @@
 ﻿namespace BooruSharp.Booru
 {
-    public class Rule34 : Booru
+    public sealed class Rule34 : Template.Gelbooru02
     {
-        public Rule34(BooruAuth auth = null) : base("rule34.xxx", auth, UrlFormat.indexPhp, 20000, BooruOptions.noWiki, BooruOptions.noRelated)
+        public Rule34(BooruAuth auth = null) : base("rule34.xxx", auth)
         { }
 
         public override bool IsSafe()

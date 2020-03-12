@@ -5,6 +5,6 @@
         postIndexJson, //post/index.json
         indexPhp, // index.php?page=dapi&s=post&q=index&json=1
         danbooru, // posts.json
-        sankaku
+        sankaku // posts
     }
 }

@@ -1,8 +1,8 @@
 ﻿namespace BooruSharp.Booru
 {
-    public class Sakugabooru : Booru
+    public sealed class Sakugabooru : Template.Moebooru
     {
-        public Sakugabooru(BooruAuth auth = null) : base("sakugabooru.com", auth, UrlFormat.postIndexJson, 750, BooruOptions.noComment)
+        public Sakugabooru(BooruAuth auth = null) : base("sakugabooru.com", auth) // 750
         { }
 
         public override bool IsSafe()

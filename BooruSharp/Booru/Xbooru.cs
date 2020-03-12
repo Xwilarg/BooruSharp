@@ -1,8 +1,8 @@
 ﻿namespace BooruSharp.Booru
 {
-    public class Xbooru : Booru
+    public class Xbooru : Template.Gelbooru02
     {
-        public Xbooru(BooruAuth auth = null) : base("xbooru.com", auth, UrlFormat.indexPhp, null, BooruOptions.noWiki, BooruOptions.noRelated)
+        public Xbooru(BooruAuth auth = null) : base("xbooru.com", auth)
         { }
 
         public override bool IsSafe()
