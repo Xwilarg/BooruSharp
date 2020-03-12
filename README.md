@@ -24,6 +24,7 @@ BooruSharp currently handle the following websites:
  - rule34.xxx
  - safebooru.org
  - sakugabooru.com
+ - beta.sankakucomplex.com
  - xbooru.com
  - yande.re
 
@@ -32,7 +33,7 @@ BooruSharp currently handle the following websites:
 Random image:
 ```Cs
 BooruSharp.Booru.Gelbooru booru = new BooruSharp.Booru.Gelbooru();
-BooruSharp.Search.Post.SearchResult result = await booru.GetRandomImage("hibiki_(kantai_collection)", "school_swimsuit");
+BooruSharp.Search.Post.SearchResult result = await booru.GetRandomImageAsync("hibiki_(kantai_collection)", "school_swimsuit");
 
 Console.WriteLine("Image preview URL: " + result.previewUrl + Environment.NewLine +
                   "Image URL: " + result.fileUrl + Environment.NewLine +
@@ -43,7 +44,7 @@ Console.WriteLine("Image preview URL: " + result.previewUrl + Environment.NewLin
 Get tag:
 ```Cs
 BooruSharp.Booru.Safebooru booru = new BooruSharp.Booru.Safebooru();
-BooruSharp.Search.Tag.SearchResult result = await booru.GetTag("cirno");
+BooruSharp.Search.Tag.SearchResult result = await booru.GetTagAsync("cirno");
 
 Console.WriteLine("Tag type: " + result.type + Environment.NewLine +
                   "ID: " + result.id);
@@ -52,7 +53,7 @@ Console.WriteLine("Tag type: " + result.type + Environment.NewLine +
 Get Wiki entry:
 ```Cs
 BooruSharp.Booru.Konachan booru = new BooruSharp.Booru.Konachan();
-BooruSharp.Search.Wiki.SearchResult result = await booru.GetWiki("loli");
+BooruSharp.Search.Wiki.SearchResult result = await booru.GetWikiAsync("loli");
 
 Console.WriteLine("Description: " + result.body + Environment.NewLine +
                   "ID: " + result.id + Environment.NewLine +
@@ -62,7 +63,7 @@ Console.WriteLine("Description: " + result.body + Environment.NewLine +
 Get related tags:
 ```Cs
 BooruSharp.Booru.Yandere booru = new BooruSharp.Booru.Yandere();
-BooruSharp.Search.Related.SearchResult[] results = await booru.GetRelated("see_through");
+BooruSharp.Search.Related.SearchResult[] results = await booru.GetRelatedAsync("see_through");
 
 Console.WriteLine(String.Join(Environment.NewLine,
     results.Select(delegate (BooruSharp.Search.Related.SearchResult res) { return ("Name: " + res.name +" (" + res.count + ")"); })));
@@ -70,7 +71,7 @@ Console.WriteLine(String.Join(Environment.NewLine,
 Get comments:
 ```Cs
 BooruSharp.Booru.Lolibooru booru = new BooruSharp.Booru.Lolibooru();
-BooruSharp.Search.Comment.SearchResult[] results = await booru.GetComment(134097);
+BooruSharp.Search.Comment.SearchResult[] results = await booru.GetCommentAsync(134097);
 
 Console.WriteLine(String.Join(Environment.NewLine,
     results.Select(delegate (BooruSharp.Search.Comment.SearchResult res) { return ("Author: " + res.authorName + ", the " + res.creation.ToString("dd/MM/yy HH:mm:ss") + " - " + res.body); })));
@@ -81,7 +82,7 @@ Console.WriteLine(String.Join(Environment.NewLine,
 Get all character tags containing a string:
 ```Cs
 BooruSharp.Booru.Yandere yandere = new BooruSharp.Booru.Yandere();
-BooruSharp.Search.Tag.SearchResult[] results = await yandere.GetTags("tsukiko");
+BooruSharp.Search.Tag.SearchResult[] results = await yandere.GetTagsAsync("tsukiko");
 Console.WriteLine(String.Join(Environment.NewLine,
 	results.Where(delegate (BooruSharp.Search.Tag.SearchResult res) { return (res.type == BooruSharp.Search.Tag.TagType.Character); })
            .Select(delegate (BooruSharp.Search.Tag.SearchResult res) { return (res.name); })));
