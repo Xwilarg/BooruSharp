@@ -2,15 +2,12 @@
 using System;
 using System.Linq;
 
-namespace BooruSharp.Booru
+namespace BooruSharp.Booru.Template
 {
-    public sealed class Gelbooru : Booru
+    public abstract class Danbooru : Booru
     {
-        public Gelbooru(BooruAuth auth = null) : base("gelbooru.com", auth, UrlFormat.indexPhp, 20000, BooruOptions.noWiki, BooruOptions.noRelated)
+        public Danbooru(string url, BooruAuth auth = null) : base(url, auth, UrlFormat.danbooru, 1000, BooruOptions.wikiSearchUseTitle)
         { }
-
-        public override bool IsSafe()
-            => false;
 
         public override Search.Post.SearchResult GetPostSearchResult(object json)
         {
@@ -19,13 +16,13 @@ namespace BooruSharp.Booru
                 throw new Search.InvalidTags();
             return new Search.Post.SearchResult(
                     new Uri(elem["file_url"].Value<string>()),
-                    new Uri("https://gelbooru.com/thumbnails/" + elem["directory"].Value<string>() + "/thumbnail_" + elem["image"].Value<string>()),
+                    new Uri(elem["preview_file_url"].Value<string>()),
                     GetRating(elem["rating"].Value<string>()[0]),
-                    elem["tags"].Value<string>().Split(' '),
+                    elem["tag_string"].Value<string>().Split(' '),
                     elem["id"].Value<int>(),
-                    null,
-                    elem["height"].Value<int>(),
-                    elem["width"].Value<int>(),
+                    elem["file_size"].Value<int>(),
+                    elem["image_height"].Value<int>(),
+                    elem["image_width"].Value<int>(),
                     null,
                     null,
                     elem["created_at"].Value<DateTime>(),

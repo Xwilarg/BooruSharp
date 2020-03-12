@@ -1,8 +1,8 @@
 ﻿namespace BooruSharp.Booru
 {
-    public class DanbooruDonmai : Booru
+    public sealed class DanbooruDonmai : Template.Danbooru
     {
-        public DanbooruDonmai(BooruAuth auth = null) : base("danbooru.donmai.us", auth, UrlFormat.danbooru, 1000, BooruOptions.wikiSearchUseTitle, BooruOptions.noComment, BooruOptions.noRelated)
+        public DanbooruDonmai(BooruAuth auth = null) : base("danbooru.donmai.us", auth)
         { }
 
         public override bool IsSafe()
