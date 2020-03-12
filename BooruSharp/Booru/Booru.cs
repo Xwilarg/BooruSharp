@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
+using System.Xml;
 
 namespace BooruSharp.Booru
 {
@@ -51,10 +52,10 @@ namespace BooruSharp.Booru
         {
             this.auth = auth;
             useHttp = options.Contains(BooruOptions.useHttp);
-            this.baseUrlRaw = baseUrl;
             this.baseUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl;
             this.format = format;
             imageUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "post");
+            imageUrlXml = imageUrl.Replace("json=1", "json=0"); // Only needed for websites with UrlFormat.indexPhp
             tagUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag");
             if (options.Contains(BooruOptions.noWiki))
                 wikiUrl = null;
@@ -108,6 +109,13 @@ namespace BooruSharp.Booru
             }
         }
 
+        private async Task<XmlDocument> GetXmlAsync(string url)
+        {
+            XmlDocument xml = new XmlDocument();
+            xml.LoadXml(await GetJsonAsync(url));
+            return xml;
+        }
+
         private async Task<string> GetRandomIdAsync(string tags)
         {
             using (HttpClient hc = new HttpClient())
@@ -149,9 +157,8 @@ namespace BooruSharp.Booru
         }
 
         private readonly BooruAuth auth;
-        private readonly string baseUrlRaw;
         private readonly string baseUrl;
-        private readonly string imageUrl, tagUrl, wikiUrl, relatedUrl, commentUrl;
+        private readonly string imageUrlXml, imageUrl, tagUrl, wikiUrl, relatedUrl, commentUrl;
         private readonly bool searchTagById;
         private readonly int? maxLimit;
         private readonly bool wikiSearchUseTitle;

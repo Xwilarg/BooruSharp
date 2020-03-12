@@ -1,14 +1,13 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace BooruSharp.Booru
 {
     public abstract partial class Booru
     {
-        private int ClampMinZero(int nb)
-            => nb < 0 ? 0 : nb;
-
         public int? GetLimit()
         {
             return maxLimit;
@@ -21,8 +20,22 @@ namespace BooruSharp.Booru
 
         public async Task<Search.Post.SearchResult> GetRandomImageAsync(params string[] tagsArg)
         {
+            tagsArg = tagsArg.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
             if (format == UrlFormat.indexPhp)
-                return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", "id=" + await GetRandomIdAsync(TagsToString(tagsArg))));
+            {
+                if (tagsArg.Length == 0)
+                    return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", "id=" + await GetRandomIdAsync(TagsToString(tagsArg)))); // We need to request /index.php?page=post&s=random and get the id given by the redirect
+                else
+                {
+                    // The previous option doesn't work if there are tags so we contact the XML endpoint to get post count
+                    string url = CreateUrl(imageUrlXml, "limit=1", TagsToString(tagsArg));
+                    XmlDocument xml = await GetXmlAsync(url);
+                    int max = int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
+                    if (maxLimit.HasValue && max > maxLimit)
+                        max = maxLimit.Value + 1;
+                    return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", TagsToString(tagsArg), "pid=" + random.Next(0, max)));
+                }
+            }
             else
                 return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", TagsToString(tagsArg) + "+order:random"));
         }
@@ -31,16 +44,6 @@ namespace BooruSharp.Booru
         {
             return GetPostSearchResult(JsonConvert.DeserializeObject(await GetJsonAsync(url)));
         }
-
-        private Uri CreateUri(string value, string directory)
-        {
-            if (value.StartsWith("//"))
-                return new Uri("http" + (useHttp ? "" : "s") + ":" + value.Replace(" ", "%20"));
-            if (!value.StartsWith("http"))
-                return new Uri("http" + (useHttp ? "" : "s") + "://img." + baseUrlRaw + "//images/" + directory + "/" + value); // Xbooru
-            return new Uri(value.Replace(" ", "%20"));
-        }
-
         protected Search.Post.Rating GetRating(char c)
         {
             switch (c)
