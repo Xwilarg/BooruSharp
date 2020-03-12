@@ -14,6 +14,21 @@ namespace BooruSharp.Booru
     {
         public abstract bool IsSafe();
 
+        public virtual Search.Comment.SearchResult GetCommentSearchResult(object json)
+            => throw new FeatureUnavailable();
+
+        public virtual Search.Post.SearchResult GetPostSearchResult(object json)
+            => throw new FeatureUnavailable();
+
+        public virtual Search.Related.SearchResult GetRelatedSearchResult(object json)
+            => throw new FeatureUnavailable();
+
+        public virtual Search.Tag.SearchResult GetTagSearchResult(object json)
+            => throw new FeatureUnavailable();
+
+        public virtual Search.Wiki.SearchResult GetWikiSearchResult(object json)
+            => throw new FeatureUnavailable();
+
         public bool HaveRelatedAPI()
             => relatedUrl != null;
         public bool HaveWikiAPI()
@@ -129,20 +144,9 @@ namespace BooruSharp.Booru
                 return value + "=";
         }
 
-        private DateTime ParseDateTime(string dt)
+        protected DateTime ParseDateTime(string dt)
         {
-            DateTime res;
-            dt = Regex.Replace(dt, "[-+][0-9]{2}:[0-9]{2}", ""); // TODO: manage timezones
-            dt = dt.Replace(" UTC", "");
-            dt = Regex.Replace(dt, " [-+][0-9]{4}", "");
-            dt = Regex.Replace(dt, "\\.[0-9]{3}", ""); // Ignore ms
-            if (dt.Length > 10 && dt[10] == 'T') dt = dt.Substring(0, 10) + " " + dt.Substring(11, dt.Length - 11);
-            if (DateTime.TryParseExact(dt, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out res))
-                return res;
-            if (DateTime.TryParseExact(dt, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out res))
-                return res;
-            if (DateTime.TryParseExact(dt, "ddd MMM dd HH:mm:ss yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out res))
-                return res;
+            // TODO: Remove function
             return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(Convert.ToInt64(dt));
         }
 
