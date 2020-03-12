@@ -1,8 +1,8 @@
 ﻿namespace BooruSharp.Booru
 {
-    public class Lolibooru : Booru
+    public sealed class Lolibooru : Template.Moebooru
     {
-        public Lolibooru(BooruAuth auth = null) : base("lolibooru.moe", auth, UrlFormat.postIndexJson, null, BooruOptions.noRelated)
+        public Lolibooru(BooruAuth auth = null) : base("lolibooru.moe", auth)
         { }
 
         public override bool IsSafe()

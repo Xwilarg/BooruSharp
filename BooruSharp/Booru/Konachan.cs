@@ -1,8 +1,8 @@
 ﻿namespace BooruSharp.Booru
 {
-    public class Konachan : Booru
+    public sealed class Konachan : Template.Moebooru
     {
-        public Konachan(BooruAuth auth = null) : base("konachan.com", auth, UrlFormat.postIndexJson, null)
+        public Konachan(BooruAuth auth = null) : base("konachan.com", auth)
         { }
 
         public override bool IsSafe()
