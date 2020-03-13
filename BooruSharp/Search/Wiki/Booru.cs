@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 
 namespace BooruSharp.Booru
@@ -9,16 +10,15 @@ namespace BooruSharp.Booru
         {
             if (wikiUrl == null)
                 throw new Search.FeatureUnavailable();
-            var jsons = JsonConvert.DeserializeObject<Search.Wiki.SearchResultJson[]>(await GetJsonAsync(CreateUrl(wikiUrl, SearchArg(wikiSearchUseTitle ? "title" : "query") + query)));
+
+            var jsons = (JArray)JsonConvert.DeserializeObject(await GetJsonAsync(CreateUrl(wikiUrl, SearchArg(wikiSearchUseTitle ? "title" : "query") + query)));
+            Search.Wiki.SearchResult[] results = new Search.Wiki.SearchResult[jsons.Count];
+            int i = 0;
             foreach (var json in jsons)
             {
-                if (json.title == query)
-                    return new Search.Wiki.SearchResult(
-                        json.id,
-                        json.title,
-                        ParseDateTime(json.creation),
-                        ParseDateTime(json.lastUpdate),
-                        json.body);
+                if (((JObject)json)["title"].Value<string>() == query)
+                    return GetWikiSearchResult(json);
+                i++;
             }
             throw new Search.InvalidTags();
         }
