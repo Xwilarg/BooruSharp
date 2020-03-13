@@ -150,12 +150,6 @@ namespace BooruSharp.Booru
                 return value + "=";
         }
 
-        protected DateTime ParseDateTime(string dt)
-        {
-            // TODO: Remove function
-            return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(Convert.ToInt64(dt));
-        }
-
         private readonly BooruAuth auth;
         private readonly string baseUrl;
         private readonly string imageUrlXml, imageUrl, tagUrl, wikiUrl, relatedUrl, commentUrl;
