@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 
 namespace BooruSharp.Booru
@@ -14,12 +15,12 @@ namespace BooruSharp.Booru
 
         private async Task<Search.Related.SearchResult[]> GetRelatedInternalAsync(string tag)
         {
-            var jsons = JsonConvert.DeserializeObject<Search.Related.SearchResultJson[]>(await GetJsonAsync(CreateUrl(relatedUrl, SearchArg("tags") + tag)));
+            var jsons = (JArray)JsonConvert.DeserializeObject(await GetJsonAsync(CreateUrl(relatedUrl, SearchArg("tags") + tag)));
+            Search.Related.SearchResult[] results = new Search.Related.SearchResult[jsons.Count];
             int i = 0;
-            Search.Related.SearchResult[] results = new Search.Related.SearchResult[jsons.Length];
             foreach (var json in jsons)
             {
-                results[i] = new Search.Related.SearchResult(json.name, json.count);
+                results[i] = GetRelatedSearchResult(json);
                 i++;
             }
             return (results);

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -24,16 +25,12 @@ namespace BooruSharp.Booru
             List<string> urlTags = new List<string>() { SearchArg("name") + name };
             if (format != UrlFormat.danbooru)
                 urlTags.Add("limit=0");
-            var jsons = JsonConvert.DeserializeObject<Search.Tag.SearchResultJson[]>(await GetJsonAsync(CreateUrl(tagUrl, urlTags.ToArray())));
+            var jsons = (JArray)JsonConvert.DeserializeObject(await GetJsonAsync(CreateUrl(tagUrl, urlTags.ToArray())));
+            Search.Tag.SearchResult[] results = new Search.Tag.SearchResult[jsons.Count];
             int i = 0;
-            Search.Tag.SearchResult[] results = new Search.Tag.SearchResult[jsons.Length];
             foreach (var json in jsons)
             {
-                results[i] = new Search.Tag.SearchResult(
-                        int.Parse(json.id),
-                        json.name,
-                        (Search.Tag.TagType)Enum.Parse(typeof(Search.Tag.TagType), json.type, true),
-                        int.Parse(json.count));
+                results[i] = GetTagSearchResult(json);
                 i++;
             }
             return results;
@@ -48,15 +45,12 @@ namespace BooruSharp.Booru
                 urlTags.Add(SearchArg("name") + name);
             if (format != UrlFormat.danbooru)
                 urlTags.Add("limit=0");
-            var jsons = JsonConvert.DeserializeObject<Search.Tag.SearchResultJson[]>(await GetJsonAsync(CreateUrl(tagUrl, urlTags.ToArray())));
+            var jsons = (JArray)JsonConvert.DeserializeObject(await GetJsonAsync(CreateUrl(tagUrl, urlTags.ToArray())));
             foreach (var json in jsons)
             {
-                if ((name == null && id.ToString() == json.id) || (name != null && name == json.name))
-                    return new Search.Tag.SearchResult(
-                        int.Parse(json.id),
-                        json.name,
-                        (Search.Tag.TagType)Enum.Parse(typeof(Search.Tag.TagType), json.type, true),
-                        int.Parse(json.count));
+                var result = GetTagSearchResult(json);
+                if ((name == null && id == result.id) || (name != null && name == result.name))
+                    return result;
             }
             throw new Search.InvalidTags();
         }
