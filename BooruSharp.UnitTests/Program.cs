@@ -281,9 +281,9 @@ namespace BooruSharp.UnitTests
         public async Task CheckComment(Type t, int id, bool isAvailable)
         {
             if (!isAvailable)
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetCommentAsync(id); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetCommentsAsync(id); });
             else
-                General.CheckComment(await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetCommentAsync(id));
+                General.CheckComment(await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetCommentsAsync(id));
         }
 
         [Theory]
@@ -305,9 +305,9 @@ namespace BooruSharp.UnitTests
         public async Task CheckLastComment(Type t, bool isAvailable)
         {
             if (!isAvailable)
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetLastCommentAsync(); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetLastCommentsAsync(); });
             else
-                General.CheckComment(await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetLastCommentAsync());
+                General.CheckComment(await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetLastCommentsAsync());
         }
 
         [Theory]
