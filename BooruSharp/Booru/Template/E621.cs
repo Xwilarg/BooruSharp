@@ -40,5 +40,7 @@ namespace BooruSharp.Booru.Template
                     elem["score"]["total"].Value<int>()
                 );
         }
+
+        // GetCommentSearchResult not available
     }
 }

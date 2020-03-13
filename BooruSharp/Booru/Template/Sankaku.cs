@@ -34,5 +34,18 @@ namespace BooruSharp.Booru.Template
                     elem["total_score"].Value<int>()
                 );
         }
+
+        public override Search.Comment.SearchResult GetCommentSearchResult(object json)
+        {
+            var elem = (JObject)json;
+            return new Search.Comment.SearchResult(
+                elem["id"].Value<int>(),
+                elem["post_id"].Value<int>(),
+                elem["author"]["id"].Value<int>(),
+                new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(elem["created_at"]["s"].Value<int>()),
+                elem["creator"].Value<string>(),
+                elem["body"].Value<string>()
+                );
+        }
     }
 }

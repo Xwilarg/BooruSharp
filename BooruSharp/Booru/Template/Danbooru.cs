@@ -30,5 +30,7 @@ namespace BooruSharp.Booru.Template
                     elem["score"].Value<int>()
                 );
         }
+
+        // GetCommentSearchResult not available
     }
 }
