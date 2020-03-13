@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 
 namespace BooruSharp.Booru
@@ -21,18 +22,12 @@ namespace BooruSharp.Booru
 
         private async Task<Search.Comment.SearchResult[]> GetCommentsInternalAsync(string url)
         {
-            var jsons = JsonConvert.DeserializeObject<Search.Comment.SearchResultJson[]>(await GetJsonAsync(url));
-            Search.Comment.SearchResult[] results = new Search.Comment.SearchResult[jsons.Length];
+            var jsons = (JArray)JsonConvert.DeserializeObject(await GetJsonAsync(url));
+            Search.Comment.SearchResult[] results = new Search.Comment.SearchResult[jsons.Count];
             int i = 0;
             foreach (var json in jsons)
             {
-                results[i] = new Search.Comment.SearchResult(
-                    json.commentId,
-                    json.postId,
-                    json.authorId,
-                    ParseDateTime(json.creation),
-                    json.authorName,
-                    json.body);
+                results[i] = GetCommentSearchResult(json);
                 i++;
             }
             return results;
