@@ -10,7 +10,7 @@ namespace BooruSharp.Booru.Template
     /// </summary>
     public abstract class Gelbooru : Booru
     {
-        public Gelbooru(string url, BooruAuth auth = null) : base(url, auth, UrlFormat.indexPhp, BooruOptions.noWiki, BooruOptions.noRelated, BooruOptions.limitOf200000)
+        public Gelbooru(string url, BooruAuth auth = null) : base(url, auth, UrlFormat.indexPhp, BooruOptions.noWiki, BooruOptions.noRelated, BooruOptions.limitOf20000)
         { }
 
         public override Search.Post.SearchResult GetPostSearchResult(object json)

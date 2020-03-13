@@ -27,7 +27,7 @@ namespace BooruSharp.Booru
                     XmlDocument xml = await GetXmlAsync(url);
                     int max = int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
                     if (maxLimit)
-                        max = 200001;
+                        max = 20001;
                     return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", TagsToString(tagsArg), "pid=" + random.Next(0, max)));
                 }
             }

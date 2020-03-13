@@ -8,6 +8,6 @@
         noComment,
         noTagById,
         wikiSearchUseTitle,
-        limitOf200000
+        limitOf20000
     } // TODO: can guess some options depending of UrlFormat
 }

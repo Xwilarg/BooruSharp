@@ -52,7 +52,7 @@ namespace BooruSharp.Booru
         {
             this.auth = auth;
             useHttp = options.Contains(BooruOptions.useHttp);
-            maxLimit = options.Contains(BooruOptions.limitOf200000);
+            maxLimit = options.Contains(BooruOptions.limitOf20000);
             this.baseUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl;
             this.format = format;
             imageUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "post");
