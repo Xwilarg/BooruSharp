@@ -1,5 +1,6 @@
 ﻿using BooruSharp.Search;
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -13,19 +14,24 @@ namespace BooruSharp.Booru
     {
         public abstract bool IsSafe();
 
-        public virtual Search.Comment.SearchResult GetCommentSearchResult(object json)
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        protected internal virtual Search.Comment.SearchResult GetCommentSearchResult(object json)
             => throw new FeatureUnavailable();
 
-        public virtual Search.Post.SearchResult GetPostSearchResult(object json)
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        protected internal virtual Search.Post.SearchResult GetPostSearchResult(object json)
             => throw new FeatureUnavailable();
 
-        public virtual Search.Related.SearchResult GetRelatedSearchResult(object json)
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        protected internal virtual Search.Related.SearchResult GetRelatedSearchResult(object json)
             => throw new FeatureUnavailable();
 
-        public virtual Search.Tag.SearchResult GetTagSearchResult(object json)
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        protected internal virtual Search.Tag.SearchResult GetTagSearchResult(object json)
             => throw new FeatureUnavailable();
 
-        public virtual Search.Wiki.SearchResult GetWikiSearchResult(object json)
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        protected internal virtual Search.Wiki.SearchResult GetWikiSearchResult(object json)
             => throw new FeatureUnavailable();
 
         public bool HaveRelatedAPI()

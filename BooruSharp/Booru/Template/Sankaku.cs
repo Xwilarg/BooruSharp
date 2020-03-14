@@ -10,7 +10,7 @@ namespace BooruSharp.Booru.Template
         public Sankaku(string url, BooruAuth auth = null) : base(url, auth, UrlFormat.sankaku)
         { }
 
-        public override Search.Post.SearchResult GetPostSearchResult(object json)
+        protected internal override Search.Post.SearchResult GetPostSearchResult(object json)
         {
             var elem = ((JArray)json).FirstOrDefault();
             if (elem == null)
@@ -35,7 +35,7 @@ namespace BooruSharp.Booru.Template
                 );
         }
 
-        public override Search.Comment.SearchResult GetCommentSearchResult(object json)
+        protected internal override Search.Comment.SearchResult GetCommentSearchResult(object json)
         {
             var elem = (JObject)json;
             return new Search.Comment.SearchResult(
@@ -48,7 +48,7 @@ namespace BooruSharp.Booru.Template
                 );
         }
 
-        public override Search.Wiki.SearchResult GetWikiSearchResult(object json)
+        protected internal override Search.Wiki.SearchResult GetWikiSearchResult(object json)
         {
             var elem = (JObject)json;
             return new Search.Wiki.SearchResult(

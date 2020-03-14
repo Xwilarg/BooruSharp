@@ -13,7 +13,7 @@ namespace BooruSharp.Booru.Template
         public override bool IsSafe()
             => false;
 
-        public override Search.Post.SearchResult GetPostSearchResult(object json)
+        protected internal override Search.Post.SearchResult GetPostSearchResult(object json)
         {
             var elem = ((JArray)((JObject)json)["posts"]).FirstOrDefault();
             if (elem == null)

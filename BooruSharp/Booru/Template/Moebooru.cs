@@ -9,7 +9,7 @@ namespace BooruSharp.Booru.Template
         public Moebooru(string url, BooruAuth auth = null) : base(url, auth, UrlFormat.postIndexJson)
         { }
 
-        public override Search.Post.SearchResult GetPostSearchResult(object json)
+        protected internal override Search.Post.SearchResult GetPostSearchResult(object json)
         {
             var elem = ((JArray)json).FirstOrDefault();
             if (elem == null)
@@ -31,7 +31,7 @@ namespace BooruSharp.Booru.Template
                 );
         }
 
-        public override Search.Comment.SearchResult GetCommentSearchResult(object json)
+        protected internal override Search.Comment.SearchResult GetCommentSearchResult(object json)
         {
             var elem = (JObject)json;
             return new Search.Comment.SearchResult(
@@ -44,7 +44,7 @@ namespace BooruSharp.Booru.Template
                 );
         }
 
-        public override Search.Wiki.SearchResult GetWikiSearchResult(object json)
+        protected internal override Search.Wiki.SearchResult GetWikiSearchResult(object json)
         {
             var elem = (JObject)json;
             return new Search.Wiki.SearchResult(
@@ -53,6 +53,17 @@ namespace BooruSharp.Booru.Template
                 elem["created_at"].Value<DateTime>(),
                 elem["updated_at"].Value<DateTime>(),
                 elem["body"].Value<string>()
+                );
+        }
+
+        protected internal override Search.Tag.SearchResult GetTagSearchResult(object json)
+        {
+            var elem = (JObject)json;
+            return new Search.Tag.SearchResult(
+                elem["id"].Value<int>(),
+                elem["name"].Value<string>(),
+                (Search.Tag.TagType)elem["type"].Value<int>(),
+                elem["count"].Value<int>()
                 );
         }
     }

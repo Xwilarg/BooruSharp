@@ -15,7 +15,7 @@ namespace BooruSharp.Booru.Template
         public Gelbooru(string url, BooruAuth auth = null) : base(url, auth, UrlFormat.indexPhp, BooruOptions.noWiki, BooruOptions.noRelated, BooruOptions.limitOf20000)
         { }
 
-        public override Search.Post.SearchResult GetPostSearchResult(object json)
+        protected internal override Search.Post.SearchResult GetPostSearchResult(object json)
         {
             var elem = ((JArray)json).FirstOrDefault();
             if (elem == null)
@@ -40,7 +40,7 @@ namespace BooruSharp.Booru.Template
                 );
         }
 
-        public override Search.Comment.SearchResult GetCommentSearchResult(object json)
+        protected internal override Search.Comment.SearchResult GetCommentSearchResult(object json)
         {
             var elem = (XmlNode)json;
             return new Search.Comment.SearchResult(

@@ -16,7 +16,7 @@ namespace BooruSharp.Booru.Template
             this.url = url;
         }
 
-        public override Search.Post.SearchResult GetPostSearchResult(object json)
+        protected internal override Search.Post.SearchResult GetPostSearchResult(object json)
         {
             var elem = ((JArray)json).FirstOrDefault();
             if (elem == null)
@@ -38,7 +38,7 @@ namespace BooruSharp.Booru.Template
                 );
         }
 
-        public override Search.Comment.SearchResult GetCommentSearchResult(object json)
+        protected internal override Search.Comment.SearchResult GetCommentSearchResult(object json)
         {
             var elem = (XmlNode)json;
             return new Search.Comment.SearchResult(

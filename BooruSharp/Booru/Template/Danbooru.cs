@@ -9,7 +9,7 @@ namespace BooruSharp.Booru.Template
         public Danbooru(string url, BooruAuth auth = null) : base(url, auth, UrlFormat.danbooru, BooruOptions.wikiSearchUseTitle)
         { }
 
-        public override Search.Post.SearchResult GetPostSearchResult(object json)
+        protected internal override Search.Post.SearchResult GetPostSearchResult(object json)
         {
             var elem = ((JArray)json).FirstOrDefault();
             if (elem == null)
