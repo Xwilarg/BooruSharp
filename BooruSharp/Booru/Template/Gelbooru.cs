@@ -53,6 +53,17 @@ namespace BooruSharp.Booru.Template
                 );
         }
 
+        protected internal override Search.Tag.SearchResult GetTagSearchResult(object json)
+        {
+            var elem = (JObject)json;
+            return new Search.Tag.SearchResult(
+                int.Parse(elem["id"].Value<string>()),
+                elem["tag"].Value<string>(),
+                (Search.Tag.TagType)Enum.Parse(typeof(Search.Tag.TagType), elem["type"].Value<string>(), true),
+                elem["count"].Value<int>()
+                );
+        }
+
         private string GetMonth(string value)
         {
             switch (value)
