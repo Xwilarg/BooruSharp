@@ -47,5 +47,17 @@ namespace BooruSharp.Booru.Template
                 elem["body"].Value<string>()
                 );
         }
+
+        public override Search.Wiki.SearchResult GetWikiSearchResult(object json)
+        {
+            var elem = (JObject)json;
+            return new Search.Wiki.SearchResult(
+                elem["id"].Value<int>(),
+                elem["title"].Value<string>(),
+                new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(elem["created_at"]["s"].Value<int>()),
+                new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(elem["updated_at"]["s"].Value<int>()),
+                elem["body"].Value<string>()
+                );
+        }
     }
 }
