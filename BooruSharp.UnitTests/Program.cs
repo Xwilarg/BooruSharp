@@ -161,8 +161,8 @@ namespace BooruSharp.UnitTests
         [Theory]
         [InlineData(typeof(Atfbooru), "hibiki_(kantai_collection)", 2033)]
         [InlineData(typeof(DanbooruDonmai), "hibiki_(kantai_collection)", 1240738)]
-        [InlineData(typeof(E621), null, 267881)]
-        [InlineData(typeof(E926), null, 1329650)]
+        [InlineData(typeof(E621), "kantai_collection", 267881)]
+        [InlineData(typeof(E926), "kantai_collection", 1329650)]
         [InlineData(typeof(Furrybooru), "kantai_collection", 151628)]
         [InlineData(typeof(Gelbooru), "hibiki_(kantai_collection)", 463392)]
         [InlineData(typeof(Konachan), "hibiki_(kancolle)", 75885)]
@@ -176,10 +176,11 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Yandere), "hibiki_(kancolle)", 98153)]
         public async Task TagId(Type t, string tag, int tagId)
         {
-            if (tag == null)
+            var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
+            if (!booru.HaveTagByIdAPI())
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetTagAsync(tagId); });
             else
-                Assert.Equal(tag, (await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetTagAsync(tagId)).name);
+                Assert.Equal(tag, (await booru.GetTagAsync(tagId)).name);
         }
 
         [Theory]
@@ -187,24 +188,25 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(DanbooruDonmai), "futanari", 3589)]
         [InlineData(typeof(E621), "futanari", 123)]
         [InlineData(typeof(E926), "futanari", 123)]
-        [InlineData(typeof(Furrybooru), "futanari", null)]
-        [InlineData(typeof(Gelbooru), "futanari", null)]
-        [InlineData(typeof(Konachan), "futanari", 757)]
+        [InlineData(typeof(Furrybooru), "futanari", -1)]
+        [InlineData(typeof(Gelbooru), "futanari", -1)]
+        [InlineData(typeof(Konachan), "futanari", -1)]
         [InlineData(typeof(Lolibooru), "futanari", 158)]
-        [InlineData(typeof(Realbooru), "futanari", null)]
-        [InlineData(typeof(Rule34), "futanari", null)]
-        [InlineData(typeof(Safebooru), "futanari", null)]
+        [InlineData(typeof(Realbooru), "futanari", -1)]
+        [InlineData(typeof(Rule34), "futanari", -1)]
+        [InlineData(typeof(Safebooru), "futanari", -1)]
         [InlineData(typeof(Sakugabooru), "animated", 13)]
         [InlineData(typeof(SankakuComplex), "futanari", -1)]
-        [InlineData(typeof(Xbooru), "futanari", null)]
+        [InlineData(typeof(Xbooru), "futanari", -1)]
         [InlineData(typeof(Yandere), "futanari", 167)]
         public async Task CheckWiki(Type t, string tag, int? id)
         {
-            if (id == null)
+            var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
+            if (!booru.HaveWikiAPI())
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetWikiAsync(tag); });
             else
             {
-                Search.Wiki.SearchResult result = await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetWikiAsync(tag);
+                Search.Wiki.SearchResult result = await booru.GetWikiAsync(tag);
                 Assert.Equal(id, result.id);
                 General.CheckWiki(result);
             }
@@ -213,29 +215,29 @@ namespace BooruSharp.UnitTests
         public enum AvailableStatus
         {
             AuthRequired,
-            NotAvailable,
             Ok
         }
 
         [Theory]
-        [InlineData(typeof(Atfbooru), "kantai_collection", AvailableStatus.NotAvailable)]
-        [InlineData(typeof(DanbooruDonmai), "kantai_collection", AvailableStatus.NotAvailable)]
+        [InlineData(typeof(Atfbooru), "kantai_collection", AvailableStatus.Ok)]
+        [InlineData(typeof(DanbooruDonmai), "kantai_collection", AvailableStatus.Ok)]
         [InlineData(typeof(E621), "sky", AvailableStatus.AuthRequired)]
         [InlineData(typeof(E926), "sky", AvailableStatus.AuthRequired)]
-        [InlineData(typeof(Furrybooru), "sky", AvailableStatus.NotAvailable)]
-        [InlineData(typeof(Gelbooru), "sky", AvailableStatus.NotAvailable)]
+        [InlineData(typeof(Furrybooru), "sky", AvailableStatus.Ok)]
+        [InlineData(typeof(Gelbooru), "sky", AvailableStatus.Ok)]
         [InlineData(typeof(Konachan), "sky", AvailableStatus.Ok)]
-        [InlineData(typeof(Lolibooru), "sky", AvailableStatus.NotAvailable)]
-        [InlineData(typeof(Realbooru), "sky", AvailableStatus.NotAvailable)]
-        [InlineData(typeof(Rule34), "sky", AvailableStatus.NotAvailable)]
-        [InlineData(typeof(Safebooru), "sky", AvailableStatus.NotAvailable)]
+        [InlineData(typeof(Lolibooru), "sky", AvailableStatus.Ok)]
+        [InlineData(typeof(Realbooru), "sky", AvailableStatus.Ok)]
+        [InlineData(typeof(Rule34), "sky", AvailableStatus.Ok)]
+        [InlineData(typeof(Safebooru), "sky", AvailableStatus.Ok)]
         [InlineData(typeof(Sakugabooru), "kantai_collection", AvailableStatus.Ok)]
         [InlineData(typeof(SankakuComplex), "sky", AvailableStatus.Ok)]
-        [InlineData(typeof(Xbooru), "sky", AvailableStatus.NotAvailable)]
+        [InlineData(typeof(Xbooru), "sky", AvailableStatus.Ok)]
         [InlineData(typeof(Yandere), "sky", AvailableStatus.Ok)]
         public async Task CheckRelated(Type t, string tag, AvailableStatus isAvailable) // TODO: Check if suppose to be alone
         {
-            if (isAvailable == AvailableStatus.NotAvailable)
+            var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
+            if (!booru.HaveRelatedAPI())
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetRelatedAsync(tag); });
             else if (isAvailable == AvailableStatus.AuthRequired)
                 await Assert.ThrowsAsync<Search.AuthentificationRequired>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetRelatedAsync(tag); });
@@ -263,51 +265,53 @@ namespace BooruSharp.UnitTests
         }
 
         [Theory]
-        [InlineData(typeof(Atfbooru), 3193008, false)]
-        [InlineData(typeof(DanbooruDonmai), 3193008, false)]
-        [InlineData(typeof(E621), 59432, true)]
-        [InlineData(typeof(E926), 541858, true)]
-        [InlineData(typeof(Furrybooru), 1282210, true)]
-        [InlineData(typeof(Gelbooru), 3988284, true)]
-        [InlineData(typeof(Konachan), 142938, true)]
-        [InlineData(typeof(Lolibooru), 134097, true)]
-        [InlineData(typeof(Realbooru), 646911, false)]
-        [InlineData(typeof(Rule34), 2840746, true)]
-        [InlineData(typeof(Safebooru), 132, false)]
-        [InlineData(typeof(Sakugabooru), 38886, false)]
-        [InlineData(typeof(SankakuComplex), -1, false)]
-        [InlineData(typeof(Xbooru), 740157, true)]
-        [InlineData(typeof(Yandere), 405923, false)]
-        public async Task CheckComment(Type t, int id, bool isAvailable)
+        [InlineData(typeof(Atfbooru), 3193008)]
+        [InlineData(typeof(DanbooruDonmai), 3193008)]
+        [InlineData(typeof(E621), 59432)]
+        [InlineData(typeof(E926), 541858)]
+        [InlineData(typeof(Furrybooru), 1282210)]
+        [InlineData(typeof(Gelbooru), 3988284)]
+        [InlineData(typeof(Konachan), 142938)]
+        [InlineData(typeof(Lolibooru), 134097)]
+        [InlineData(typeof(Realbooru), 646911)]
+        [InlineData(typeof(Rule34), 2840746)]
+        [InlineData(typeof(Safebooru), 132)]
+        [InlineData(typeof(Sakugabooru), 38886)]
+        [InlineData(typeof(SankakuComplex), -1)]
+        [InlineData(typeof(Xbooru), 740157)]
+        [InlineData(typeof(Yandere), 405923)]
+        public async Task CheckComment(Type t, int id)
         {
-            if (!isAvailable)
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetCommentsAsync(id); });
+            var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
+            if (!booru.HaveCommentAPI())
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetCommentsAsync(id); });
             else
-                General.CheckComment(await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetCommentsAsync(id));
+                General.CheckComment(await booru.GetCommentsAsync(id));
         }
 
         [Theory]
-        [InlineData(typeof(Atfbooru), false)]
-        [InlineData(typeof(DanbooruDonmai), false)]
-        [InlineData(typeof(E621), true)]
-        [InlineData(typeof(E926), true)]
-        [InlineData(typeof(Furrybooru), true)]
-        [InlineData(typeof(Gelbooru), true)]
-        [InlineData(typeof(Konachan), true)]
-        [InlineData(typeof(Lolibooru), true)]
-        [InlineData(typeof(Realbooru), false)]
-        [InlineData(typeof(Rule34), true)]
-        [InlineData(typeof(Safebooru), false)]
-        [InlineData(typeof(Sakugabooru), false)]
-        [InlineData(typeof(SankakuComplex), false)]
-        [InlineData(typeof(Xbooru), true)]
-        [InlineData(typeof(Yandere), false)]
-        public async Task CheckLastComment(Type t, bool isAvailable)
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926))]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru))]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru))]
+        [InlineData(typeof(SankakuComplex))]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
+        public async Task CheckLastComment(Type t)
         {
-            if (!isAvailable)
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetLastCommentsAsync(); });
+            var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
+            if (!booru.HaveCommentAPI())
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetLastCommentsAsync(); });
             else
-                General.CheckComment(await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetLastCommentsAsync());
+                General.CheckComment(await booru.GetLastCommentsAsync());
         }
 
         [Theory]
