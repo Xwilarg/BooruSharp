@@ -66,5 +66,14 @@ namespace BooruSharp.Booru.Template
                 elem["count"].Value<int>()
                 );
         }
+
+        protected internal override Search.Related.SearchResult GetRelatedSearchResult(object json)
+        {
+            var elem = (JObject)json;
+            return new Search.Related.SearchResult(
+                elem["name"].Value<string>(),
+                int.Parse(elem["count"].Value<string>())
+                );
+        }
     }
 }
