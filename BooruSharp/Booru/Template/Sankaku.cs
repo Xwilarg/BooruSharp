@@ -7,7 +7,7 @@ namespace BooruSharp.Booru.Template
 {
     public abstract class Sankaku : Booru
     {
-        public Sankaku(string url, BooruAuth auth = null) : base(url, auth, UrlFormat.sankaku)
+        public Sankaku(string url, BooruAuth auth = null) : base(url, auth, UrlFormat.sankaku, BooruOptions.noRelated)
         { }
 
         protected internal override Search.Post.SearchResult GetPostSearchResult(object json)
@@ -59,5 +59,18 @@ namespace BooruSharp.Booru.Template
                 elem["body"].Value<string>()
                 );
         }
+
+        protected internal override Search.Tag.SearchResult GetTagSearchResult(object json) // TODO: Fix TagType values
+        {
+            var elem = (JObject)json;
+            return new Search.Tag.SearchResult(
+                elem["id"].Value<int>(),
+                elem["name"].Value<string>(),
+                (Search.Tag.TagType)elem["type"].Value<int>(),
+                elem["count"].Value<int>()
+                );
+        }
+
+        // GetRelatedSearchResult not available
     }
 }

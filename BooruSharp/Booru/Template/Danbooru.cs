@@ -31,6 +31,49 @@ namespace BooruSharp.Booru.Template
                 );
         }
 
-        // GetCommentSearchResult not available
+        protected internal override Search.Comment.SearchResult GetCommentSearchResult(object json)
+        {
+            var elem = (JObject)json;
+            return new Search.Comment.SearchResult(
+                elem["id"].Value<int>(),
+                elem["post_id"].Value<int>(),
+                elem["creator_id"].Value<int>(),
+                elem["created_at"].Value<DateTime>(),
+                elem["creator"].Value<string>(),
+                elem["body"].Value<string>()
+                );
+        }
+
+        protected internal override Search.Wiki.SearchResult GetWikiSearchResult(object json)
+        {
+            var elem = (JObject)json;
+            return new Search.Wiki.SearchResult(
+                elem["id"].Value<int>(),
+                elem["title"].Value<string>(),
+                elem["created_at"].Value<DateTime>(),
+                elem["updated_at"].Value<DateTime>(),
+                elem["body"].Value<string>()
+                );
+        }
+
+        protected internal override Search.Tag.SearchResult GetTagSearchResult(object json)
+        {
+            var elem = (JObject)json;
+            return new Search.Tag.SearchResult(
+                elem["id"].Value<int>(),
+                elem["name"].Value<string>(),
+                (Search.Tag.TagType)elem["type"].Value<int>(),
+                elem["count"].Value<int>()
+                );
+        }
+
+        protected internal override Search.Related.SearchResult GetRelatedSearchResult(object json)
+        {
+            var elem = (JObject)json;
+            return new Search.Related.SearchResult(
+                elem["name"].Value<string>(),
+                elem["count"].Value<int>()
+                );
+        }
     }
 }
