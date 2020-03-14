@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Globalization;
 using System.Linq;
+using System.Xml;
 
 namespace BooruSharp.Booru.Template
 {
@@ -33,6 +35,19 @@ namespace BooruSharp.Booru.Template
                     null,
                     null,
                     elem["score"].Value<int>()
+                );
+        }
+
+        public override Search.Comment.SearchResult GetCommentSearchResult(object json)
+        {
+            var elem = (XmlNode)json;
+            return new Search.Comment.SearchResult(
+                int.Parse(elem.Attributes.GetNamedItem("id").Value),
+                int.Parse(elem.Attributes.GetNamedItem("post_id").Value),
+                int.Parse(elem.Attributes.GetNamedItem("creator_id").Value),
+                DateTime.ParseExact(elem.Attributes.GetNamedItem("created_at").Value, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
+                elem.Attributes.GetNamedItem("creator").Value,
+                elem.Attributes.GetNamedItem("body").Value
                 );
         }
 

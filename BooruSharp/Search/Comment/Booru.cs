@@ -22,13 +22,28 @@ namespace BooruSharp.Booru
 
         private async Task<Search.Comment.SearchResult[]> GetCommentsInternalAsync(string url)
         {
-            var jsons = (JArray)JsonConvert.DeserializeObject(await GetJsonAsync(url));
-            Search.Comment.SearchResult[] results = new Search.Comment.SearchResult[jsons.Count];
-            int i = 0;
-            foreach (var json in jsons)
+            Search.Comment.SearchResult[] results;
+            if (format == UrlFormat.indexPhp)
             {
-                results[i] = GetCommentSearchResult(json);
-                i++;
+                var xml = await GetXmlAsync(url);
+                results = new Search.Comment.SearchResult[xml.LastChild.ChildNodes.Count];
+                int i = 0;
+                foreach (var node in xml.LastChild)
+                {
+                    results[i] = GetCommentSearchResult(node);
+                    i++;
+                }
+            }
+            else
+            {
+                var jsons = (JArray)JsonConvert.DeserializeObject(await GetJsonAsync(url));
+                results = new Search.Comment.SearchResult[jsons.Count];
+                int i = 0;
+                foreach (var json in jsons)
+                {
+                    results[i] = GetCommentSearchResult(json);
+                    i++;
+                }
             }
             return results;
         }
