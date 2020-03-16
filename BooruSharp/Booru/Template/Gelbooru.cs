@@ -53,6 +53,8 @@ namespace BooruSharp.Booru.Template
                 );
         }
 
+        // GetWikiSearchResult not available
+
         protected internal override Search.Tag.SearchResult GetTagSearchResult(object json)
         {
             var elem = (JObject)json;
@@ -63,6 +65,8 @@ namespace BooruSharp.Booru.Template
                 elem["count"].Value<int>()
                 );
         }
+
+        // GetRelatedSearchResult not available
 
         private string GetMonth(string value)
         {

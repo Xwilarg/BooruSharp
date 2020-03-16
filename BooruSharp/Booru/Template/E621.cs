@@ -7,7 +7,7 @@ namespace BooruSharp.Booru.Template
 {
     public class E621 : Booru
     {
-        public E621(string url, BooruAuth auth = null) : base(url, auth, UrlFormat.danbooru, BooruOptions.wikiSearchUseTitle, BooruOptions.noTagById)
+        public E621(string url, BooruAuth auth = null) : base(url, auth, UrlFormat.danbooru, BooruOptions.noWiki, BooruOptions.noRelated, BooruOptions.noComment, BooruOptions.noTagById)
         { }
 
         public override bool IsSafe()
@@ -42,5 +42,20 @@ namespace BooruSharp.Booru.Template
         }
 
         // GetCommentSearchResult not available
+
+        // GetWikiSearchResult not available
+
+        protected internal override Search.Tag.SearchResult GetTagSearchResult(object json)
+        {
+            var elem = (JObject)json;
+            return new Search.Tag.SearchResult(
+                elem["id"].Value<int>(),
+                elem["name"].Value<string>(),
+                (Search.Tag.TagType)elem["category"].Value<int>(),
+                elem["post_count"].Value<int>()
+                );
+        }
+
+        // GetRelatedSearchResult not available
     }
 }
