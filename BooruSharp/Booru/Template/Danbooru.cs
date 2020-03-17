@@ -6,7 +6,7 @@ namespace BooruSharp.Booru.Template
 {
     public abstract class Danbooru : Booru
     {
-        public Danbooru(string url, BooruAuth auth = null) : base(url, auth, UrlFormat.danbooru, BooruOptions.wikiSearchUseTitle)
+        public Danbooru(string url, BooruAuth auth = null) : base(url, auth, UrlFormat.danbooru, BooruOptions.wikiSearchUseTitle, BooruOptions.noLastComment)
         { }
 
         protected internal override Search.Post.SearchResult GetPostSearchResult(object json)

@@ -43,6 +43,8 @@ namespace BooruSharp.Booru
 
         public bool HaveTagByIdAPI()
             => searchTagById;
+        public bool HaveSearchLastComment()
+            => searchLastComment;
 
         /// <exception cref="HttpRequestException">Service not available</exception>
         public async Task CheckAvailabilityAsync()
@@ -63,6 +65,9 @@ namespace BooruSharp.Booru
             this.format = format;
             imageUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "post");
             imageUrlXml = imageUrl.Replace("json=1", "json=0"); // Only needed for websites with UrlFormat.indexPhp
+            searchTagById = !options.Contains(BooruOptions.noTagById);
+            searchLastComment = !options.Contains(BooruOptions.noLastComment);
+            wikiSearchUseTitle = options.Contains(BooruOptions.wikiSearchUseTitle);
             tagUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag");
             if (options.Contains(BooruOptions.noWiki))
                 wikiUrl = null;
@@ -75,11 +80,12 @@ namespace BooruSharp.Booru
             else
                 relatedUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag", "related");
             if (options.Contains(BooruOptions.noComment))
+            {
                 commentUrl = null;
+                searchLastComment = false;
+            }
             else
                 commentUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "comment");
-            searchTagById = !options.Contains(BooruOptions.noTagById);
-            wikiSearchUseTitle = options.Contains(BooruOptions.wikiSearchUseTitle);
         }
 
         protected static string GetUrl(UrlFormat format, string query, string squery = "index")
@@ -159,7 +165,7 @@ namespace BooruSharp.Booru
         private readonly BooruAuth auth;
         private readonly string baseUrl;
         private readonly string imageUrlXml, imageUrl, tagUrl, wikiUrl, relatedUrl, commentUrl;
-        private readonly bool searchTagById;
+        private readonly bool searchTagById, searchLastComment;
         private readonly bool maxLimit;
         private readonly bool wikiSearchUseTitle;
         private readonly UrlFormat format;
