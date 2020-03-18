@@ -56,6 +56,6 @@ namespace BooruSharp.Booru.Template
                 );
         }
 
-        // GetRelatedSearchResult not available
+        // GetRelatedSearchResult not available // TODO: Available with credentials?
     }
 }
