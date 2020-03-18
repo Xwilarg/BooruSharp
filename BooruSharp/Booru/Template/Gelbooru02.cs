@@ -59,7 +59,7 @@ namespace BooruSharp.Booru.Template
             return new Search.Tag.SearchResult(
                 int.Parse(elem["id"].Value<string>()),
                 elem["tag"].Value<string>(),
-                (Search.Tag.TagType)Enum.Parse(typeof(Search.Tag.TagType), elem["type"].Value<string>(), true),
+                StringToTagType(elem["type"].Value<string>()),
                 elem["count"].Value<int>()
                 );
         }

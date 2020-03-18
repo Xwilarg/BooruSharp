@@ -2,6 +2,8 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BooruSharp.Booru
@@ -60,6 +62,20 @@ namespace BooruSharp.Booru
             if (int.TryParse(value, out int valInt))
                 return (Search.Tag.TagType)valInt;
             return (Search.Tag.TagType)Enum.Parse(typeof(Search.Tag.TagType), value, true);
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        protected Search.Tag.TagType StringToTagType(string value)
+        {
+            value = value.ToLower();
+            if (value == "tag")
+                return Search.Tag.TagType.Trivia; // BooruSharp rename the tag "Tag" by "Trivia" for more clarity
+            for (Search.Tag.TagType i = 0; i < Enum.GetValues(typeof(Search.Tag.TagType)).Cast<Search.Tag.TagType>().Max(); i++)
+            {
+                if (i.ToString().ToLower() == value)
+                    return i;
+            }
+            throw new ArgumentException("Invalid tag " + value);
         }
     }
 }
