@@ -7,7 +7,7 @@ namespace BooruSharp.Booru.Template
 {
     public abstract class Sankaku : Booru
     {
-        public Sankaku(string url, BooruAuth auth = null) : base(url, auth, UrlFormat.sankaku, BooruOptions.noRelated)
+        public Sankaku(string url, BooruAuth auth = null, params BooruOptions[] options) : base(url, auth, UrlFormat.sankaku, CombineArrays(options, new[] { BooruOptions.noRelated }))
         { }
 
         protected internal override Search.Post.SearchResult GetPostSearchResult(object json)

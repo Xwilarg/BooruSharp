@@ -6,7 +6,7 @@ namespace BooruSharp.Booru.Template
 {
     public abstract class Moebooru : Booru
     {
-        public Moebooru(string url, BooruAuth auth = null) : base(url, auth, UrlFormat.postIndexJson)
+        public Moebooru(string url, BooruAuth auth = null, params BooruOptions[] options) : base(url, auth, UrlFormat.postIndexJson, options)
         { }
 
         protected internal override Search.Post.SearchResult GetPostSearchResult(object json)

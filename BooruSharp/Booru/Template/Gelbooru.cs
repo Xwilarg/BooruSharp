@@ -12,7 +12,7 @@ namespace BooruSharp.Booru.Template
     /// </summary>
     public abstract class Gelbooru : Booru
     {
-        public Gelbooru(string url, BooruAuth auth = null) : base(url, auth, UrlFormat.indexPhp, BooruOptions.noWiki, BooruOptions.noRelated, BooruOptions.limitOf20000)
+        public Gelbooru(string url, BooruAuth auth = null, params BooruOptions[] options) : base(url, auth, UrlFormat.indexPhp, CombineArrays(options, new[] { BooruOptions.noWiki, BooruOptions.noRelated, BooruOptions.limitOf20000 }))
         { }
 
         protected internal override Search.Post.SearchResult GetPostSearchResult(object json)

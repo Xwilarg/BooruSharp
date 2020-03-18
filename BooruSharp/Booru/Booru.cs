@@ -66,7 +66,7 @@ namespace BooruSharp.Booru
             imageUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "post");
             imageUrlXml = imageUrl.Replace("json=1", "json=0"); // Only needed for websites with UrlFormat.indexPhp
             searchTagById = !options.Contains(BooruOptions.noTagById);
-            searchLastComment = !options.Contains(BooruOptions.noLastComment);
+            searchLastComment = !options.Contains(BooruOptions.noLastComments);
             wikiSearchUseTitle = options.Contains(BooruOptions.wikiSearchUseTitle);
             tagUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag");
             if (options.Contains(BooruOptions.noWiki))
@@ -160,6 +160,15 @@ namespace BooruSharp.Booru
                 return "search[" + value + "]=";
             else
                 return value + "=";
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        protected static BooruOptions[] CombineArrays(BooruOptions[] arr1, BooruOptions[] arr2)
+        {
+            var arr = new BooruOptions[arr1.Length + arr2.Length];
+            arr1.CopyTo(arr, 0);
+            arr2.CopyTo(arr, arr1.Length);
+            return arr;
         }
 
         private readonly BooruAuth auth;
