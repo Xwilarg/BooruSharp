@@ -41,10 +41,11 @@ namespace BooruSharp.Booru.Template
         protected internal override Search.Comment.SearchResult GetCommentSearchResult(object json)
         {
             var elem = (XmlNode)json;
+            XmlNode creatorId = elem.Attributes.GetNamedItem("creator_id");
             return new Search.Comment.SearchResult(
                 int.Parse(elem.Attributes.GetNamedItem("id").Value),
                 int.Parse(elem.Attributes.GetNamedItem("post_id").Value),
-                int.Parse(elem.Attributes.GetNamedItem("creator_id").Value),
+                creatorId.InnerText == "" ? (int?)null : int.Parse(creatorId.Value),
                 DateTime.ParseExact(elem.Attributes.GetNamedItem("created_at").Value, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
                 elem.Attributes.GetNamedItem("creator").Value,
                 elem.Attributes.GetNamedItem("body").Value
