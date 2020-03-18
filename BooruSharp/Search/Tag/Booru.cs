@@ -70,7 +70,7 @@ namespace BooruSharp.Booru
             value = value.ToLower();
             if (value == "tag")
                 return Search.Tag.TagType.Trivia; // BooruSharp rename the tag "Tag" by "Trivia" for more clarity
-            for (Search.Tag.TagType i = 0; i < Enum.GetValues(typeof(Search.Tag.TagType)).Cast<Search.Tag.TagType>().Max(); i++)
+            for (Search.Tag.TagType i = 0; i <= Enum.GetValues(typeof(Search.Tag.TagType)).Cast<Search.Tag.TagType>().Max(); i++)
             {
                 if (i.ToString().ToLower() == value)
                     return i;
