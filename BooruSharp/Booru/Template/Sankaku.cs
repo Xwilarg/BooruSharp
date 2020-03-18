@@ -41,7 +41,7 @@ namespace BooruSharp.Booru.Template
             return new Search.Comment.SearchResult(
                 elem["id"].Value<int>(),
                 elem["post_id"].Value<int>(),
-                elem["author"]["id"].Value<int>(),
+                elem["author"]["id"].Value<int?>(),
                 new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(elem["created_at"]["s"].Value<int>()),
                 elem["author"]["name"].Value<string>(),
                 elem["body"].Value<string>()
