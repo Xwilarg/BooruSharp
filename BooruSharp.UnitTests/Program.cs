@@ -265,7 +265,7 @@ namespace BooruSharp.UnitTests
         }
 
         [Theory]
-        [InlineData(typeof(Atfbooru), 3193008)]
+        [InlineData(typeof(Atfbooru), 257639)]
         [InlineData(typeof(DanbooruDonmai), 3193008)]
         [InlineData(typeof(E621), 59432)]
         [InlineData(typeof(E926), 541858)]
@@ -279,7 +279,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Sakugabooru), 38886)]
         [InlineData(typeof(SankakuComplex), -1)]
         [InlineData(typeof(Xbooru), 740157)]
-        [InlineData(typeof(Yandere), 405923)]
+        [InlineData(typeof(Yandere), 619494)]
         public async Task CheckComment(Type t, int id)
         {
             var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
