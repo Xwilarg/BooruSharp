@@ -120,7 +120,7 @@ namespace BooruSharp.UnitTests
                     result1 = await booru.GetRandomImageAsync();
                 } while (result1.md5 == null);
                 var result2 = await booru.GetImageByMd5Async(result1.md5);
-                Assert.Equal(result1, result2);
+                Assert.Equal(result1.id, result2.id);
             }
         }
 
