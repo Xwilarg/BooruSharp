@@ -39,7 +39,7 @@ namespace BooruSharp.Booru.Template
                 elem["post_id"].Value<int>(),
                 elem["creator_id"].Value<int?>(),
                 elem["created_at"].Value<DateTime>(),
-                elem["creator_name"].Value<string>(),
+                elem["creator_name"]?.Value<string>(),
                 elem["body"].Value<string>()
                 );
         }
