@@ -18,7 +18,6 @@ namespace BooruSharp.Booru.Template
             var url = elem["file_url"];
             var previewUrl = elem["preview_file_url"];
             var md5 = elem["md5"];
-            Console.WriteLine(elem);
             return new Search.Post.SearchResult(
                     url == null ? null : new Uri(url.Value<string>()),
                     previewUrl == null ? null : new Uri(previewUrl.Value<string>()),
@@ -78,7 +77,7 @@ namespace BooruSharp.Booru.Template
             var elem = (JObject)json;
             return new Search.Related.SearchResult(
                 elem["name"].Value<string>(),
-                elem["count"].Value<int>()
+                elem["post_count"].Value<int>()
                 );
         }
     }
