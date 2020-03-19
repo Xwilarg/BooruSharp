@@ -37,7 +37,7 @@ namespace BooruSharp.Booru.Template
                     DateTime.Parse(dt),
                     elem["source"].Value<string>(),
                     elem["score"].Value<int>(),
-                    elem["md5"].Value<string>()
+                    elem["hash"].Value<string>()
                 );
         }
 
