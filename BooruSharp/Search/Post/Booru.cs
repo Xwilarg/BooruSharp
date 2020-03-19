@@ -39,13 +39,15 @@ namespace BooruSharp.Booru
         {
             return GetPostSearchResult(JsonConvert.DeserializeObject(await GetJsonAsync(url)));
         }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected Search.Post.Rating GetRating(char c)
         {
             switch (c)
             {
-                case 's': return (Search.Post.Rating.Safe);
-                case 'q': return (Search.Post.Rating.Questionable);
-                case 'e': return (Search.Post.Rating.Explicit);
+                case 's': return Search.Post.Rating.Safe;
+                case 'q': return Search.Post.Rating.Questionable;
+                case 'e': return Search.Post.Rating.Explicit;
                 default: throw new ArgumentException("Invalid rating " + c);
             }
         }
