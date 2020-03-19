@@ -63,7 +63,7 @@ namespace BooruSharp.Booru.Template
             return new Search.Tag.SearchResult(
                 elem["id"].Value<int>(),
                 elem["name"].Value<string>(),
-                (Search.Tag.TagType)elem["type"].Value<int>(),
+                (Search.Tag.TagType)elem["category"].Value<int>(),
                 elem["post_count"].Value<int>()
                 );
         }
