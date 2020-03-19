@@ -7,6 +7,7 @@
         noRelated,
         noComment,
         noTagById,
+        noPostByMd5,
         noLastComments,
         wikiSearchUseTitle,
         limitOf20000

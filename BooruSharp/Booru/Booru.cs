@@ -45,6 +45,8 @@ namespace BooruSharp.Booru
             => searchTagById;
         public bool HaveSearchLastComment()
             => searchLastComment;
+        public bool HavePostByMd5API()
+            => searchPostByMd5;
 
         /// <exception cref="HttpRequestException">Service not available</exception>
         public async Task CheckAvailabilityAsync()
@@ -67,6 +69,7 @@ namespace BooruSharp.Booru
             imageUrlXml = imageUrl.Replace("json=1", "json=0"); // Only needed for websites with UrlFormat.indexPhp
             searchTagById = !options.Contains(BooruOptions.noTagById);
             searchLastComment = !options.Contains(BooruOptions.noLastComments);
+            searchPostByMd5 = !options.Contains(BooruOptions.noPostByMd5);
             wikiSearchUseTitle = options.Contains(BooruOptions.wikiSearchUseTitle);
             tagUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag");
             if (options.Contains(BooruOptions.noWiki))
@@ -175,7 +178,7 @@ namespace BooruSharp.Booru
         private readonly BooruAuth auth;
         private readonly string baseUrl;
         private readonly string imageUrlXml, imageUrl, tagUrl, wikiUrl, relatedUrl, commentUrl;
-        private readonly bool searchTagById, searchLastComment;
+        private readonly bool searchTagById, searchLastComment, searchPostByMd5;
         private readonly bool maxLimit;
         private readonly bool wikiSearchUseTitle;
         private readonly UrlFormat format;

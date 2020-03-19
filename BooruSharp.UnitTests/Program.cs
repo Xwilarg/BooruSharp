@@ -110,9 +110,14 @@ namespace BooruSharp.UnitTests
         public async Task GetByMd5(Type t)
         {
             var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
-            var result1 = await booru.GetRandomImageAsync();
-            var result2 = await booru.GetImageByMd5Async(result1.md5);
-            Assert.Equal(result1, result2);
+            if (!booru.HavePostByMd5API())
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetImageByMd5Async("0"); });
+            else
+            {
+                var result1 = await booru.GetRandomImageAsync();
+                var result2 = await booru.GetImageByMd5Async(result1.md5);
+                Assert.Equal(result1, result2);
+            }
         }
 
         [Theory]

@@ -11,6 +11,8 @@ namespace BooruSharp.Booru
     {
         public async Task<Search.Post.SearchResult> GetImageByMd5Async(string md5)
         {
+            if (!HavePostByMd5API())
+                throw new Search.FeatureUnavailable();
             return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", "md5=" + md5));
         }
 
