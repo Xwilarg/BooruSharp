@@ -15,7 +15,8 @@ namespace BooruSharp.Booru.Template
 
         protected internal override Search.Post.SearchResult GetPostSearchResult(object json)
         {
-            var elem = ((JArray)((JObject)json)["posts"]).FirstOrDefault();
+            var posts = ((JObject)json)["posts"];
+            var elem = posts == null ? ((JObject)json)["post"] : ((JArray)posts).FirstOrDefault();
             if (elem == null)
                 throw new Search.InvalidTags();
             List<string> tags = elem["tags"]["general"].ToObject<string[]>().ToList();
