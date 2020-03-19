@@ -114,7 +114,11 @@ namespace BooruSharp.UnitTests
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetImageByMd5Async("0"); });
             else
             {
-                var result1 = await booru.GetRandomImageAsync();
+                Search.Post.SearchResult result1;
+                do
+                {
+                    result1 = await booru.GetRandomImageAsync();
+                } while (result1.md5 == null);
                 var result2 = await booru.GetImageByMd5Async(result1.md5);
                 Assert.Equal(result1, result2);
             }

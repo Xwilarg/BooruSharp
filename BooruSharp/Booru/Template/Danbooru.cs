@@ -11,12 +11,17 @@ namespace BooruSharp.Booru.Template
 
         protected internal override Search.Post.SearchResult GetPostSearchResult(object json)
         {
-            var elem = ((JArray)json).FirstOrDefault();
+            var array = json as JArray;
+            var elem = array == null ? ((JObject)json) : array.FirstOrDefault();
             if (elem == null)
                 throw new Search.InvalidTags();
+            var url = elem["file_url"];
+            var previewUrl = elem["preview_file_url"];
+            var md5 = elem["md5"];
+            Console.WriteLine(elem);
             return new Search.Post.SearchResult(
-                    new Uri(elem["file_url"].Value<string>()),
-                    new Uri(elem["preview_file_url"].Value<string>()),
+                    url == null ? null : new Uri(url.Value<string>()),
+                    previewUrl == null ? null : new Uri(previewUrl.Value<string>()),
                     GetRating(elem["rating"].Value<string>()[0]),
                     elem["tag_string"].Value<string>().Split(' '),
                     elem["id"].Value<int>(),
@@ -28,7 +33,7 @@ namespace BooruSharp.Booru.Template
                     elem["created_at"].Value<DateTime>(),
                     elem["source"].Value<string>(),
                     elem["score"].Value<int>(),
-                    elem["md5"].Value<string>()
+                    md5 == null ? null : md5.Value<string>()
                 );
         }
 
