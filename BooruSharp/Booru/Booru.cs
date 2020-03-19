@@ -88,6 +88,7 @@ namespace BooruSharp.Booru
                 commentUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "comment");
         }
 
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected static string GetUrl(UrlFormat format, string query, string squery = "index")
         {
             switch (format)
