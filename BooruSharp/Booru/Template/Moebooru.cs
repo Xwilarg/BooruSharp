@@ -63,7 +63,7 @@ namespace BooruSharp.Booru.Template
                 elem["id"].Value<int>(),
                 elem["name"].Value<string>(),
                 (Search.Tag.TagType)elem["type"].Value<int>(),
-                elem["count"].Value<int>()
+                elem["post_count"].Value<int>()
                 );
         }
 
