@@ -51,7 +51,7 @@ namespace BooruSharp.UnitTests
         {
             Search.Post.SearchResult result = await booru.GetRandomImageAsync(s1);
             Search.Post.SearchResult result2 = await booru.GetRandomImageAsync(s1);
-            Assert.NotEqual(result.fileUrl, result2.fileUrl);
+            Assert.NotEqual(result.id, result2.id);
             await CheckResult(result, s1);
         }
 

@@ -27,13 +27,29 @@ namespace BooruSharp.Booru
             List<string> urlTags = new List<string>() { SearchArg("name") + name };
             if (format != UrlFormat.danbooru)
                 urlTags.Add("limit=0");
-            var jsons = (JArray)JsonConvert.DeserializeObject(await GetJsonAsync(CreateUrl(tagUrl, urlTags.ToArray())));
-            Search.Tag.SearchResult[] results = new Search.Tag.SearchResult[jsons.Count];
-            int i = 0;
-            foreach (var json in jsons)
+            string url = CreateUrl(tagUrl, urlTags.ToArray());
+            Search.Tag.SearchResult[] results;
+            if (format == UrlFormat.indexPhp)
             {
-                results[i] = GetTagSearchResult(json);
-                i++;
+                var xml = await GetXmlAsync(url);
+                results = new Search.Tag.SearchResult[xml.LastChild.ChildNodes.Count];
+                int i = 0;
+                foreach (var node in xml.LastChild)
+                {
+                    results[i] = GetTagSearchResult(node);
+                    i++;
+                }
+            }
+            else
+            {
+                var jsons = (JArray)JsonConvert.DeserializeObject(await GetJsonAsync(url));
+                results = new Search.Tag.SearchResult[jsons.Count];
+                int i = 0;
+                foreach (var json in jsons)
+                {
+                    results[i] = GetTagSearchResult(json);
+                    i++;
+                }
             }
             return results;
         }
