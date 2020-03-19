@@ -24,9 +24,11 @@ namespace BooruSharp.Booru.Template
             tags.AddRange(elem["tags"]["copyright"].ToObject<string[]>().ToList());
             tags.AddRange(elem["tags"]["artist"].ToObject<string[]>().ToList());
             tags.AddRange(elem["tags"]["meta"].ToObject<string[]>().ToList()); // TODO: Check others tags
+            string url = elem["file"]["url"].Value<string>();
+            string previewUrl = elem["preview"]["url"].Value<string>();
             return new Search.Post.SearchResult(
-                    new Uri(elem["file"]["url"].Value<string>()),
-                    new Uri(elem["preview"]["url"].Value<string>()),
+                    url == null ? null : new Uri(url),
+                    previewUrl == null ? null : new Uri(previewUrl),
                     GetRating(elem["rating"].Value<string>()[0]),
                     tags.ToArray(),
                     elem["id"].Value<int>(),
