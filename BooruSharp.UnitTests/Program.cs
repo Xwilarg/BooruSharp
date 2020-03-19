@@ -316,7 +316,7 @@ namespace BooruSharp.UnitTests
         public async Task CheckLastComment(Type t)
         {
             var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
-            if (!booru.HaveCommentAPI() || !booru.HaveSearchLastComment())
+            if (!booru.HaveSearchLastComment())
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetLastCommentsAsync(); });
             else
                 General.CheckComment(await booru.GetLastCommentsAsync());
