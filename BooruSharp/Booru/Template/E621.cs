@@ -39,7 +39,8 @@ namespace BooruSharp.Booru.Template
                     elem["preview"]["width"].Value<int>(),
                     elem["created_at"].Value<DateTime>(),
                     elem["sources"].Count() > 0 ? elem["sources"][0].Value<string>() : null,
-                    elem["score"]["total"].Value<int>()
+                    elem["score"]["total"].Value<int>(),
+                    elem["file"]["md5"].Value<string>()
                 );
         }
 

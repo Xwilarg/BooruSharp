@@ -107,11 +107,11 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
-        public async Task GetByOffset(Type t)
+        public async Task GetByMd5(Type t)
         {
             var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
             var result1 = await booru.GetRandomImageAsync();
-            var result2 = await booru.GetImageAsync(result1.id);
+            var result2 = await booru.GetImageByMd5Async(result1.md5);
             Assert.Equal(result1, result2);
         }
 

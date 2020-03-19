@@ -27,7 +27,8 @@ namespace BooruSharp.Booru.Template
                     null,
                     elem["created_at"].Value<DateTime>(),
                     elem["source"].Value<string>(),
-                    elem["score"].Value<int>()
+                    elem["score"].Value<int>(),
+                    elem["md5"].Value<string>()
                 );
         }
 

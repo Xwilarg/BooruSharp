@@ -8,9 +8,9 @@ namespace BooruSharp.Booru
 {
     public abstract partial class Booru
     {
-        public async Task<Search.Post.SearchResult> GetImageAsync(int id)
+        public async Task<Search.Post.SearchResult> GetImageByMd5Async(string md5)
         {
-            return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", "id=" + id));
+            return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", "md5=" + md5));
         }
 
         public async Task<Search.Post.SearchResult> GetRandomImageAsync(params string[] tagsArg)
