@@ -1,5 +1,6 @@
 ﻿using BooruSharp.Booru;
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -227,22 +228,22 @@ namespace BooruSharp.UnitTests
         }
 
         [Theory]
-        [InlineData(typeof(Atfbooru), "kantai_collection", AvailableStatus.Ok)]
-        [InlineData(typeof(DanbooruDonmai), "kantai_collection", AvailableStatus.Ok)]
-        [InlineData(typeof(E621), "sky", AvailableStatus.AuthRequired)]
-        [InlineData(typeof(E926), "sky", AvailableStatus.AuthRequired)]
-        [InlineData(typeof(Furrybooru), "sky", AvailableStatus.Ok)]
-        [InlineData(typeof(Gelbooru), "sky", AvailableStatus.Ok)]
-        [InlineData(typeof(Konachan), "sky", AvailableStatus.Ok)]
-        [InlineData(typeof(Lolibooru), "sky", AvailableStatus.Ok)]
-        [InlineData(typeof(Realbooru), "sky", AvailableStatus.Ok)]
-        [InlineData(typeof(Rule34), "sky", AvailableStatus.Ok)]
-        [InlineData(typeof(Safebooru), "sky", AvailableStatus.Ok)]
-        [InlineData(typeof(Sakugabooru), "kantai_collection", AvailableStatus.Ok)]
-        [InlineData(typeof(SankakuComplex), "sky", AvailableStatus.Ok)]
-        [InlineData(typeof(Xbooru), "sky", AvailableStatus.Ok)]
-        [InlineData(typeof(Yandere), "sky", AvailableStatus.Ok)]
-        public async Task CheckRelated(Type t, string tag, AvailableStatus isAvailable) // TODO: Check if suppose to be alone
+        [InlineData(typeof(Atfbooru), "kantai_collection", "warship", AvailableStatus.Ok)]
+        [InlineData(typeof(DanbooruDonmai), "kantai_collection", "ikazuchi_(kantai_collection)", AvailableStatus.Ok)]
+        [InlineData(typeof(E621), "sky", "cloud", AvailableStatus.AuthRequired)]
+        [InlineData(typeof(E926), "sky", "cloud", AvailableStatus.AuthRequired)]
+        [InlineData(typeof(Furrybooru), "sky", "cloud", AvailableStatus.Ok)]
+        [InlineData(typeof(Gelbooru), "sky", "cloud", AvailableStatus.Ok)]
+        [InlineData(typeof(Konachan), "sky", "clouds", AvailableStatus.Ok)]
+        [InlineData(typeof(Lolibooru), "sky", "cloud", AvailableStatus.Ok)]
+        [InlineData(typeof(Realbooru), "sky", "clouds", AvailableStatus.Ok)]
+        [InlineData(typeof(Rule34), "sky", "clouds", AvailableStatus.Ok)]
+        [InlineData(typeof(Safebooru), "sky", "clouds", AvailableStatus.Ok)]
+        [InlineData(typeof(Sakugabooru), "kantai_collection", "ikazuchi_(kantai_collection)", AvailableStatus.Ok)]
+        [InlineData(typeof(SankakuComplex), "sky", "clouds", AvailableStatus.Ok)]
+        [InlineData(typeof(Xbooru), "sky", "clouds", AvailableStatus.Ok)]
+        [InlineData(typeof(Yandere), "sky", "clouds", AvailableStatus.Ok)]
+        public async Task CheckRelated(Type t, string tag, string related, AvailableStatus isAvailable) // TODO: Check if suppose to be alone
         {
             var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
             if (!booru.HaveRelatedAPI())
@@ -253,6 +254,7 @@ namespace BooruSharp.UnitTests
             {
                 Search.Related.SearchResult[] result = await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetRelatedAsync(tag);
                 General.CheckRelated(result);
+                Assert.True(result.Any(x => x.name == related));
             }
         }
 
