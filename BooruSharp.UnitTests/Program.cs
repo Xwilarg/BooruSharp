@@ -162,9 +162,111 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        public async Task GetRandomFail(Type t, string tag = "school_swimsuit")
+        {
+            await Assert.ThrowsAsync<Search.InvalidTags>(() => ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetRandomImageAsync("someInvalidTag"));
+        }
+
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926))]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru))]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru), "kantai_collection")]
+        [InlineData(typeof(SankakuComplex))]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
         public async Task CheckTag(Type t, string tag = "pantyhose")
         {
-            await General.CheckTag((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null), tag);
+            var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
+            if (!booru.HaveTagByIdAPI())
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetTagAsync(tag); });
+            else
+                await General.CheckTag(booru, tag);
+        }
+
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926))]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru))]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru))]
+        [InlineData(typeof(SankakuComplex))]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
+        public async Task CheckTagFail(Type t)
+        {
+            var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
+            if (!booru.HaveTagByIdAPI())
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetTagAsync("someRandomTag"); });
+            else
+                await Assert.ThrowsAsync<Search.InvalidTags>(() => booru.GetTagAsync("someRandomTag"));
+        }
+
+        [Theory]
+        [InlineData(typeof(Atfbooru), "female", true)]
+        [InlineData(typeof(DanbooruDonmai), "hibi", true)]
+        [InlineData(typeof(E621), "hibiki", true)]
+        [InlineData(typeof(E926), "hibiki", true)]
+        [InlineData(typeof(Furrybooru), "hibiki", true)]
+        [InlineData(typeof(Gelbooru), "hibiki", true)]
+        [InlineData(typeof(Konachan), "hibiki", false)]
+        [InlineData(typeof(Lolibooru), "hibiki", false)]
+        [InlineData(typeof(Realbooru), "female", true)]
+        [InlineData(typeof(Rule34), "hibiki", true)]
+        [InlineData(typeof(Safebooru), "hibiki", true)]
+        [InlineData(typeof(Sakugabooru), "kantai", false)]
+        [InlineData(typeof(SankakuComplex), "hibiki", false)]
+        [InlineData(typeof(Xbooru), "hibiki", true)]
+        [InlineData(typeof(Yandere), "hibiki", false)]
+        public async Task CheckTags(Type t, string tag, bool onlyOnce)
+        {
+            var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
+            if (!booru.HaveTagByIdAPI())
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetTagAsync(tag); });
+            else if (onlyOnce)
+                Assert.NotEmpty(await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetTagsAsync(tag));
+            else
+                Assert.NotInRange((await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetTagsAsync(tag)).Length, 0, 1);
+        }
+
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926))]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru))]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru))]
+        [InlineData(typeof(SankakuComplex))]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
+        public async Task CheckTagsFail(Type t)
+        {
+            var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
+            if (!booru.HaveTagByIdAPI())
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetTagAsync("ohno"); });
+            else
+                await Assert.ThrowsAsync<Search.InvalidTags>(() => booru.GetTagAsync("ohno"));
         }
 
         [Theory]
@@ -190,6 +292,31 @@ namespace BooruSharp.UnitTests
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetTagAsync(tagId); });
             else
                 Assert.Equal(tag, (await booru.GetTagAsync(tagId)).name);
+        }
+
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926))]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru))]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru))]
+        [InlineData(typeof(SankakuComplex))]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
+        public async Task TagIdFail(Type t)
+        {
+            var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
+            if (!booru.HaveTagByIdAPI())
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetTagAsync(int.MaxValue); });
+            else
+                await Assert.ThrowsAsync<Search.InvalidTags>(() => booru.GetTagAsync(int.MaxValue));
         }
 
         [Theory]
@@ -219,6 +346,31 @@ namespace BooruSharp.UnitTests
                 Assert.Equal(id, result.id);
                 General.CheckWiki(result);
             }
+        }
+
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926))]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru))]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru))]
+        [InlineData(typeof(SankakuComplex))]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
+        public async Task CheckWikiFail(Type t)
+        {
+            var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
+            if (!booru.HaveWikiAPI())
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetWikiAsync("yetAnotherTag"); });
+            else
+                await Assert.ThrowsAsync<Search.InvalidTags>(() => booru.GetWikiAsync("yetAnotherTag"));
         }
 
         public enum AvailableStatus
@@ -256,6 +408,31 @@ namespace BooruSharp.UnitTests
                 General.CheckRelated(result);
                 Assert.True(result.Any(x => x.name == related));
             }
+        }
+
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926))]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru))]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru))]
+        [InlineData(typeof(SankakuComplex))]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
+        public async Task CheckRelatedFail(Type t)
+        {
+            var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
+            if (!booru.HaveRelatedAPI())
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetRelatedAsync("thisWillFail"); });
+            else
+                await Assert.ThrowsAsync<Search.InvalidTags>(() => booru.GetRelatedAsync("thisWillFail"));
         }
 
         [Fact]
@@ -315,6 +492,31 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        public async Task CheckCommentFail(Type t)
+        {
+            var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
+            if (!booru.HaveCommentAPI())
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetCommentsAsync(int.MaxValue); });
+            else
+                await Assert.ThrowsAsync<Search.InvalidTags>(() => booru.GetCommentsAsync(int.MaxValue));
+        }
+
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926))]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru))]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru))]
+        [InlineData(typeof(SankakuComplex))]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
         public async Task CheckLastComment(Type t)
         {
             var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
@@ -325,27 +527,28 @@ namespace BooruSharp.UnitTests
         }
 
         [Theory]
-        [InlineData(typeof(Atfbooru), "female", true)]
-        [InlineData(typeof(DanbooruDonmai), "hibi", true)]
-        [InlineData(typeof(E621), "hibiki", true)]
-        [InlineData(typeof(E926), "hibiki", true)]
-        [InlineData(typeof(Furrybooru), "hibiki", true)]
-        [InlineData(typeof(Gelbooru), "hibiki", true)]
-        [InlineData(typeof(Konachan), "hibiki", false)]
-        [InlineData(typeof(Lolibooru), "hibiki", false)]
-        [InlineData(typeof(Realbooru), "female", true)]
-        [InlineData(typeof(Rule34), "hibiki", true)]
-        [InlineData(typeof(Safebooru), "hibiki", true)]
-        [InlineData(typeof(Sakugabooru), "kantai", false)]
-        [InlineData(typeof(SankakuComplex), "hibiki", false)]
-        [InlineData(typeof(Xbooru), "hibiki", true)]
-        [InlineData(typeof(Yandere), "hibiki", false)]
-        public async Task CheckTags(Type t, string tag, bool onlyOnce)
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926))]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru))]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru))]
+        [InlineData(typeof(SankakuComplex))]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
+        public async Task CheckLastCommentFail(Type t)
         {
-            if (onlyOnce)
-                Assert.NotEmpty(await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetTagsAsync(tag));
+            var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
+            if (!booru.HaveSearchLastComment())
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetLastCommentsAsync(); });
             else
-                Assert.NotInRange((await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetTagsAsync(tag)).Length, 0, 1);
+                await Assert.ThrowsAsync<Search.InvalidTags>(() => booru.GetLastCommentsAsync());
         }
 
         [Theory]
