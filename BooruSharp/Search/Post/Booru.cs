@@ -36,8 +36,6 @@ namespace BooruSharp.Booru
                     return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", TagsToString(tagsArg), "pid=" + random.Next(0, max)));
                 }
             }
-            else if (format == UrlFormat.sankaku)
-                return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", TagsToString(tagsArg), "random=true"));
             else
                 return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", TagsToString(tagsArg) + "+order:random"));
         }
