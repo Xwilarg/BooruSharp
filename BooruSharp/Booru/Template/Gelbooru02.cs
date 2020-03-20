@@ -58,7 +58,6 @@ namespace BooruSharp.Booru.Template
         protected internal override Search.Tag.SearchResult GetTagSearchResult(object json)
         {
             var elem = (XmlNode)json;
-            XmlNode creatorId = elem.Attributes.GetNamedItem("creator_id");
             return new Search.Tag.SearchResult(
                 int.Parse(elem.Attributes.GetNamedItem("id").Value),
                 elem.Attributes.GetNamedItem("name").Value,
