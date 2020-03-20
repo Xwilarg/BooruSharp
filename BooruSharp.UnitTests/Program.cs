@@ -51,7 +51,13 @@ namespace BooruSharp.UnitTests
         public static async Task CheckGetRandom(Booru.Booru booru, string s1)
         {
             Search.Post.SearchResult result = await booru.GetRandomImageAsync(s1);
-            Search.Post.SearchResult result2 = await booru.GetRandomImageAsync(s1);
+            Search.Post.SearchResult result2;
+            int i = 0;
+            do
+            {
+                result2 = await booru.GetRandomImageAsync(s1);
+                i++;
+            } while (result.id == result2.id || i < 5);
             Assert.NotEqual(result.id, result2.id);
             await CheckResult(result, s1);
         }
@@ -134,11 +140,11 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Gelbooru))]
         [InlineData(typeof(Konachan))]
         [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru))]
+        [InlineData(typeof(Realbooru), "small_breasts")]
         [InlineData(typeof(Rule34))]
         [InlineData(typeof(Safebooru))]
         [InlineData(typeof(Sakugabooru), "kantai_collection")]
-        [InlineData(typeof(SankakuComplex))]
+        [InlineData(typeof(SankakuComplex), "small_breasts")]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         public async Task GetRandom(Type t, string tag = "school_swimsuit")
@@ -541,10 +547,10 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Rule34))]
         [InlineData(typeof(Safebooru), "breast")]
         [InlineData(typeof(Sakugabooru), "another")]
-        [InlineData(typeof(SankakuComplex))]
+        [InlineData(typeof(SankakuComplex), "exposed_pussy")]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
-        public async Task CheckIsSafe(Type t, string explicitTag="pussy")
+        public async Task CheckIsSafe(Type t, string explicitTag = "pussy")
         {
             Booru.Booru b = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
             bool isSafe = b.IsSafe();
