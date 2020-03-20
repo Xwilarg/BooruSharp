@@ -12,6 +12,8 @@ namespace BooruSharp.Booru
     {
         public async Task<Search.Tag.SearchResult> GetTagAsync(string name)
         {
+            if (!HaveTagByIdAPI())
+                throw new Search.FeatureUnavailable();
             return await SearchTagAsync(name, null);
         }
 
@@ -24,6 +26,8 @@ namespace BooruSharp.Booru
 
         public async Task<Search.Tag.SearchResult[]> GetTagsAsync(string name)
         {
+            if (!HaveTagByIdAPI())
+                throw new Search.FeatureUnavailable();
             List<string> urlTags = new List<string>() { SearchArg("name") + name };
             if (format != UrlFormat.danbooru)
                 urlTags.Add("limit=0");

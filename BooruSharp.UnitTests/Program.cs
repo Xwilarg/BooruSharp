@@ -158,11 +158,11 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Realbooru))]
         [InlineData(typeof(Rule34))]
         [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru), "kantai_collection")]
+        [InlineData(typeof(Sakugabooru))]
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
-        public async Task GetRandomFail(Type t, string tag = "school_swimsuit")
+        public async Task GetRandomFail(Type t)
         {
             await Assert.ThrowsAsync<Search.InvalidTags>(() => ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetRandomImageAsync("someInvalidTag"));
         }
@@ -242,31 +242,6 @@ namespace BooruSharp.UnitTests
                 Assert.NotEmpty(await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetTagsAsync(tag));
             else
                 Assert.NotInRange((await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetTagsAsync(tag)).Length, 0, 1);
-        }
-
-        [Theory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621))]
-        [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan))]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru))]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru))]
-        [InlineData(typeof(SankakuComplex))]
-        [InlineData(typeof(Xbooru))]
-        [InlineData(typeof(Yandere))]
-        public async Task CheckTagsFail(Type t)
-        {
-            var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
-            if (!booru.HaveTagByIdAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetTagAsync("ohno"); });
-            else
-                await Assert.ThrowsAsync<Search.InvalidTags>(() => booru.GetTagAsync("ohno"));
         }
 
         [Theory]
@@ -524,31 +499,6 @@ namespace BooruSharp.UnitTests
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetLastCommentsAsync(); });
             else
                 General.CheckComment(await booru.GetLastCommentsAsync());
-        }
-
-        [Theory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621))]
-        [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan))]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru))]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru))]
-        [InlineData(typeof(SankakuComplex))]
-        [InlineData(typeof(Xbooru))]
-        [InlineData(typeof(Yandere))]
-        public async Task CheckLastCommentFail(Type t)
-        {
-            var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
-            if (!booru.HaveSearchLastComment())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetLastCommentsAsync(); });
-            else
-                await Assert.ThrowsAsync<Search.InvalidTags>(() => booru.GetLastCommentsAsync());
         }
 
         [Theory]
