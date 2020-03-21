@@ -29,7 +29,7 @@ namespace BooruSharp.Booru
             if (!HaveTagByIdAPI())
                 throw new Search.FeatureUnavailable();
             List<string> urlTags = new List<string>() { SearchArg("name") + name };
-            if (format != UrlFormat.danbooru)
+            if (format == UrlFormat.postIndexJson)
                 urlTags.Add("limit=0");
             string url = CreateUrl(tagUrl, urlTags.ToArray());
             Search.Tag.SearchResult[] results;

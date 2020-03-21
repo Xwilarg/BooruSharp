@@ -245,9 +245,9 @@ namespace BooruSharp.UnitTests
             if (!booru.HaveTagByIdAPI())
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetTagAsync(tag); });
             else if (onlyOnce)
-                Assert.NotEmpty(await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetTagsAsync(tag));
+                Assert.NotEmpty(await booru.GetTagsAsync(tag));
             else
-                Assert.NotInRange((await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetTagsAsync(tag)).Length, 0, 1);
+                Assert.NotInRange((await booru.GetTagsAsync(tag)).Length, 0, 1);
         }
 
         [Theory]
@@ -372,11 +372,11 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Realbooru), "sky", "clouds", AvailableStatus.Ok)]
         [InlineData(typeof(Rule34), "sky", "clouds", AvailableStatus.Ok)]
         [InlineData(typeof(Safebooru), "sky", "clouds", AvailableStatus.Ok)]
-        [InlineData(typeof(Sakugabooru), "kantai_collection", "ikazuchi_(kantai_collection)", AvailableStatus.Ok)]
+        [InlineData(typeof(Sakugabooru), "kantai_collection", "explosions", AvailableStatus.Ok)]
         [InlineData(typeof(SankakuComplex), "sky", "clouds", AvailableStatus.Ok)]
         [InlineData(typeof(Xbooru), "sky", "clouds", AvailableStatus.Ok)]
         [InlineData(typeof(Yandere), "sky", "clouds", AvailableStatus.Ok)]
-        public async Task CheckRelated(Type t, string tag, string related, AvailableStatus isAvailable) // TODO: Check if suppose to be alone
+        public async Task CheckRelated(Type t, string tag, string related, AvailableStatus isAvailable)
         {
             var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
             if (!booru.HaveRelatedAPI())
@@ -445,7 +445,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Rule34), 2840746)]
         [InlineData(typeof(Safebooru), 132)]
         [InlineData(typeof(Sakugabooru), 38886)]
-        [InlineData(typeof(SankakuComplex), -1)]
+        [InlineData(typeof(SankakuComplex), 48)]
         [InlineData(typeof(Xbooru), 740157)]
         [InlineData(typeof(Yandere), 619494)]
         public async Task CheckComment(Type t, int id)

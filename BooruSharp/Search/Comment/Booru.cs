@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BooruSharp.Booru
@@ -10,18 +11,36 @@ namespace BooruSharp.Booru
         {
             if (commentUrl == null)
                 throw new Search.FeatureUnavailable();
-            return await GetCommentsInternalAsync(CreateUrl(commentUrl, SearchArg("post_id") + postId));
+            string url = CreateUrl(commentUrl, SearchArg("post_id") + postId);
+            List<Search.Comment.SearchResult> results = new List<Search.Comment.SearchResult>();
+            if (commentUseXml)
+            {
+                var xml = await GetXmlAsync(url);
+                foreach (var node in xml.LastChild)
+                {
+                    var result = GetCommentSearchResult(node);
+                    if (result.postId == postId)
+                        results.Add(result);
+                }
+            }
+            else
+            {
+                var jsons = (JArray)JsonConvert.DeserializeObject(await GetJsonAsync(url));
+                foreach (var json in jsons)
+                {
+                    var result = GetCommentSearchResult(json);
+                    if (result.postId == postId)
+                        results.Add(result);
+                }
+            }
+            return results.ToArray();
         }
 
         public async Task<Search.Comment.SearchResult[]> GetLastCommentsAsync()
         {
             if (commentUrl == null || !searchLastComment)
                 throw new Search.FeatureUnavailable();
-            return await GetCommentsInternalAsync(CreateUrl(commentUrl));
-        }
-
-        private async Task<Search.Comment.SearchResult[]> GetCommentsInternalAsync(string url)
-        {
+            string url = CreateUrl(commentUrl);
             Search.Comment.SearchResult[] results;
             if (commentUseXml)
             {
