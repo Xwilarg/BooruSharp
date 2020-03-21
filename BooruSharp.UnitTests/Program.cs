@@ -473,31 +473,6 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
-        public async Task CheckCommentFail(Type t)
-        {
-            var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
-            if (!booru.HaveCommentAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetCommentsAsync(int.MaxValue); });
-            else
-                await Assert.ThrowsAsync<Search.InvalidTags>(() => booru.GetCommentsAsync(int.MaxValue));
-        }
-
-        [Theory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621))]
-        [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan))]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru))]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru))]
-        [InlineData(typeof(SankakuComplex))]
-        [InlineData(typeof(Xbooru))]
-        [InlineData(typeof(Yandere))]
         public async Task CheckLastComment(Type t)
         {
             var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
