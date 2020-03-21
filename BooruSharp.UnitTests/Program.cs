@@ -263,7 +263,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Rule34), "hibiki_(kantai_collection)", 321239)]
         [InlineData(typeof(Safebooru), "hibiki_(kantai_collection)", 316679)]
         [InlineData(typeof(Sakugabooru), "kantai_collection", 7148)]
-        [InlineData(typeof(SankakuComplex), "kantai_collection", -1)]
+        [InlineData(typeof(SankakuComplex), "kantai_collection", 539962)]
         [InlineData(typeof(Xbooru), "hibiki_(kantai_collection)", 151883)]
         [InlineData(typeof(Yandere), "hibiki_(kancolle)", 98153)]
         public async Task TagId(Type t, string tag, int tagId)
@@ -307,7 +307,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(E926), "futanari", 123)]
         [InlineData(typeof(Furrybooru), "futanari", -1)]
         [InlineData(typeof(Gelbooru), "futanari", -1)]
-        [InlineData(typeof(Konachan), "futanari", -1)]
+        [InlineData(typeof(Konachan), "futanari", 757)]
         [InlineData(typeof(Lolibooru), "futanari", 158)]
         [InlineData(typeof(Realbooru), "futanari", -1)]
         [InlineData(typeof(Rule34), "futanari", -1)]
