@@ -1,3 +1,4 @@
+nuget.config
 *.nuspec
 *coverage.xml
 
