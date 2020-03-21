@@ -413,7 +413,7 @@ namespace BooruSharp.UnitTests
             if (!booru.HaveRelatedAPI())
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetRelatedAsync("thisWillFail"); });
             else
-                Assert.Empty(await booru.GetRelatedAsync("thisWillFail")));
+                Assert.Empty(await booru.GetRelatedAsync("thisWillFail"));
         }
 
         [Fact]
