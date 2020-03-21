@@ -263,7 +263,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Rule34), "hibiki_(kantai_collection)", 321239)]
         [InlineData(typeof(Safebooru), "hibiki_(kantai_collection)", 316679)]
         [InlineData(typeof(Sakugabooru), "kantai_collection", 7148)]
-        [InlineData(typeof(SankakuComplex), "kantai_collection", 539962)]
+        [InlineData(typeof(SankakuComplex), "kantai_collection", 458437)]
         [InlineData(typeof(Xbooru), "hibiki_(kantai_collection)", 151883)]
         [InlineData(typeof(Yandere), "hibiki_(kancolle)", 98153)]
         public async Task TagId(Type t, string tag, int tagId)
@@ -361,8 +361,8 @@ namespace BooruSharp.UnitTests
         }
 
         [Theory]
-        [InlineData(typeof(Atfbooru), "kantai_collection", "warship", AvailableStatus.Ok)]
-        [InlineData(typeof(DanbooruDonmai), "kantai_collection", "ikazuchi_(kantai_collection)", AvailableStatus.Ok)]
+        [InlineData(typeof(Atfbooru), "kantai_collection", "anchor_symbol", AvailableStatus.Ok)]
+        [InlineData(typeof(DanbooruDonmai), "kantai_collection", "warship", AvailableStatus.Ok)]
         [InlineData(typeof(E621), "sky", "cloud", AvailableStatus.Ok)]
         [InlineData(typeof(E926), "sky", "cloud", AvailableStatus.Ok)]
         [InlineData(typeof(Furrybooru), "sky", "cloud", AvailableStatus.Ok)]
@@ -375,7 +375,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Sakugabooru), "kantai_collection", "explosions", AvailableStatus.Ok)]
         [InlineData(typeof(SankakuComplex), "sky", "clouds", AvailableStatus.Ok)]
         [InlineData(typeof(Xbooru), "sky", "clouds", AvailableStatus.Ok)]
-        [InlineData(typeof(Yandere), "sky", "clouds", AvailableStatus.Ok)]
+        [InlineData(typeof(Yandere), "landscape", "wallpaper", AvailableStatus.Ok)]
         public async Task CheckRelated(Type t, string tag, string related, AvailableStatus isAvailable)
         {
             var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
@@ -557,10 +557,10 @@ namespace BooruSharp.UnitTests
             bool foundExplicit = false;
             for (int i = 0; i < 10; i++)
             {
-                var rating = (await b.GetRandomImageAsync(explicitTag)).rating;
-                if (isSafe)
-                    Assert.NotEqual(Search.Post.Rating.Explicit, rating);
-                if (rating == Search.Post.Rating.Explicit)
+                var image = await b.GetRandomImageAsync(explicitTag);
+                if (isSafe && image.fileUrl != null)
+                    Assert.NotEqual(Search.Post.Rating.Explicit, image.rating);
+                if (image.rating == Search.Post.Rating.Explicit)
                     foundExplicit = true;
             }
             if (!isSafe)
