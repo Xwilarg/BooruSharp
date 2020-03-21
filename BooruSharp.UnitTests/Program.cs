@@ -360,7 +360,7 @@ namespace BooruSharp.UnitTests
 
         [Theory]
         [InlineData(typeof(Atfbooru), "kantai_collection", "anchor_symbol", AvailableStatus.Ok)]
-        [InlineData(typeof(DanbooruDonmai), "kantai_collection", "warship", AvailableStatus.Ok)]
+        [InlineData(typeof(DanbooruDonmai), "kantai_collection", "serafuku", AvailableStatus.Ok)]
         [InlineData(typeof(E621), "sky", "cloud", AvailableStatus.Ok)]
         [InlineData(typeof(E926), "sky", "cloud", AvailableStatus.Ok)]
         [InlineData(typeof(Furrybooru), "sky", "cloud", AvailableStatus.Ok)]
