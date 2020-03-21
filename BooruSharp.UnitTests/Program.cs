@@ -78,8 +78,6 @@ namespace BooruSharp.UnitTests
 
         public static void CheckRelated(Search.Related.SearchResult[] result)
         {
-            foreach (Search.Related.SearchResult res in result)
-                Assert.NotEqual(0, res.count);
             Assert.NotEmpty(result);
         }
 
