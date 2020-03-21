@@ -28,6 +28,12 @@ BooruSharp currently handle the following websites:
  - xbooru.com
  - yande.re
 
+# Documentation
+
+Version 2.0.0: https://boorusharp.zirk.eu/<br/>
+Version 1.4.8 and below: https://github.com/Xwilarg/BooruSharp/wiki<br/>
+Transition from 1.4.8 to 2.0.0: https://boorusharp.zirk.eu/transition.html
+
 # Basic examples
 
 Random image:
@@ -87,3 +93,6 @@ Console.WriteLine(String.Join(Environment.NewLine,
 	results.Where(delegate (BooruSharp.Search.Tag.SearchResult res) { return (res.type == BooruSharp.Search.Tag.TagType.Character); })
            .Select(delegate (BooruSharp.Search.Tag.SearchResult res) { return (res.name); })));
 ```
+
+# Need more help?
+Feel free to [open an issue](https://github.com/Xwilarg/BooruSharp/issues) and come ask it [on Discord](https://discord.gg/H6wMRYV).
