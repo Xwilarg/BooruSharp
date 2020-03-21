@@ -416,7 +416,7 @@ namespace BooruSharp.UnitTests
                 Assert.Empty(await booru.GetRelatedAsync("thisWillFail"));
         }
 
-        [Fact]
+        /*[Fact]
         public async Task CheckRelatedE621()
         {
             Search.Related.SearchResult[] result = await new E621(
@@ -430,7 +430,7 @@ namespace BooruSharp.UnitTests
             Search.Related.SearchResult[] result = await new E926(
                 new BooruAuth(Environment.GetEnvironmentVariable("E621_API_LOGIN"), Environment.GetEnvironmentVariable("E621_API_KEY"))).GetRelatedAsync("sky");
             General.CheckRelated(result);
-        }
+        }*/
 
         [Theory]
         [InlineData(typeof(Atfbooru), 257639)]
