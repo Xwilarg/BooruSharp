@@ -15,7 +15,8 @@ namespace BooruSharp.Booru
 
         private async Task<Search.Related.SearchResult[]> GetRelatedInternalAsync(string tag)
         {
-            var jsons = (JArray)JsonConvert.DeserializeObject(await GetJsonAsync(CreateUrl(relatedUrl, SearchArg("tags") + tag)));
+            var content = (JObject)JsonConvert.DeserializeObject(await GetJsonAsync(CreateUrl(relatedUrl, SearchArg("tags") + tag)));
+            var jsons = (JArray)(format == UrlFormat.danbooru ? content["wiki_page_tags"] : content[tag]);
             Search.Related.SearchResult[] results = new Search.Related.SearchResult[jsons.Count];
             int i = 0;
             foreach (var json in jsons)

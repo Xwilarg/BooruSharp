@@ -74,10 +74,10 @@ namespace BooruSharp.Booru.Template
 
         protected internal override Search.Related.SearchResult GetRelatedSearchResult(object json)
         {
-            var elem = (JObject)json;
+            var elem = (JArray)json;
             return new Search.Related.SearchResult(
-                elem["name"].Value<string>(),
-                elem["post_count"].Value<int>()
+                elem[0].Value<string>(),
+                elem[1].Value<int>()
                 );
         }
     }
