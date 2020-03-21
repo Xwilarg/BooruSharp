@@ -67,21 +67,28 @@ namespace BooruSharp.Booru
                 urlTags.Add(SearchArg("name") + name);
             if (format != UrlFormat.danbooru)
                 urlTags.Add("limit=0");
-            var jsons = (JArray)JsonConvert.DeserializeObject(await GetJsonAsync(CreateUrl(tagUrl, urlTags.ToArray())));
-            foreach (var json in jsons)
+            string url = CreateUrl(tagUrl, urlTags.ToArray());
+            if (format == UrlFormat.indexPhp)
             {
-                var result = GetTagSearchResult(json);
-                if ((name == null && id == result.id) || (name != null && name == result.name))
-                    return result;
+                var xml = await GetXmlAsync(url);
+                foreach (var node in xml.LastChild)
+                {
+                    var result = GetTagSearchResult(node);
+                    if ((name == null && id == result.id) || (name != null && name == result.name))
+                        return result;
+                }
+            }
+            else
+            {
+                var jsons = (JArray)JsonConvert.DeserializeObject(await GetJsonAsync(url));
+                foreach (var json in jsons)
+                {
+                    var result = GetTagSearchResult(json);
+                    if ((name == null && id == result.id) || (name != null && name == result.name))
+                        return result;
+                }
             }
             throw new Search.InvalidTags();
-        }
-
-        private Search.Tag.TagType GetTagType(string value)
-        {
-            if (int.TryParse(value, out int valInt))
-                return (Search.Tag.TagType)valInt;
-            return (Search.Tag.TagType)Enum.Parse(typeof(Search.Tag.TagType), value, true);
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
