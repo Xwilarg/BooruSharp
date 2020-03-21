@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace BooruSharp.Booru.Template
 {
-    public abstract class Danbooru : Booru
+    public abstract class Danbooru : ABooru
     {
         public Danbooru(string url, BooruAuth auth = null, params BooruOptions[] options) : base(url, auth, UrlFormat.danbooru, CombineArrays(options, new[] { BooruOptions.noLastComments }))
         { }

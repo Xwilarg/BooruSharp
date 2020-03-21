@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace BooruSharp.Booru.Template
 {
-    public class E621 : Booru
+    public class E621 : ABooru
     {
         public E621(string url, BooruAuth auth = null, params BooruOptions[] options) : base(url, auth, UrlFormat.danbooru, CombineArrays(options, new[] { BooruOptions.noWiki, BooruOptions.noRelated, BooruOptions.noComment, BooruOptions.noTagById }))
         { }

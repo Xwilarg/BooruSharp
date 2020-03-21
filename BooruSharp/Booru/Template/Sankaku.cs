@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace BooruSharp.Booru.Template
 {
-    public abstract class Sankaku : Booru
+    public abstract class Sankaku : ABooru
     {
         public Sankaku(string url, BooruAuth auth = null, params BooruOptions[] options) : base(url, auth, UrlFormat.sankaku, CombineArrays(options, new[] { BooruOptions.noRelated, BooruOptions.noPostByMd5 }))
         { }

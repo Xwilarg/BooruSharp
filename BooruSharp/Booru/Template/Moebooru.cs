@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace BooruSharp.Booru.Template
 {
-    public abstract class Moebooru : Booru
+    public abstract class Moebooru : ABooru
     {
         public Moebooru(string url, BooruAuth auth = null, params BooruOptions[] options) : base(url, auth, UrlFormat.postIndexJson, CombineArrays(options, new[] { BooruOptions.noPostByMd5 }))
         { }

@@ -10,7 +10,7 @@ using System.Xml;
 
 namespace BooruSharp.Booru
 {
-    public abstract partial class Booru
+    public abstract partial class ABooru
     {
         public abstract bool IsSafe();
 
@@ -58,7 +58,7 @@ namespace BooruSharp.Booru
             }
         }
 
-        protected Booru(string baseUrl, BooruAuth auth, UrlFormat format, params BooruOptions[] options)
+        protected ABooru(string baseUrl, BooruAuth auth, UrlFormat format, params BooruOptions[] options)
         {
             this.auth = auth;
             useHttp = options.Contains(BooruOptions.useHttp);

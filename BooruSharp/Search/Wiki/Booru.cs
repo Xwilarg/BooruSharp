@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace BooruSharp.Booru
 {
-    public abstract partial class Booru
+    public abstract partial class ABooru
     {
         public async Task<Search.Wiki.SearchResult> GetWikiAsync(string query)
         {

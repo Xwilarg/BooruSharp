@@ -7,7 +7,7 @@ using System.Xml;
 
 namespace BooruSharp.Booru
 {
-    public abstract partial class Booru
+    public abstract partial class ABooru
     {
         public async Task<Search.Post.SearchResult> GetImageByMd5Async(string md5)
         {
