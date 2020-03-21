@@ -313,7 +313,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Rule34), "futanari", -1)]
         [InlineData(typeof(Safebooru), "futanari", -1)]
         [InlineData(typeof(Sakugabooru), "animated", 13)]
-        [InlineData(typeof(SankakuComplex), "futanari", -1)]
+        [InlineData(typeof(SankakuComplex), "blush", 826)]
         [InlineData(typeof(Xbooru), "futanari", -1)]
         [InlineData(typeof(Yandere), "futanari", 167)]
         public async Task CheckWiki(Type t, string tag, int? id)

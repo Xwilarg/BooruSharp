@@ -111,6 +111,8 @@ namespace BooruSharp.Booru
                     return query + "s.json";
 
                 case UrlFormat.sankaku:
+                    if (query == "wiki")
+                        return query;
                     return query + "s";
 
                 default:

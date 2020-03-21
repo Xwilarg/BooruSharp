@@ -16,7 +16,7 @@ namespace BooruSharp.Booru
             return new Search.Tag.SearchResult(
                 elem["id"].Value<int>(),
                 elem["name"].Value<string>(),
-                (Search.Tag.TagType)elem["type"].Value<int>(),
+                (Search.Tag.TagType)elem["tag_type"].Value<int>(),
                 elem["post_count"].Value<int>()
                 );
         }

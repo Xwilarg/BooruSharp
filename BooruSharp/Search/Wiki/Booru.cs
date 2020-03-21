@@ -10,7 +10,6 @@ namespace BooruSharp.Booru
         {
             if (wikiUrl == null)
                 throw new Search.FeatureUnavailable();
-
             var jsons = (JArray)JsonConvert.DeserializeObject(await GetJsonAsync(CreateUrl(wikiUrl, SearchArg(format == UrlFormat.danbooru ? "title" : "query") + query)));
             int i = 0;
             foreach (var json in jsons)
