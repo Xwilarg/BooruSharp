@@ -2,14 +2,18 @@
 {
     public enum BooruOptions
     {
-        useHttp,
+        useHttp, // http instead of https
+        // Missing API
         noWiki,
         noRelated,
         noComment,
         noTagById,
         noPostByMd5,
         noLastComments,
-        wikiSearchUseTitle,
-        limitOf20000
-    } // TODO: can guess some options depending of UrlFormat
+        // API using XML instead of JSON
+        commentApiXml,
+        tagApiXml,
+        wikiSearchUseTitle, // Use 'title' instead of 'query'
+        limitOf20000 // Limit of 20000 posts per search, used for Gelbooru
+    }
 }

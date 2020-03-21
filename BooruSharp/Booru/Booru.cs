@@ -71,6 +71,8 @@ namespace BooruSharp.Booru
             searchLastComment = !options.Contains(BooruOptions.noLastComments);
             searchPostByMd5 = !options.Contains(BooruOptions.noPostByMd5);
             wikiSearchUseTitle = options.Contains(BooruOptions.wikiSearchUseTitle);
+            tagUseXml = options.Contains(BooruOptions.tagApiXml);
+            commentUseXml = options.Contains(BooruOptions.commentApiXml);
             tagUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag");
             if (options.Contains(BooruOptions.noWiki))
                 wikiUrl = null;
@@ -175,14 +177,15 @@ namespace BooruSharp.Booru
             return arr;
         }
 
-        private readonly BooruAuth auth;
-        private readonly string baseUrl;
-        private readonly string imageUrlXml, imageUrl, tagUrl, wikiUrl, relatedUrl, commentUrl;
-        private readonly bool searchTagById, searchLastComment, searchPostByMd5;
-        private readonly bool maxLimit;
-        private readonly bool wikiSearchUseTitle;
-        private readonly UrlFormat format;
-        protected readonly bool useHttp;
+        private readonly BooruAuth auth; // Authentification
+        private readonly string baseUrl; // Booru's base URL
+        private readonly string imageUrlXml, imageUrl, tagUrl, wikiUrl, relatedUrl, commentUrl; // URLs for differents endpoints
+        private readonly bool searchTagById, searchLastComment, searchPostByMd5; // Differents services availability
+        private readonly bool tagUseXml, commentUseXml; // APIs use XML instead of JSON
+        private readonly bool maxLimit; // Have max limit (used by Gelbooru)
+        private readonly bool wikiSearchUseTitle; // wiki use 'title' instead of 'query'
+        private readonly UrlFormat format; // URL format
+        protected readonly bool useHttp; // Use http instead of https
         private static readonly Random random = new Random();
     }
 }

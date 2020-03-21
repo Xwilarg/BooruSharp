@@ -33,7 +33,7 @@ namespace BooruSharp.Booru
                 urlTags.Add("limit=0");
             string url = CreateUrl(tagUrl, urlTags.ToArray());
             Search.Tag.SearchResult[] results;
-            if (format == UrlFormat.indexPhp)
+            if (tagUseXml)
             {
                 var xml = await GetXmlAsync(url);
                 results = new Search.Tag.SearchResult[xml.LastChild.ChildNodes.Count];
@@ -68,7 +68,7 @@ namespace BooruSharp.Booru
             if (format != UrlFormat.danbooru)
                 urlTags.Add("limit=0");
             string url = CreateUrl(tagUrl, urlTags.ToArray());
-            if (format == UrlFormat.indexPhp)
+            if (tagUseXml)
             {
                 var xml = await GetXmlAsync(url);
                 foreach (var node in xml.LastChild)

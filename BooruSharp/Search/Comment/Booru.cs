@@ -23,7 +23,7 @@ namespace BooruSharp.Booru
         private async Task<Search.Comment.SearchResult[]> GetCommentsInternalAsync(string url)
         {
             Search.Comment.SearchResult[] results;
-            if (format == UrlFormat.indexPhp)
+            if (commentUseXml)
             {
                 var xml = await GetXmlAsync(url);
                 results = new Search.Comment.SearchResult[xml.LastChild.ChildNodes.Count];
