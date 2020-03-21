@@ -363,8 +363,8 @@ namespace BooruSharp.UnitTests
         [Theory]
         [InlineData(typeof(Atfbooru), "kantai_collection", "warship", AvailableStatus.Ok)]
         [InlineData(typeof(DanbooruDonmai), "kantai_collection", "ikazuchi_(kantai_collection)", AvailableStatus.Ok)]
-        [InlineData(typeof(E621), "sky", "cloud", AvailableStatus.AuthRequired)]
-        [InlineData(typeof(E926), "sky", "cloud", AvailableStatus.AuthRequired)]
+        [InlineData(typeof(E621), "sky", "cloud", AvailableStatus.Ok)]
+        [InlineData(typeof(E926), "sky", "cloud", AvailableStatus.Ok)]
         [InlineData(typeof(Furrybooru), "sky", "cloud", AvailableStatus.Ok)]
         [InlineData(typeof(Gelbooru), "sky", "cloud", AvailableStatus.Ok)]
         [InlineData(typeof(Konachan), "sky", "clouds", AvailableStatus.Ok)]
@@ -411,7 +411,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = (Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null);
             if (!booru.HaveRelatedAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).GetRelatedAsync("thisWillFail"); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetRelatedAsync("thisWillFail"); });
             else
                 Assert.Empty(await booru.GetRelatedAsync("thisWillFail"));
         }
