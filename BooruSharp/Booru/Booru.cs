@@ -70,7 +70,6 @@ namespace BooruSharp.Booru
             searchTagById = !options.Contains(BooruOptions.noTagById);
             searchLastComment = !options.Contains(BooruOptions.noLastComments);
             searchPostByMd5 = !options.Contains(BooruOptions.noPostByMd5);
-            wikiSearchUseTitle = options.Contains(BooruOptions.wikiSearchUseTitle);
             tagUseXml = options.Contains(BooruOptions.tagApiXml);
             commentUseXml = options.Contains(BooruOptions.commentApiXml);
             tagUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag");
@@ -82,6 +81,8 @@ namespace BooruSharp.Booru
                 wikiUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "wiki");
             if (options.Contains(BooruOptions.noRelated))
                 relatedUrl = null;
+            else if (format == UrlFormat.danbooru)
+                relatedUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "related_tag");
             else
                 relatedUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag", "related");
             if (options.Contains(BooruOptions.noComment))
@@ -105,6 +106,8 @@ namespace BooruSharp.Booru
                     return "index.php?page=dapi&s=" + query + "&q=index&json=1";
 
                 case UrlFormat.danbooru:
+                    if (query == "related_tag")
+                        return query + ".json";
                     return query + "s.json";
 
                 case UrlFormat.sankaku:
@@ -183,7 +186,6 @@ namespace BooruSharp.Booru
         private readonly bool searchTagById, searchLastComment, searchPostByMd5; // Differents services availability
         private readonly bool tagUseXml, commentUseXml; // APIs use XML instead of JSON
         private readonly bool maxLimit; // Have max limit (used by Gelbooru)
-        private readonly bool wikiSearchUseTitle; // wiki use 'title' instead of 'query'
         private readonly UrlFormat format; // URL format
         protected readonly bool useHttp; // Use http instead of https
         private static readonly Random random = new Random();

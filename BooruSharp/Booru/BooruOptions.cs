@@ -13,7 +13,6 @@
         // API using XML instead of JSON
         commentApiXml,
         tagApiXml,
-        wikiSearchUseTitle, // Use 'title' instead of 'query'
         limitOf20000 // Limit of 20000 posts per search, used for Gelbooru
     }
 }
