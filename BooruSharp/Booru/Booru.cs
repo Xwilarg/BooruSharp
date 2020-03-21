@@ -120,6 +120,8 @@ namespace BooruSharp.Booru
             }
         }
 
+        // TODO: Handle limitrate
+
         private async Task<string> GetJsonAsync(string url)
         {
             using (HttpClient hc = new HttpClient())
