@@ -23,7 +23,7 @@ namespace BooruSharp.Booru
                 results[i] = GetRelatedSearchResult(json);
                 i++;
             }
-            return (results);
+            return results;
         }
     }
 }
