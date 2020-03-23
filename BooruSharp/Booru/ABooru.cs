@@ -34,6 +34,12 @@ namespace BooruSharp.Booru
         protected internal virtual Search.Wiki.SearchResult GetWikiSearchResult(object json)
             => throw new FeatureUnavailable();
 
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        protected internal abstract string GetLoginString();
+
+        public abstract bool CanLoginWithApiKey();
+        public abstract bool CanLoginWithPasswordHash();
+
         public bool HaveRelatedAPI()
             => relatedUrl != null;
         public bool HaveWikiAPI()
@@ -61,6 +67,12 @@ namespace BooruSharp.Booru
         protected ABooru(string baseUrl, BooruAuth auth, UrlFormat format, params BooruOptions[] options)
         {
             this.auth = auth;
+            if (auth != null)
+            {
+                if ((auth.PasswordHash != null && !CanLoginWithPasswordHash())
+                    || (auth.ApiKey != null && !CanLoginWithApiKey()))
+                    throw new InvalidAuthentificationMethod();
+            }
             useHttp = options.Contains(BooruOptions.useHttp);
             maxLimit = options.Contains(BooruOptions.limitOf20000);
             this.baseUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl;
@@ -155,7 +167,13 @@ namespace BooruSharp.Booru
         {
             string authArgs = "";
             if (auth != null)
-                authArgs = "&login=" + auth.Login + "&password_hash=" + auth.PasswordHash;
+            {
+                authArgs = "&" + GetLoginString() + "=" + auth.Login + "&";
+                if (auth.ApiKey != null)
+                    authArgs += "api_key=" + auth.ApiKey;
+                else
+                    authArgs += "password_hash=" + auth.PasswordHash;
+            }
             if (format == UrlFormat.indexPhp)
                 return (url + "&" + string.Join("&", args) + authArgs);
             else

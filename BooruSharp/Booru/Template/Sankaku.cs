@@ -10,6 +10,15 @@ namespace BooruSharp.Booru.Template
         public Sankaku(string url, BooruAuth auth = null, params BooruOptions[] options) : base(url, auth, UrlFormat.sankaku, CombineArrays(options, new[] { BooruOptions.noRelated, BooruOptions.noPostByMd5 }))
         { }
 
+        protected internal override string GetLoginString()
+            => "login";
+
+        public override bool CanLoginWithApiKey()
+            => false;
+
+        public override bool CanLoginWithPasswordHash()
+            => true;
+
         protected internal override Search.Post.SearchResult GetPostSearchResult(object json)
         {
             var elem = ((JArray)json).FirstOrDefault();

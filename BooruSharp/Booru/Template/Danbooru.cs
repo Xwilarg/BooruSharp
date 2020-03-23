@@ -9,6 +9,15 @@ namespace BooruSharp.Booru.Template
         public Danbooru(string url, BooruAuth auth = null, params BooruOptions[] options) : base(url, auth, UrlFormat.danbooru, CombineArrays(options, new[] { BooruOptions.noLastComments }))
         { }
 
+        protected internal override string GetLoginString()
+            => "login";
+
+        public override bool CanLoginWithApiKey()
+            => true;
+
+        public override bool CanLoginWithPasswordHash()
+            => true;
+
         protected internal override Search.Post.SearchResult GetPostSearchResult(object json)
         {
             var array = json as JArray;

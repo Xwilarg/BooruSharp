@@ -5,12 +5,18 @@ using System.Linq;
 
 namespace BooruSharp.Booru.Template
 {
-    public class E621 : ABooru
+    public abstract class E621 : ABooru
     {
         public E621(string url, BooruAuth auth = null, params BooruOptions[] options) : base(url, auth, UrlFormat.danbooru, CombineArrays(options, new[] { BooruOptions.noWiki, BooruOptions.noRelated, BooruOptions.noComment, BooruOptions.noTagById }))
         { }
 
-        public override bool IsSafe()
+        protected internal override string GetLoginString()
+            => "login";
+
+        public override bool CanLoginWithApiKey()
+            => true;
+
+        public override bool CanLoginWithPasswordHash()
             => false;
 
         protected internal override Search.Post.SearchResult GetPostSearchResult(object json)
