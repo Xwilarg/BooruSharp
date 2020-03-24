@@ -84,6 +84,7 @@ namespace BooruSharp.Booru
             searchPostByMd5 = !options.Contains(BooruOptions.noPostByMd5);
             tagUseXml = options.Contains(BooruOptions.tagApiXml);
             commentUseXml = options.Contains(BooruOptions.commentApiXml);
+            noMoreThan2Tags = options.Contains(BooruOptions.noMoreThan2Tags);
             tagUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag");
             if (options.Contains(BooruOptions.noWiki))
                 wikiUrl = null;
@@ -207,6 +208,7 @@ namespace BooruSharp.Booru
         private readonly string imageUrlXml, imageUrl, tagUrl, wikiUrl, relatedUrl, commentUrl; // URLs for differents endpoints
         private readonly bool searchTagById, searchLastComment, searchPostByMd5; // Differents services availability
         private readonly bool tagUseXml, commentUseXml; // APIs use XML instead of JSON
+        private readonly bool noMoreThan2Tags;
         private readonly bool maxLimit; // Have max limit (used by Gelbooru)
         private readonly UrlFormat format; // URL format
         protected readonly bool useHttp; // Use http instead of https

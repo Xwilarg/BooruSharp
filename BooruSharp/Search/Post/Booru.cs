@@ -19,6 +19,8 @@ namespace BooruSharp.Booru
         public async Task<Search.Post.SearchResult> GetRandomImageAsync(params string[] tagsArg)
         {
             tagsArg = tagsArg.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+            if (tagsArg.Length > 2 && noMoreThan2Tags)
+                throw new Search.TooManyTags();
             if (format == UrlFormat.indexPhp)
             {
                 if (tagsArg.Length == 0)
@@ -36,6 +38,8 @@ namespace BooruSharp.Booru
                     return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", TagsToString(tagsArg), "pid=" + random.Next(0, max)));
                 }
             }
+            else if (format == UrlFormat.danbooru)
+                return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", TagsToString(tagsArg), "random=true"));
             else
                 return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", TagsToString(tagsArg) + "+order:random"));
         }

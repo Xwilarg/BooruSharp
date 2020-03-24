@@ -162,8 +162,8 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Realbooru), "school_swimsuit", "small_breasts")]
         [InlineData(typeof(Rule34))]
         [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru), "kantai_collection")]
-        [InlineData(typeof(SankakuComplex), "small_breasts")]
+        [InlineData(typeof(Sakugabooru), "kantai_collection", "explosions")]
+        [InlineData(typeof(SankakuComplex), "hibiki_(kantai_collection)", "old_school_swimsuit")]
         [InlineData(typeof(Xbooru), "kantai_collection")]
         [InlineData(typeof(Yandere), "kantai_collection")]
         public async Task GetRandom2Tags(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "school_swimsuit")
@@ -172,6 +172,45 @@ namespace BooruSharp.UnitTests
             var result = await booru.GetRandomImageAsync(tag, tag2);
             Assert.Contains(tag, result.tags);
             Assert.Contains(tag2, result.tags);
+        }
+
+        [Theory]
+        [InlineData(typeof(Atfbooru), false)]
+        [InlineData(typeof(DanbooruDonmai), true)]
+        [InlineData(typeof(E621), false)]
+        [InlineData(typeof(E926), false)]
+        [InlineData(typeof(Furrybooru), false, "water")]
+        [InlineData(typeof(Gelbooru), false)]
+        [InlineData(typeof(Konachan), false, "water")]
+        [InlineData(typeof(Lolibooru), false)]
+        [InlineData(typeof(Realbooru), false, "water")]
+        [InlineData(typeof(Rule34), false)]
+        [InlineData(typeof(Safebooru), false)]
+        [InlineData(typeof(Sakugabooru), false, "kantai_collection", "explosions", "fire")]
+        [InlineData(typeof(SankakuComplex), false, "ocean", "loli", "swimsuit")]
+        [InlineData(typeof(Xbooru), false)]
+        [InlineData(typeof(Yandere), false, "see_through", "loli", "swimsuit")]
+        public async Task TooManyTags(Type t, bool throwError, string tag = "ocean", string tag2 = "flat_chest", string tag3 = "swimsuit")
+        {
+            var booru = (ABooru)Activator.CreateInstance(t, (BooruAuth)null);
+            Search.Post.SearchResult result;
+            if (throwError)
+            {
+                await Assert.ThrowsAsync<Search.TooManyTags>(async () =>
+                {
+                    result = await booru.GetRandomImageAsync(tag, tag2);
+                    Assert.Contains(tag, result.tags);
+                    Assert.Contains(tag2, result.tags);
+                    Assert.Contains(tag3, result.tags);
+                });
+            }
+            else
+            {
+                result = await booru.GetRandomImageAsync(tag, tag2);
+                Assert.Contains(tag, result.tags);
+                Assert.Contains(tag2, result.tags);
+                Assert.Contains(tag3, result.tags);
+            }
         }
 
         [Theory]

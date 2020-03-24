@@ -13,6 +13,7 @@
         // API using XML instead of JSON
         commentApiXml,
         tagApiXml,
-        limitOf20000 // Limit of 20000 posts per search, used for Gelbooru
+        limitOf20000, // Limit of 20000 posts per search, used for Gelbooru
+        noMoreThan2Tags
     }
 }
