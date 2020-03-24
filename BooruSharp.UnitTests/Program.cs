@@ -177,8 +177,8 @@ namespace BooruSharp.UnitTests
         [Theory]
         [InlineData(typeof(Atfbooru), false)]
         [InlineData(typeof(DanbooruDonmai), true)]
-        [InlineData(typeof(E621), false)]
-        [InlineData(typeof(E926), false)]
+        [InlineData(typeof(E621), false, "sea")]
+        [InlineData(typeof(E926), false, "sea")]
         [InlineData(typeof(Furrybooru), false, "water")]
         [InlineData(typeof(Gelbooru), false)]
         [InlineData(typeof(Konachan), false, "water")]
@@ -189,7 +189,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Sakugabooru), false, "kantai_collection", "explosions", "fire")]
         [InlineData(typeof(SankakuComplex), false, "ocean", "loli", "swimsuit")]
         [InlineData(typeof(Xbooru), false)]
-        [InlineData(typeof(Yandere), false, "see_through", "loli", "swimsuit")]
+        [InlineData(typeof(Yandere), false, "see_through", "loli", "swimsuits")]
         public async Task TooManyTags(Type t, bool throwError, string tag = "ocean", string tag2 = "flat_chest", string tag3 = "swimsuit")
         {
             var booru = (ABooru)Activator.CreateInstance(t, (BooruAuth)null);
