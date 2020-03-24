@@ -57,7 +57,7 @@ namespace BooruSharp.UnitTests
             {
                 result2 = await booru.GetRandomImageAsync(s1);
                 i++;
-            } while (result.id == result2.id || i < 5);
+            } while (result.id == result2.id && i < 5);
             Assert.NotEqual(result.id, result2.id);
             await CheckResult(result, s1);
         }
