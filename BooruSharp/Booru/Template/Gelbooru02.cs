@@ -44,7 +44,7 @@ namespace BooruSharp.Booru.Template
                     null,
                     null,
                     null,
-                    elem["score"].Value<int>(),
+                    elem["score"].Value<int?>(),
                     null
                 );
         }
