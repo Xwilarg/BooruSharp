@@ -153,6 +153,30 @@ namespace BooruSharp.UnitTests
         [Theory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621), "kantai_collection")]
+        [InlineData(typeof(E926), "kantai_collection")]
+        [InlineData(typeof(Furrybooru), "kantai_collection")]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan), "hibiki_(kancolle)")]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru), "school_swimsuit", "small_breasts")]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru), "kantai_collection")]
+        [InlineData(typeof(SankakuComplex), "small_breasts")]
+        [InlineData(typeof(Xbooru), "kantai_collection")]
+        [InlineData(typeof(Yandere), "kantai_collection")]
+        public async Task GetRandom2Tags(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "school_swimsuit")
+        {
+            var booru = (ABooru)Activator.CreateInstance(t, (BooruAuth)null);
+            var result = await booru.GetRandomImageAsync(tag, tag2);
+            Assert.Contains(tag, result.tags);
+            Assert.Contains(tag2, result.tags);
+        }
+
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
         [InlineData(typeof(E926))]
         [InlineData(typeof(Furrybooru))]

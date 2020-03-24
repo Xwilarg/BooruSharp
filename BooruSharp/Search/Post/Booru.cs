@@ -31,7 +31,7 @@ namespace BooruSharp.Booru
                     int max = int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
                     if (max == 0)
                         throw new Search.InvalidTags();
-                    if (maxLimit)
+                    if (maxLimit && max > 20001)
                         max = 20001;
                     return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", TagsToString(tagsArg), "pid=" + random.Next(0, max)));
                 }
