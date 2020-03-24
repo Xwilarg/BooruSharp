@@ -198,7 +198,7 @@ namespace BooruSharp.UnitTests
             {
                 await Assert.ThrowsAsync<Search.TooManyTags>(async () =>
                 {
-                    result = await booru.GetRandomImageAsync(tag, tag2);
+                    result = await booru.GetRandomImageAsync(tag, tag2, tag3);
                     Assert.Contains(tag, result.tags);
                     Assert.Contains(tag2, result.tags);
                     Assert.Contains(tag3, result.tags);
@@ -206,7 +206,7 @@ namespace BooruSharp.UnitTests
             }
             else
             {
-                result = await booru.GetRandomImageAsync(tag, tag2);
+                result = await booru.GetRandomImageAsync(tag, tag2, tag3);
                 Assert.Contains(tag, result.tags);
                 Assert.Contains(tag2, result.tags);
                 Assert.Contains(tag3, result.tags);
