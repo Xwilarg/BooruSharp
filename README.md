@@ -30,8 +30,8 @@ BooruSharp currently handle the following websites:
 
 # Documentation
 
-Version 2.0.0: https://boorusharp.zirk.eu/<br/>
-Version 1.4.8 and below: https://github.com/Xwilarg/BooruSharp/wiki<br/>
+Version >= 2.0.0: https://boorusharp.zirk.eu/<br/>
+Version <= 1.4.8: https://github.com/Xwilarg/BooruSharp/wiki<br/>
 Transition from 1.4.8 to 2.0.0: https://boorusharp.zirk.eu/transition.html
 
 # Basic examples
