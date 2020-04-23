@@ -95,4 +95,4 @@ Console.WriteLine(String.Join(Environment.NewLine,
 ```
 
 # Need more help?
-Feel free to [open an issue](https://github.com/Xwilarg/BooruSharp/issues) and come ask [on Discord](https://discord.gg/H6wMRYV).
+Feel free to [open an issue](https://github.com/Xwilarg/BooruSharp/issues) or come ask [on Discord](https://discord.gg/H6wMRYV).
