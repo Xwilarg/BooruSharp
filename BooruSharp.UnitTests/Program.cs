@@ -138,6 +138,61 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Gelbooru))]
         [InlineData(typeof(Konachan))]
         [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru))]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru))]
+        [InlineData(typeof(SankakuComplex))]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
+        public async Task GetLastPosts(Type t)
+        {
+            var booru = (ABooru)Activator.CreateInstance(t, (BooruAuth)null);
+            Search.Post.SearchResult[] results;
+            results = await booru.GetLastImagesAsync();
+            Assert.NotInRange(results.Length, 0, 1);
+            Assert.NotEqual(results[0].id, results[1].id);
+        }
+
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621), "kantai_collection")]
+        [InlineData(typeof(E926), "kantai_collection")]
+        [InlineData(typeof(Furrybooru), "kantai_collection")]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan), "hibiki_(kancolle)")]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru), "school_swimsuit", "small_breasts")]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru), "kantai_collection", "explosions")]
+        [InlineData(typeof(SankakuComplex), "hibiki_(kantai_collection)", "old_school_swimsuit")]
+        [InlineData(typeof(Xbooru), "kantai_collection")]
+        [InlineData(typeof(Yandere), "kantai_collection")]
+        public async Task GetLastPostsWithTags(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "school_swimsuit")
+        {
+            var booru = (ABooru)Activator.CreateInstance(t, (BooruAuth)null);
+            Search.Post.SearchResult[] results;
+            results = await booru.GetLastImagesAsync(tag, tag2);
+            Assert.NotInRange(results.Length, 0, 1);
+            Assert.NotEqual(results[0].id, results[1].id);
+            foreach (var elem in results)
+            {
+                Assert.Contains(tag, elem.tags);
+                Assert.Contains(tag2, elem.tags);
+            }
+        }
+
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926))]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
         [InlineData(typeof(Realbooru), "small_breasts")]
         [InlineData(typeof(Rule34))]
         [InlineData(typeof(Safebooru))]
@@ -448,7 +503,7 @@ namespace BooruSharp.UnitTests
             {
                 Search.Related.SearchResult[] result = await ((ABooru)Activator.CreateInstance(t, (BooruAuth)null)).GetRelatedAsync(tag);
                 General.CheckRelated(result);
-                Assert.True(result.Any(x => x.name == related));
+                Assert.Contains(result, x => x.name == related);
             }
         }
 

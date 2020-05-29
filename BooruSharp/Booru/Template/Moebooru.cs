@@ -18,11 +18,16 @@ namespace BooruSharp.Booru.Template
         public override bool CanLoginWithPasswordHash()
             => true;
 
-        protected internal override Search.Post.SearchResult GetPostSearchResult(object json)
+        protected internal override JToken ParseFirstPostSearchResult(object json)
         {
             var elem = ((JArray)json).FirstOrDefault();
             if (elem == null)
                 throw new Search.InvalidTags();
+            return elem;
+        }
+
+        protected internal override Search.Post.SearchResult GetPostSearchResult(JToken elem)
+        {
             return new Search.Post.SearchResult(
                     new Uri(elem["file_url"].Value<string>()),
                     new Uri(elem["preview_url"].Value<string>()),
@@ -39,6 +44,19 @@ namespace BooruSharp.Booru.Template
                     elem["score"].Value<int>(),
                     elem["md5"].Value<string>()
                 );
+        }
+
+        protected internal override Search.Post.SearchResult[] GetPostsSearchResult(object json)
+        {
+            var arr = (JArray)json;
+            Search.Post.SearchResult[] res = new Search.Post.SearchResult[arr.Count];
+            int i = 0;
+            foreach (var elem in arr)
+            {
+                res[i] = GetPostSearchResult(elem);
+                i++;
+            }
+            return res;
         }
 
         protected internal override Search.Comment.SearchResult GetCommentSearchResult(object json)

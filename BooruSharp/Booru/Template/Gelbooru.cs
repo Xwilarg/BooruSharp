@@ -25,11 +25,16 @@ namespace BooruSharp.Booru.Template
         public override bool CanLoginWithPasswordHash()
             => false;
 
-        protected internal override Search.Post.SearchResult GetPostSearchResult(object json)
+        protected internal override JToken ParseFirstPostSearchResult(object json)
         {
             var elem = ((JArray)json).FirstOrDefault();
             if (elem == null)
                 throw new Search.InvalidTags();
+            return elem;
+        }
+
+        protected internal override Search.Post.SearchResult GetPostSearchResult(JToken elem)
+        {
             Match match = Regex.Match(elem["created_at"].Value<string>(), "[\\w]{3} ([\\w]{3}) ([0-9]{2}) ([0-9:]{8}) ([-+0-9]{5}) ([0-9]{4})");
             string timezone = match.Groups[4].Value;
             string dt = match.Groups[5] + "-" + GetMonth(match.Groups[1].Value) + "-" + match.Groups[2].Value + "T" + match.Groups[3].Value + ".0000000" + timezone.Substring(0, 3) + ":" + timezone.Substring(3, 2);
@@ -49,6 +54,19 @@ namespace BooruSharp.Booru.Template
                     elem["score"].Value<int>(),
                     elem["hash"].Value<string>()
                 );
+        }
+
+        protected internal override Search.Post.SearchResult[] GetPostsSearchResult(object json)
+        {
+            var arr = (JArray)json;
+            Search.Post.SearchResult[] res = new Search.Post.SearchResult[arr.Count];
+            int i = 0;
+            foreach (var elem in arr)
+            {
+                res[i] = GetPostSearchResult(elem);
+                i++;
+            }
+            return res;
         }
 
         protected internal override Search.Comment.SearchResult GetCommentSearchResult(object json)

@@ -1,4 +1,5 @@
 ﻿using BooruSharp.Search;
+using Newtonsoft.Json.Linq;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -14,27 +15,27 @@ namespace BooruSharp.Booru
     {
         public abstract bool IsSafe();
 
-        [EditorBrowsable(EditorBrowsableState.Never)]
         protected internal virtual Search.Comment.SearchResult GetCommentSearchResult(object json)
             => throw new FeatureUnavailable();
 
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        protected internal virtual Search.Post.SearchResult GetPostSearchResult(object json)
+        protected internal virtual Search.Post.SearchResult GetPostSearchResult(JToken obj)
             => throw new FeatureUnavailable();
 
-        [EditorBrowsable(EditorBrowsableState.Never)]
+        protected internal virtual Search.Post.SearchResult[] GetPostsSearchResult(object json)
+            => throw new FeatureUnavailable();
+
+        protected internal virtual JToken ParseFirstPostSearchResult(object json)
+            => throw new FeatureUnavailable();
+
         protected internal virtual Search.Related.SearchResult GetRelatedSearchResult(object json)
             => throw new FeatureUnavailable();
 
-        [EditorBrowsable(EditorBrowsableState.Never)]
         protected internal virtual Search.Tag.SearchResult GetTagSearchResult(object json)
             => throw new FeatureUnavailable();
 
-        [EditorBrowsable(EditorBrowsableState.Never)]
         protected internal virtual Search.Wiki.SearchResult GetWikiSearchResult(object json)
             => throw new FeatureUnavailable();
 
-        [EditorBrowsable(EditorBrowsableState.Never)]
         protected internal abstract string GetLoginString();
 
         public abstract bool CanLoginWithApiKey();
@@ -107,8 +108,7 @@ namespace BooruSharp.Booru
                 commentUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "comment");
         }
 
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        protected static string GetUrl(UrlFormat format, string query, string squery = "index")
+        protected internal static string GetUrl(UrlFormat format, string query, string squery = "index")
         {
             switch (format)
             {
@@ -139,6 +139,7 @@ namespace BooruSharp.Booru
         {
             using (HttpClient hc = new HttpClient())
             {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 hc.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
                 HttpResponseMessage msg = await hc.GetAsync(url);
                 if (msg.StatusCode == HttpStatusCode.Forbidden)
@@ -194,8 +195,7 @@ namespace BooruSharp.Booru
                 return value + "=";
         }
 
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        protected static BooruOptions[] CombineArrays(BooruOptions[] arr1, BooruOptions[] arr2)
+        protected internal static BooruOptions[] CombineArrays(BooruOptions[] arr1, BooruOptions[] arr2)
         {
             var arr = new BooruOptions[arr1.Length + arr2.Length];
             arr1.CopyTo(arr, 0);

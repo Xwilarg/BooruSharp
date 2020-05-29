@@ -44,9 +44,14 @@ namespace BooruSharp.Booru
                 return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", TagsToString(tagsArg) + "+order:random"));
         }
 
+        public async Task<Search.Post.SearchResult[]> GetLastImagesAsync(params string[] tagsArg)
+        {
+            return GetPostsSearchResult(JsonConvert.DeserializeObject(await GetJsonAsync(CreateUrl(imageUrl, TagsToString(tagsArg)))));
+        }
+
         private async Task<Search.Post.SearchResult> GetSearchResultFromUrlAsync(string url)
         {
-            return GetPostSearchResult(JsonConvert.DeserializeObject(await GetJsonAsync(url)));
+            return GetPostSearchResult(ParseFirstPostSearchResult(JsonConvert.DeserializeObject(await GetJsonAsync(url))));
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]

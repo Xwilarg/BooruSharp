@@ -19,12 +19,17 @@ namespace BooruSharp.Booru.Template
         public override bool CanLoginWithPasswordHash()
             => false;
 
-        protected internal override Search.Post.SearchResult GetPostSearchResult(object json)
+        protected internal override JToken ParseFirstPostSearchResult(object json)
         {
             var posts = ((JObject)json)["posts"];
             var elem = posts == null ? ((JObject)json)["post"] : ((JArray)posts).FirstOrDefault();
             if (elem == null)
                 throw new Search.InvalidTags();
+            return elem;
+        }
+
+        protected internal override Search.Post.SearchResult GetPostSearchResult(JToken elem)
+        {
             List<string> tags = elem["tags"]["general"].ToObject<string[]>().ToList();
             tags.AddRange(elem["tags"]["species"].ToObject<string[]>().ToList());
             tags.AddRange(elem["tags"]["character"].ToObject<string[]>().ToList());
@@ -49,6 +54,26 @@ namespace BooruSharp.Booru.Template
                     elem["score"]["total"].Value<int>(),
                     elem["file"]["md5"].Value<string>()
                 );
+        }
+
+        protected internal override Search.Post.SearchResult[] GetPostsSearchResult(object json)
+        {
+            var arr = (JArray)((JObject)json)["posts"];
+            if (arr == null)
+            {
+                var token = ((JToken)json)["post"];
+                if (token == null)
+                    return new Search.Post.SearchResult[0];
+                return new Search.Post.SearchResult[1] { GetPostSearchResult(((JToken)json)["post"]) };
+            }
+            Search.Post.SearchResult[] res = new Search.Post.SearchResult[arr.Count];
+            int i = 0;
+            foreach (var elem in arr)
+            {
+                res[i] = GetPostSearchResult(elem);
+                i++;
+            }
+            return res;
         }
 
         // GetCommentSearchResult not available

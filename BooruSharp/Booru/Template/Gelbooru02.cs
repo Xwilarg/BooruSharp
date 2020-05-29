@@ -26,11 +26,16 @@ namespace BooruSharp.Booru.Template
         public override bool CanLoginWithPasswordHash()
             => false;
 
-        protected internal override Search.Post.SearchResult GetPostSearchResult(object json)
+        protected internal override JToken ParseFirstPostSearchResult(object json)
         {
             var elem = ((JArray)json).FirstOrDefault();
             if (elem == null)
                 throw new Search.InvalidTags();
+            return elem;
+        }
+
+        protected internal override Search.Post.SearchResult GetPostSearchResult(JToken elem)
+        {
             return new Search.Post.SearchResult(
                     new Uri("http" + (useHttp ? "" : "s") + "://" + url + "//images/" + elem["directory"].Value<string>() + "/" + elem["image"].Value<string>()),
                     new Uri("http" + (useHttp ? "" : "s") + "://" + url + "//thumbnails/" + elem["directory"].Value<string>() + "/thumbnails_" + elem["image"].Value<string>()),
@@ -47,6 +52,20 @@ namespace BooruSharp.Booru.Template
                     elem["score"].Value<int?>(),
                     null
                 );
+        }
+
+        protected internal override Search.Post.SearchResult[] GetPostsSearchResult(object json)
+        {
+            var arr = (JArray)json;
+            Search.Post.SearchResult[] res = new Search.Post.SearchResult[arr.Count];
+            int i = 0;
+            foreach (var elem in arr)
+            {
+                res[i] = GetPostSearchResult(elem);
+                Console.WriteLine("AZE");
+                i++;
+            }
+            return res;
         }
 
         protected internal override Search.Comment.SearchResult GetCommentSearchResult(object json)
