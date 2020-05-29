@@ -62,7 +62,6 @@ namespace BooruSharp.Booru.Template
             foreach (var elem in arr)
             {
                 res[i] = GetPostSearchResult(elem);
-                Console.WriteLine("AZE");
                 i++;
             }
             return res;
