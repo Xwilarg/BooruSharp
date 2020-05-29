@@ -7,6 +7,10 @@ namespace BooruSharp.Booru
 {
     public abstract partial class ABooru
     {
+        /// <summary>
+        /// Get the tags related to another one
+        /// </summary>
+        /// <param name="tag">The tag that the others must be related to</param>
         public async Task<Search.Related.SearchResult[]> GetRelatedAsync(string tag)
         {
             if (relatedUrl == null)

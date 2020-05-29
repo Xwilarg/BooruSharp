@@ -9,6 +9,10 @@ namespace BooruSharp.Booru
 {
     public abstract partial class ABooru
     {
+        /// <summary>
+        /// Search for a post using their MD5
+        /// </summary>
+        /// <param name="md5">The MD5 of the post to search</param>
         public async Task<Search.Post.SearchResult> GetImageByMd5Async(string md5)
         {
             if (!HavePostByMd5API())
@@ -16,6 +20,10 @@ namespace BooruSharp.Booru
             return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", "md5=" + md5));
         }
 
+        /// <summary>
+        /// Search for a random post
+        /// </summary>
+        /// <param name="tagsArg">Tags that must be contained in the post (optional)</param>
         public async Task<Search.Post.SearchResult> GetRandomImageAsync(params string[] tagsArg)
         {
             tagsArg = tagsArg.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
@@ -44,6 +52,10 @@ namespace BooruSharp.Booru
                 return await GetSearchResultFromUrlAsync(CreateUrl(imageUrl, "limit=1", TagsToString(tagsArg) + "+order:random"));
         }
 
+        /// <summary>
+        /// Get the latest posts of the website
+        /// </summary>
+        /// <param name="tagsArg">Tags that must be contained in the post (optional)</param>
         public async Task<Search.Post.SearchResult[]> GetLastImagesAsync(params string[] tagsArg)
         {
             return GetPostsSearchResult(JsonConvert.DeserializeObject(await GetJsonAsync(CreateUrl(imageUrl, TagsToString(tagsArg)))));

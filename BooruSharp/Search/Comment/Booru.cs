@@ -7,6 +7,10 @@ namespace BooruSharp.Booru
 {
     public abstract partial class ABooru
     {
+        /// <summary>
+        /// Get the comments posted on a post
+        /// </summary>
+        /// <param name="postId">The ID of the post to get information about</param>
         public async Task<Search.Comment.SearchResult[]> GetCommentsAsync(int postId)
         {
             if (commentUrl == null)
@@ -36,6 +40,9 @@ namespace BooruSharp.Booru
             return results.ToArray();
         }
 
+        /// <summary>
+        /// Get the lasts comments posted on the website
+        /// </summary>
         public async Task<Search.Comment.SearchResult[]> GetLastCommentsAsync()
         {
             if (commentUrl == null || !searchLastComment)

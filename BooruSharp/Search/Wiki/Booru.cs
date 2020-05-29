@@ -6,6 +6,10 @@ namespace BooruSharp.Booru
 {
     public abstract partial class ABooru
     {
+        /// <summary>
+        /// Get the wiki of a tag
+        /// </summary>
+        /// <param name="query">The tag you want to get the wiki</param>
         public async Task<Search.Wiki.SearchResult> GetWikiAsync(string query)
         {
             if (wikiUrl == null)

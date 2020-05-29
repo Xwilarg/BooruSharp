@@ -10,6 +10,10 @@ namespace BooruSharp.Booru
 {
     public abstract partial class ABooru
     {
+        /// <summary>
+        /// Get information about a tag
+        /// </summary>
+        /// <param name="name">The name of the tag you want information about</param>
         public async Task<Search.Tag.SearchResult> GetTagAsync(string name)
         {
             if (!HaveTagByIdAPI())
@@ -17,6 +21,10 @@ namespace BooruSharp.Booru
             return await SearchTagAsync(name, null);
         }
 
+        /// <summary>
+        /// Get information about a tag
+        /// </summary>
+        /// <param name="name">The ID of the tag you want information about</param>
         public async Task<Search.Tag.SearchResult> GetTagAsync(int id)
         {
             if (!searchTagById)
@@ -24,6 +32,10 @@ namespace BooruSharp.Booru
             return await SearchTagAsync(null, id);
         }
 
+        /// <summary>
+        /// Get the similar tags of the one given
+        /// </summary>
+        /// <param name="name">The name of the tag you want others similar</param>
         public async Task<Search.Tag.SearchResult[]> GetTagsAsync(string name)
         {
             if (!HaveTagByIdAPI())
@@ -91,8 +103,7 @@ namespace BooruSharp.Booru
             throw new Search.InvalidTags();
         }
 
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        protected Search.Tag.TagType StringToTagType(string value)
+        protected internal Search.Tag.TagType StringToTagType(string value)
         {
             value = value.ToLower();
             if (value == "tag")

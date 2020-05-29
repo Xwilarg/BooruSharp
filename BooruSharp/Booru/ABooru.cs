@@ -1,7 +1,6 @@
 ﻿using BooruSharp.Search;
 using Newtonsoft.Json.Linq;
 using System;
-using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -38,23 +37,49 @@ namespace BooruSharp.Booru
 
         protected internal abstract string GetLoginString();
 
+        /// <summary>
+        /// Is it possible to authentificate using API key
+        /// </summary>
         public abstract bool CanLoginWithApiKey();
+        /// <summary>
+        /// Is it possible to authentificate using password hash
+        /// </summary>
         public abstract bool CanLoginWithPasswordHash();
 
+        /// <summary>
+        /// Is it possible to search for related tag with this booru
+        /// </summary>
         public bool HaveRelatedAPI()
             => relatedUrl != null;
+        /// <summary>
+        /// Is it possible to search for wiki with this booru
+        /// </summary>
         public bool HaveWikiAPI()
             => wikiUrl != null;
+        /// <summary>
+        /// Is it possible to search for comments with this booru
+        /// </summary>
         public bool HaveCommentAPI()
             => commentUrl != null;
-
+        /// <summary>
+        /// Is it possible to search for tags using their ID with this booru
+        /// </summary>
         public bool HaveTagByIdAPI()
             => searchTagById;
+        /// <summary>
+        /// Is it possible to search for the lasts comments this booru
+        /// </summary>
         public bool HaveSearchLastComment()
             => searchLastComment;
+        /// <summary>
+        /// Is it possible to search for posts using their MD5 with this booru
+        /// </summary>
         public bool HavePostByMd5API()
             => searchPostByMd5;
 
+        /// <summary>
+        /// Is the booru available
+        /// </summary>
         /// <exception cref="HttpRequestException">Service not available</exception>
         public async Task CheckAvailabilityAsync()
         {
