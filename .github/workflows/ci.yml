@@ -25,12 +25,12 @@ jobs:
         args: -h
     - name: Install dependencies
       run: dotnet restore
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
     - name: Install OpenCover
       run: choco install opencover.portable
-    - name: Install Open Cover
+    - name: Install Codecov
       run: choco install codecov
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
     - name: Test
       run: OpenCover.Console.exe -register:user -target:"%xunit20%\xunit.console.x86.exe" -targetargs:".\BooruSharp.UnitTests\bin\Debug\BooruSharp.UnitTests.dll -noshadow" -filter:"+[BooruSharp*]* -[BooruSharp.UnitTests*]*" -output:".\coverage.xml"
     - name: Upload coverage
