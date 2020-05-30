@@ -256,6 +256,30 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Gelbooru))]
         [InlineData(typeof(Konachan))]
         [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru))]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru))]
+        [InlineData(typeof(SankakuComplex))]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
+        public async Task GetPostWithPageOutOfRange(Type t)
+        {
+            var booru = (ABooru)Activator.CreateInstance(t, (BooruAuth)null);
+            Search.Post.SearchResult[] results;
+            results = await booru.GetImagesFromPageAsync(int.MaxValue);
+            Assert.Empty(results);
+        }
+
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926))]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
         [InlineData(typeof(Realbooru), "small_breasts")]
         [InlineData(typeof(Rule34))]
         [InlineData(typeof(Safebooru))]
