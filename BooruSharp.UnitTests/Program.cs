@@ -91,6 +91,16 @@ namespace BooruSharp.UnitTests
             }
             Assert.NotEmpty(result);
         }
+
+        public static bool CompareArray(Search.Post.SearchResult[] res1, Search.Post.SearchResult[] res2)
+        {
+            if (res1.Length != res2.Length)
+                return false;
+            for (int i = 0; i < res1.Length; i++)
+                if (res1[i].id != res2[i].id)
+                    return false;
+            return true;
+        }
     }
 
     public class BooruTests
@@ -206,8 +216,8 @@ namespace BooruSharp.UnitTests
             results = await booru.GetImagesFromPageAsync(2);
             Assert.NotInRange(results.Length, 0, 1);
             var latest = await booru.GetLastImagesAsync();
-            Assert.NotEqual(latest, results);
-            Assert.Equal(await booru.GetImagesFromPageAsync(1), latest);
+            Assert.False(General.CompareArray(latest, results));
+            Assert.True(General.CompareArray(await booru.GetImagesFromPageAsync(1), latest));
         }
 
         [Theory]
@@ -233,8 +243,8 @@ namespace BooruSharp.UnitTests
             results = await booru.GetImagesFromPageAsync(2, tag, tag2);
             Assert.NotInRange(results.Length, 0, 1);
             var latest = await booru.GetLastImagesAsync(tag, tag2);
-            Assert.NotEqual(latest, results);
-            Assert.Equal(await booru.GetImagesFromPageAsync(1, tag, tag2), latest);
+            Assert.False(General.CompareArray(latest, results));
+            Assert.True(General.CompareArray(await booru.GetImagesFromPageAsync(1, tag, tag2), latest));
         }
 
         [Theory]
