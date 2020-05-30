@@ -1,6 +1,5 @@
 ﻿using BooruSharp.Booru;
 using System;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -157,8 +156,8 @@ namespace BooruSharp.UnitTests
         [Theory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621), "kantai_collection")]
-        [InlineData(typeof(E926), "kantai_collection")]
+        [InlineData(typeof(E621), "kantai_collection", "swimwear")]
+        [InlineData(typeof(E926), "kantai_collection", "swimwear")]
         [InlineData(typeof(Furrybooru), "kantai_collection")]
         [InlineData(typeof(Gelbooru))]
         [InlineData(typeof(Konachan), "hibiki_(kancolle)")]
@@ -169,7 +168,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Sakugabooru), "kantai_collection", "explosions")]
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru), "kantai_collection")]
-        [InlineData(typeof(Yandere), "kantai_collection")]
+        [InlineData(typeof(Yandere), "kantai_collection", "swimsuits")]
         public async Task GetLastPostsWithTags(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "swimsuit")
         {
             var booru = (ABooru)Activator.CreateInstance(t, (BooruAuth)null);
