@@ -163,14 +163,14 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Gelbooru))]
         [InlineData(typeof(Konachan), "hibiki_(kancolle)")]
         [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru), "school_swimsuit", "small_breasts")]
+        [InlineData(typeof(Realbooru), "swimsuit", "asian")]
         [InlineData(typeof(Rule34))]
         [InlineData(typeof(Safebooru))]
         [InlineData(typeof(Sakugabooru), "kantai_collection", "explosions")]
-        [InlineData(typeof(SankakuComplex), "hibiki_(kantai_collection)", "old_school_swimsuit")]
+        [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru), "kantai_collection")]
         [InlineData(typeof(Yandere), "kantai_collection")]
-        public async Task GetLastPostsWithTags(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "school_swimsuit")
+        public async Task GetLastPostsWithTags(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "swimsuit")
         {
             var booru = (ABooru)Activator.CreateInstance(t, (BooruAuth)null);
             Search.Post.SearchResult[] results;
