@@ -32,6 +32,6 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Test
-      run: OpenCover.Console.exe -register:user -target:"%xunit20%\xunit.console.x86.exe" -targetargs:".\BooruSharp.UnitTests\bin\Debug\BooruSharp.UnitTests.dll -noshadow" -filter:"+[BooruSharp*]* -[BooruSharp.UnitTests*]*" -output:".\coverage.xml"
+      run: OpenCover.Console.exe -register:user -target:"%xunit20%\xunit.console.x86.exe" -targetargs:".\BooruSharp.UnitTests\bin\Debug\netstandard2.0\BooruSharp.UnitTests.dll -noshadow" -filter:"+[BooruSharp*]* -[BooruSharp.UnitTests*]*" -output:".\coverage.xml"
     - name: Upload coverage
       run: codecov -f "coverage.xml"
