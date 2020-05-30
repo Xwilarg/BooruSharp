@@ -3,7 +3,7 @@ image: Visual Studio 2019
 before_build:
 - nuget restore
 - choco install opencover.portable
-- choco install codecov
+- dotnet tool install --global Codecov.Tool
 
 build:
   project: BooruSharp.sln
