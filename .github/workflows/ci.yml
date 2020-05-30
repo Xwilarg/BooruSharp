@@ -1,0 +1,35 @@
+name: .NET Core
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    - cron: 1 1 * * *
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.101
+    - name: Setup Chocolatey
+      uses: crazy-max/ghaction-chocolatey@v1
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    - name: Install OpenCover
+      run: choco install opencover.portable
+    - name: Install Open Cover
+      run: choco install codecov
+    - name: Test
+      run: OpenCover.Console.exe -register:user -target:"%xunit20%\xunit.console.x86.exe" -targetargs:".\BooruSharp.UnitTests\bin\Debug\BooruSharp.UnitTests.dll -noshadow" -filter:"+[BooruSharp*]* -[BooruSharp.UnitTests*]*" -output:".\coverage.xml"
+    - name: Upload coverage
+      run: codecov -f "coverage.xml"
