@@ -61,15 +61,6 @@ namespace BooruSharp.Booru
             return GetPostsSearchResult(JsonConvert.DeserializeObject(await GetJsonAsync(CreateUrl(imageUrl, TagsToString(tagsArg)))));
         }
 
-        /// <summary>
-        /// Get all the posts on a page
-        /// </summary>
-        /// <param name="page">The page to retrieve posts from</param>
-        public async Task<Search.Post.SearchResult[]> GetImagesFromPageAsync(uint page, params string[] tagsArg)
-        {
-            return GetPostsSearchResult(JsonConvert.DeserializeObject(await GetJsonAsync(CreateUrl(imageUrl, "page=" + page, TagsToString(tagsArg)))));
-        }
-
         private async Task<Search.Post.SearchResult> GetSearchResultFromUrlAsync(string url)
         {
             return GetPostSearchResult(ParseFirstPostSearchResult(JsonConvert.DeserializeObject(await GetJsonAsync(url))));
