@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
 cd BooruSharp.UnitTests/TestResults
-ls | cd
+cd $(ls)
 cp coverage.cobertura.xml  ../../../coverage.xml
 cd ../../..
