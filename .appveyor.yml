@@ -9,8 +9,5 @@ build:
 
 test_script:
 - dotnet test --collect:"XPlat Code Coverage" || true
-- cd BooruSharp.UnitTests/TestResults
-- ls | cd
-- cp coverage.cobertura.xml  ../../../coverage.xml
-- cd ../../..
+- ./copy_coverage.sh
 - codecov -f "coverage.xml"
