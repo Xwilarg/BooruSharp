@@ -8,7 +8,7 @@ build:
   project: BooruSharp.sln
 
 test_script:
-- dotnet test --collect:"XPlat Code Coverage"
+- dotnet test --collect:"XPlat Code Coverage" || true
 - cd BooruSharp.UnitTests/TestResults
 - cd $(ls -d */|head -n 1)
 - cp coverage.cobertura.xml  ../../../coverage.xml
