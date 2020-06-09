@@ -9,5 +9,5 @@ build:
 
 test_script:
 - dotnet test --collect:"XPlat Code Coverage" || true
-- ./copy_coverage.sh
+- sh copy_coverage.sh
 - codecov -f "coverage.xml"
