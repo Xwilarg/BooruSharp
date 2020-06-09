@@ -17,15 +17,9 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.101
-    - name: Setup Chocolatey
-      uses: crazy-max/ghaction-chocolatey@v1
-      with:
-        args: -h
     - name: Install dependencies
       run: dotnet restore
-    - name: Install OpenCover
-      run: choco install opencover.portable
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Test
-      run: OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[BooruSharp*]* -[BooruSharp.UnitTests*]*" -oldstyle
+      run: dotnet test

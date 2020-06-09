@@ -2,12 +2,15 @@ image: Visual Studio 2019
 
 before_build:
 - nuget restore
-- choco install opencover.portable
 - dotnet tool install --global Codecov.Tool
 
 build:
   project: BooruSharp.sln
 
 test_script:
-- OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[BooruSharp*]* -[BooruSharp.UnitTests*]*" -output:"coverage.xml" -oldstyle
+- dotnet test --collect:"XPlat Code Coverage"
+- cd BooruSharp.UnitTests/TestResults
+- cd $(ls -d */|head -n 1)
+- cp coverage.cobertura.xml  ../../../coverage.xml
+- cd ../../..
 - codecov -f "coverage.xml"
