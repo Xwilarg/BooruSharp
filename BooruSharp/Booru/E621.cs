@@ -2,7 +2,7 @@
 {
     public sealed class E621 : Template.E621
     {
-        public E621(BooruAuth auth = null) : base("e621.net", auth)
+        public E621() : base("e621.net")
         { }
 
         public override bool IsSafe()

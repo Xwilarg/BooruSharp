@@ -2,7 +2,7 @@
 {
     public sealed class Yandere : Template.Moebooru
     {
-        public Yandere(BooruAuth auth = null) : base("yande.re", auth, BooruOptions.noLastComments)
+        public Yandere() : base("yande.re", BooruOptions.noLastComments)
         { }
 
         public override bool IsSafe()

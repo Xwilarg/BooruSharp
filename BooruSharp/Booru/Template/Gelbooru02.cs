@@ -11,7 +11,7 @@ namespace BooruSharp.Booru.Template
     /// </summary>
     public abstract class Gelbooru02 : ABooru
     {
-        public Gelbooru02(string url, BooruAuth auth = null, params BooruOptions[] options) : base(url, auth, UrlFormat.indexPhp, CombineArrays(options,
+        public Gelbooru02(string url, params BooruOptions[] options) : base(url, UrlFormat.indexPhp, CombineArrays(options,
             new[] { BooruOptions.noRelated, BooruOptions.noWiki, BooruOptions.noPostByMd5, BooruOptions.commentApiXml, BooruOptions.tagApiXml }))
         {
             this.url = url;
@@ -37,8 +37,8 @@ namespace BooruSharp.Booru.Template
         protected internal override Search.Post.SearchResult GetPostSearchResult(JToken elem)
         {
             return new Search.Post.SearchResult(
-                    new Uri("http" + (useHttp ? "" : "s") + "://" + url + "//images/" + elem["directory"].Value<string>() + "/" + elem["image"].Value<string>()),
-                    new Uri("http" + (useHttp ? "" : "s") + "://" + url + "//thumbnails/" + elem["directory"].Value<string>() + "/thumbnails_" + elem["image"].Value<string>()),
+                    new Uri("http" + (_useHttp ? "" : "s") + "://" + url + "//images/" + elem["directory"].Value<string>() + "/" + elem["image"].Value<string>()),
+                    new Uri("http" + (_useHttp ? "" : "s") + "://" + url + "//thumbnails/" + elem["directory"].Value<string>() + "/thumbnails_" + elem["image"].Value<string>()),
                     GetRating(elem["rating"].Value<string>()[0]),
                     elem["tags"].Value<string>().Split(' '),
                     elem["id"].Value<int>(),

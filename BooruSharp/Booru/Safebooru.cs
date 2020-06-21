@@ -2,7 +2,7 @@
 {
     public sealed class Safebooru : Template.Gelbooru02
     {
-        public Safebooru(BooruAuth auth = null) : base("safebooru.org", auth, BooruOptions.noComment)
+        public Safebooru() : base("safebooru.org", BooruOptions.noComment)
         { }
 
         public override bool IsSafe()

@@ -2,7 +2,6 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,7 +26,7 @@ namespace BooruSharp.Booru
         /// <param name="name">The ID of the tag you want information about</param>
         public async Task<Search.Tag.SearchResult> GetTagAsync(int id)
         {
-            if (!searchTagById)
+            if (!_searchTagById)
                 throw new Search.FeatureUnavailable();
             return await SearchTagAsync(null, id);
         }
@@ -41,11 +40,11 @@ namespace BooruSharp.Booru
             if (!HaveTagByIdAPI())
                 throw new Search.FeatureUnavailable();
             List<string> urlTags = new List<string>() { SearchArg("name") + name };
-            if (format == UrlFormat.postIndexJson)
+            if (_format == UrlFormat.postIndexJson)
                 urlTags.Add("limit=0");
-            string url = CreateUrl(tagUrl, urlTags.ToArray());
+            string url = CreateUrl(_tagUrl, urlTags.ToArray());
             Search.Tag.SearchResult[] results;
-            if (tagUseXml)
+            if (_tagUseXml)
             {
                 var xml = await GetXmlAsync(url);
                 results = new Search.Tag.SearchResult[xml.LastChild.ChildNodes.Count];
@@ -77,10 +76,10 @@ namespace BooruSharp.Booru
                 urlTags.Add(SearchArg("id") + id);
             else
                 urlTags.Add(SearchArg("name") + name);
-            if (format == UrlFormat.postIndexJson)
+            if (_format == UrlFormat.postIndexJson)
                 urlTags.Add("limit=0");
-            string url = CreateUrl(tagUrl, urlTags.ToArray());
-            if (tagUseXml)
+            string url = CreateUrl(_tagUrl, urlTags.ToArray());
+            if (_tagUseXml)
             {
                 var xml = await GetXmlAsync(url);
                 foreach (var node in xml.LastChild)

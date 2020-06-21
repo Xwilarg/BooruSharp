@@ -13,11 +13,11 @@ namespace BooruSharp.Booru
         /// <param name="postId">The ID of the post to get information about</param>
         public async Task<Search.Comment.SearchResult[]> GetCommentsAsync(int postId)
         {
-            if (commentUrl == null)
+            if (_commentUrl == null)
                 throw new Search.FeatureUnavailable();
-            string url = CreateUrl(commentUrl, SearchArg("post_id") + postId);
+            string url = CreateUrl(_commentUrl, SearchArg("post_id") + postId);
             List<Search.Comment.SearchResult> results = new List<Search.Comment.SearchResult>();
-            if (commentUseXml)
+            if (_commentUseXml)
             {
                 var xml = await GetXmlAsync(url);
                 foreach (var node in xml.LastChild)
@@ -45,11 +45,11 @@ namespace BooruSharp.Booru
         /// </summary>
         public async Task<Search.Comment.SearchResult[]> GetLastCommentsAsync()
         {
-            if (commentUrl == null || !searchLastComment)
+            if (_commentUrl == null || !_searchLastComment)
                 throw new Search.FeatureUnavailable();
-            string url = CreateUrl(commentUrl);
+            string url = CreateUrl(_commentUrl);
             Search.Comment.SearchResult[] results;
-            if (commentUseXml)
+            if (_commentUseXml)
             {
                 var xml = await GetXmlAsync(url);
                 results = new Search.Comment.SearchResult[xml.LastChild.ChildNodes.Count];

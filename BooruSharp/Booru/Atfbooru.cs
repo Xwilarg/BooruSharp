@@ -2,7 +2,7 @@
 {
     public sealed class Atfbooru : Template.Danbooru
     {
-        public Atfbooru(BooruAuth auth = null) : base("booru.allthefallen.moe", auth)
+        public Atfbooru() : base("booru.allthefallen.moe")
         { }
 
         public override bool IsSafe()

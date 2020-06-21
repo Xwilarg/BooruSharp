@@ -6,7 +6,7 @@ namespace BooruSharp.Booru.Template
 {
     public abstract class Moebooru : ABooru
     {
-        public Moebooru(string url, BooruAuth auth = null, params BooruOptions[] options) : base(url, auth, UrlFormat.postIndexJson, CombineArrays(options, new[] { BooruOptions.noPostByMd5 }))
+        public Moebooru(string url, params BooruOptions[] options) : base(url, UrlFormat.postIndexJson, CombineArrays(options, new[] { BooruOptions.noPostByMd5 }))
         { }
 
         protected internal override string GetLoginString()

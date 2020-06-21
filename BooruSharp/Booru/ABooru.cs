@@ -50,32 +50,32 @@ namespace BooruSharp.Booru
         /// Is it possible to search for related tag with this booru
         /// </summary>
         public bool HaveRelatedAPI()
-            => relatedUrl != null;
+            => _relatedUrl != null;
         /// <summary>
         /// Is it possible to search for wiki with this booru
         /// </summary>
         public bool HaveWikiAPI()
-            => wikiUrl != null;
+            => _wikiUrl != null;
         /// <summary>
         /// Is it possible to search for comments with this booru
         /// </summary>
         public bool HaveCommentAPI()
-            => commentUrl != null;
+            => _commentUrl != null;
         /// <summary>
         /// Is it possible to search for tags using their ID with this booru
         /// </summary>
         public bool HaveTagByIdAPI()
-            => searchTagById;
+            => _searchTagById;
         /// <summary>
         /// Is it possible to search for the lasts comments this booru
         /// </summary>
         public bool HaveSearchLastComment()
-            => searchLastComment;
+            => _searchLastComment;
         /// <summary>
         /// Is it possible to search for posts using their MD5 with this booru
         /// </summary>
         public bool HavePostByMd5API()
-            => searchPostByMd5;
+            => _searchPostByMd5;
 
         /// <summary>
         /// Is the booru available
@@ -86,51 +86,52 @@ namespace BooruSharp.Booru
             using (HttpClient hc = new HttpClient())
             {
                 hc.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
-                await hc.SendAsync(new HttpRequestMessage(HttpMethod.Head, imageUrl));
+                await hc.SendAsync(new HttpRequestMessage(HttpMethod.Head, _imageUrl));
             }
         }
 
-        protected ABooru(string baseUrl, BooruAuth auth, UrlFormat format, params BooruOptions[] options)
+        protected ABooru(string baseUrl, UrlFormat format, params BooruOptions[] options)
         {
-            this.auth = auth;
-            if (auth != null)
+            _auth = null;
+            _random = new Random();
+            if (_auth != null)
             {
-                if ((auth.PasswordHash != null && !CanLoginWithPasswordHash())
-                    || (auth.ApiKey != null && !CanLoginWithApiKey()))
+                if ((_auth.PasswordHash != null && !CanLoginWithPasswordHash())
+                    || (_auth.ApiKey != null && !CanLoginWithApiKey()))
                     throw new InvalidAuthentificationMethod();
             }
-            useHttp = options.Contains(BooruOptions.useHttp);
-            maxLimit = options.Contains(BooruOptions.limitOf20000);
-            this.baseUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl;
-            this.format = format;
-            imageUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "post");
-            imageUrlXml = imageUrl.Replace("json=1", "json=0"); // Only needed for websites with UrlFormat.indexPhp
-            searchTagById = !options.Contains(BooruOptions.noTagById);
-            searchLastComment = !options.Contains(BooruOptions.noLastComments);
-            searchPostByMd5 = !options.Contains(BooruOptions.noPostByMd5);
-            tagUseXml = options.Contains(BooruOptions.tagApiXml);
-            commentUseXml = options.Contains(BooruOptions.commentApiXml);
-            noMoreThan2Tags = options.Contains(BooruOptions.noMoreThan2Tags);
-            tagUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag");
+            _useHttp = options.Contains(BooruOptions.useHttp);
+            _maxLimit = options.Contains(BooruOptions.limitOf20000);
+            _baseUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl;
+            _format = format;
+            _imageUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "post");
+            _imageUrlXml = _imageUrl.Replace("json=1", "json=0"); // Only needed for websites with UrlFormat.indexPhp
+            _searchTagById = !options.Contains(BooruOptions.noTagById);
+            _searchLastComment = !options.Contains(BooruOptions.noLastComments);
+            _searchPostByMd5 = !options.Contains(BooruOptions.noPostByMd5);
+            _tagUseXml = options.Contains(BooruOptions.tagApiXml);
+            _commentUseXml = options.Contains(BooruOptions.commentApiXml);
+            _noMoreThan2Tags = options.Contains(BooruOptions.noMoreThan2Tags);
+            _tagUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag");
             if (options.Contains(BooruOptions.noWiki))
-                wikiUrl = null;
+                _wikiUrl = null;
             else if (format == UrlFormat.danbooru)
-                wikiUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "wiki_page");
+                _wikiUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "wiki_page");
             else
-                wikiUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "wiki");
+                _wikiUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "wiki");
             if (options.Contains(BooruOptions.noRelated))
-                relatedUrl = null;
+                _relatedUrl = null;
             else if (format == UrlFormat.danbooru)
-                relatedUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "related_tag");
+                _relatedUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "related_tag");
             else
-                relatedUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag", "related");
+                _relatedUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag", "related");
             if (options.Contains(BooruOptions.noComment))
             {
-                commentUrl = null;
-                searchLastComment = false;
+                _commentUrl = null;
+                _searchLastComment = false;
             }
             else
-                commentUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "comment");
+                _commentUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "comment");
         }
 
         protected internal static string GetUrl(UrlFormat format, string query, string squery = "index")
@@ -185,7 +186,7 @@ namespace BooruSharp.Booru
             using (HttpClient hc = new HttpClient())
             {
                 hc.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
-                HttpResponseMessage msg = await hc.GetAsync(baseUrl + "/" + "index.php?page=post&s=random&tags=" + tags);
+                HttpResponseMessage msg = await hc.GetAsync(_baseUrl + "/" + "index.php?page=post&s=random&tags=" + tags);
                 return HttpUtility.ParseQueryString(msg.RequestMessage.RequestUri.Query).Get("id");
             }
         }
@@ -193,15 +194,15 @@ namespace BooruSharp.Booru
         private string CreateUrl(string url, params string[] args)
         {
             string authArgs = "";
-            if (auth != null)
+            if (_auth != null)
             {
-                authArgs = "&" + GetLoginString() + "=" + auth.Login + "&";
-                if (auth.ApiKey != null)
-                    authArgs += "api_key=" + auth.ApiKey;
+                authArgs = "&" + GetLoginString() + "=" + _auth.Login + "&";
+                if (_auth.ApiKey != null)
+                    authArgs += "api_key=" + _auth.ApiKey;
                 else
-                    authArgs += "password_hash=" + auth.PasswordHash;
+                    authArgs += "password_hash=" + _auth.PasswordHash;
             }
-            if (format == UrlFormat.indexPhp)
+            if (_format == UrlFormat.indexPhp)
                 return (url + "&" + string.Join("&", args) + authArgs);
             else
                 return (url + "?" + string.Join("&", args) + authArgs);
@@ -214,7 +215,7 @@ namespace BooruSharp.Booru
 
         private string SearchArg(string value)
         {
-            if (format == UrlFormat.danbooru)
+            if (_format == UrlFormat.danbooru)
                 return "search[" + value + "]=";
             else
                 return value + "=";
@@ -228,15 +229,15 @@ namespace BooruSharp.Booru
             return arr;
         }
 
-        private readonly BooruAuth auth; // Authentification
-        private readonly string baseUrl; // Booru's base URL
-        private readonly string imageUrlXml, imageUrl, tagUrl, wikiUrl, relatedUrl, commentUrl; // URLs for differents endpoints
-        private readonly bool searchTagById, searchLastComment, searchPostByMd5; // Differents services availability
-        private readonly bool tagUseXml, commentUseXml; // APIs use XML instead of JSON
-        private readonly bool noMoreThan2Tags;
-        private readonly bool maxLimit; // Have max limit (used by Gelbooru)
-        private readonly UrlFormat format; // URL format
-        protected readonly bool useHttp; // Use http instead of https
-        private static readonly Random random = new Random();
+        private readonly BooruAuth _auth; // Authentification
+        private readonly string _baseUrl; // Booru's base URL
+        private readonly string _imageUrlXml, _imageUrl, _tagUrl, _wikiUrl, _relatedUrl, _commentUrl; // URLs for differents endpoints
+        private readonly bool _searchTagById, _searchLastComment, _searchPostByMd5; // Differents services availability
+        private readonly bool _tagUseXml, _commentUseXml; // APIs use XML instead of JSON
+        private readonly bool _noMoreThan2Tags;
+        private readonly bool _maxLimit; // Have max limit (used by Gelbooru)
+        private readonly UrlFormat _format; // URL format
+        protected readonly bool _useHttp; // Use http instead of https
+        private readonly Random _random;
     }
 }

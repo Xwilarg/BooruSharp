@@ -12,9 +12,9 @@ namespace BooruSharp.Booru
         /// <param name="query">The tag you want to get the wiki</param>
         public async Task<Search.Wiki.SearchResult> GetWikiAsync(string query)
         {
-            if (wikiUrl == null)
+            if (_wikiUrl == null)
                 throw new Search.FeatureUnavailable();
-            var jsons = (JArray)JsonConvert.DeserializeObject(await GetJsonAsync(CreateUrl(wikiUrl, SearchArg(format == UrlFormat.danbooru ? "title" : "query") + query)));
+            var jsons = (JArray)JsonConvert.DeserializeObject(await GetJsonAsync(CreateUrl(_wikiUrl, SearchArg(_format == UrlFormat.danbooru ? "title" : "query") + query)));
             int i = 0;
             foreach (var json in jsons)
             {

@@ -12,7 +12,7 @@ namespace BooruSharp.Booru.Template
     /// </summary>
     public abstract class Gelbooru : ABooru
     {
-        public Gelbooru(string url, BooruAuth auth = null, params BooruOptions[] options) : base(url, auth, UrlFormat.indexPhp, CombineArrays(options,
+        public Gelbooru(string url, params BooruOptions[] options) : base(url, UrlFormat.indexPhp, CombineArrays(options,
             new[] { BooruOptions.noWiki, BooruOptions.noRelated, BooruOptions.limitOf20000, BooruOptions.noPostByMd5, BooruOptions.commentApiXml }))
         { }
 

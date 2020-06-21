@@ -2,7 +2,7 @@
 {
     public sealed class Furrybooru : Template.Gelbooru02
     {
-        public Furrybooru(BooruAuth auth = null) : base("furry.booru.org", auth, BooruOptions.useHttp)
+        public Furrybooru() : base("furry.booru.org", BooruOptions.useHttp)
         { }
 
         public override bool IsSafe()

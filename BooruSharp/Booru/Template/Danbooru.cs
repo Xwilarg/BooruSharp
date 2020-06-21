@@ -6,7 +6,7 @@ namespace BooruSharp.Booru.Template
 {
     public abstract class Danbooru : ABooru
     {
-        public Danbooru(string url, BooruAuth auth = null, params BooruOptions[] options) : base(url, auth, UrlFormat.danbooru, CombineArrays(options, new[] { BooruOptions.noLastComments }))
+        public Danbooru(string url, params BooruOptions[] options) : base(url, UrlFormat.danbooru, CombineArrays(options, new[] { BooruOptions.noLastComments }))
         { }
 
         protected internal override string GetLoginString()

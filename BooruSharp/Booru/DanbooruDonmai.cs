@@ -2,7 +2,7 @@
 {
     public sealed class DanbooruDonmai : Template.Danbooru
     {
-        public DanbooruDonmai(BooruAuth auth = null) : base("danbooru.donmai.us", auth, BooruOptions.noMoreThan2Tags)
+        public DanbooruDonmai() : base("danbooru.donmai.us", BooruOptions.noMoreThan2Tags)
         { }
 
         public override bool IsSafe()
