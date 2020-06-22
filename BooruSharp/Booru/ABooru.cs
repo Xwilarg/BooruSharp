@@ -92,7 +92,6 @@ namespace BooruSharp.Booru
         protected ABooru(string baseUrl, UrlFormat format, params BooruOptions[] options)
         {
             _auth = null;
-            _random = new Random();
             _httpClient = null;
             if (_auth != null)
             {
@@ -242,7 +241,7 @@ namespace BooruSharp.Booru
         private readonly bool _maxLimit; // Have max limit (used by Gelbooru)
         private readonly UrlFormat _format; // URL format
         protected readonly bool _useHttp; // Use http instead of https
-        private readonly Random _random;
+        private static readonly Random _random = new Random();
         private HttpClient _httpClient;
     }
 }
