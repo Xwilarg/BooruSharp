@@ -214,6 +214,15 @@ namespace BooruSharp.UnitTests
             await General.CheckGetRandom((ABooru)Activator.CreateInstance(t), tag);
         }
 
+        [Fact]
+        public async Task SetHttpClient()
+        {
+            var booru = new Gelbooru();
+            HttpClient hc = new HttpClient();
+            booru.SetHttpClient(hc);
+            await General.CheckGetRandom(booru, "kantai_collection");
+        }
+
         [Theory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]

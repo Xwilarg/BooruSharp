@@ -83,17 +83,17 @@ namespace BooruSharp.Booru
         /// <exception cref="HttpRequestException">Service not available</exception>
         public async Task CheckAvailabilityAsync()
         {
-            using (HttpClient hc = new HttpClient())
-            {
-                hc.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
-                await hc.SendAsync(new HttpRequestMessage(HttpMethod.Head, _imageUrl));
-            }
+            if (_httpClient == null)
+                _httpClient = new HttpClient();
+            _httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
+            await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Head, _imageUrl));
         }
 
         protected ABooru(string baseUrl, UrlFormat format, params BooruOptions[] options)
         {
             _auth = null;
             _random = new Random();
+            _httpClient = null;
             if (_auth != null)
             {
                 if ((_auth.PasswordHash != null && !CanLoginWithPasswordHash())
@@ -134,6 +134,12 @@ namespace BooruSharp.Booru
                 _commentUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "comment");
         }
 
+        public void SetBooruAuth(BooruAuth auth)
+            => _auth = auth;
+
+        public void SetHttpClient(HttpClient httpClient)
+            => _httpClient = httpClient;
+
         protected internal static string GetUrl(UrlFormat format, string query, string squery = "index")
         {
             switch (format)
@@ -163,15 +169,14 @@ namespace BooruSharp.Booru
 
         private async Task<string> GetJsonAsync(string url)
         {
-            using (HttpClient hc = new HttpClient())
-            {
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                hc.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
-                HttpResponseMessage msg = await hc.GetAsync(url);
-                if (msg.StatusCode == HttpStatusCode.Forbidden)
-                    throw new AuthentificationRequired();
-                return await msg.Content.ReadAsStringAsync();
-            }
+            if (_httpClient == null)
+                _httpClient = new HttpClient();
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            _httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
+            HttpResponseMessage msg = await _httpClient.GetAsync(url);
+            if (msg.StatusCode == HttpStatusCode.Forbidden)
+                throw new AuthentificationRequired();
+            return await msg.Content.ReadAsStringAsync();
         }
 
         private async Task<XmlDocument> GetXmlAsync(string url)
@@ -183,12 +188,11 @@ namespace BooruSharp.Booru
 
         private async Task<string> GetRandomIdAsync(string tags)
         {
-            using (HttpClient hc = new HttpClient())
-            {
-                hc.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
-                HttpResponseMessage msg = await hc.GetAsync(_baseUrl + "/" + "index.php?page=post&s=random&tags=" + tags);
-                return HttpUtility.ParseQueryString(msg.RequestMessage.RequestUri.Query).Get("id");
-            }
+            if (_httpClient == null)
+                _httpClient = new HttpClient();
+            _httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
+            HttpResponseMessage msg = await _httpClient.GetAsync(_baseUrl + "/" + "index.php?page=post&s=random&tags=" + tags);
+            return HttpUtility.ParseQueryString(msg.RequestMessage.RequestUri.Query).Get("id");
         }
 
         private string CreateUrl(string url, params string[] args)
@@ -229,7 +233,7 @@ namespace BooruSharp.Booru
             return arr;
         }
 
-        private readonly BooruAuth _auth; // Authentification
+        private BooruAuth _auth; // Authentification
         private readonly string _baseUrl; // Booru's base URL
         private readonly string _imageUrlXml, _imageUrl, _tagUrl, _wikiUrl, _relatedUrl, _commentUrl; // URLs for differents endpoints
         private readonly bool _searchTagById, _searchLastComment, _searchPostByMd5; // Differents services availability
@@ -239,5 +243,6 @@ namespace BooruSharp.Booru
         private readonly UrlFormat _format; // URL format
         protected readonly bool _useHttp; // Use http instead of https
         private readonly Random _random;
+        private HttpClient _httpClient;
     }
 }
