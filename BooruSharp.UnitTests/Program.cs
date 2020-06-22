@@ -196,6 +196,39 @@ namespace BooruSharp.UnitTests
         [Theory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621), "kantai_collection", "swimwear")]
+        [InlineData(typeof(E926), "kantai_collection", "swimwear")]
+        [InlineData(typeof(Furrybooru), "kantai_collection")]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan), "hibiki_(kancolle)")]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru), "swimsuit", "asian")]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru), "kantai_collection", "explosions")]
+        [InlineData(typeof(SankakuComplex))]
+        [InlineData(typeof(Xbooru), "kantai_collection")]
+        [InlineData(typeof(Yandere), "kantai_collection", "swimsuits")]
+        public async Task GetPostCount(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "swimsuit")
+        {
+            var booru = (ABooru)Activator.CreateInstance(t);
+            if (!booru.HavePostCountAPI())
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((ABooru)Activator.CreateInstance(t)).GetPostCountAsync(); });
+            else
+            {
+                var countEmpty = await booru.GetPostCountAsync();
+                var countOne = await booru.GetPostCountAsync(tag);
+                var countTwo = await booru.GetPostCountAsync(tag, tag2);
+                Assert.NotEqual(0, countEmpty);
+                Assert.NotEqual(0, countOne);
+                Assert.NotEqual(0, countTwo);
+                Assert.InRange(countOne, countTwo, countEmpty);
+            }
+        }
+
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
         [InlineData(typeof(E926))]
         [InlineData(typeof(Furrybooru))]

@@ -19,6 +19,17 @@ namespace BooruSharp.Booru
             return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", "md5=" + md5));
         }
 
+        public async Task<int> GetPostCountAsync(params string[] tagsArg)
+        {
+            if (_imageUrlXml == null)
+                throw new Search.FeatureUnavailable();
+            tagsArg = tagsArg.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+            if (tagsArg.Length > 2 && _noMoreThan2Tags)
+                throw new Search.TooManyTags();
+            XmlDocument xml = await GetXmlAsync(CreateUrl(_imageUrlXml, "limit=1", TagsToString(tagsArg)));
+            return int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
+        }
+
         /// <summary>
         /// Search for a random post
         /// </summary>

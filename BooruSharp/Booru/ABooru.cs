@@ -76,6 +76,12 @@ namespace BooruSharp.Booru
         /// </summary>
         public bool HavePostByMd5API()
             => _searchPostByMd5;
+        /// <summary>
+        /// Is it possible to get the total number of post
+        /// </summary>
+        /// <returns></returns>
+        public bool HavePostCountAPI()
+            => _imageUrlXml != null;
 
         /// <summary>
         /// Is the booru available
@@ -104,7 +110,12 @@ namespace BooruSharp.Booru
             _baseUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl;
             _format = format;
             _imageUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "post");
-            _imageUrlXml = _imageUrl.Replace("json=1", "json=0"); // Only needed for websites with UrlFormat.indexPhp
+            if (_format == UrlFormat.indexPhp)
+                _imageUrlXml = _imageUrl.Replace("json=1", "json=0");
+            else if (_format == UrlFormat.postIndexJson)
+                _imageUrlXml = _imageUrl.Replace("index.json", "index.xml");
+            else
+                _imageUrlXml = null;
             _searchTagById = !options.Contains(BooruOptions.noTagById);
             _searchLastComment = !options.Contains(BooruOptions.noLastComments);
             _searchPostByMd5 = !options.Contains(BooruOptions.noPostByMd5);
