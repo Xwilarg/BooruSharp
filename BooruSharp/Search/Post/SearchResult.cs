@@ -4,11 +4,12 @@ namespace BooruSharp.Search.Post
 {
     public struct SearchResult
     {
-        public SearchResult(Uri fileUrl, Uri previewUrl, Rating rating, string[] tags, int id,
+        public SearchResult(Uri fileUrl, Uri previewUrl, Uri postUrl, Rating rating, string[] tags, int id,
                             int? size, int height, int width, int? previewHeight, int? previewWidth, DateTime? creation, string source, int? score, string md5)
         {
             this.fileUrl = fileUrl;
             this.previewUrl = previewUrl;
+            this.postUrl = postUrl;
             this.rating = rating;
             this.tags = tags;
             this.id = id;
@@ -32,6 +33,11 @@ namespace BooruSharp.Search.Post
         /// Preview url of the image
         /// </summary>
         public readonly Uri previewUrl;
+
+        /// <summary>
+        /// The url of the post
+        /// </summary>
+        public readonly Uri postUrl;
 
         /// <summary>
         /// Is the image safe or not

@@ -41,6 +41,7 @@ namespace BooruSharp.Booru.Template
             return new Search.Post.SearchResult(
                     url == null ? null : new Uri(url),
                     previewUrl == null ? null : new Uri(previewUrl),
+                    new Uri(_baseUrl + "/posts/" + elem["id"].Value<int>()),
                     GetRating(elem["rating"].Value<string>()[0]),
                     tags.ToArray(),
                     elem["id"].Value<int>(),

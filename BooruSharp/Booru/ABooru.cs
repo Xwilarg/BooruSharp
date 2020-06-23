@@ -244,7 +244,7 @@ namespace BooruSharp.Booru
         }
 
         private BooruAuth _auth; // Authentification
-        private readonly string _baseUrl; // Booru's base URL
+        protected readonly string _baseUrl; // Booru's base URL
         private readonly string _imageUrlXml, _imageUrl, _tagUrl, _wikiUrl, _relatedUrl, _commentUrl; // URLs for differents endpoints
         private readonly bool _searchTagById, _searchLastComment, _searchPostByMd5; // Differents services availability
         private readonly bool _tagUseXml, _commentUseXml; // APIs use XML instead of JSON

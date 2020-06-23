@@ -30,6 +30,8 @@ namespace BooruSharp.UnitTests
             {
                 string resFile = await CheckUrl(result.fileUrl);
                 string resPreview = await CheckUrl(result.previewUrl);
+                string resPost = await CheckUrl(result.postUrl);
+                Assert.True(resPost == null, resPost);
                 Assert.True(resFile == null, resFile);
                 Assert.True(resPreview == null, resPreview);
                 Assert.NotEqual(0, result.height);
