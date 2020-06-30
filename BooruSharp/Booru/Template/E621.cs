@@ -10,15 +10,6 @@ namespace BooruSharp.Booru.Template
         public E621(string url, params BooruOptions[] options) : base(url, UrlFormat.danbooru, CombineArrays(options, new[] { BooruOptions.noWiki, BooruOptions.noRelated, BooruOptions.noComment, BooruOptions.noTagById }))
         { }
 
-        protected internal override string GetLoginString()
-            => "login";
-
-        public override bool CanLoginWithApiKey()
-            => true;
-
-        public override bool CanLoginWithPasswordHash()
-            => false;
-
         protected internal override JToken ParseFirstPostSearchResult(object json)
         {
             var posts = ((JObject)json)["posts"];

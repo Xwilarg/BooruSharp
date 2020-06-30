@@ -9,15 +9,6 @@ namespace BooruSharp.Booru.Template
         public Moebooru(string url, params BooruOptions[] options) : base(url, UrlFormat.postIndexJson, CombineArrays(options, new[] { BooruOptions.noPostByMd5 }))
         { }
 
-        protected internal override string GetLoginString()
-            => "login";
-
-        public override bool CanLoginWithApiKey()
-            => false;
-
-        public override bool CanLoginWithPasswordHash()
-            => true;
-
         protected internal override JToken ParseFirstPostSearchResult(object json)
         {
             var elem = ((JArray)json).FirstOrDefault();

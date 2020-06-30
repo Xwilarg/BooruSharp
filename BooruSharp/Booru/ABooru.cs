@@ -35,17 +35,6 @@ namespace BooruSharp.Booru
         protected internal virtual Search.Wiki.SearchResult GetWikiSearchResult(object json)
             => throw new FeatureUnavailable();
 
-        protected internal abstract string GetLoginString();
-
-        /// <summary>
-        /// Is it possible to authentificate using API key
-        /// </summary>
-        public abstract bool CanLoginWithApiKey();
-        /// <summary>
-        /// Is it possible to authentificate using password hash
-        /// </summary>
-        public abstract bool CanLoginWithPasswordHash();
-
         /// <summary>
         /// Is it possible to search for related tag with this booru
         /// </summary>
@@ -99,12 +88,6 @@ namespace BooruSharp.Booru
         {
             _auth = null;
             _httpClient = null;
-            if (_auth != null)
-            {
-                if ((_auth.PasswordHash != null && !CanLoginWithPasswordHash())
-                    || (_auth.ApiKey != null && !CanLoginWithApiKey()))
-                    throw new InvalidAuthentificationMethod();
-            }
             _useHttp = options.Contains(BooruOptions.useHttp);
             _maxLimit = options.Contains(BooruOptions.limitOf20000);
             _baseUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl;
@@ -207,19 +190,10 @@ namespace BooruSharp.Booru
 
         private string CreateUrl(string url, params string[] args)
         {
-            string authArgs = "";
-            if (_auth != null)
-            {
-                authArgs = "&" + GetLoginString() + "=" + _auth.Login + "&";
-                if (_auth.ApiKey != null)
-                    authArgs += "api_key=" + _auth.ApiKey;
-                else
-                    authArgs += "password_hash=" + _auth.PasswordHash;
-            }
             if (_format == UrlFormat.indexPhp)
-                return (url + "&" + string.Join("&", args) + authArgs);
+                return (url + "&" + string.Join("&", args));
             else
-                return (url + "?" + string.Join("&", args) + authArgs);
+                return (url + "?" + string.Join("&", args));
         }
 
         private string TagsToString(string[] tags)

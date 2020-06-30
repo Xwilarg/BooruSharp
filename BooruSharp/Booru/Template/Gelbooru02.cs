@@ -17,15 +17,6 @@ namespace BooruSharp.Booru.Template
             this.url = url;
         }
 
-        protected internal override string GetLoginString()
-            => "user_id";
-
-        public override bool CanLoginWithApiKey()
-            => true;
-
-        public override bool CanLoginWithPasswordHash()
-            => false;
-
         protected internal override JToken ParseFirstPostSearchResult(object json)
         {
             var elem = ((JArray)json).FirstOrDefault();

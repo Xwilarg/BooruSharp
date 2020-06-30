@@ -16,15 +16,6 @@ namespace BooruSharp.Booru.Template
             new[] { BooruOptions.noWiki, BooruOptions.noRelated, BooruOptions.limitOf20000, BooruOptions.noPostByMd5, BooruOptions.commentApiXml }))
         { }
 
-        protected internal override string GetLoginString()
-            => "user_id";
-
-        public override bool CanLoginWithApiKey()
-            => true;
-
-        public override bool CanLoginWithPasswordHash()
-            => false;
-
         protected internal override JToken ParseFirstPostSearchResult(object json)
         {
             var elem = ((JArray)json).FirstOrDefault();
