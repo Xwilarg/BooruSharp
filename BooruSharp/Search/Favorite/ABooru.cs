@@ -10,8 +10,6 @@ namespace BooruSharp.Booru
     {
         public async Task AddFavorite(int postId)
         {
-            if (_httpClient == null)
-                _httpClient = new HttpClient();
             if (_auth == null)
                 throw new AuthentificationRequired();
             int res;
