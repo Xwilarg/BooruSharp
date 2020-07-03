@@ -127,7 +127,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             booru.SetBooruAuth(new BooruAuth("AAA", "AAA"));
-            await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.AddFavorite(4283595); });
+            await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async delegate () { await booru.AddFavorite(4283595); });
         }
 
         [SkipIfNoEnv]
