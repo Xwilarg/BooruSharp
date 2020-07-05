@@ -79,9 +79,13 @@ namespace BooruSharp.Booru
         /// <summary>
         /// Is it possible to get the total number of post
         /// </summary>
-        /// <returns></returns>
         public bool HavePostCountAPI()
             => _imageUrlXml != null;
+        /// <summary>
+        /// Is it possible to get multiple random images
+        /// </summary>
+        public bool HaveMultipleRandomAPI()
+            => !(this is Template.Gelbooru02);
 
         /// <summary>
         /// Is the booru available

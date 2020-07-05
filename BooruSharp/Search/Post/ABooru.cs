@@ -40,24 +40,47 @@ namespace BooruSharp.Booru
             if (tagsArg.Length > 2 && _noMoreThan2Tags)
                 throw new Search.TooManyTags();
             if (_format == UrlFormat.indexPhp)
-                return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tagsArg) + "+sort:random"));
-            else if (_noMoreThan2Tags)
+            {
+                if (this is Template.Gelbooru)
+                    return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tagsArg)) + "sort:random");
+                if (tagsArg.Length == 0)
+                    return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", "id=" + await GetRandomIdAsync(TagsToString(tagsArg)))); // We need to request /index.php?page=post&s=random and get the id given by the redirect
+                // The previous option doesn't work if there are tags so we contact the XML endpoint to get post count
+                string url = CreateUrl(_imageUrlXml, "limit=1", TagsToString(tagsArg));
+                XmlDocument xml = await GetXmlAsync(url);
+                int max = int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
+                if (max == 0)
+                    throw new Search.InvalidTags();
+                if (_maxLimit && max > 20001)
+                    max = 20001;
+                return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tagsArg), "pid=" + _random.Next(0, max)));
+            }
+            if (_noMoreThan2Tags)
                 return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tagsArg), "random=true")); // +order:random count as a tag so we use random=true instead to save one
-            else
-                return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tagsArg) + "+order:random"));
+            return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tagsArg)) + "+order:random");
         }
 
+        /// <summary>
+        /// Search for random posts
+        /// </summary>
+        /// <param name="limit">Number of posts you want to get</param>
+        /// <param name="tagsArg">Tags that must be contained in the post (optional)</param>
         public async Task<Search.Post.SearchResult[]> GetRandomImagesAsync(int limit, params string[] tagsArg)
         {
             tagsArg = tagsArg.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
             if (tagsArg.Length > 2 && _noMoreThan2Tags)
                 throw new Search.TooManyTags();
             if (_format == UrlFormat.indexPhp)
-                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tagsArg) + "+sort:random"));
-            else if (_noMoreThan2Tags)
+            {
+                if (this is Template.Gelbooru)
+                    return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tagsArg)) + "sort:random");
+                if (limit == 1)
+                    return new[] { await GetRandomImageAsync(tagsArg) };
+                throw new Search.FeatureUnavailable();
+            }
+            if (_noMoreThan2Tags)
                 return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tagsArg), "random=true")); // +order:random count as a tag so we use random=true instead to save one
-            else
-                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tagsArg) + "+order:random"));
+            return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tagsArg)) + "+order:random");
         }
 
         /// <summary>
