@@ -40,26 +40,24 @@ namespace BooruSharp.Booru
             if (tagsArg.Length > 2 && _noMoreThan2Tags)
                 throw new Search.TooManyTags();
             if (_format == UrlFormat.indexPhp)
-            {
-                if (tagsArg.Length == 0)
-                    return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", "id=" + await GetRandomIdAsync(TagsToString(tagsArg)))); // We need to request /index.php?page=post&s=random and get the id given by the redirect
-                else
-                {
-                    // The previous option doesn't work if there are tags so we contact the XML endpoint to get post count
-                    string url = CreateUrl(_imageUrlXml, "limit=1", TagsToString(tagsArg));
-                    XmlDocument xml = await GetXmlAsync(url);
-                    int max = int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
-                    if (max == 0)
-                        throw new Search.InvalidTags();
-                    if (_maxLimit && max > 20001)
-                        max = 20001;
-                    return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tagsArg), "pid=" + _random.Next(0, max)));
-                }
-            }
+                return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tagsArg) + "+sort:random"));
             else if (_noMoreThan2Tags)
                 return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tagsArg), "random=true")); // +order:random count as a tag so we use random=true instead to save one
             else
                 return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tagsArg) + "+order:random"));
+        }
+
+        public async Task<Search.Post.SearchResult[]> GetRandomImagesAsync(int limit, params string[] tagsArg)
+        {
+            tagsArg = tagsArg.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+            if (tagsArg.Length > 2 && _noMoreThan2Tags)
+                throw new Search.TooManyTags();
+            if (_format == UrlFormat.indexPhp)
+                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tagsArg) + "+sort:random"));
+            else if (_noMoreThan2Tags)
+                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tagsArg), "random=true")); // +order:random count as a tag so we use random=true instead to save one
+            else
+                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tagsArg) + "+order:random"));
         }
 
         /// <summary>
@@ -74,6 +72,11 @@ namespace BooruSharp.Booru
         private async Task<Search.Post.SearchResult> GetSearchResultFromUrlAsync(string url)
         {
             return GetPostSearchResult(ParseFirstPostSearchResult(JsonConvert.DeserializeObject(await GetJsonAsync(url))));
+        }
+
+        private async Task<Search.Post.SearchResult[]> GetSearchResultsFromUrlAsync(string url)
+        {
+            return GetPostsSearchResult(JsonConvert.DeserializeObject(await GetJsonAsync(url)));
         }
 
         protected internal Search.Post.Rating GetRating(char c)
