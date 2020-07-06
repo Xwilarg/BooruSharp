@@ -27,7 +27,15 @@ namespace BooruSharp.Booru.Template
 
         protected internal override JToken ParseFirstPostSearchResult(object json)
         {
-            var elem = ((JArray)json).FirstOrDefault();
+            JToken elem;
+            try
+            {
+                elem = ((JArray)json).FirstOrDefault();
+            }
+            catch (ArgumentNullException)
+            {
+                throw new Search.InvalidTags();
+            }
             if (elem == null)
                 throw new Search.InvalidTags();
             return elem;
