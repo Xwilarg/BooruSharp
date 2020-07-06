@@ -60,7 +60,15 @@ namespace BooruSharp.Booru.Template
         protected internal override Search.Post.SearchResult[] GetPostsSearchResult(object json)
         {
             var arr = (JArray)json;
-            Search.Post.SearchResult[] res = new Search.Post.SearchResult[arr.Count];
+            Search.Post.SearchResult[] res;
+            try
+            {
+                res = new Search.Post.SearchResult[arr.Count];
+            }
+            catch (NullReferenceException)
+            {
+                return new Search.Post.SearchResult[0];
+            }
             int i = 0;
             foreach (var elem in arr)
             {

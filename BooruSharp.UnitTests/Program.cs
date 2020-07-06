@@ -506,7 +506,7 @@ namespace BooruSharp.UnitTests
             if (!booru.HaveMultipleRandomAPI())
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetRandomImagesAsync(5, "someInvalidTag"); });
             else
-                await Assert.ThrowsAsync<Search.InvalidTags>(async delegate () { await booru.GetRandomImagesAsync(5, "someInvalidTag"); });
+                Assert.Empty(await booru.GetRandomImagesAsync(5, "someInvalidTag"));
         }
 
         [Theory]
