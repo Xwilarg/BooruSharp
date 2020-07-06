@@ -42,7 +42,7 @@ namespace BooruSharp.Booru
             if (_format == UrlFormat.indexPhp)
             {
                 if (this is Template.Gelbooru)
-                    return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tagsArg)) + "sort:random");
+                    return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tagsArg)) + "+sort:random");
                 if (tagsArg.Length == 0)
                     return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", "id=" + await GetRandomIdAsync(TagsToString(tagsArg)))); // We need to request /index.php?page=post&s=random and get the id given by the redirect
                 // The previous option doesn't work if there are tags so we contact the XML endpoint to get post count
@@ -73,7 +73,7 @@ namespace BooruSharp.Booru
             if (_format == UrlFormat.indexPhp)
             {
                 if (this is Template.Gelbooru)
-                    return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tagsArg)) + "sort:random");
+                    return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tagsArg)) + "+sort:random");
                 if (limit == 1)
                     return new[] { await GetRandomImageAsync(tagsArg) };
                 throw new Search.FeatureUnavailable();
