@@ -75,8 +75,11 @@ namespace BooruSharp.Booru
         /// </summary>
         public bool HaveMultipleRandomAPI()
             => !(this is Template.Gelbooru02);
+        /// <summary>
+        /// Is it possible to add/remove favorites
+        /// </summary>
         public bool HaveFavoriteAPI()
-            => !(_format == UrlFormat.indexPhp);
+            => _format == UrlFormat.indexPhp;
 
         /// <summary>
         /// Is the booru available
