@@ -75,6 +75,8 @@ namespace BooruSharp.Booru
         /// </summary>
         public bool HaveMultipleRandomAPI()
             => !(this is Template.Gelbooru02);
+        public bool HaveFavoriteAPI()
+            => _format != UrlFormat.danbooru && _format != UrlFormat.sankaku;
 
         /// <summary>
         /// Is the booru available

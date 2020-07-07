@@ -3,7 +3,7 @@ using Xunit;
 
 namespace BooruSharp.UnitTests
 {
-    public sealed class SkipIfNoEnv : FactAttribute
+    public sealed class SkipIfNoEnv : TheoryAttribute
     {
         public SkipIfNoEnv()
         {

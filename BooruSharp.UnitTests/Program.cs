@@ -143,15 +143,92 @@ namespace BooruSharp.UnitTests
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             booru.SetBooruAuth(new BooruAuth("AAA", "AAA"));
-            await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async delegate () { await booru.AddFavorite(4283595); });
+            if (!booru.HaveFavoriteAPI())
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.RemoveFavoriteAsync(800); });
+            else
+                await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async delegate () { await booru.RemoveFavoriteAsync(800); });
+        }
+
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926))]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru))]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru))]
+        [InlineData(typeof(SankakuComplex))]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
+        public async Task UnsetFavoriteError(Type t)
+        {
+            var booru = (ABooru)Activator.CreateInstance(t);
+            booru.SetBooruAuth(new BooruAuth("AAA", "AAA"));
+            if (!booru.HaveFavoriteAPI())
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.AddFavoriteAsync(800); });
+            else
+                await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async delegate () { await booru.AddFavoriteAsync(800); });
+        }
+
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926))]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru))]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru))]
+        [InlineData(typeof(SankakuComplex))]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
+        public async Task SetFavoriteInvalidId(Type t)
+        {
+            var booru = (ABooru)Activator.CreateInstance(t);
+            booru.SetBooruAuth(new BooruAuth("AAA", "AAA"));
+            if (!booru.HaveFavoriteAPI())
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.AddFavoriteAsync(int.MaxValue); });
+            else
+                await Assert.ThrowsAsync<Search.InvalidPostId>(async delegate () { await booru.AddFavoriteAsync(int.MaxValue); });
         }
 
         [SkipIfNoEnv]
-        public async Task SetFavorite()
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926))]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru))]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru))]
+        [InlineData(typeof(SankakuComplex))]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
+        public async Task SetFavorite(Type t)
         {
-            var booru = new Gelbooru();
-            booru.SetBooruAuth(new BooruAuth(Environment.GetEnvironmentVariable("GELBOORU_USER_ID"), Environment.GetEnvironmentVariable("GELBOORU_PASSWORD_HASH")));
-            await booru.AddFavorite(4283595);
+            var booru = (ABooru)Activator.CreateInstance(t);
+            string name = t.ToString().ToUpper();
+            booru.SetBooruAuth(new BooruAuth(Environment.GetEnvironmentVariable(name + "_USER_ID"), Environment.GetEnvironmentVariable(name + "_PASSWORD_HASH")));
+            if (!booru.HaveFavoriteAPI())
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.AddFavoriteAsync(800); });
+            else
+            {
+                await booru.AddFavoriteAsync(800);
+                await booru.RemoveFavoriteAsync(800);
+            }
         }
 
         [Theory]
