@@ -143,11 +143,12 @@ namespace BooruSharp.UnitTests
         public async Task SetFavoriteError(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
+            var id = (await booru.GetRandomImageAsync()).id;
             booru.SetBooruAuth(new BooruAuth("AAA", "AAA"));
             if (!booru.HaveFavoriteAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.RemoveFavoriteAsync(800); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.RemoveFavoriteAsync(id); });
             else
-                await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async delegate () { await booru.RemoveFavoriteAsync(800); });
+                await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async delegate () { await booru.RemoveFavoriteAsync(id); });
         }
 
         [Theory]
@@ -221,14 +222,15 @@ namespace BooruSharp.UnitTests
         public async Task SetFavorite(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
+            var id = (await booru.GetRandomImageAsync()).id;
             string name = t.ToString().ToUpper().Split('.').Last();
             booru.SetBooruAuth(new BooruAuth(Environment.GetEnvironmentVariable(name + "_USER_ID"), Environment.GetEnvironmentVariable(name + "_PASSWORD_HASH")));
             if (!booru.HaveFavoriteAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.AddFavoriteAsync(800); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.AddFavoriteAsync(id); });
             else
             {
-                await booru.AddFavoriteAsync(800);
-                await booru.RemoveFavoriteAsync(800);
+                await booru.AddFavoriteAsync(id);
+                await booru.RemoveFavoriteAsync(id);
             }
         }
 
