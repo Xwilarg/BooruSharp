@@ -16,6 +16,8 @@ namespace BooruSharp.Booru
         /// <param name="postId">The ID of the post you want to add to your favorite</param>
         public async Task AddFavoriteAsync(int postId)
         {
+            if (_format != UrlFormat.indexPhp)
+                throw new FeatureUnavailable();
             if (_auth == null)
                 throw new AuthentificationRequired();
             int res;
@@ -45,6 +47,8 @@ namespace BooruSharp.Booru
         /// <param name="postId">The ID of the post you want to remove from your favorite</param>
         public async Task RemoveFavoriteAsync(int postId)
         {
+            if (_format != UrlFormat.indexPhp)
+                throw new FeatureUnavailable();
             if (_auth == null)
                 throw new AuthentificationRequired();
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_baseUrl + "/index.php?page=favorites&s=delete&id=" + postId);
