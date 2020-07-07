@@ -1,5 +1,6 @@
 ﻿using BooruSharp.Booru;
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -220,7 +221,7 @@ namespace BooruSharp.UnitTests
         public async Task SetFavorite(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
-            string name = t.ToString().ToUpper();
+            string name = t.ToString().ToUpper().Split('.').Last();
             booru.SetBooruAuth(new BooruAuth(Environment.GetEnvironmentVariable(name + "_USER_ID"), Environment.GetEnvironmentVariable(name + "_PASSWORD_HASH")));
             if (!booru.HaveFavoriteAPI())
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.AddFavoriteAsync(800); });
