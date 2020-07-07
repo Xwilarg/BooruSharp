@@ -50,6 +50,14 @@ Console.WriteLine("Image preview URL: " + result.previewUrl.AbsoluteUri + Enviro
                   "Tags on the image: " + String.Join(", ", result.tags));
 ```
 
+Get many random images at once:
+```Cs
+BooruSharp.Booru.SankakuComplex booru = new BooruSharp.Booru.SankakuComplex();
+BooruSharp.Search.Post.SearchResult[] result = await booru.GetRandomImagesAsync(10, "ifrit_(arknights)", "silence_(arknights)");
+
+Console.WriteLine(string.Join(Environment.NewLine, result.Select(x => "Random Image: " + x.fileUrl)));
+```
+
 Get tag:
 ```Cs
 BooruSharp.Booru.Safebooru booru = new BooruSharp.Booru.Safebooru();

@@ -63,6 +63,22 @@ namespace BooruSharp.UnitTests
             await CheckResult(result, s1);
         }
 
+        public static async Task CheckGetRandoms(ABooru booru, string s1)
+        {
+            Search.Post.SearchResult[] result = await booru.GetRandomImagesAsync(5, s1);
+            Assert.NotEmpty(result);
+            Search.Post.SearchResult[] result2;
+            int i = 0;
+            do
+            {
+                result2 = await booru.GetRandomImagesAsync(5, s1);
+                Assert.NotEmpty(result2);
+                i++;
+            } while (result[0].id == result2[0].id && i < 5);
+            Assert.NotEqual(result[0].id, result2[0].id);
+            await CheckResult(result[0], s1);
+        }
+
         public static async Task CheckTag(ABooru booru, string s1 = "pantyhose")
         {
             Search.Tag.SearchResult result = await booru.GetTagAsync(s1);
@@ -158,7 +174,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             if (!booru.HavePostByMd5API())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((ABooru)Activator.CreateInstance(t)).GetImageByMd5Async("0"); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetImageByMd5Async("0"); });
             else
             {
                 Search.Post.SearchResult result1;
@@ -246,7 +262,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             if (!booru.HavePostCountAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((ABooru)Activator.CreateInstance(t)).GetPostCountAsync(); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetPostCountAsync(); });
             else
             {
                 var countEmpty = await booru.GetPostCountAsync();
@@ -278,6 +294,61 @@ namespace BooruSharp.UnitTests
         public async Task GetRandom(Type t, string tag = "school_swimsuit")
         {
             await General.CheckGetRandom((ABooru)Activator.CreateInstance(t), tag);
+        }
+
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926))]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru), "small_breasts")]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru), "kantai_collection")]
+        [InlineData(typeof(SankakuComplex), "small_breasts")]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
+        public async Task GetRandoms(Type t, string tag = "school_swimsuit")
+        {
+            var booru = (ABooru)Activator.CreateInstance(t);
+            if (!booru.HaveMultipleRandomAPI())
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await General.CheckGetRandoms(booru, tag); });
+            else
+                await General.CheckGetRandoms(booru, tag);
+        }
+
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926))]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru), "small_breasts")]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru), "kantai_collection")]
+        [InlineData(typeof(SankakuComplex), "small_breasts")]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
+        public async Task GetRandomsTooMany(Type t, string tag = "school_swimsuit")
+        {
+            var booru = (ABooru)Activator.CreateInstance(t);
+            if (!booru.HaveMultipleRandomAPI())
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetRandomImagesAsync(int.MaxValue, tag); });
+            else
+            {
+                var result = await booru.GetRandomImagesAsync(int.MaxValue, tag);
+                Assert.NotEmpty(result);
+                foreach (var r in result)
+                    Assert.Contains(tag, r.tags);
+            }
         }
 
         [Fact]
@@ -314,6 +385,39 @@ namespace BooruSharp.UnitTests
         }
 
         [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621), "kantai_collection")]
+        [InlineData(typeof(E926), "kantai_collection")]
+        [InlineData(typeof(Furrybooru), "kantai_collection")]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan), "hibiki_(kancolle)")]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru), "school_swimsuit", "small_breasts")]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru), "kantai_collection", "explosions")]
+        [InlineData(typeof(SankakuComplex), "hibiki_(kantai_collection)", "old_school_swimsuit")]
+        [InlineData(typeof(Xbooru), "kantai_collection")]
+        [InlineData(typeof(Yandere), "kantai_collection")]
+        public async Task GetRandoms2Tags(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "school_swimsuit")
+        {
+            var booru = (ABooru)Activator.CreateInstance(t);
+            if (!booru.HaveMultipleRandomAPI())
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetRandomImagesAsync(5, tag, tag2); });
+            else
+            {
+                var result = await booru.GetRandomImagesAsync(5, tag, tag2);
+                Assert.NotEmpty(result);
+                foreach (var r in result)
+                {
+                    Assert.Contains(tag, r.tags);
+                    Assert.Contains(tag2, r.tags);
+                }
+            }
+        }
+
+        [Theory]
         [InlineData(typeof(Atfbooru), false)]
         [InlineData(typeof(DanbooruDonmai), true)]
         [InlineData(typeof(E621), false, "sea", "loli", "swimwear")]
@@ -338,9 +442,6 @@ namespace BooruSharp.UnitTests
                 await Assert.ThrowsAsync<Search.TooManyTags>(async () =>
                 {
                     result = await booru.GetRandomImageAsync(tag, tag2, tag3);
-                    Assert.Contains(tag, result.tags);
-                    Assert.Contains(tag2, result.tags);
-                    Assert.Contains(tag3, result.tags);
                 });
             }
             else
@@ -349,6 +450,47 @@ namespace BooruSharp.UnitTests
                 Assert.Contains(tag, result.tags);
                 Assert.Contains(tag2, result.tags);
                 Assert.Contains(tag3, result.tags);
+            }
+        }
+
+        [Theory]
+        [InlineData(typeof(Atfbooru), false)]
+        [InlineData(typeof(DanbooruDonmai), true)]
+        [InlineData(typeof(E621), false, "sea", "loli", "swimwear")]
+        [InlineData(typeof(E926), false, "sea", "loli", "swimwear")]
+        [InlineData(typeof(Furrybooru), false, "water")]
+        [InlineData(typeof(Gelbooru), false)]
+        [InlineData(typeof(Konachan), false, "water")]
+        [InlineData(typeof(Lolibooru), false)]
+        [InlineData(typeof(Realbooru), false, "water")]
+        [InlineData(typeof(Rule34), false)]
+        [InlineData(typeof(Safebooru), false)]
+        [InlineData(typeof(Sakugabooru), false, "kantai_collection", "explosions", "fire")]
+        [InlineData(typeof(SankakuComplex), false, "ocean", "loli", "swimsuit")]
+        [InlineData(typeof(Xbooru), false, "ocean", "small_breasts")]
+        [InlineData(typeof(Yandere), false, "see_through", "loli", "swimsuits")]
+        public async Task TooManyTagsMany(Type t, bool throwError, string tag = "ocean", string tag2 = "flat_chest", string tag3 = "swimsuit")
+        {
+            var booru = (ABooru)Activator.CreateInstance(t);
+            Search.Post.SearchResult[] result;
+            if (throwError)
+            {
+                await Assert.ThrowsAsync<Search.TooManyTags>(async () =>
+                {
+                    result = await booru.GetRandomImagesAsync(5, tag, tag2, tag3);
+                });
+            }
+            else if (!booru.HaveMultipleRandomAPI())
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetRandomImagesAsync(5, tag, tag2, tag3); });
+            else
+            {
+                result = await booru.GetRandomImagesAsync(5, tag, tag2, tag3);
+                foreach (var r in result)
+                {
+                    Assert.Contains(tag, r.tags);
+                    Assert.Contains(tag2, r.tags);
+                    Assert.Contains(tag3, r.tags);
+                }
             }
         }
 
@@ -385,6 +527,31 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Realbooru))]
         [InlineData(typeof(Rule34))]
         [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru))]
+        [InlineData(typeof(SankakuComplex))]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
+        public async Task GetRandomsFail(Type t)
+        {
+            var booru = (ABooru)Activator.CreateInstance(t);
+            if (!booru.HaveMultipleRandomAPI())
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetRandomImagesAsync(5, "someInvalidTag"); });
+            else
+                Assert.Empty(await booru.GetRandomImagesAsync(5, "someInvalidTag"));
+        }
+
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926))]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru))]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
         [InlineData(typeof(Sakugabooru), "kantai_collection")]
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
@@ -393,7 +560,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             if (!booru.HaveTagByIdAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((ABooru)Activator.CreateInstance(t)).GetTagAsync(tag); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetTagAsync(tag); });
             else
                 await General.CheckTag(booru, tag);
         }
@@ -418,7 +585,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             if (!booru.HaveTagByIdAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((ABooru)Activator.CreateInstance(t)).GetTagAsync("someRandomTag"); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetTagAsync("someRandomTag"); });
             else
                 await Assert.ThrowsAsync<Search.InvalidTags>(() => booru.GetTagAsync("someRandomTag"));
         }
@@ -470,7 +637,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             if (!booru.HaveTagByIdAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((ABooru)Activator.CreateInstance(t)).GetTagAsync(tagId); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetTagAsync(tagId); });
             else
                 Assert.Equal(tag, (await booru.GetTagAsync(tagId)).name);
         }
@@ -495,7 +662,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             if (!booru.HaveTagByIdAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((ABooru)Activator.CreateInstance(t)).GetTagAsync(int.MaxValue); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetTagAsync(int.MaxValue); });
             else
                 await Assert.ThrowsAsync<Search.InvalidTags>(() => booru.GetTagAsync(int.MaxValue));
         }
@@ -520,7 +687,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             if (!booru.HaveWikiAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((ABooru)Activator.CreateInstance(t)).GetWikiAsync(tag); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetWikiAsync(tag); });
             else
             {
                 Search.Wiki.SearchResult result = await booru.GetWikiAsync(tag);
@@ -549,7 +716,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             if (!booru.HaveWikiAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((ABooru)Activator.CreateInstance(t)).GetWikiAsync("yetAnotherTag"); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetWikiAsync("yetAnotherTag"); });
             else
                 await Assert.ThrowsAsync<Search.InvalidTags>(() => booru.GetWikiAsync("yetAnotherTag"));
         }
@@ -580,12 +747,12 @@ namespace BooruSharp.UnitTests
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             if (!booru.HaveRelatedAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await ((ABooru)Activator.CreateInstance(t)).GetRelatedAsync(tag); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetRelatedAsync(tag); });
             else if (isAvailable == AvailableStatus.AuthRequired)
-                await Assert.ThrowsAsync<Search.AuthentificationRequired>(async delegate () { await ((ABooru)Activator.CreateInstance(t)).GetRelatedAsync(tag); });
+                await Assert.ThrowsAsync<Search.AuthentificationRequired>(async delegate () { await booru.GetRelatedAsync(tag); });
             else
             {
-                Search.Related.SearchResult[] result = await ((ABooru)Activator.CreateInstance(t)).GetRelatedAsync(tag);
+                Search.Related.SearchResult[] result = await booru.GetRelatedAsync(tag);
                 General.CheckRelated(result);
                 Assert.Contains(result, x => x.name == related);
             }
