@@ -37,7 +37,27 @@ Version >= 2.0.0: https://boorusharp.zirk.eu/<br/>
 Version <= 1.4.8: https://github.com/Xwilarg/BooruSharp/wiki<br/>
 Transition from 1.4.8 to 2.0.0: https://boorusharp.zirk.eu/transition.html
 
-# Basic examples
+# Features availability
+
+| Booru | Multiple Random Images | Post by MD5 | Tag by ID | Comment API | Last Comments API | Wiki API | Related Tag API | Post Count API | Favorite API |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Atfbooru		| ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ❌ | ❌ |
+| Danbooru Donmai	| ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ❌ | ❌ |
+| E621			| ✔️ | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| E926			| ✔️ | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Furry Booru		| ❌ | ❌ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ✔️ |
+| Gelbooru		| ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ✔️ |
+| Konachan		| ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ |
+| Lolibooru		| ✔️ | ❌ | ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ |
+| Realbooru		| ❌ | ❌ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ✔️ |
+| Rule 34		| ❌ | ❌ | ✔️ | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ |
+| Safebooru		| ❌ | ❌ | ✔️ | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ |
+| Sakugabooru		| ✔️ | ❌ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ❌ |
+| Sankaku Complex	| ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ❌ |
+| Xbooru		| ❌ | ❌ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ✔️ |
+| Yandere		| ✔️ | ❌ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ❌ |
+
+# Examples
 
 Random image:
 ```Cs
@@ -93,9 +113,12 @@ BooruSharp.Search.Comment.SearchResult[] results = await booru.GetCommentAsync(1
 Console.WriteLine(String.Join(Environment.NewLine,
     results.Select(delegate (BooruSharp.Search.Comment.SearchResult res) { return ("Author: " + res.authorName + ", the " + res.creation.ToString("dd/MM/yy HH:mm:ss") + " - " + res.body); })));
 ```
-
-# Advanced examples
-
+Add to favorite:
+```Cs
+BooruSharp.Booru.Safebooru booru = new BooruSharp.Booru.Safebooru();
+booru.SetBooruAuth(new BooruSharp.Booru.BooruAuth("yourUserId", "yourPasswordHash")); // See https://boorusharp.zirk.eu/#authentification
+await booru.AddFavoriteAsync(1759793);
+```
 Get all character tags containing a string:
 ```Cs
 BooruSharp.Booru.Yandere yandere = new BooruSharp.Booru.Yandere();
