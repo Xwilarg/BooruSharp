@@ -140,14 +140,14 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
-        public async Task SetFavoriteError(Type t)
+        public async Task UnsetFavoriteError(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             var id = (await booru.GetRandomImageAsync()).id;
             booru.SetBooruAuth(new BooruAuth("AAA", "AAA"));
             if (!booru.HaveFavoriteAPI())
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.RemoveFavoriteAsync(id); });
-            else
+            else if (t is Gelbooru)
                 await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async delegate () { await booru.RemoveFavoriteAsync(id); });
         }
 
@@ -167,7 +167,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
-        public async Task UnsetFavoriteError(Type t)
+        public async Task SetFavoriteError(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             booru.SetBooruAuth(new BooruAuth("AAA", "AAA"));
