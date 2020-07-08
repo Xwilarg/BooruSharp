@@ -9,6 +9,7 @@
         noComment,
         noTagById,
         noPostByMd5,
+        noPostById,
         noLastComments,
         // API using XML instead of JSON
         commentApiXml,

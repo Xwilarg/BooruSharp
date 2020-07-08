@@ -284,6 +284,35 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        public async Task GetById(Type t)
+        {
+            var booru = (ABooru)Activator.CreateInstance(t);
+            if (!booru.HavePostByIdAPI())
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetImageById(0); });
+            else
+            {
+                Search.Post.SearchResult result1 = await booru.GetRandomImageAsync();
+                var result2 = await booru.GetImageById(result1.id);
+                Assert.Equal(result1.id, result2.id);
+            }
+        }
+
+        [Theory]
+        [InlineData(typeof(Atfbooru))]
+        [InlineData(typeof(DanbooruDonmai))]
+        [InlineData(typeof(E621))]
+        [InlineData(typeof(E926))]
+        [InlineData(typeof(Furrybooru))]
+        [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Konachan))]
+        [InlineData(typeof(Lolibooru))]
+        [InlineData(typeof(Realbooru))]
+        [InlineData(typeof(Rule34))]
+        [InlineData(typeof(Safebooru))]
+        [InlineData(typeof(Sakugabooru))]
+        [InlineData(typeof(SankakuComplex))]
+        [InlineData(typeof(Xbooru))]
+        [InlineData(typeof(Yandere))]
         public async Task GetLastPosts(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);

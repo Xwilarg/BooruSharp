@@ -66,6 +66,11 @@ namespace BooruSharp.Booru
         public bool HavePostByMd5API()
             => _searchPostByMd5;
         /// <summary>
+        /// Is it possible to search for posts using their ID with this booru
+        /// </summary>
+        public bool HavePostByIdAPI()
+            => _searchPostById;
+        /// <summary>
         /// Is it possible to get the total number of post
         /// </summary>
         public bool HavePostCountAPI()
@@ -111,6 +116,7 @@ namespace BooruSharp.Booru
             _searchTagById = !options.Contains(BooruOptions.noTagById);
             _searchLastComment = !options.Contains(BooruOptions.noLastComments);
             _searchPostByMd5 = !options.Contains(BooruOptions.noPostByMd5);
+            _searchPostById = !options.Contains(BooruOptions.noPostById);
             _tagUseXml = options.Contains(BooruOptions.tagApiXml);
             _commentUseXml = options.Contains(BooruOptions.commentApiXml);
             _noMoreThan2Tags = options.Contains(BooruOptions.noMoreThan2Tags);
@@ -229,7 +235,7 @@ namespace BooruSharp.Booru
         private BooruAuth _auth; // Authentification
         protected readonly string _baseUrl; // Booru's base URL
         private readonly string _imageUrlXml, _imageUrl, _tagUrl, _wikiUrl, _relatedUrl, _commentUrl; // URLs for differents endpoints
-        private readonly bool _searchTagById, _searchLastComment, _searchPostByMd5; // Differents services availability
+        private readonly bool _searchTagById, _searchLastComment, _searchPostByMd5, _searchPostById; // Differents services availability
         private readonly bool _tagUseXml, _commentUseXml; // APIs use XML instead of JSON
         private readonly bool _noMoreThan2Tags;
         private readonly bool _maxLimit; // Have max limit (used by Gelbooru)

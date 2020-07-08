@@ -9,7 +9,7 @@ namespace BooruSharp.Booru
     public abstract partial class ABooru
     {
         /// <summary>
-        /// Search for a post using their MD5
+        /// Search for a post using its MD5
         /// </summary>
         /// <param name="md5">The MD5 of the post to search</param>
         public async Task<Search.Post.SearchResult> GetImageByMd5Async(string md5)
@@ -19,6 +19,24 @@ namespace BooruSharp.Booru
             return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", "md5=" + md5));
         }
 
+        /// <summary>
+        /// Search for a post using its ID
+        /// </summary>
+        /// <param name="id">The ID fo the post to search</param>
+        /// <returns></returns>
+        public async Task<Search.Post.SearchResult> GetImageById(int id)
+        {
+            if (!HavePostByIdAPI())
+                throw new Search.FeatureUnavailable();
+            if (_format == UrlFormat.danbooru)
+                return await GetSearchResultFromUrlAsync(_baseUrl + "/posts/" + id + ".json");
+            return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", "id=" + id));
+        }
+
+        /// <summary>
+        /// Get the number of posts available
+        /// </summary>
+        /// <param name="tagsArg">Tags for which you want the number of posts about (optional)</param>
         public async Task<int> GetPostCountAsync(params string[] tagsArg)
         {
             if (_imageUrlXml == null)
