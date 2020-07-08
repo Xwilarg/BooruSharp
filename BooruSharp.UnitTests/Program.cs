@@ -288,11 +288,11 @@ namespace BooruSharp.UnitTests
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             if (!booru.HavePostByIdAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetImageById(0); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetImageByIdAsync(0); });
             else
             {
                 Search.Post.SearchResult result1 = await booru.GetRandomImageAsync();
-                var result2 = await booru.GetImageById(result1.id);
+                var result2 = await booru.GetImageByIdAsync(result1.id);
                 Assert.Equal(result1.id, result2.id);
             }
         }

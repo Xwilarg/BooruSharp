@@ -24,7 +24,7 @@ namespace BooruSharp.Booru
         /// </summary>
         /// <param name="id">The ID fo the post to search</param>
         /// <returns></returns>
-        public async Task<Search.Post.SearchResult> GetImageById(int id)
+        public async Task<Search.Post.SearchResult> GetImageByIdAsync(int id)
         {
             if (!HavePostByIdAPI())
                 throw new Search.FeatureUnavailable();
