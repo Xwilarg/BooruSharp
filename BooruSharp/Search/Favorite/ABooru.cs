@@ -18,11 +18,11 @@ namespace BooruSharp.Booru
         {
             if (_format != UrlFormat.indexPhp)
                 throw new FeatureUnavailable();
-            if (_auth == null)
+            if (Auth == null)
                 throw new AuthentificationRequired();
             int res;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_baseUrl + "/public/addfav.php?id=" + postId);
-            request.Headers["Cookie"] = "user_id=" + _auth.UserId + ";pass_hash=" + _auth.PasswordHash;
+            request.Headers["Cookie"] = "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash;
             request.UserAgent = "Mozilla/5.0 BooruSharp";
             request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
             using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
@@ -49,10 +49,10 @@ namespace BooruSharp.Booru
         {
             if (_format != UrlFormat.indexPhp)
                 throw new FeatureUnavailable();
-            if (_auth == null)
+            if (Auth == null)
                 throw new AuthentificationRequired();
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_baseUrl + "/index.php?page=favorites&s=delete&id=" + postId);
-            request.Headers["Cookie"] = "user_id=" + _auth.UserId + ";pass_hash=" + _auth.PasswordHash;
+            request.Headers["Cookie"] = "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash;
             request.UserAgent = "Mozilla/5.0 BooruSharp";
             request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
             using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())

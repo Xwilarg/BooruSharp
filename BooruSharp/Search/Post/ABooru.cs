@@ -14,7 +14,7 @@ namespace BooruSharp.Booru
         /// <param name="md5">The MD5 of the post to search</param>
         public async Task<Search.Post.SearchResult> GetImageByMd5Async(string md5)
         {
-            if (!HavePostByMd5API())
+            if (!HasPostByMd5API())
                 throw new Search.FeatureUnavailable();
             return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", "md5=" + md5));
         }
@@ -26,7 +26,7 @@ namespace BooruSharp.Booru
         /// <returns></returns>
         public async Task<Search.Post.SearchResult> GetImageByIdAsync(int id)
         {
-            if (!HavePostByIdAPI())
+            if (!HasPostByIdAPI())
                 throw new Search.FeatureUnavailable();
             if (_format == UrlFormat.danbooru)
                 return await GetSearchResultFromUrlAsync(_baseUrl + "/posts/" + id + ".json");

@@ -15,7 +15,7 @@ namespace BooruSharp.Booru
         /// <param name="name">The name of the tag you want information about</param>
         public async Task<Search.Tag.SearchResult> GetTagAsync(string name)
         {
-            if (!HaveTagByIdAPI())
+            if (!HasTagByIdAPI())
                 throw new Search.FeatureUnavailable();
             return await SearchTagAsync(name, null);
         }
@@ -37,7 +37,7 @@ namespace BooruSharp.Booru
         /// <param name="name">The name of the tag you want others similar</param>
         public async Task<Search.Tag.SearchResult[]> GetTagsAsync(string name)
         {
-            if (!HaveTagByIdAPI())
+            if (!HasTagByIdAPI())
                 throw new Search.FeatureUnavailable();
             List<string> urlTags = new List<string>() { SearchArg("name") + name };
             if (_format == UrlFormat.postIndexJson)
