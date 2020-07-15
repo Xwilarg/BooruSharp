@@ -13,7 +13,7 @@ namespace BooruSharp.Booru
         /// Get information about a tag
         /// </summary>
         /// <param name="name">The name of the tag you want information about</param>
-        public async Task<Search.Tag.SearchResult> GetTagAsync(string name)
+        public virtual async Task<Search.Tag.SearchResult> GetTagAsync(string name)
         {
             if (!HasTagByIdAPI())
                 throw new Search.FeatureUnavailable();
@@ -24,7 +24,7 @@ namespace BooruSharp.Booru
         /// Get information about a tag
         /// </summary>
         /// <param name="name">The ID of the tag you want information about</param>
-        public async Task<Search.Tag.SearchResult> GetTagAsync(int id)
+        public virtual async Task<Search.Tag.SearchResult> GetTagAsync(int id)
         {
             if (!_searchTagById)
                 throw new Search.FeatureUnavailable();
@@ -35,7 +35,7 @@ namespace BooruSharp.Booru
         /// Get the similar tags of the one given
         /// </summary>
         /// <param name="name">The name of the tag you want others similar</param>
-        public async Task<Search.Tag.SearchResult[]> GetTagsAsync(string name)
+        public virtual async Task<Search.Tag.SearchResult[]> GetTagsAsync(string name)
         {
             if (!HasTagByIdAPI())
                 throw new Search.FeatureUnavailable();

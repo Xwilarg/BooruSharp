@@ -14,7 +14,7 @@ namespace BooruSharp.Booru
         /// You must login using SetBooruAuth before using this function
         /// </remarks>
         /// <param name="postId">The ID of the post you want to add to your favorite</param>
-        public async Task AddFavoriteAsync(int postId)
+        public virtual async Task AddFavoriteAsync(int postId)
         {
             if (_format != UrlFormat.indexPhp)
                 throw new FeatureUnavailable();
@@ -45,7 +45,7 @@ namespace BooruSharp.Booru
         /// You must login using SetBooruAuth before using this function
         /// </remarks>
         /// <param name="postId">The ID of the post you want to remove from your favorite</param>
-        public async Task RemoveFavoriteAsync(int postId)
+        public virtual async Task RemoveFavoriteAsync(int postId)
         {
             if (_format != UrlFormat.indexPhp)
                 throw new FeatureUnavailable();

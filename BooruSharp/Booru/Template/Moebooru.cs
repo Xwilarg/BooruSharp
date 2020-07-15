@@ -6,7 +6,7 @@ namespace BooruSharp.Booru.Template
 {
     public abstract class Moebooru : ABooru
     {
-        public Moebooru(string url, params BooruOptions[] options) : base(url, UrlFormat.postIndexJson, CombineArrays(options, new[] { BooruOptions.noPostByMd5, BooruOptions.noPostById }))
+        public Moebooru(string url, params BooruOptions[] options) : base(url, UrlFormat.postIndexJson, CombineArrays(options, new[] { BooruOptions.noPostByMd5, BooruOptions.noPostById, BooruOptions.noFavorite }))
         { }
 
         protected internal override JToken ParseFirstPostSearchResult(object json)

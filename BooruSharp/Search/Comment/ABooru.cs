@@ -11,7 +11,7 @@ namespace BooruSharp.Booru
         /// Get the comments posted on a post
         /// </summary>
         /// <param name="postId">The ID of the post to get information about</param>
-        public async Task<Search.Comment.SearchResult[]> GetCommentsAsync(int postId)
+        public virtual async Task<Search.Comment.SearchResult[]> GetCommentsAsync(int postId)
         {
             if (_commentUrl == null)
                 throw new Search.FeatureUnavailable();
@@ -43,7 +43,7 @@ namespace BooruSharp.Booru
         /// <summary>
         /// Get the lasts comments posted on the website
         /// </summary>
-        public async Task<Search.Comment.SearchResult[]> GetLastCommentsAsync()
+        public virtual async Task<Search.Comment.SearchResult[]> GetLastCommentsAsync()
         {
             if (_commentUrl == null || !_searchLastComment)
                 throw new Search.FeatureUnavailable();

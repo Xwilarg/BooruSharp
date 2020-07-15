@@ -6,7 +6,7 @@ namespace BooruSharp.Booru.Template
 {
     public abstract class Danbooru : ABooru
     {
-        public Danbooru(string url, params BooruOptions[] options) : base(url, UrlFormat.danbooru, CombineArrays(options, new[] { BooruOptions.noLastComments }))
+        public Danbooru(string url, params BooruOptions[] options) : base(url, UrlFormat.danbooru, CombineArrays(options, new[] { BooruOptions.noLastComments, BooruOptions.noPostCount, BooruOptions.noFavorite }))
         { }
 
         protected internal override JToken ParseFirstPostSearchResult(object json)

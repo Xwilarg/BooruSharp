@@ -74,17 +74,17 @@ namespace BooruSharp.Booru
         /// Is it possible to get the total number of post
         /// </summary>
         public bool HasPostCountAPI()
-            => _imageUrlXml != null;
+            => _postCount;
         /// <summary>
         /// Is it possible to get multiple random images
         /// </summary>
         public bool HasMultipleRandomAPI()
-            => !(this is Template.Gelbooru02);
+            => _multipleRandom;
         /// <summary>
         /// Is it possible to add/remove favorites
         /// </summary>
         public bool HasFavoriteAPI()
-            => _format == UrlFormat.indexPhp;
+            => _addFavorite;
 
         /// <summary>
         /// Is the booru available
@@ -117,6 +117,9 @@ namespace BooruSharp.Booru
             _searchLastComment = !options.Contains(BooruOptions.noLastComments);
             _searchPostByMd5 = !options.Contains(BooruOptions.noPostByMd5);
             _searchPostById = !options.Contains(BooruOptions.noPostById);
+            _postCount = !options.Contains(BooruOptions.noPostCount);
+            _multipleRandom = !options.Contains(BooruOptions.noMultipleRandom);
+            _addFavorite = !options.Contains(BooruOptions.noFavorite);
             _tagUseXml = options.Contains(BooruOptions.tagApiXml);
             _commentUseXml = options.Contains(BooruOptions.commentApiXml);
             _noMoreThan2Tags = options.Contains(BooruOptions.noMoreThan2Tags);
@@ -163,7 +166,7 @@ namespace BooruSharp.Booru
                     return query + "s";
 
                 default:
-                    throw new ArgumentException("Invalid URL format " + format);
+                    return null;
             }
         }
 
@@ -230,7 +233,7 @@ namespace BooruSharp.Booru
         public HttpClient HttpClient { set; private get; }
         protected readonly string _baseUrl; // Booru's base URL
         private readonly string _imageUrlXml, _imageUrl, _tagUrl, _wikiUrl, _relatedUrl, _commentUrl; // URLs for differents endpoints
-        private readonly bool _searchTagById, _searchLastComment, _searchPostByMd5, _searchPostById; // Differents services availability
+        private readonly bool _searchTagById, _searchLastComment, _searchPostByMd5, _searchPostById, _postCount, _multipleRandom, _addFavorite; // Differents services availability
         private readonly bool _tagUseXml, _commentUseXml; // APIs use XML instead of JSON
         private readonly bool _noMoreThan2Tags;
         private readonly bool _maxLimit; // Have max limit (used by Gelbooru)

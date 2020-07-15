@@ -11,7 +11,7 @@ namespace BooruSharp.Booru
         /// Get the tags related to another one
         /// </summary>
         /// <param name="tag">The tag that the others must be related to</param>
-        public async Task<Search.Related.SearchResult[]> GetRelatedAsync(string tag)
+        public virtual async Task<Search.Related.SearchResult[]> GetRelatedAsync(string tag)
         {
             if (_relatedUrl == null)
                 throw new Search.FeatureUnavailable();

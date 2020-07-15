@@ -1,4 +1,5 @@
 ﻿using BooruSharp.Booru;
+using BooruSharp.Other;
 using System;
 using System.Linq;
 using System.Net;
@@ -149,6 +150,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        [InlineData(typeof(Pixiv))]
         public async Task UnsetFavoriteError(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -176,6 +178,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        [InlineData(typeof(Pixiv))]
         public async Task SetFavoriteError(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -202,6 +205,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        [InlineData(typeof(Pixiv))]
         public async Task SetFavoriteInvalidId(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -229,6 +233,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        [InlineData(typeof(Pixiv))]
         public async Task SetFavorite(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -260,6 +265,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        [InlineData(typeof(Pixiv))]
         public async Task GetByMd5(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -293,6 +299,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        [InlineData(typeof(Pixiv))]
         public async Task GetById(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -322,6 +329,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        [InlineData(typeof(Pixiv))]
         public async Task GetLastPosts(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -347,6 +355,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru), "kantai_collection")]
         [InlineData(typeof(Yandere), "kantai_collection", "swimsuits")]
+        [InlineData(typeof(Pixiv))]
         public async Task GetLastPostsWithTags(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "swimsuit")
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -377,6 +386,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru), "kantai_collection")]
         [InlineData(typeof(Yandere), "kantai_collection", "swimsuits")]
+        [InlineData(typeof(Pixiv))]
         public async Task GetPostCount(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "swimsuit")
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -410,6 +420,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), "small_breasts")]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        [InlineData(typeof(Pixiv))]
         public async Task GetRandom(Type t, string tag = "school_swimsuit")
         {
             await General.CheckGetRandom((ABooru)Activator.CreateInstance(t), tag);
@@ -431,6 +442,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), "small_breasts")]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        [InlineData(typeof(Pixiv))]
         public async Task GetRandoms(Type t, string tag = "school_swimsuit")
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -456,6 +468,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), "small_breasts")]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        [InlineData(typeof(Pixiv))]
         public async Task GetRandomsTooMany(Type t, string tag = "school_swimsuit")
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -495,6 +508,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), "hibiki_(kantai_collection)", "old_school_swimsuit")]
         [InlineData(typeof(Xbooru), "kantai_collection")]
         [InlineData(typeof(Yandere), "kantai_collection")]
+        [InlineData(typeof(Pixiv))]
         public async Task GetRandom2Tags(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "school_swimsuit")
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -519,6 +533,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), "hibiki_(kantai_collection)", "old_school_swimsuit")]
         [InlineData(typeof(Xbooru), "kantai_collection")]
         [InlineData(typeof(Yandere), "kantai_collection")]
+        [InlineData(typeof(Pixiv))]
         public async Task GetRandoms2Tags(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "school_swimsuit")
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -552,6 +567,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), false, "ocean", "loli", "swimsuit")]
         [InlineData(typeof(Xbooru), false, "ocean", "small_breasts")]
         [InlineData(typeof(Yandere), false, "see_through", "loli", "swimsuits")]
+        [InlineData(typeof(Pixiv), false)]
         public async Task TooManyTags(Type t, bool throwError, string tag = "ocean", string tag2 = "flat_chest", string tag3 = "swimsuit")
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -588,6 +604,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), false, "ocean", "loli", "swimsuit")]
         [InlineData(typeof(Xbooru), false, "ocean", "small_breasts")]
         [InlineData(typeof(Yandere), false, "see_through", "loli", "swimsuits")]
+        [InlineData(typeof(Pixiv), false)]
         public async Task TooManyTagsMany(Type t, bool throwError, string tag = "ocean", string tag2 = "flat_chest", string tag3 = "swimsuit")
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -629,6 +646,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        [InlineData(typeof(Pixiv))]
         public async Task GetRandomFail(Type t)
         {
             await Assert.ThrowsAsync<Search.InvalidTags>(() => ((ABooru)Activator.CreateInstance(t)).GetRandomImageAsync("someInvalidTag"));
@@ -650,6 +668,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        [InlineData(typeof(Pixiv))]
         public async Task GetRandomsFail(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -675,6 +694,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        [InlineData(typeof(Pixiv))]
         public async Task CheckTag(Type t, string tag = "pantyhose")
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -700,6 +720,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        [InlineData(typeof(Pixiv))]
         public async Task CheckTagFail(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -725,6 +746,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), "hibiki", false)]
         [InlineData(typeof(Xbooru), "hibiki", true)]
         [InlineData(typeof(Yandere), "hibiki", false)]
+        [InlineData(typeof(Pixiv), "hibiki", false)]
         public async Task CheckTags(Type t, string tag, bool onlyOnce)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -752,6 +774,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), "kantai_collection", 458437)]
         [InlineData(typeof(Xbooru), "hibiki_(kantai_collection)", 151883)]
         [InlineData(typeof(Yandere), "hibiki_(kancolle)", 98153)]
+        [InlineData(typeof(Pixiv), "TODO", 0)]
         public async Task TagId(Type t, string tag, int tagId)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -777,6 +800,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        [InlineData(typeof(Pixiv))]
         public async Task TagIdFail(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -802,6 +826,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), "blush", 826)]
         [InlineData(typeof(Xbooru), "futanari", -1)]
         [InlineData(typeof(Yandere), "futanari", 167)]
+        [InlineData(typeof(Pixiv), "TODO", 0)]
         public async Task CheckWiki(Type t, string tag, int? id)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -831,6 +856,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        [InlineData(typeof(Pixiv))]
         public async Task CheckWikiFail(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -840,35 +866,28 @@ namespace BooruSharp.UnitTests
                 await Assert.ThrowsAsync<Search.InvalidTags>(() => booru.GetWikiAsync("yetAnotherTag"));
         }
 
-        public enum AvailableStatus
-        {
-            AuthRequired,
-            Ok
-        }
-
         [Theory]
-        [InlineData(typeof(Atfbooru), "kantai_collection", "anchor_symbol", AvailableStatus.Ok)]
-        [InlineData(typeof(DanbooruDonmai), "kantai_collection", "serafuku", AvailableStatus.Ok)]
-        [InlineData(typeof(E621), "sky", "cloud", AvailableStatus.Ok)]
-        [InlineData(typeof(E926), "sky", "cloud", AvailableStatus.Ok)]
-        [InlineData(typeof(Furrybooru), "sky", "cloud", AvailableStatus.Ok)]
-        [InlineData(typeof(Gelbooru), "sky", "cloud", AvailableStatus.Ok)]
-        [InlineData(typeof(Konachan), "sky", "clouds", AvailableStatus.Ok)]
-        [InlineData(typeof(Lolibooru), "sky", "cloud", AvailableStatus.Ok)]
-        [InlineData(typeof(Realbooru), "sky", "clouds", AvailableStatus.Ok)]
-        [InlineData(typeof(Rule34), "sky", "clouds", AvailableStatus.Ok)]
-        [InlineData(typeof(Safebooru), "sky", "clouds", AvailableStatus.Ok)]
-        [InlineData(typeof(Sakugabooru), "kantai_collection", "explosions", AvailableStatus.Ok)]
-        [InlineData(typeof(SankakuComplex), "sky", "clouds", AvailableStatus.Ok)]
-        [InlineData(typeof(Xbooru), "sky", "clouds", AvailableStatus.Ok)]
-        [InlineData(typeof(Yandere), "landscape", "wallpaper", AvailableStatus.Ok)]
-        public async Task CheckRelated(Type t, string tag, string related, AvailableStatus isAvailable)
+        [InlineData(typeof(Atfbooru), "kantai_collection", "anchor_symbol")]
+        [InlineData(typeof(DanbooruDonmai), "kantai_collection", "serafuku")]
+        [InlineData(typeof(E621), "sky", "cloud")]
+        [InlineData(typeof(E926), "sky", "cloud")]
+        [InlineData(typeof(Furrybooru), "sky", "cloud")]
+        [InlineData(typeof(Gelbooru), "sky", "cloud")]
+        [InlineData(typeof(Konachan), "sky", "clouds")]
+        [InlineData(typeof(Lolibooru), "sky", "cloud")]
+        [InlineData(typeof(Realbooru), "sky", "clouds")]
+        [InlineData(typeof(Rule34), "sky", "clouds")]
+        [InlineData(typeof(Safebooru), "sky", "clouds")]
+        [InlineData(typeof(Sakugabooru), "kantai_collection", "explosions")]
+        [InlineData(typeof(SankakuComplex), "sky", "clouds")]
+        [InlineData(typeof(Xbooru), "sky", "clouds")]
+        [InlineData(typeof(Yandere), "landscape", "wallpaper")]
+        [InlineData(typeof(Pixiv), "TODO", "TODO")]
+        public async Task CheckRelated(Type t, string tag, string related)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             if (!booru.HasRelatedAPI())
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetRelatedAsync(tag); });
-            else if (isAvailable == AvailableStatus.AuthRequired)
-                await Assert.ThrowsAsync<Search.AuthentificationRequired>(async delegate () { await booru.GetRelatedAsync(tag); });
             else
             {
                 Search.Related.SearchResult[] result = await booru.GetRelatedAsync(tag);
@@ -893,6 +912,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        [InlineData(typeof(Pixiv))]
         public async Task CheckRelatedFail(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -918,6 +938,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), 48)]
         [InlineData(typeof(Xbooru), 740157)]
         [InlineData(typeof(Yandere), 619494)]
+        [InlineData(typeof(Pixiv), 0)]
         public async Task CheckComment(Type t, int id)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -943,6 +964,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        [InlineData(typeof(Pixiv))]
         public async Task CheckCommentFail(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -968,6 +990,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        [InlineData(typeof(Pixiv))]
         public async Task CheckLastComment(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
@@ -993,6 +1016,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        [InlineData(typeof(Pixiv))]
         public async Task CheckAvailable(Type t)
         {
             await ((ABooru)Activator.CreateInstance(t)).CheckAvailabilityAsync();
@@ -1020,6 +1044,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), "exposed_pussy")]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
+        [InlineData(typeof(Pixiv))]
         public async Task CheckIsSafe(Type t, string explicitTag = "pussy")
         {
             ABooru b = (ABooru)Activator.CreateInstance(t);

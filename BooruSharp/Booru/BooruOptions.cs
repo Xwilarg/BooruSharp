@@ -11,6 +11,9 @@
         noPostByMd5,
         noPostById,
         noLastComments,
+        noPostCount,
+        noMultipleRandom,
+        noFavorite,
         // API using XML instead of JSON
         commentApiXml,
         tagApiXml,

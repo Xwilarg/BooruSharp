@@ -10,7 +10,7 @@ namespace BooruSharp.Booru
         /// Get the wiki of a tag
         /// </summary>
         /// <param name="query">The tag you want to get the wiki</param>
-        public async Task<Search.Wiki.SearchResult> GetWikiAsync(string query)
+        public virtual async Task<Search.Wiki.SearchResult> GetWikiAsync(string query)
         {
             if (_wikiUrl == null)
                 throw new Search.FeatureUnavailable();
