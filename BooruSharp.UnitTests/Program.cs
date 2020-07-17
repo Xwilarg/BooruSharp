@@ -53,12 +53,12 @@ namespace BooruSharp.UnitTests
 
         public static async Task CheckGetRandom(ABooru booru, string s1)
         {
-            Search.Post.SearchResult result = await booru.GetRandomImageAsync(s1);
+            Search.Post.SearchResult result = await booru.GetRandomPostAsync(s1);
             Search.Post.SearchResult result2;
             int i = 0;
             do
             {
-                result2 = await booru.GetRandomImageAsync(s1);
+                result2 = await booru.GetRandomPostAsync(s1);
                 i++;
             } while (result.id == result2.id && i < 5);
             Assert.NotEqual(result.id, result2.id);
@@ -67,13 +67,13 @@ namespace BooruSharp.UnitTests
 
         public static async Task CheckGetRandoms(ABooru booru, string s1)
         {
-            Search.Post.SearchResult[] result = await booru.GetRandomImagesAsync(5, s1);
+            Search.Post.SearchResult[] result = await booru.GetRandomPostsAsync(5, s1);
             Assert.NotEmpty(result);
             Search.Post.SearchResult[] result2;
             int i = 0;
             do
             {
-                result2 = await booru.GetRandomImagesAsync(5, s1);
+                result2 = await booru.GetRandomPostsAsync(5, s1);
                 Assert.NotEmpty(result2);
                 i++;
             } while (result[0].id == result2[0].id && i < 5);
@@ -154,7 +154,7 @@ namespace BooruSharp.UnitTests
         public async Task UnsetFavoriteError(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
-            var id = (await booru.GetRandomImageAsync()).id;
+            var id = (await booru.GetRandomPostAsync()).id;
             booru.Auth = new BooruAuth("AAA", "AAA");
             if (!booru.HasFavoriteAPI())
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.RemoveFavoriteAsync(id); });
@@ -237,7 +237,7 @@ namespace BooruSharp.UnitTests
         public async Task SetFavorite(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
-            var id = (await booru.GetRandomImageAsync()).id;
+            var id = (await booru.GetRandomPostAsync()).id;
             string name = t.ToString().ToUpper().Split('.').Last();
             booru.Auth = new BooruAuth(Environment.GetEnvironmentVariable(name + "_USER_ID"), Environment.GetEnvironmentVariable(name + "_PASSWORD_HASH"));
             if (!booru.HasFavoriteAPI())
@@ -270,15 +270,15 @@ namespace BooruSharp.UnitTests
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             if (!booru.HasPostByMd5API())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetImageByMd5Async("0"); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetPostByMd5Async("0"); });
             else
             {
                 Search.Post.SearchResult result1;
                 do
                 {
-                    result1 = await booru.GetRandomImageAsync();
+                    result1 = await booru.GetRandomPostAsync();
                 } while (result1.md5 == null);
-                var result2 = await booru.GetImageByMd5Async(result1.md5);
+                var result2 = await booru.GetPostByMd5Async(result1.md5);
                 Assert.Equal(result1.id, result2.id);
             }
         }
@@ -304,11 +304,11 @@ namespace BooruSharp.UnitTests
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             if (!booru.HasPostByIdAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetImageByIdAsync(0); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetPostByIdAsync(0); });
             else
             {
-                Search.Post.SearchResult result1 = await booru.GetRandomImageAsync();
-                var result2 = await booru.GetImageByIdAsync(result1.id);
+                Search.Post.SearchResult result1 = await booru.GetRandomPostAsync();
+                var result2 = await booru.GetPostByIdAsync(result1.id);
                 Assert.Equal(result1.id, result2.id);
             }
         }
@@ -334,7 +334,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             Search.Post.SearchResult[] results;
-            results = await booru.GetLastImagesAsync();
+            results = await booru.GetLastPostsAsync();
             Assert.NotInRange(results.Length, 0, 1);
             Assert.NotEqual(results[0].id, results[1].id);
         }
@@ -360,7 +360,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             Search.Post.SearchResult[] results;
-            results = await booru.GetLastImagesAsync(tag, tag2);
+            results = await booru.GetLastPostsAsync(tag, tag2);
             Assert.NotInRange(results.Length, 0, 1);
             Assert.NotEqual(results[0].id, results[1].id);
             foreach (var elem in results)
@@ -473,10 +473,10 @@ namespace BooruSharp.UnitTests
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             if (!booru.HasMultipleRandomAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetRandomImagesAsync(int.MaxValue, tag); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetRandomPostsAsync(int.MaxValue, tag); });
             else
             {
-                var result = await booru.GetRandomImagesAsync(int.MaxValue, tag);
+                var result = await booru.GetRandomPostsAsync(int.MaxValue, tag);
                 Assert.NotEmpty(result);
                 foreach (var r in result)
                     Assert.Contains(tag, r.tags);
@@ -512,7 +512,7 @@ namespace BooruSharp.UnitTests
         public async Task GetRandom2Tags(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "school_swimsuit")
         {
             var booru = (ABooru)Activator.CreateInstance(t);
-            var result = await booru.GetRandomImageAsync(tag, tag2);
+            var result = await booru.GetRandomPostAsync(tag, tag2);
             Assert.Contains(tag, result.tags);
             Assert.Contains(tag2, result.tags);
         }
@@ -538,10 +538,10 @@ namespace BooruSharp.UnitTests
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             if (!booru.HasMultipleRandomAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetRandomImagesAsync(5, tag, tag2); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetRandomPostsAsync(5, tag, tag2); });
             else
             {
-                var result = await booru.GetRandomImagesAsync(5, tag, tag2);
+                var result = await booru.GetRandomPostsAsync(5, tag, tag2);
                 Assert.NotEmpty(result);
                 foreach (var r in result)
                 {
@@ -576,12 +576,12 @@ namespace BooruSharp.UnitTests
             {
                 await Assert.ThrowsAsync<Search.TooManyTags>(async () =>
                 {
-                    result = await booru.GetRandomImageAsync(tag, tag2, tag3);
+                    result = await booru.GetRandomPostAsync(tag, tag2, tag3);
                 });
             }
             else
             {
-                result = await booru.GetRandomImageAsync(tag, tag2, tag3);
+                result = await booru.GetRandomPostAsync(tag, tag2, tag3);
                 Assert.Contains(tag, result.tags);
                 Assert.Contains(tag2, result.tags);
                 Assert.Contains(tag3, result.tags);
@@ -613,14 +613,14 @@ namespace BooruSharp.UnitTests
             {
                 await Assert.ThrowsAsync<Search.TooManyTags>(async () =>
                 {
-                    result = await booru.GetRandomImagesAsync(5, tag, tag2, tag3);
+                    result = await booru.GetRandomPostsAsync(5, tag, tag2, tag3);
                 });
             }
             else if (!booru.HasMultipleRandomAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetRandomImagesAsync(5, tag, tag2, tag3); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetRandomPostsAsync(5, tag, tag2, tag3); });
             else
             {
-                result = await booru.GetRandomImagesAsync(5, tag, tag2, tag3);
+                result = await booru.GetRandomPostsAsync(5, tag, tag2, tag3);
                 foreach (var r in result)
                 {
                     Assert.Contains(tag, r.tags);
@@ -649,7 +649,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Pixiv))]
         public async Task GetRandomFail(Type t)
         {
-            await Assert.ThrowsAsync<Search.InvalidTags>(() => ((ABooru)Activator.CreateInstance(t)).GetRandomImageAsync("someInvalidTag"));
+            await Assert.ThrowsAsync<Search.InvalidTags>(() => ((ABooru)Activator.CreateInstance(t)).GetRandomPostAsync("someInvalidTag"));
         }
 
         [Theory]
@@ -673,9 +673,9 @@ namespace BooruSharp.UnitTests
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             if (!booru.HasMultipleRandomAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetRandomImagesAsync(5, "someInvalidTag"); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetRandomPostsAsync(5, "someInvalidTag"); });
             else
-                Assert.Empty(await booru.GetRandomImagesAsync(5, "someInvalidTag"));
+                Assert.Empty(await booru.GetRandomPostsAsync(5, "someInvalidTag"));
         }
 
         [Theory]
@@ -1052,7 +1052,7 @@ namespace BooruSharp.UnitTests
             bool foundExplicit = false;
             for (int i = 0; i < 10; i++)
             {
-                var image = await b.GetRandomImageAsync(explicitTag);
+                var image = await b.GetRandomPostAsync(explicitTag);
                 if (isSafe && image.fileUrl != null)
                     Assert.NotEqual(Search.Post.Rating.Explicit, image.rating);
                 if (image.rating == Search.Post.Rating.Explicit)

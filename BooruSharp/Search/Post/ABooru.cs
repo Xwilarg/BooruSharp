@@ -12,7 +12,7 @@ namespace BooruSharp.Booru
         /// Search for a post using its MD5
         /// </summary>
         /// <param name="md5">The MD5 of the post to search</param>
-        public virtual async Task<Search.Post.SearchResult> GetImageByMd5Async(string md5)
+        public virtual async Task<Search.Post.SearchResult> GetPostByMd5Async(string md5)
         {
             if (!HasPostByMd5API())
                 throw new Search.FeatureUnavailable();
@@ -24,7 +24,7 @@ namespace BooruSharp.Booru
         /// </summary>
         /// <param name="id">The ID fo the post to search</param>
         /// <returns></returns>
-        public virtual async Task<Search.Post.SearchResult> GetImageByIdAsync(int id)
+        public virtual async Task<Search.Post.SearchResult> GetPostByIdAsync(int id)
         {
             if (!HasPostByIdAPI())
                 throw new Search.FeatureUnavailable();
@@ -52,7 +52,7 @@ namespace BooruSharp.Booru
         /// Search for a random post
         /// </summary>
         /// <param name="tagsArg">Tags that must be contained in the post (optional)</param>
-        public virtual async Task<Search.Post.SearchResult> GetRandomImageAsync(params string[] tagsArg)
+        public virtual async Task<Search.Post.SearchResult> GetRandomPostAsync(params string[] tagsArg)
         {
             tagsArg = tagsArg.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
             if (tagsArg.Length > 2 && _noMoreThan2Tags)
@@ -83,7 +83,7 @@ namespace BooruSharp.Booru
         /// </summary>
         /// <param name="limit">Number of posts you want to get</param>
         /// <param name="tagsArg">Tags that must be contained in the post (optional)</param>
-        public virtual async Task<Search.Post.SearchResult[]> GetRandomImagesAsync(int limit, params string[] tagsArg)
+        public virtual async Task<Search.Post.SearchResult[]> GetRandomPostsAsync(int limit, params string[] tagsArg)
         {
             tagsArg = tagsArg.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
             if (tagsArg.Length > 2 && _noMoreThan2Tags)
@@ -93,7 +93,7 @@ namespace BooruSharp.Booru
                 if (this is Template.Gelbooru)
                     return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tagsArg)) + "+sort:random");
                 if (limit == 1)
-                    return new[] { await GetRandomImageAsync(tagsArg) };
+                    return new[] { await GetRandomPostAsync(tagsArg) };
                 throw new Search.FeatureUnavailable();
             }
             if (_noMoreThan2Tags)
@@ -105,7 +105,7 @@ namespace BooruSharp.Booru
         /// Get the latest posts of the website
         /// </summary>
         /// <param name="tagsArg">Tags that must be contained in the post (optional)</param>
-        public virtual async Task<Search.Post.SearchResult[]> GetLastImagesAsync(params string[] tagsArg)
+        public virtual async Task<Search.Post.SearchResult[]> GetLastPostsAsync(params string[] tagsArg)
         {
             return GetPostsSearchResult(JsonConvert.DeserializeObject(await GetJsonAsync(CreateUrl(_imageUrl, TagsToString(tagsArg)))));
         }

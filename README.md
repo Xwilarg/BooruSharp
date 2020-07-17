@@ -62,7 +62,7 @@ Transition from 1.4.8 to 2.0.0: https://boorusharp.zirk.eu/transition.html
 Random image:
 ```Cs
 BooruSharp.Booru.Gelbooru booru = new BooruSharp.Booru.Gelbooru();
-BooruSharp.Search.Post.SearchResult result = await booru.GetRandomImageAsync("hibiki_(kantai_collection)", "school_swimsuit");
+BooruSharp.Search.Post.SearchResult result = await booru.GetRandomPostAsync("hibiki_(kantai_collection)", "school_swimsuit");
 
 Console.WriteLine("Image preview URL: " + result.previewUrl.AbsoluteUri + Environment.NewLine +
                   "Image URL: " + result.fileUrl.AbsoluteUri + Environment.NewLine +
@@ -73,7 +73,7 @@ Console.WriteLine("Image preview URL: " + result.previewUrl.AbsoluteUri + Enviro
 Get many random images at once:
 ```Cs
 BooruSharp.Booru.SankakuComplex booru = new BooruSharp.Booru.SankakuComplex();
-BooruSharp.Search.Post.SearchResult[] result = await booru.GetRandomImagesAsync(10, "ifrit_(arknights)", "silence_(arknights)");
+BooruSharp.Search.Post.SearchResult[] result = await booru.GetRandomPostsAsync(10, "ifrit_(arknights)", "silence_(arknights)");
 
 Console.WriteLine(string.Join(Environment.NewLine, result.Select(x => "Random Image: " + x.fileUrl)));
 ```
