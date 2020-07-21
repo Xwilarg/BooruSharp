@@ -1,5 +1,5 @@
 ﻿using BooruSharp.Booru;
-using BooruSharp.Other;
+using BooruSharp.Others;
 using System;
 using System.Linq;
 using System.Net;

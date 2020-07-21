@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooruSharp", "BooruSharp\Bo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooruSharp.UnitTests", "BooruSharp.UnitTests\BooruSharp.UnitTests.csproj", "{2E4A5791-6CF6-4514-AED0-EBA120B6DE83}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooruSharp.Other", "BooruSharp.Other\BooruSharp.Other.csproj", "{A151CEAA-A3F9-4948-8B2D-321C36E9BB7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooruSharp.Others", "BooruSharp.Other\BooruSharp.Others.csproj", "{A151CEAA-A3F9-4948-8B2D-321C36E9BB7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
