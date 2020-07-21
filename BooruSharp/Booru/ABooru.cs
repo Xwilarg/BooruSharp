@@ -92,8 +92,6 @@ namespace BooruSharp.Booru
         /// <exception cref="HttpRequestException">Service not available</exception>
         public async Task CheckAvailabilityAsync()
         {
-            if (HttpClient == null)
-                HttpClient = new HttpClient();
             HttpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
             await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Head, _imageUrl));
         }
@@ -174,8 +172,6 @@ namespace BooruSharp.Booru
 
         private async Task<string> GetJsonAsync(string url)
         {
-            if (HttpClient == null)
-                HttpClient = new HttpClient();
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
             HttpResponseMessage msg = await HttpClient.GetAsync(url);
@@ -193,8 +189,6 @@ namespace BooruSharp.Booru
 
         private async Task<string> GetRandomIdAsync(string tags)
         {
-            if (HttpClient == null)
-                HttpClient = new HttpClient();
             HttpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
             HttpResponseMessage msg = await HttpClient.GetAsync(_baseUrl + "/" + "index.php?page=post&s=random&tags=" + tags);
             return HttpUtility.ParseQueryString(msg.RequestMessage.RequestUri.Query).Get("id");
@@ -230,7 +224,14 @@ namespace BooruSharp.Booru
         }
 
         public BooruAuth Auth { set; get; } // Authentification
-        public HttpClient HttpClient { set; private get; }
+        public HttpClient HttpClient { set { _client = value; }
+            private get
+            {
+                if (_client == null)
+                    _client = new HttpClient();
+                return _client;
+            } }
+        private HttpClient _client;
         protected readonly string _baseUrl; // Booru's base URL
         private readonly string _imageUrlXml, _imageUrl, _tagUrl, _wikiUrl, _relatedUrl, _commentUrl; // URLs for differents endpoints
         private readonly bool _searchTagById, _searchLastComment, _searchPostByMd5, _searchPostById, _postCount, _multipleRandom, _addFavorite; // Differents services availability
