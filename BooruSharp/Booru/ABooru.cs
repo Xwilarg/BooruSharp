@@ -225,7 +225,7 @@ namespace BooruSharp.Booru
 
         public BooruAuth Auth { set; get; } // Authentification
         public HttpClient HttpClient { set { _client = value; }
-            private get
+            protected get
             {
                 if (_client == null)
                     _client = new HttpClient();
