@@ -61,16 +61,7 @@ namespace BooruSharp.Others
                 throw new InvalidTags();
             JToken json = (JToken)JsonConvert.DeserializeObject(await http.Content.ReadAsStringAsync());
             JToken post = json["illust"];
-            List<string> tags = post["tags"].Select(x => x["name"].Value<string>()).ToList();
-            bool isNsfw = false;
-            if (tags.Contains("R-18"))
-            {
-                isNsfw = true;
-                tags.Remove("R-18");
-            }
-            return new SearchResult(new Uri(post["image_urls"]["large"].Value<string>()), new Uri(post["image_urls"]["medium"].Value<string>()), new Uri("https://www.pixiv.net/en/artworks/" + id),
-                isNsfw ? Rating.Explicit : Rating.Safe, tags.ToArray(), id, null, post["height"].Value<int>(), post["width"].Value<int>(), null, null, post["create_date"].Value<DateTime>(),
-                null, post["total_bookmarks"].Value<int>(), null);
+            return ParseSearchResult(post);
         }
 
         public override Task<SearchResult> GetRandomPostAsync(params string[] tagsArg)
@@ -88,9 +79,40 @@ namespace BooruSharp.Others
             throw new NotImplementedException();
         }
 
-        public override Task<SearchResult[]> GetLastPostsAsync(params string[] tagsArg)
+        public override async Task<SearchResult[]> GetLastPostsAsync(params string[] tagsArg)
         {
-            throw new NotImplementedException();
+            if (tagsArg.Length == 0)
+                throw new InvalidTags();
+            var request = new HttpRequestMessage(new HttpMethod("GET"), _baseUrl + "/v1/search/illust?word=" + string.Join("%20", tagsArg.Select(x => Uri.EscapeDataString(x))).ToLower());
+            request.Headers.Add("Authorization", "Bearer " + _token);
+            var http = await HttpClient.SendAsync(request);
+            if (http.StatusCode == HttpStatusCode.NotFound)
+                throw new InvalidTags();
+            JToken json = (JToken)JsonConvert.DeserializeObject(await http.Content.ReadAsStringAsync());
+            Console.WriteLine(json);
+            return ParseSearchResults((JArray)json["illusts"]);
+        }
+
+        private SearchResult[] ParseSearchResults(JArray array)
+        {
+            List<SearchResult> results = new List<SearchResult>();
+            foreach (JToken token in array)
+                results.Add(ParseSearchResult(token));
+            return results.ToArray();
+        }
+
+        private SearchResult ParseSearchResult(JToken post)
+        {
+            List<string> tags = post["tags"].Select(x => x["name"].Value<string>()).ToList();
+            bool isNsfw = false;
+            if (tags.Contains("R-18"))
+            {
+                isNsfw = true;
+                tags.Remove("R-18");
+            }
+            return new SearchResult(new Uri(post["image_urls"]["large"].Value<string>()), new Uri(post["image_urls"]["medium"].Value<string>()), new Uri("https://www.pixiv.net/en/artworks/" + post["id"].Value<int>()),
+                isNsfw ? Rating.Explicit : Rating.Safe, tags.ToArray(), post["id"].Value<int>(), null, post["height"].Value<int>(), post["width"].Value<int>(), null, null, post["create_date"].Value<DateTime>(),
+                null, post["total_bookmarks"].Value<int>(), null);
         }
 
         private string _token;
