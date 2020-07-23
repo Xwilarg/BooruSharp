@@ -89,7 +89,6 @@ namespace BooruSharp.Others
             if (http.StatusCode == HttpStatusCode.NotFound)
                 throw new InvalidTags();
             JToken json = (JToken)JsonConvert.DeserializeObject(await http.Content.ReadAsStringAsync());
-            Console.WriteLine(json);
             return ParseSearchResults((JArray)json["illusts"]);
         }
 
