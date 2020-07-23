@@ -430,7 +430,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Pixiv))]
         public async Task GetRandom(Type t, string tag = "school_swimsuit")
         {
-            await General.CheckGetRandom((ABooru)Activator.CreateInstance(t), tag);
+            await General.CheckGetRandom(General.CreateBooru(t), tag);
         }
 
         [Theory]
@@ -656,7 +656,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Pixiv))]
         public async Task GetRandomFail(Type t)
         {
-            await Assert.ThrowsAsync<Search.InvalidTags>(() => ((ABooru)Activator.CreateInstance(t)).GetRandomPostAsync("someInvalidTag"));
+            await Assert.ThrowsAsync<Search.InvalidTags>(() => General.CreateBooru(t).GetRandomPostAsync("someInvalidTag"));
         }
 
         [Theory]
@@ -1026,7 +1026,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Pixiv))]
         public async Task CheckAvailable(Type t)
         {
-            await ((ABooru)Activator.CreateInstance(t)).CheckAvailabilityAsync();
+            await General.CreateBooru(t).CheckAvailabilityAsync();
         }
 
         /*[Theory]
