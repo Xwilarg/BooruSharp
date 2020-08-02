@@ -245,7 +245,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = General.CreateBooru(t);
             if (!booru.HasFavoriteAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.AddFavoriteAsync(id); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.AddFavoriteAsync(10); });
             else
             {
                 var id = (await booru.GetRandomPostAsync()).id;
