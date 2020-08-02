@@ -1048,7 +1048,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Rule34))]
         [InlineData(typeof(Safebooru), "breast")]
         [InlineData(typeof(Sakugabooru), "another")]
-        [InlineData(typeof(SankakuComplex), "exposed_pussy")]
+        [InlineData(typeof(SankakuComplex), "pussy_line")]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv), "おまんこ")]
