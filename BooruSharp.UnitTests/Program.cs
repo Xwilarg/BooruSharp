@@ -244,13 +244,14 @@ namespace BooruSharp.UnitTests
         public async Task SetFavorite(Type t)
         {
             var booru = General.CreateBooru(t);
-            var id = (await booru.GetRandomPostAsync()).id;
-            string name = t.ToString().ToUpper().Split('.').Last();
-            booru.Auth = new BooruAuth(Environment.GetEnvironmentVariable(name + "_USER_ID"), Environment.GetEnvironmentVariable(name + "_PASSWORD_HASH"));
             if (!booru.HasFavoriteAPI())
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.AddFavoriteAsync(id); });
             else
             {
+                var id = (await booru.GetRandomPostAsync()).id;
+                string name = t.ToString().ToUpper().Split('.').Last();
+                booru.Auth = new BooruAuth(Environment.GetEnvironmentVariable(name + "_USER_ID"), Environment.GetEnvironmentVariable(name + "_PASSWORD_HASH"));
+
                 await booru.AddFavoriteAsync(id);
                 await booru.RemoveFavoriteAsync(id);
             }

@@ -2,6 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.0-beta</Version>
+    <Authors>Xwilarg</Authors>
+    <Company>Xwilarg</Company>
+    <Description>Extension of BooruSharp to handle non-booru websites and handle them like the others</Description>
+    <Copyright>GNU General Public License v3.0</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/Xwilarg/BooruSharp</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Xwilarg/BooruSharp</RepositoryUrl>
+    <RepositoryType>Library</RepositoryType>
+    <PackageTags>Image C-Sharp Pixiv</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,6 +21,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BooruSharp\BooruSharp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

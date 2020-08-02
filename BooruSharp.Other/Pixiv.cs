@@ -17,8 +17,8 @@ namespace BooruSharp.Others
     public class Pixiv : ABooru
     {
         public Pixiv(string username, string password) : base("app-api.pixiv.net", (UrlFormat)(-1),
-            new[] { BooruOptions.noComment, BooruOptions.noFavorite, BooruOptions.noLastComments, BooruOptions.noMultipleRandom, BooruOptions.noPostById,
-                BooruOptions.noPostByMd5, BooruOptions.noPostCount, BooruOptions.noRelated, BooruOptions.noTagById, BooruOptions.noWiki })
+            new[] { BooruOptions.noComment, BooruOptions.noFavorite, BooruOptions.noLastComments, BooruOptions.noMultipleRandom,
+                BooruOptions.noPostByMd5, BooruOptions.noRelated, BooruOptions.noTagById, BooruOptions.noWiki })
         {
             var request = new HttpRequestMessage(new HttpMethod("POST"), "https://oauth.secure.pixiv.net/auth/token");
             string time = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss+00:00");
