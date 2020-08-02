@@ -1,5 +1,8 @@
-[![NuGet](https://img.shields.io/nuget/v/BooruSharp.svg)](https://www.nuget.org/packages/BooruSharp/)
-![Nuget](https://img.shields.io/nuget/dt/BooruSharp)
+| BooruSharp     | BooruSharp.Others  |
+| -------------- | ------------ |
+| [![NuGet](https://img.shields.io/nuget/v/BooruSharp.svg)](https://www.nuget.org/packages/BooruSharp/) | [![NuGet](https://img.shields.io/nuget/v/BooruSharp.Others.svg)](https://www.nuget.org/packages/BooruSharp.Others/) |
+| ![Nuget](https://img.shields.io/nuget/dt/BooruSharp) | ![Nuget](https://img.shields.io/nuget/dt/BooruSharp.Others) |
+
 | GitHub CI      | AppVeyor CI  |
 | -------------- | ------------ |
 | [![Build (GitHub CI)](https://github.com/Xwilarg/BooruSharp/workflows/.NET%20Core/badge.svg)](https://github.com/Xwilarg/BooruSharp/actions) | [![Build (AppVeyor)](https://ci.appveyor.com/api/projects/status/n503kvx6b0a45bcv/branch/master?svg=true)](https://ci.appveyor.com/project/Xwilarg/boorusharp/branch/master) |
@@ -13,6 +16,9 @@ BooruSharp is a C# library to browse Booru websites easily<br/>
 You can download it from [NuGet](https://www.nuget.org/packages/BooruSharp):
 ```
 Install-Package BooruSharp
+```
+```
+Install-Package BooruSharp.Others
 ```
 BooruSharp currently handle the following websites:
  - booru.allthefallen.moe
@@ -30,6 +36,9 @@ BooruSharp currently handle the following websites:
  - beta.sankakucomplex.com
  - xbooru.com
  - yande.re
+ 
+BooruSharp.Others allow to handle more websites that aren't booru:
+ - pixiv.net
 
 # Documentation
 
