@@ -69,6 +69,8 @@ namespace BooruSharp.Others
             if (tagsArg.Length == 0)
                 throw new InvalidTags();
             int max = await GetPostCountAsync(tagsArg);
+            if (max == 0)
+                throw new InvalidTags();
             if (max > 5000)
                 max = 5000;
             int id = _random.Next(1, max + 1);
@@ -89,7 +91,7 @@ namespace BooruSharp.Others
         public override async Task<int> GetPostCountAsync(params string[] tagsArg)
         {
             if (tagsArg.Length == 0)
-                throw new InvalidTags();
+                throw new ArgumentException("You must provide at least one tag.");
             var request = new HttpRequestMessage(new HttpMethod("GET"), "https://www.pixiv.net/ajax/search/artworks/" + string.Join("%20", tagsArg.Select(x => Uri.EscapeDataString(x))).ToLower());
             var http = await HttpClient.SendAsync(request);
             JToken json = (JToken)JsonConvert.DeserializeObject(await http.Content.ReadAsStringAsync());
@@ -99,7 +101,7 @@ namespace BooruSharp.Others
         public override async Task<SearchResult[]> GetLastPostsAsync(params string[] tagsArg)
         {
             if (tagsArg.Length == 0)
-                throw new InvalidTags();
+                throw new ArgumentException("You must provide at least one tag.");
             var request = new HttpRequestMessage(new HttpMethod("GET"), _baseUrl + "/v1/search/illust?word=" + string.Join("%20", tagsArg.Select(x => Uri.EscapeDataString(x))).ToLower());
             request.Headers.Add("Authorization", "Bearer " + _token);
             var http = await HttpClient.SendAsync(request);
