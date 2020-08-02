@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Threading.Tasks;
 
 namespace BooruSharp.Booru
@@ -14,6 +15,8 @@ namespace BooruSharp.Booru
         {
             if (_wikiUrl == null)
                 throw new Search.FeatureUnavailable();
+            if (query == null)
+                throw new ArgumentNullException("Argument can't be null");
             var jsons = (JArray)JsonConvert.DeserializeObject(await GetJsonAsync(CreateUrl(_wikiUrl, SearchArg(_format == UrlFormat.danbooru ? "title" : "query") + query)));
             int i = 0;
             foreach (var json in jsons)

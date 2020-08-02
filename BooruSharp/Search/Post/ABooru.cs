@@ -16,6 +16,8 @@ namespace BooruSharp.Booru
         {
             if (!HasPostByMd5API())
                 throw new Search.FeatureUnavailable();
+            if (md5 == null)
+                throw new ArgumentNullException("Argument can't be null");
             return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", "md5=" + md5));
         }
 
@@ -41,7 +43,8 @@ namespace BooruSharp.Booru
         {
             if (_imageUrlXml == null)
                 throw new Search.FeatureUnavailable();
-            tagsArg = tagsArg.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+            if (tagsArg == null) tagsArg = new string[0];
+            else tagsArg = tagsArg.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
             if (tagsArg.Length > 2 && _noMoreThan2Tags)
                 throw new Search.TooManyTags();
             XmlDocument xml = await GetXmlAsync(CreateUrl(_imageUrlXml, "limit=1", TagsToString(tagsArg)));
@@ -54,7 +57,8 @@ namespace BooruSharp.Booru
         /// <param name="tagsArg">Tags that must be contained in the post (optional)</param>
         public virtual async Task<Search.Post.SearchResult> GetRandomPostAsync(params string[] tagsArg)
         {
-            tagsArg = tagsArg.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+            if (tagsArg == null) tagsArg = new string[0];
+            else tagsArg = tagsArg.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
             if (tagsArg.Length > 2 && _noMoreThan2Tags)
                 throw new Search.TooManyTags();
             if (_format == UrlFormat.indexPhp)
@@ -85,7 +89,8 @@ namespace BooruSharp.Booru
         /// <param name="tagsArg">Tags that must be contained in the post (optional)</param>
         public virtual async Task<Search.Post.SearchResult[]> GetRandomPostsAsync(int limit, params string[] tagsArg)
         {
-            tagsArg = tagsArg.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+            if (tagsArg == null) tagsArg = new string[0];
+            else tagsArg = tagsArg.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
             if (tagsArg.Length > 2 && _noMoreThan2Tags)
                 throw new Search.TooManyTags();
             if (_format == UrlFormat.indexPhp)

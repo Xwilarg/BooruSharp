@@ -17,6 +17,8 @@ namespace BooruSharp.Booru
         {
             if (!HasTagByIdAPI())
                 throw new Search.FeatureUnavailable();
+            if (name == null)
+                throw new ArgumentNullException("Argument can't be null");
             return await SearchTagAsync(name, null);
         }
 
@@ -39,6 +41,8 @@ namespace BooruSharp.Booru
         {
             if (!HasTagByIdAPI())
                 throw new Search.FeatureUnavailable();
+            if (name == null)
+                throw new ArgumentNullException("Argument can't be null");
             List<string> urlTags = new List<string>() { SearchArg("name") + name };
             if (_format == UrlFormat.postIndexJson)
                 urlTags.Add("limit=0");

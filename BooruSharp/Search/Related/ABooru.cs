@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,6 +16,8 @@ namespace BooruSharp.Booru
         {
             if (_relatedUrl == null)
                 throw new Search.FeatureUnavailable();
+            if (tag == null)
+                throw new ArgumentNullException("Argument can't be null");
             var content = (JObject)JsonConvert.DeserializeObject(await GetJsonAsync(CreateUrl(_relatedUrl, (_format == UrlFormat.danbooru ? "query" : "tags") + "=" + tag)));
             var jsons = (JArray)(_format == UrlFormat.danbooru ? content["tags"] : content[content.Properties().First().Name]);
             Search.Related.SearchResult[] results = new Search.Related.SearchResult[jsons.Count];
