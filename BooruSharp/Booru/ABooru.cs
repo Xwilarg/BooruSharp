@@ -240,6 +240,6 @@ namespace BooruSharp.Booru
         private readonly bool _maxLimit; // Have max limit (used by Gelbooru)
         private readonly UrlFormat _format; // URL format
         protected readonly bool _useHttp; // Use http instead of https
-        private static readonly Random _random = new Random();
+        protected static readonly Random _random = new Random();
     }
 }

@@ -64,9 +64,21 @@ namespace BooruSharp.Others
             return ParseSearchResult(post);
         }
 
-        public override Task<SearchResult> GetRandomPostAsync(params string[] tagsArg)
+        public override async Task<SearchResult> GetRandomPostAsync(params string[] tagsArg)
         {
-            throw new NotImplementedException();
+            if (tagsArg.Length == 0)
+                throw new InvalidTags();
+            int max = await GetPostCountAsync(tagsArg);
+            if (max > 5000)
+                max = 5000;
+            int id = _random.Next(1, max + 1);
+            var request = new HttpRequestMessage(new HttpMethod("GET"), _baseUrl + "/v1/search/illust?word=" + string.Join("%20", tagsArg.Select(x => Uri.EscapeDataString(x))).ToLower() + "&offset=" + id);
+            request.Headers.Add("Authorization", "Bearer " + _token);
+            var http = await HttpClient.SendAsync(request);
+            if (http.StatusCode == HttpStatusCode.NotFound)
+                throw new InvalidTags();
+            JToken json = (JToken)JsonConvert.DeserializeObject(await http.Content.ReadAsStringAsync());
+            return ParseSearchResult(((JArray)json["illusts"])[0]);
         }
 
         public override Task<SearchResult[]> GetRandomPostsAsync(int limit, params string[] tagsArg)
@@ -74,9 +86,14 @@ namespace BooruSharp.Others
             throw new NotImplementedException();
         }
 
-        public override Task<int> GetPostCountAsync(params string[] tagsArg)
+        public override async Task<int> GetPostCountAsync(params string[] tagsArg)
         {
-            throw new NotImplementedException();
+            if (tagsArg.Length == 0)
+                throw new InvalidTags();
+            var request = new HttpRequestMessage(new HttpMethod("GET"), "https://www.pixiv.net/ajax/search/artworks/" + string.Join("%20", tagsArg.Select(x => Uri.EscapeDataString(x))).ToLower());
+            var http = await HttpClient.SendAsync(request);
+            JToken json = (JToken)JsonConvert.DeserializeObject(await http.Content.ReadAsStringAsync());
+            return json["body"]["illustManga"]["total"].Value<int>();
         }
 
         public override async Task<SearchResult[]> GetLastPostsAsync(params string[] tagsArg)
