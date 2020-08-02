@@ -362,7 +362,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru), "kantai_collection")]
         [InlineData(typeof(Yandere), "kantai_collection", "swimsuits")]
-        [InlineData(typeof(Pixiv))]
+        [InlineData(typeof(Pixiv), "響(艦隊これくしょん)", "水着")]
         public async Task GetLastPostsWithTags(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "swimsuit")
         {
             var booru = General.CreateBooru(t);
@@ -393,7 +393,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru), "kantai_collection")]
         [InlineData(typeof(Yandere), "kantai_collection", "swimsuits")]
-        [InlineData(typeof(Pixiv))]
+        [InlineData(typeof(Pixiv), "響(艦隊これくしょん)", "水着")]
         public async Task GetPostCount(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "swimsuit")
         {
             var booru = General.CreateBooru(t);
@@ -427,7 +427,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), "small_breasts")]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv))]
+        [InlineData(typeof(Pixiv), "スク水")]
         public async Task GetRandom(Type t, string tag = "school_swimsuit")
         {
             await General.CheckGetRandom(General.CreateBooru(t), tag);
@@ -449,7 +449,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), "small_breasts")]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv))]
+        [InlineData(typeof(Pixiv), "スク水")]
         public async Task GetRandoms(Type t, string tag = "school_swimsuit")
         {
             var booru = General.CreateBooru(t);
@@ -475,7 +475,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), "small_breasts")]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv))]
+        [InlineData(typeof(Pixiv), "スク水")]
         public async Task GetRandomsTooMany(Type t, string tag = "school_swimsuit")
         {
             var booru = General.CreateBooru(t);
@@ -515,7 +515,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), "hibiki_(kantai_collection)", "old_school_swimsuit")]
         [InlineData(typeof(Xbooru), "kantai_collection")]
         [InlineData(typeof(Yandere), "kantai_collection")]
-        [InlineData(typeof(Pixiv))]
+        [InlineData(typeof(Pixiv), "響(艦隊これくしょん)", "スク水")]
         public async Task GetRandom2Tags(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "school_swimsuit")
         {
             var booru = General.CreateBooru(t);
@@ -540,7 +540,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), "hibiki_(kantai_collection)", "old_school_swimsuit")]
         [InlineData(typeof(Xbooru), "kantai_collection")]
         [InlineData(typeof(Yandere), "kantai_collection")]
-        [InlineData(typeof(Pixiv))]
+        [InlineData(typeof(Pixiv), "響(艦隊これくしょん)", "スク水")]
         public async Task GetRandoms2Tags(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "school_swimsuit")
         {
             var booru = General.CreateBooru(t);
@@ -574,7 +574,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), false, "ocean", "loli", "swimsuit")]
         [InlineData(typeof(Xbooru), false, "ocean", "small_breasts")]
         [InlineData(typeof(Yandere), false, "see_through", "loli", "swimsuits")]
-        [InlineData(typeof(Pixiv), false)]
+        [InlineData(typeof(Pixiv), false, "水", "貧乳", "水着")]
         public async Task TooManyTags(Type t, bool throwError, string tag = "ocean", string tag2 = "flat_chest", string tag3 = "swimsuit")
         {
             var booru = General.CreateBooru(t);
@@ -611,7 +611,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), false, "ocean", "loli", "swimsuit")]
         [InlineData(typeof(Xbooru), false, "ocean", "small_breasts")]
         [InlineData(typeof(Yandere), false, "see_through", "loli", "swimsuits")]
-        [InlineData(typeof(Pixiv), false)]
+        [InlineData(typeof(Pixiv), false, "水", "貧乳", "水着")]
         public async Task TooManyTagsMany(Type t, bool throwError, string tag = "ocean", string tag2 = "flat_chest", string tag3 = "swimsuit")
         {
             var booru = General.CreateBooru(t);
@@ -701,7 +701,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv))]
+        [InlineData(typeof(Pixiv), "パンスト")]
         public async Task CheckTag(Type t, string tag = "pantyhose")
         {
             var booru = General.CreateBooru(t);
@@ -753,7 +753,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), "hibiki", false)]
         [InlineData(typeof(Xbooru), "hibiki", true)]
         [InlineData(typeof(Yandere), "hibiki", false)]
-        [InlineData(typeof(Pixiv), "hibiki", false)]
+        [InlineData(typeof(Pixiv), "艦隊こ", false)]
         public async Task CheckTags(Type t, string tag, bool onlyOnce)
         {
             var booru = General.CreateBooru(t);
@@ -781,7 +781,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), "kantai_collection", 458437)]
         [InlineData(typeof(Xbooru), "hibiki_(kantai_collection)", 151883)]
         [InlineData(typeof(Yandere), "hibiki_(kancolle)", 98153)]
-        [InlineData(typeof(Pixiv), "TODO", 0)]
+        [InlineData(typeof(Pixiv), "響(艦隊これくしょん)", -1)]
         public async Task TagId(Type t, string tag, int tagId)
         {
             var booru = General.CreateBooru(t);
@@ -833,7 +833,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), "blush", 826)]
         [InlineData(typeof(Xbooru), "futanari", -1)]
         [InlineData(typeof(Yandere), "futanari", 167)]
-        [InlineData(typeof(Pixiv), "TODO", 0)]
+        [InlineData(typeof(Pixiv), "ふたなり", -1)]
         public async Task CheckWiki(Type t, string tag, int? id)
         {
             var booru = General.CreateBooru(t);
@@ -889,7 +889,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), "sky", "clouds")]
         [InlineData(typeof(Xbooru), "sky", "clouds")]
         [InlineData(typeof(Yandere), "landscape", "wallpaper")]
-        [InlineData(typeof(Pixiv), "TODO", "TODO")]
+        [InlineData(typeof(Pixiv), "空", "雲")]
         public async Task CheckRelated(Type t, string tag, string related)
         {
             var booru = General.CreateBooru(t);
@@ -945,7 +945,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), 48)]
         [InlineData(typeof(Xbooru), 740157)]
         [InlineData(typeof(Yandere), 619494)]
-        [InlineData(typeof(Pixiv), 0)]
+        [InlineData(typeof(Pixiv), -1)]
         public async Task CheckComment(Type t, int id)
         {
             var booru = General.CreateBooru(t);
@@ -1051,7 +1051,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), "exposed_pussy")]
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv))]
+        [InlineData(typeof(Pixiv), "おまんこ")]
         public async Task CheckIsSafe(Type t, string explicitTag = "pussy")
         {
             ABooru b = General.CreateBooru(t);
