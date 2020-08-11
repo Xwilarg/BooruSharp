@@ -79,7 +79,6 @@ namespace BooruSharp.Others
             };
             request.Content = new FormUrlEncodedContent(data);
             var http = HttpClient.SendAsync(request).GetAwaiter().GetResult();
-            Console.WriteLine(http.StatusCode);
             if (http.StatusCode == HttpStatusCode.BadRequest)
                 throw new AuthentificationInvalid();
             JToken json = (JToken)JsonConvert.DeserializeObject(http.Content.ReadAsStringAsync().GetAwaiter().GetResult());
