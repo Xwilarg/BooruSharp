@@ -17,9 +17,13 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.101
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
     - name: Install dependencies
       run: dotnet restore
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test || true
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
