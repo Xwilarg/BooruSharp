@@ -16,9 +16,10 @@ namespace BooruSharp.Others
 {
     public class Pixiv : ABooru
     {
-        public Pixiv(string username, string password) : base("app-api.pixiv.net", (UrlFormat)(-1),
-            new[] { BooruOptions.noComment, BooruOptions.noFavorite, BooruOptions.noLastComments, BooruOptions.noMultipleRandom,
-                BooruOptions.noPostByMd5, BooruOptions.noRelated, BooruOptions.noTagById, BooruOptions.noWiki })
+        private static BooruOptions[] _options = new[] { BooruOptions.noComment, BooruOptions.noFavorite, BooruOptions.noLastComments, BooruOptions.noMultipleRandom,
+                BooruOptions.noPostByMd5, BooruOptions.noRelated, BooruOptions.noTagById, BooruOptions.noWiki };
+
+        public Pixiv(string username, string password) : base("app-api.pixiv.net", (UrlFormat)(-1), _options)
         {
             var request = new HttpRequestMessage(new HttpMethod("POST"), "https://oauth.secure.pixiv.net/auth/token");
             string time = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss+00:00");
@@ -47,6 +48,43 @@ namespace BooruSharp.Others
                 throw new AuthentificationInvalid();
             JToken json = (JToken)JsonConvert.DeserializeObject(http.Content.ReadAsStringAsync().GetAwaiter().GetResult());
             _token = json["response"]["access_token"].Value<string>();
+            RefreshToken = json["response"]["refresh_token"].Value<string>();
+            _refreshTime = DateTime.Now.AddSeconds(json["response"]["expires_in"].Value<int>());
+        }
+
+        public Pixiv(string refreshToken) : base("app-api.pixiv.net", (UrlFormat)(-1), _options)
+        {
+            RefreshToken = refreshToken;
+            UpdateToken();
+        }
+
+        private void CheckUpdateToken()
+        {
+            if (DateTime.Now > _refreshTime)
+                UpdateToken();
+        }
+
+        private void UpdateToken()
+        {
+            var request = new HttpRequestMessage(new HttpMethod("POST"), "https://oauth.secure.pixiv.net/auth/token");
+            string time = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss+00:00");
+            request.Headers.Add("User-Agent", "Mozilla/5.0 BooruSharp");
+            Dictionary<string, string> data = new Dictionary<string, string>
+            {
+                { "get_secure_url", "1" },
+                { "client_id", _clientID },
+                { "client_secret", _clientSecret},
+                { "grant_type", "refresh_token" },
+                { "refresh_token", RefreshToken }
+            };
+            request.Content = new FormUrlEncodedContent(data);
+            var http = HttpClient.SendAsync(request).GetAwaiter().GetResult();
+            Console.WriteLine(http.StatusCode);
+            if (http.StatusCode == HttpStatusCode.BadRequest)
+                throw new AuthentificationInvalid();
+            JToken json = (JToken)JsonConvert.DeserializeObject(http.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+            _token = json["response"]["access_token"].Value<string>();
+            _refreshTime = DateTime.Now.AddSeconds(json["response"]["expires_in"].Value<int>());
         }
 
         public override bool IsSafe()
@@ -54,6 +92,7 @@ namespace BooruSharp.Others
 
         public override async Task<SearchResult> GetPostByIdAsync(int id)
         {
+            CheckUpdateToken();
             var request = new HttpRequestMessage(new HttpMethod("GET"), _baseUrl + "/v1/illust/detail?illust_id=" + id);
             request.Headers.Add("Authorization", "Bearer " + _token);
             var http = await HttpClient.SendAsync(request);
@@ -68,7 +107,7 @@ namespace BooruSharp.Others
         {
             if (tagsArg.Length == 0)
                 throw new InvalidTags();
-            int max = await GetPostCountAsync(tagsArg);
+            int max = await GetPostCountAsync(tagsArg); // GetPostCountAsync already check for UpdateToken
             if (max == 0)
                 throw new InvalidTags();
             if (max > 5000)
@@ -92,6 +131,7 @@ namespace BooruSharp.Others
         {
             if (tagsArg.Length == 0)
                 throw new ArgumentException("You must provide at least one tag.");
+            CheckUpdateToken();
             var request = new HttpRequestMessage(new HttpMethod("GET"), "https://www.pixiv.net/ajax/search/artworks/" + string.Join("%20", tagsArg.Select(x => Uri.EscapeDataString(x))).ToLower());
             var http = await HttpClient.SendAsync(request);
             JToken json = (JToken)JsonConvert.DeserializeObject(await http.Content.ReadAsStringAsync());
@@ -102,6 +142,7 @@ namespace BooruSharp.Others
         {
             if (tagsArg.Length == 0)
                 throw new ArgumentException("You must provide at least one tag.");
+            CheckUpdateToken();
             var request = new HttpRequestMessage(new HttpMethod("GET"), _baseUrl + "/v1/search/illust?word=" + string.Join("%20", tagsArg.Select(x => Uri.EscapeDataString(x))).ToLower());
             request.Headers.Add("Authorization", "Bearer " + _token);
             var http = await HttpClient.SendAsync(request);
@@ -134,6 +175,8 @@ namespace BooruSharp.Others
         }
 
         private string _token;
+        public string RefreshToken { private set; get; }
+        private DateTime _refreshTime;
 
         // https://github.com/tobiichiamane/pixivcs/blob/master/PixivBaseAPI.cs#L61-L63
         private string _clientID = "MOBrBDS8blbauoSck0ZfDbtuzpyT";
