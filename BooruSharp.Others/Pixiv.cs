@@ -47,7 +47,7 @@ namespace BooruSharp.Others
             if (http.StatusCode == HttpStatusCode.BadRequest)
                 throw new AuthentificationInvalid();
             JToken json = (JToken)JsonConvert.DeserializeObject(http.Content.ReadAsStringAsync().GetAwaiter().GetResult());
-            _token = json["response"]["access_token"].Value<string>();
+            Token = json["response"]["access_token"].Value<string>();
             RefreshToken = json["response"]["refresh_token"].Value<string>();
             _refreshTime = DateTime.Now.AddSeconds(json["response"]["expires_in"].Value<int>());
         }
@@ -58,7 +58,7 @@ namespace BooruSharp.Others
             UpdateToken();
         }
 
-        private void CheckUpdateToken()
+        public void CheckUpdateToken()
         {
             if (DateTime.Now > _refreshTime)
                 UpdateToken();
@@ -82,7 +82,7 @@ namespace BooruSharp.Others
             if (http.StatusCode == HttpStatusCode.BadRequest)
                 throw new AuthentificationInvalid();
             JToken json = (JToken)JsonConvert.DeserializeObject(http.Content.ReadAsStringAsync().GetAwaiter().GetResult());
-            _token = json["response"]["access_token"].Value<string>();
+            Token = json["response"]["access_token"].Value<string>();
             _refreshTime = DateTime.Now.AddSeconds(json["response"]["expires_in"].Value<int>());
         }
 
@@ -93,7 +93,7 @@ namespace BooruSharp.Others
         {
             CheckUpdateToken();
             var request = new HttpRequestMessage(new HttpMethod("GET"), _baseUrl + "/v1/illust/detail?illust_id=" + id);
-            request.Headers.Add("Authorization", "Bearer " + _token);
+            request.Headers.Add("Authorization", "Bearer " + Token);
             var http = await HttpClient.SendAsync(request);
             if (http.StatusCode == HttpStatusCode.NotFound)
                 throw new InvalidTags();
@@ -113,7 +113,7 @@ namespace BooruSharp.Others
                 max = 5000;
             int id = _random.Next(1, max + 1);
             var request = new HttpRequestMessage(new HttpMethod("GET"), _baseUrl + "/v1/search/illust?word=" + string.Join("%20", tagsArg.Select(x => Uri.EscapeDataString(x))).ToLower() + "&offset=" + id);
-            request.Headers.Add("Authorization", "Bearer " + _token);
+            request.Headers.Add("Authorization", "Bearer " + Token);
             var http = await HttpClient.SendAsync(request);
             if (http.StatusCode == HttpStatusCode.NotFound)
                 throw new InvalidTags();
@@ -143,7 +143,7 @@ namespace BooruSharp.Others
                 throw new ArgumentException("You must provide at least one tag.");
             CheckUpdateToken();
             var request = new HttpRequestMessage(new HttpMethod("GET"), _baseUrl + "/v1/search/illust?word=" + string.Join("%20", tagsArg.Select(x => Uri.EscapeDataString(x))).ToLower());
-            request.Headers.Add("Authorization", "Bearer " + _token);
+            request.Headers.Add("Authorization", "Bearer " + Token);
             var http = await HttpClient.SendAsync(request);
             if (http.StatusCode == HttpStatusCode.NotFound)
                 throw new InvalidTags();
@@ -173,7 +173,7 @@ namespace BooruSharp.Others
                 null, post["total_bookmarks"].Value<int>(), null);
         }
 
-        private string _token;
+        public string Token { private set; get; }
         public string RefreshToken { private set; get; }
         private DateTime _refreshTime;
 
