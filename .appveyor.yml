@@ -2,12 +2,9 @@ image: Visual Studio 2019
 
 before_build:
 - nuget restore
-- dotnet tool install --global Codecov.Tool
 
 build:
   project: BooruSharp.sln
 
 test_script:
 - dotnet test --collect:"XPlat Code Coverage" || true
-- sh copy_coverage.sh
-- codecov -f "coverage.xml"
