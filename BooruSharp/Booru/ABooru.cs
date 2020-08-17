@@ -92,7 +92,6 @@ namespace BooruSharp.Booru
         /// <exception cref="HttpRequestException">Service not available</exception>
         public async Task CheckAvailabilityAsync()
         {
-            HttpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
             await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Head, _imageUrl));
         }
 
@@ -178,7 +177,6 @@ namespace BooruSharp.Booru
         private async Task<string> GetJsonAsync(string url)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            HttpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
             HttpResponseMessage msg = await HttpClient.GetAsync(url);
             if (msg.StatusCode == HttpStatusCode.Forbidden)
                 throw new AuthentificationRequired();
@@ -194,7 +192,6 @@ namespace BooruSharp.Booru
 
         private async Task<string> GetRandomIdAsync(string tags)
         {
-            HttpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
             HttpResponseMessage msg = await HttpClient.GetAsync(_baseUrl + "/" + "index.php?page=post&s=random&tags=" + tags);
             return HttpUtility.ParseQueryString(msg.RequestMessage.RequestUri.Query).Get("id");
         }
@@ -249,13 +246,22 @@ namespace BooruSharp.Booru
         }
 
         public BooruAuth Auth { set; get; } // Authentification
-        public HttpClient HttpClient { set { _client = value; }
+        public HttpClient HttpClient
+        {
             protected get
             {
-                if (_client == null)
-                    _client = new HttpClient();
-                return _client;
-            } }
+                // If library consumers didn't provide their own client,
+                // initialize and use singleton client instead.
+                return _client ?? _lazyClient.Value;
+            }
+            set
+            {
+                _client = value;
+                // Add our User-Agent if _client isn't null.
+                _client?.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
+            }
+        }
+
         private HttpClient _client;
         protected readonly string _baseUrl; // Booru's base URL
         private readonly string _imageUrlXml, _imageUrl, _tagUrl, _wikiUrl, _relatedUrl, _commentUrl; // URLs for differents endpoints
@@ -268,5 +274,11 @@ namespace BooruSharp.Booru
         protected static readonly Random _random = new Random();
         // TODO: remove this message after removing obsolete constructors.
         protected const string _deprecationMessage = "Use a contructor that accepts single BooruOptions parameter. Use | (bitwise OR) operator to combine multiple options.";
+        private static readonly Lazy<HttpClient> _lazyClient = new Lazy<HttpClient>(() =>
+        {
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
+            return client;
+        });
     }
 }
