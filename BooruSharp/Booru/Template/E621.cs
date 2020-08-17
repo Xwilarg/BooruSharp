@@ -7,7 +7,11 @@ namespace BooruSharp.Booru.Template
 {
     public abstract class E621 : ABooru
     {
-        public E621(string url, params BooruOptions[] options) : base(url, UrlFormat.danbooru, CombineArrays(options, new[] { BooruOptions.noWiki, BooruOptions.noRelated, BooruOptions.noComment, BooruOptions.noTagById, BooruOptions.noPostById, BooruOptions.noPostCount, BooruOptions.noFavorite }))
+        [Obsolete(_deprecationMessage)]
+        public E621(string url, params BooruOptions[] options) : this(url, MergeOptions(options))
+        { }
+
+        public E621(string url, BooruOptions options = BooruOptions.none) : base(url, UrlFormat.danbooru, options | BooruOptions.noWiki | BooruOptions.noRelated | BooruOptions.noComment | BooruOptions.noTagById | BooruOptions.noPostById | BooruOptions.noPostCount | BooruOptions.noFavorite)
         { }
 
         protected internal override JToken ParseFirstPostSearchResult(object json)

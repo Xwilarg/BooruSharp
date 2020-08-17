@@ -96,12 +96,17 @@ namespace BooruSharp.Booru
             await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Head, _imageUrl));
         }
 
+        [Obsolete(_deprecationMessage)]
         protected ABooru(string baseUrl, UrlFormat format, params BooruOptions[] options)
+            : this(baseUrl, format, MergeOptions(options))
+        { }
+
+        protected ABooru(string baseUrl, UrlFormat format, BooruOptions options)
         {
             Auth = null;
             HttpClient = null;
-            _useHttp = options.Contains(BooruOptions.useHttp);
-            _maxLimit = options.Contains(BooruOptions.limitOf20000);
+            _useHttp = options.HasFlag(BooruOptions.useHttp);
+            _maxLimit = options.HasFlag(BooruOptions.limitOf20000);
             _baseUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl;
             _format = format;
             _imageUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "post");
@@ -111,30 +116,30 @@ namespace BooruSharp.Booru
                 _imageUrlXml = _imageUrl.Replace("index.json", "index.xml");
             else
                 _imageUrlXml = null;
-            _searchTagById = !options.Contains(BooruOptions.noTagById);
-            _searchLastComment = !options.Contains(BooruOptions.noLastComments);
-            _searchPostByMd5 = !options.Contains(BooruOptions.noPostByMd5);
-            _searchPostById = !options.Contains(BooruOptions.noPostById);
-            _postCount = !options.Contains(BooruOptions.noPostCount);
-            _multipleRandom = !options.Contains(BooruOptions.noMultipleRandom);
-            _addFavorite = !options.Contains(BooruOptions.noFavorite);
-            _tagUseXml = options.Contains(BooruOptions.tagApiXml);
-            _commentUseXml = options.Contains(BooruOptions.commentApiXml);
-            _noMoreThan2Tags = options.Contains(BooruOptions.noMoreThan2Tags);
+            _searchTagById = !options.HasFlag(BooruOptions.noTagById);
+            _searchLastComment = !options.HasFlag(BooruOptions.noLastComments);
+            _searchPostByMd5 = !options.HasFlag(BooruOptions.noPostByMd5);
+            _searchPostById = !options.HasFlag(BooruOptions.noPostById);
+            _postCount = !options.HasFlag(BooruOptions.noPostCount);
+            _multipleRandom = !options.HasFlag(BooruOptions.noMultipleRandom);
+            _addFavorite = !options.HasFlag(BooruOptions.noFavorite);
+            _tagUseXml = options.HasFlag(BooruOptions.tagApiXml);
+            _commentUseXml = options.HasFlag(BooruOptions.commentApiXml);
+            _noMoreThan2Tags = options.HasFlag(BooruOptions.noMoreThan2Tags);
             _tagUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag");
-            if (options.Contains(BooruOptions.noWiki))
+            if (options.HasFlag(BooruOptions.noWiki))
                 _wikiUrl = null;
             else if (format == UrlFormat.danbooru)
                 _wikiUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "wiki_page");
             else
                 _wikiUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "wiki");
-            if (options.Contains(BooruOptions.noRelated))
+            if (options.HasFlag(BooruOptions.noRelated))
                 _relatedUrl = null;
             else if (format == UrlFormat.danbooru)
                 _relatedUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "related_tag");
             else
                 _relatedUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag", "related");
-            if (options.Contains(BooruOptions.noComment))
+            if (options.HasFlag(BooruOptions.noComment))
             {
                 _commentUrl = null;
                 _searchLastComment = false;
@@ -215,12 +220,32 @@ namespace BooruSharp.Booru
                 return value + "=";
         }
 
+        [Obsolete]
+        // TODO: remove this method after removing obsolete constructors.
         protected internal static BooruOptions[] CombineArrays(BooruOptions[] arr1, BooruOptions[] arr2)
         {
             var arr = new BooruOptions[arr1.Length + arr2.Length];
             arr1.CopyTo(arr, 0);
             arr2.CopyTo(arr, arr1.Length);
             return arr;
+        }
+
+        /// <summary>
+        /// Method for compatibility with old API. Combines multiple options
+        /// into singular <see cref="BooruOptions"/> object.
+        /// </summary>
+        // TODO: remove this method after removing obsolete constructors.
+        [Obsolete("This method will be removed in the future version of the API.")]
+        protected static BooruOptions MergeOptions(BooruOptions[] array)
+        {
+            BooruOptions options = BooruOptions.none;
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                options |= array[i];
+            }
+
+            return options;
         }
 
         public BooruAuth Auth { set; get; } // Authentification
@@ -241,5 +266,7 @@ namespace BooruSharp.Booru
         private readonly UrlFormat _format; // URL format
         protected readonly bool _useHttp; // Use http instead of https
         protected static readonly Random _random = new Random();
+        // TODO: remove this message after removing obsolete constructors.
+        protected const string _deprecationMessage = "Use a contructor that accepts single BooruOptions parameter. Use | (bitwise OR) operator to combine multiple options.";
     }
 }

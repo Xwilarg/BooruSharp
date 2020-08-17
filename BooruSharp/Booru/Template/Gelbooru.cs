@@ -15,8 +15,12 @@ namespace BooruSharp.Booru.Template
     /// </summary>
     public abstract class Gelbooru : ABooru
     {
-        public Gelbooru(string url, params BooruOptions[] options) : base(url, UrlFormat.indexPhp, CombineArrays(options,
-            new[] { BooruOptions.noWiki, BooruOptions.noRelated, BooruOptions.limitOf20000, BooruOptions.commentApiXml }))
+        [Obsolete(_deprecationMessage)]
+        public Gelbooru(string url, params BooruOptions[] options) : this(url, MergeOptions(options))
+        { }
+
+        public Gelbooru(string url, BooruOptions options = BooruOptions.none) : base(url, UrlFormat.indexPhp, options |
+             BooruOptions.noWiki | BooruOptions.noRelated | BooruOptions.limitOf20000 | BooruOptions.commentApiXml)
         { }
 
         public async override Task<Search.Post.SearchResult> GetPostByMd5Async(string md5)

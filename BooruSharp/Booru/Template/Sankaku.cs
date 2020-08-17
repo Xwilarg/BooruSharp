@@ -7,7 +7,11 @@ namespace BooruSharp.Booru.Template
 {
     public abstract class Sankaku : ABooru
     {
-        public Sankaku(string url, params BooruOptions[] options) : base(url, UrlFormat.sankaku, CombineArrays(options, new[] { BooruOptions.noRelated, BooruOptions.noPostByMd5, BooruOptions.noPostById, BooruOptions.noPostCount, BooruOptions.noFavorite }))
+        [Obsolete(_deprecationMessage)]
+        public Sankaku(string url, params BooruOptions[] options) : this(url, MergeOptions(options))
+        { }
+
+        public Sankaku(string url, BooruOptions options = BooruOptions.none) : base(url, UrlFormat.sankaku, options | BooruOptions.noRelated | BooruOptions.noPostByMd5 | BooruOptions.noPostById | BooruOptions.noPostCount | BooruOptions.noFavorite)
         { }
 
         protected internal override JToken ParseFirstPostSearchResult(object json)
