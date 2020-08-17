@@ -11,8 +11,12 @@ namespace BooruSharp.Booru.Template
     /// </summary>
     public abstract class Gelbooru02 : ABooru
     {
-        public Gelbooru02(string url, params BooruOptions[] options) : base(url, UrlFormat.indexPhp, CombineArrays(options,
-            new[] { BooruOptions.noRelated, BooruOptions.noWiki, BooruOptions.noPostByMd5, BooruOptions.commentApiXml, BooruOptions.tagApiXml, BooruOptions.noMultipleRandom }))
+        [Obsolete(_deprecationMessage)]
+        public Gelbooru02(string url, params BooruOptions[] options) : this(url, MergeOptions(options))
+        { }
+
+        public Gelbooru02(string url, BooruOptions options = BooruOptions.none) : base(url, UrlFormat.indexPhp, options |
+             BooruOptions.noRelated | BooruOptions.noWiki | BooruOptions.noPostByMd5 | BooruOptions.commentApiXml | BooruOptions.tagApiXml | BooruOptions.noMultipleRandom)
         {
             this.url = url;
         }
