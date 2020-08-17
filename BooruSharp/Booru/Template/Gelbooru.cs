@@ -2,7 +2,10 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Web;
 using System.Xml;
 
 namespace BooruSharp.Booru.Template
@@ -13,8 +16,33 @@ namespace BooruSharp.Booru.Template
     public abstract class Gelbooru : ABooru
     {
         public Gelbooru(string url, params BooruOptions[] options) : base(url, UrlFormat.indexPhp, CombineArrays(options,
-            new[] { BooruOptions.noWiki, BooruOptions.noRelated, BooruOptions.limitOf20000, BooruOptions.noPostByMd5, BooruOptions.commentApiXml }))
+            new[] { BooruOptions.noWiki, BooruOptions.noRelated, BooruOptions.limitOf20000, BooruOptions.commentApiXml }))
         { }
+
+        public async override Task<Search.Post.SearchResult> GetPostByMd5Async(string md5)
+        {
+            if (md5 == null)
+                throw new ArgumentNullException("Argument can't be null");
+
+            // Create a URL that will redirect us to Gelbooru post URL containing post ID.
+            string url = $"{_baseUrl}/index.php?page=post&s=list&md5={md5}";
+
+            using (HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Head, url))
+            using (HttpResponseMessage response = await HttpClient.SendAsync(message))
+            {
+                response.EnsureSuccessStatusCode();
+
+                // If HEAD message doesn't actually redirect us then ID here will be null...
+                Uri redirectUri = response.RequestMessage.RequestUri;
+                string id = HttpUtility.ParseQueryString(redirectUri.Query).Get("id");
+
+                // ...which will then throw NullReferenceException here.
+                // Danbooru does the same when it doesn't find a post with matching MD5,
+                // though I suppose throwing exception with more meaningful message
+                // would be better.
+                return await GetPostByIdAsync(int.Parse(id));
+            }
+        }
 
         protected internal override JToken ParseFirstPostSearchResult(object json)
         {
