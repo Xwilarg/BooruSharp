@@ -129,6 +129,13 @@ namespace BooruSharp.UnitTests
                     return false;
             return true;
         }
+
+        public static async Task<Search.Post.SearchResult> GetRandomPost(ABooru booru)
+        {
+            if (booru is Pixiv)
+                return await booru.GetRandomPostAsync("スク水"); // Pixiv doesn't handle random search with no tag
+            return await booru.GetRandomPostAsync();
+        }
     }
 
     public class BooruTests
