@@ -14,7 +14,7 @@ namespace BooruSharp.Booru
         /// <param name="tag">The tag that the others must be related to</param>
         public virtual async Task<Search.Related.SearchResult[]> GetRelatedAsync(string tag)
         {
-            if (_relatedUrl == null)
+            if (!HasRelatedAPI())
                 throw new Search.FeatureUnavailable();
             if (tag == null)
                 throw new ArgumentNullException("Argument can't be null");

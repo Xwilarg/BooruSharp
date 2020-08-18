@@ -28,7 +28,7 @@ namespace BooruSharp.Booru
         /// <param name="name">The ID of the tag you want information about</param>
         public virtual async Task<Search.Tag.SearchResult> GetTagAsync(int id)
         {
-            if (!_searchTagById)
+            if (!HasTagByIdAPI())
                 throw new Search.FeatureUnavailable();
             return await SearchTagAsync(null, id);
         }
@@ -48,7 +48,7 @@ namespace BooruSharp.Booru
                 urlTags.Add("limit=0");
             string url = CreateUrl(_tagUrl, urlTags.ToArray());
             Search.Tag.SearchResult[] results;
-            if (_tagUseXml)
+            if (TagsUseXml())
             {
                 var xml = await GetXmlAsync(url);
                 results = new Search.Tag.SearchResult[xml.LastChild.ChildNodes.Count];
@@ -83,7 +83,7 @@ namespace BooruSharp.Booru
             if (_format == UrlFormat.postIndexJson)
                 urlTags.Add("limit=0");
             string url = CreateUrl(_tagUrl, urlTags.ToArray());
-            if (_tagUseXml)
+            if (TagsUseXml())
             {
                 var xml = await GetXmlAsync(url);
                 foreach (var node in xml.LastChild)

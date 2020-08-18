@@ -35,56 +35,85 @@ namespace BooruSharp.Booru
         protected internal virtual Search.Wiki.SearchResult GetWikiSearchResult(object json)
             => throw new FeatureUnavailable();
 
+        // TODO: these flag checking methods need to be turned into properties at some point,
+        // using properties for these kind of checks expresses the intent behind them more clearly.
+
         /// <summary>
         /// Is it possible to search for related tag with this booru
         /// </summary>
         public bool HasRelatedAPI()
-            => _relatedUrl != null;
+            => !_options.HasFlag(BooruOptions.noRelated);
         /// <summary>
         /// Is it possible to search for wiki with this booru
         /// </summary>
         public bool HasWikiAPI()
-            => _wikiUrl != null;
+            => !_options.HasFlag(BooruOptions.noWiki);
         /// <summary>
         /// Is it possible to search for comments with this booru
         /// </summary>
         public bool HasCommentAPI()
-            => _commentUrl != null;
+            => !_options.HasFlag(BooruOptions.noComment);
         /// <summary>
         /// Is it possible to search for tags using their ID with this booru
         /// </summary>
         public bool HasTagByIdAPI()
-            => _searchTagById;
+            => !_options.HasFlag(BooruOptions.noTagById);
         /// <summary>
         /// Is it possible to search for the lasts comments this booru
         /// </summary>
         public bool HasSearchLastComment()
-            => _searchLastComment;
+            // As a failsafe also check for the availability of comment API.
+            => HasCommentAPI() && !_options.HasFlag(BooruOptions.noLastComments);
         /// <summary>
         /// Is it possible to search for posts using their MD5 with this booru
         /// </summary>
-        public bool HasPostByMd5API()
-            => _searchPostByMd5;
+        public bool HasPostByMd5API() 
+            => !_options.HasFlag(BooruOptions.noPostByMd5);
         /// <summary>
         /// Is it possible to search for posts using their ID with this booru
         /// </summary>
-        public bool HasPostByIdAPI()
-            => _searchPostById;
+        public bool HasPostByIdAPI() 
+            => !_options.HasFlag(BooruOptions.noPostById);
         /// <summary>
         /// Is it possible to get the total number of post
         /// </summary>
-        public bool HasPostCountAPI()
-            => _postCount;
+        public bool HasPostCountAPI() 
+            => !_options.HasFlag(BooruOptions.noPostCount);
         /// <summary>
         /// Is it possible to get multiple random images
         /// </summary>
         public bool HasMultipleRandomAPI()
-            => _multipleRandom;
+            => !_options.HasFlag(BooruOptions.noMultipleRandom);
         /// <summary>
         /// Is it possible to add/remove favorites
         /// </summary>
         public bool HasFavoriteAPI()
-            => _addFavorite;
+            => !_options.HasFlag(BooruOptions.noFavorite);
+
+        /// <summary>
+        /// Gets a value indicating whether http:// scheme is used instead of https://.
+        /// </summary>
+        protected bool UsesHttp() => _options.HasFlag(BooruOptions.useHttp);
+
+        /// <summary>
+        /// Gets a value indicating whether tags API uses XML instead of JSON.
+        /// </summary>
+        protected bool TagsUseXml() => _options.HasFlag(BooruOptions.tagApiXml);
+
+        /// <summary>
+        /// Gets a value indicating whether comments API uses XML instead of JSON.
+        /// </summary>
+        protected bool CommentsUseXml() => _options.HasFlag(BooruOptions.commentApiXml);
+
+        /// <summary>
+        /// Gets a value indicating whether searching by more than two tags at once is not allowed.
+        /// </summary>
+        protected bool NoMoreThanTwoTags() => _options.HasFlag(BooruOptions.noMoreThan2Tags);
+
+        /// <summary>
+        /// Gets a value indicating whether the max limit of posts per search is increased (used by Gelbooru).
+        /// </summary>
+        protected bool SearchIncreasedPostLimit() => _options.HasFlag(BooruOptions.limitOf20000);
 
         /// <summary>
         /// Is the booru available
@@ -104,47 +133,37 @@ namespace BooruSharp.Booru
         {
             Auth = null;
             HttpClient = null;
-            _useHttp = options.HasFlag(BooruOptions.useHttp);
-            _maxLimit = options.HasFlag(BooruOptions.limitOf20000);
-            _baseUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl;
+            _options = options;
+
+            bool useHttp = UsesHttp(); // Cache returned value for faster access.
+#pragma warning disable CS0618 // Keep this field for a while in case someone still depends on it.
+            _useHttp = useHttp;
+#pragma warning restore CS0618
+            _baseUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl;
             _format = format;
-            _imageUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "post");
+            _imageUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "post");
+
             if (_format == UrlFormat.indexPhp)
                 _imageUrlXml = _imageUrl.Replace("json=1", "json=0");
             else if (_format == UrlFormat.postIndexJson)
                 _imageUrlXml = _imageUrl.Replace("index.json", "index.xml");
             else
                 _imageUrlXml = null;
-            _searchTagById = !options.HasFlag(BooruOptions.noTagById);
-            _searchLastComment = !options.HasFlag(BooruOptions.noLastComments);
-            _searchPostByMd5 = !options.HasFlag(BooruOptions.noPostByMd5);
-            _searchPostById = !options.HasFlag(BooruOptions.noPostById);
-            _postCount = !options.HasFlag(BooruOptions.noPostCount);
-            _multipleRandom = !options.HasFlag(BooruOptions.noMultipleRandom);
-            _addFavorite = !options.HasFlag(BooruOptions.noFavorite);
-            _tagUseXml = options.HasFlag(BooruOptions.tagApiXml);
-            _commentUseXml = options.HasFlag(BooruOptions.commentApiXml);
-            _noMoreThan2Tags = options.HasFlag(BooruOptions.noMoreThan2Tags);
-            _tagUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag");
-            if (options.HasFlag(BooruOptions.noWiki))
-                _wikiUrl = null;
-            else if (format == UrlFormat.danbooru)
-                _wikiUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "wiki_page");
-            else
-                _wikiUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "wiki");
-            if (options.HasFlag(BooruOptions.noRelated))
-                _relatedUrl = null;
-            else if (format == UrlFormat.danbooru)
-                _relatedUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "related_tag");
-            else
-                _relatedUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag", "related");
-            if (options.HasFlag(BooruOptions.noComment))
-            {
-                _commentUrl = null;
-                _searchLastComment = false;
-            }
-            else
-                _commentUrl = "http" + (_useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "comment");
+
+            _tagUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag");
+
+            if (HasWikiAPI())
+                _wikiUrl = format == UrlFormat.danbooru
+                    ? "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "wiki_page")
+                    : "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "wiki");
+
+            if (HasRelatedAPI())
+                _relatedUrl = format == UrlFormat.danbooru
+                    ? "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "related_tag")
+                    : "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag", "related");
+
+            if (HasCommentAPI())
+                _commentUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "comment");
         }
 
         protected internal static string GetUrl(UrlFormat format, string query, string squery = "index")
@@ -269,11 +288,10 @@ namespace BooruSharp.Booru
         private HttpClient _client;
         protected readonly string _baseUrl; // Booru's base URL
         private readonly string _imageUrlXml, _imageUrl, _tagUrl, _wikiUrl, _relatedUrl, _commentUrl; // URLs for differents endpoints
-        private readonly bool _searchTagById, _searchLastComment, _searchPostByMd5, _searchPostById, _postCount, _multipleRandom, _addFavorite; // Differents services availability
-        private readonly bool _tagUseXml, _commentUseXml; // APIs use XML instead of JSON
-        private readonly bool _noMoreThan2Tags;
-        private readonly bool _maxLimit; // Have max limit (used by Gelbooru)
+        // All options are stored in a bit field and can be retrieved using related methods/properties.
+        private readonly BooruOptions _options;
         private readonly UrlFormat _format; // URL format
+        [Obsolete("UsesHttp property should be used instead.")]
         protected readonly bool _useHttp; // Use http instead of https
         protected static readonly Random _random = new Random();
         // TODO: remove this message after removing obsolete constructors.
