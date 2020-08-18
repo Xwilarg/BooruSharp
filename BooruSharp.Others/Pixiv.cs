@@ -166,11 +166,6 @@ namespace BooruSharp.Others
             return ParseSearchResult(((JArray)json["illusts"])[0]);
         }
 
-        public override Task<SearchResult[]> GetRandomPostsAsync(int limit, params string[] tagsArg)
-        {
-            throw new NotImplementedException();
-        }
-
         public override async Task<int> GetPostCountAsync(params string[] tagsArg)
         {
             if (AccessToken == null)

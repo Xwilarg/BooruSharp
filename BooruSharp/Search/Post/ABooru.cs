@@ -41,7 +41,7 @@ namespace BooruSharp.Booru
         /// <param name="tagsArg">Tags for which you want the number of posts about (optional)</param>
         public virtual async Task<int> GetPostCountAsync(params string[] tagsArg)
         {
-            if (_imageUrlXml == null)
+            if (!HasPostCountAPI())
                 throw new Search.FeatureUnavailable();
             if (tagsArg == null) tagsArg = new string[0];
             else tagsArg = tagsArg.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
@@ -89,18 +89,14 @@ namespace BooruSharp.Booru
         /// <param name="tagsArg">Tags that must be contained in the post (optional)</param>
         public virtual async Task<Search.Post.SearchResult[]> GetRandomPostsAsync(int limit, params string[] tagsArg)
         {
+            if (!HasMultipleRandomAPI())
+                throw new Search.FeatureUnavailable();
             if (tagsArg == null) tagsArg = new string[0];
             else tagsArg = tagsArg.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
             if (tagsArg.Length > 2 && NoMoreThanTwoTags())
                 throw new Search.TooManyTags();
             if (_format == UrlFormat.indexPhp)
-            {
-                if (this is Template.Gelbooru)
-                    return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tagsArg)) + "+sort:random");
-                if (limit == 1)
-                    return new[] { await GetRandomPostAsync(tagsArg) };
-                throw new Search.FeatureUnavailable();
-            }
+                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tagsArg)) + "+sort:random");
             if (NoMoreThanTwoTags())
                 return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tagsArg), "random=true")); // +order:random count as a tag so we use random=true instead to save one
             return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tagsArg)) + "+order:random");
