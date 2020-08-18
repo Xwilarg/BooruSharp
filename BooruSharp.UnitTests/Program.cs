@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -411,7 +410,7 @@ namespace BooruSharp.UnitTests
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetPostCountAsync(); });
             else
             {
-                var countEmpty = await booru.GetPostCountAsync();
+                int countEmpty = booru is Pixiv ? 0 : await booru.GetPostCountAsync(); // Pixiv doesn't handle PostCount with no tag
                 var countOne = await booru.GetPostCountAsync(tag);
                 var countTwo = await booru.GetPostCountAsync(tag, tag2);
                 Assert.NotEqual(0, countEmpty);
@@ -1074,7 +1073,6 @@ namespace BooruSharp.UnitTests
                     Assert.NotEqual(Search.Post.Rating.Explicit, image.rating);
                 if (image.rating == Search.Post.Rating.Explicit)
                     foundExplicit = true;
-                Thread.Sleep(500); // We wait 0.5s between each try to not spam the API
             }
             if (!isSafe)
                 Assert.True(foundExplicit);
