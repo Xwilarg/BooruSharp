@@ -26,7 +26,7 @@ namespace BooruSharp.UnitTests
                 using (HttpClient hc = new HttpClient())
                 {
                     hc.DefaultRequestHeaders.Add("User-Agent", "BooruSharp");
-                    await hc.SendAsync(new HttpRequestMessage(new HttpMethod("HEAD"), url));
+                    await hc.SendAsync(new HttpRequestMessage(HttpMethod.Head, url));
                 }
                 return null;
             }

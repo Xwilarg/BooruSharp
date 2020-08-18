@@ -16,7 +16,7 @@ namespace BooruSharp.Others
 {
     public class Pixiv : ABooru
     {
-        public Pixiv() : base("app-api.pixiv.net", (UrlFormat)(-1), BooruOptions.noComment | BooruOptions.noFavorite | BooruOptions.noLastComments | BooruOptions.noMultipleRandom |
+        public Pixiv() : base("app-api.pixiv.net", (UrlFormat)(-1), BooruOptions.noComment | BooruOptions.noLastComments | BooruOptions.noMultipleRandom |
                 BooruOptions.noPostByMd5 | BooruOptions.noRelated | BooruOptions.noTagById | BooruOptions.noWiki)
         {
             AccessToken = null;
@@ -24,9 +24,8 @@ namespace BooruSharp.Others
 
         public async Task LoginAsync(string username, string password)
         {
-            var request = new HttpRequestMessage(new HttpMethod("POST"), "https://oauth.secure.pixiv.net/auth/token");
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://oauth.secure.pixiv.net/auth/token");
             string time = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss+00:00");
-            request.Headers.Add("User-Agent", "Mozilla/5.0 BooruSharp");
             request.Headers.Add("X-Client-Time", time);
             using (var md5 = MD5.Create())
             {
@@ -63,14 +62,14 @@ namespace BooruSharp.Others
 
         public async Task<byte[]> ImageToByteArrayAsync(SearchResult result)
         {
-            var request = new HttpRequestMessage(new HttpMethod("GET"), result.fileUrl);
+            var request = new HttpRequestMessage(HttpMethod.Get, result.fileUrl);
             request.Headers.Add("Referer", result.postUrl.AbsoluteUri);
             return await (await HttpClient.SendAsync(request)).Content.ReadAsByteArrayAsync();
         }
 
         public async Task<byte[]> PreviewToByteArrayAsync(SearchResult result)
         {
-            var request = new HttpRequestMessage(new HttpMethod("GET"), result.fileUrl);
+            var request = new HttpRequestMessage(HttpMethod.Get, result.fileUrl);
             request.Headers.Add("Referer", result.previewUrl.AbsoluteUri);
             return await (await HttpClient.SendAsync(request)).Content.ReadAsByteArrayAsync();
         }
@@ -83,9 +82,7 @@ namespace BooruSharp.Others
 
         private async Task UpdateTokenAsync()
         {
-            var request = new HttpRequestMessage(new HttpMethod("POST"), "https://oauth.secure.pixiv.net/auth/token");
-            string time = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss+00:00");
-            request.Headers.Add("User-Agent", "Mozilla/5.0 BooruSharp");
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://oauth.secure.pixiv.net/auth/token");
             Dictionary<string, string> data = new Dictionary<string, string>
             {
                 { "get_secure_url", "1" },
@@ -106,12 +103,39 @@ namespace BooruSharp.Others
         public override bool IsSafe()
             => false;
 
+        public override async Task AddFavoriteAsync(int postId)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, _baseUrl + "/v2/illust/bookmark/add");
+            request.Headers.Add("Authorization", "Bearer " + AccessToken);
+            request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                { "illust_id", postId.ToString() },
+                { "restrict", "public" }
+            });
+            var http = await HttpClient.SendAsync(request);
+            if (http.StatusCode == HttpStatusCode.NotFound)
+                throw new InvalidPostId();
+        }
+
+        public override async Task RemoveFavoriteAsync(int postId)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, _baseUrl + "/v1/illust/bookmark/delete");
+            request.Headers.Add("Authorization", "Bearer " + AccessToken);
+            request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                { "illust_id", postId.ToString() }
+            });
+            var http = await HttpClient.SendAsync(request);
+            if (http.StatusCode == HttpStatusCode.NotFound)
+                throw new InvalidPostId("There is no post with this ID in your bookmarks");
+        }
+
         public override async Task<SearchResult> GetPostByIdAsync(int id)
         {
             if (AccessToken == null)
                 throw new AuthentificationRequired();
             await CheckUpdateTokenAsync();
-            var request = new HttpRequestMessage(new HttpMethod("GET"), _baseUrl + "/v1/illust/detail?illust_id=" + id);
+            var request = new HttpRequestMessage(HttpMethod.Get, _baseUrl + "/v1/illust/detail?illust_id=" + id);
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
             var http = await HttpClient.SendAsync(request);
             if (http.StatusCode == HttpStatusCode.NotFound)
@@ -133,7 +157,7 @@ namespace BooruSharp.Others
             if (max > 5000)
                 max = 5000;
             int id = _random.Next(1, max + 1);
-            var request = new HttpRequestMessage(new HttpMethod("GET"), _baseUrl + "/v1/search/illust?word=" + string.Join("%20", tagsArg.Select(x => Uri.EscapeDataString(x))).ToLower() + "&offset=" + id);
+            var request = new HttpRequestMessage(HttpMethod.Get, _baseUrl + "/v1/search/illust?word=" + string.Join("%20", tagsArg.Select(x => Uri.EscapeDataString(x))).ToLower() + "&offset=" + id);
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
             var http = await HttpClient.SendAsync(request);
             if (http.StatusCode == HttpStatusCode.NotFound)
@@ -154,7 +178,7 @@ namespace BooruSharp.Others
             if (tagsArg.Length == 0)
                 throw new ArgumentException("You must provide at least one tag.");
             await CheckUpdateTokenAsync();
-            var request = new HttpRequestMessage(new HttpMethod("GET"), "https://www.pixiv.net/ajax/search/artworks/" + string.Join("%20", tagsArg.Select(x => Uri.EscapeDataString(x))).ToLower());
+            var request = new HttpRequestMessage(HttpMethod.Get, "https://www.pixiv.net/ajax/search/artworks/" + string.Join("%20", tagsArg.Select(x => Uri.EscapeDataString(x))).ToLower());
             var http = await HttpClient.SendAsync(request);
             JToken json = (JToken)JsonConvert.DeserializeObject(await http.Content.ReadAsStringAsync());
             return json["body"]["illustManga"]["total"].Value<int>();
@@ -167,7 +191,7 @@ namespace BooruSharp.Others
             if (tagsArg.Length == 0)
                 throw new ArgumentException("You must provide at least one tag.");
             await CheckUpdateTokenAsync();
-            var request = new HttpRequestMessage(new HttpMethod("GET"), _baseUrl + "/v1/search/illust?word=" + string.Join("%20", tagsArg.Select(x => Uri.EscapeDataString(x))).ToLower());
+            var request = new HttpRequestMessage(HttpMethod.Get, _baseUrl + "/v1/search/illust?word=" + string.Join("%20", tagsArg.Select(x => Uri.EscapeDataString(x))).ToLower());
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
             var http = await HttpClient.SendAsync(request);
             if (http.StatusCode == HttpStatusCode.NotFound)
