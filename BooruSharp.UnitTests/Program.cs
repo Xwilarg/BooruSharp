@@ -371,7 +371,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex))]
         [InlineData(typeof(Xbooru), "kantai_collection")]
         [InlineData(typeof(Yandere), "kantai_collection", "swimsuits")]
-        [InlineData(typeof(Pixiv), "響(艦隊これくしょん)", "水着")]
+        [InlineData(typeof(Pixiv), "響(艦隊これくしょん)", "水着艦娘")]
         public async Task GetLastPostsWithTags(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "swimsuit")
         {
             var booru = await General.CreateBooru(t);
@@ -410,10 +410,16 @@ namespace BooruSharp.UnitTests
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetPostCountAsync(); });
             else
             {
-                int countEmpty = booru is Pixiv ? 0 : await booru.GetPostCountAsync(); // Pixiv doesn't handle PostCount with no tag
+                int countEmpty;
+                if (booru is Pixiv) // Pixiv doesn't handle PostCount with no tag
+                    countEmpty = 0;
+                else
+                {
+                    countEmpty = await booru.GetPostCountAsync();
+                    Assert.NotEqual(0, countEmpty);
+                }
                 var countOne = await booru.GetPostCountAsync(tag);
                 var countTwo = await booru.GetPostCountAsync(tag, tag2);
-                Assert.NotEqual(0, countEmpty);
                 Assert.NotEqual(0, countOne);
                 Assert.NotEqual(0, countTwo);
                 Assert.InRange(countOne, countTwo, countEmpty);
@@ -583,7 +589,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), false, "ocean", "loli", "swimsuit")]
         [InlineData(typeof(Xbooru), false, "ocean", "small_breasts")]
         [InlineData(typeof(Yandere), false, "see_through", "loli", "swimsuits")]
-        [InlineData(typeof(Pixiv), false, "水", "貧乳", "水着")]
+        [InlineData(typeof(Pixiv), false, "東方", "貧乳", "水着")]
         public async Task TooManyTags(Type t, bool throwError, string tag = "ocean", string tag2 = "flat_chest", string tag3 = "swimsuit")
         {
             var booru = await General.CreateBooru(t);
