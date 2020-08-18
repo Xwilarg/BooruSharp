@@ -26,7 +26,6 @@ namespace BooruSharp.Others
         {
             var request = new HttpRequestMessage(new HttpMethod("POST"), "https://oauth.secure.pixiv.net/auth/token");
             string time = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss+00:00");
-            request.Headers.Add("User-Agent", "Mozilla/5.0 BooruSharp");
             request.Headers.Add("X-Client-Time", time);
             using (var md5 = MD5.Create())
             {
@@ -84,8 +83,6 @@ namespace BooruSharp.Others
         private async Task UpdateTokenAsync()
         {
             var request = new HttpRequestMessage(new HttpMethod("POST"), "https://oauth.secure.pixiv.net/auth/token");
-            string time = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss+00:00");
-            request.Headers.Add("User-Agent", "Mozilla/5.0 BooruSharp");
             Dictionary<string, string> data = new Dictionary<string, string>
             {
                 { "get_secure_url", "1" },
