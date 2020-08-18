@@ -169,7 +169,7 @@ namespace BooruSharp.UnitTests
         public async Task UnsetFavoriteError(Type t)
         {
             var booru = await General.CreateBooru(t);
-            var id = (await booru.GetRandomPostAsync()).id;
+            var id = (await General.GetRandomPost(booru)).id;
             booru.Auth = new BooruAuth("AAA", "AAA");
             if (!booru.HasFavoriteAPI())
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.RemoveFavoriteAsync(id); });
@@ -256,7 +256,7 @@ namespace BooruSharp.UnitTests
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.AddFavoriteAsync(10); });
             else
             {
-                var id = (await booru.GetRandomPostAsync()).id;
+                var id = (await General.GetRandomPost(booru)).id;
                 string name = t.ToString().ToUpper().Split('.').Last();
                 booru.Auth = new BooruAuth(Environment.GetEnvironmentVariable(name + "_USER_ID"), Environment.GetEnvironmentVariable(name + "_PASSWORD_HASH"));
 
@@ -292,7 +292,7 @@ namespace BooruSharp.UnitTests
                 Search.Post.SearchResult result1;
                 do
                 {
-                    result1 = await booru.GetRandomPostAsync();
+                    result1 = await General.GetRandomPost(booru);
                 } while (result1.md5 == null);
                 var result2 = await booru.GetPostByMd5Async(result1.md5);
                 Assert.Equal(result1.id, result2.id);
@@ -323,7 +323,7 @@ namespace BooruSharp.UnitTests
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetPostByIdAsync(0); });
             else
             {
-                Search.Post.SearchResult result1 = await booru.GetRandomPostAsync();
+                Search.Post.SearchResult result1 = await General.GetRandomPost(booru);
                 var result2 = await booru.GetPostByIdAsync(result1.id);
                 Assert.Equal(result1.id, result2.id);
             }
