@@ -110,17 +110,24 @@ namespace BooruSharp.Others
             request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
             {
                 { "illust_id", postId.ToString() },
-                { "restrict", "public" },
-                { "tags", "" }
+                { "restrict", "public" }
             });
             var http = await HttpClient.SendAsync(request);
-            System.Console.WriteLine(http.StatusCode);
-            System.Console.WriteLine(await http.Content.ReadAsStringAsync());
+            if (http.StatusCode == HttpStatusCode.NotFound)
+                throw new InvalidPostId();
         }
 
-        public override Task RemoveFavoriteAsync(int postId)
+        public override async Task RemoveFavoriteAsync(int postId)
         {
-            return base.RemoveFavoriteAsync(postId);
+            var request = new HttpRequestMessage(new HttpMethod("POST"), _baseUrl + "/v1/illust/bookmark/delete");
+            request.Headers.Add("Authorization", "Bearer " + AccessToken);
+            request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                { "illust_id", postId.ToString() }
+            });
+            var http = await HttpClient.SendAsync(request);
+            if (http.StatusCode == HttpStatusCode.NotFound)
+                throw new InvalidPostId("There is no post with this ID in your bookmarks");
         }
 
         public override async Task<SearchResult> GetPostByIdAsync(int id)
