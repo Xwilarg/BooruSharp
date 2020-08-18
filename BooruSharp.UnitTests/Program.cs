@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -1073,6 +1074,7 @@ namespace BooruSharp.UnitTests
                     Assert.NotEqual(Search.Post.Rating.Explicit, image.rating);
                 if (image.rating == Search.Post.Rating.Explicit)
                     foundExplicit = true;
+                Thread.Sleep(500); // We wait 0.5s between each try to not spam the API
             }
             if (!isSafe)
                 Assert.True(foundExplicit);
