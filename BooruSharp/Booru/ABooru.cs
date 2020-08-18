@@ -257,8 +257,12 @@ namespace BooruSharp.Booru
             set
             {
                 _client = value;
-                // Add our User-Agent if _client isn't null.
-                _client?.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
+
+                // Add our User-Agent if client's User-Agent header is empty.
+                if (_client != null && !_client.DefaultRequestHeaders.Contains("User-Agent"))
+                {
+                    _client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
+                }
             }
         }
 
