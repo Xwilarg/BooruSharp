@@ -16,7 +16,7 @@ namespace BooruSharp.Others
 {
     public class Pixiv : ABooru
     {
-        public Pixiv() : base("app-api.pixiv.net", (UrlFormat)(-1), BooruOptions.noComment | BooruOptions.noFavorite | BooruOptions.noLastComments | BooruOptions.noMultipleRandom |
+        public Pixiv() : base("app-api.pixiv.net", (UrlFormat)(-1), BooruOptions.noComment | BooruOptions.noLastComments | BooruOptions.noMultipleRandom |
                 BooruOptions.noPostByMd5 | BooruOptions.noRelated | BooruOptions.noTagById | BooruOptions.noWiki)
         {
             AccessToken = null;
@@ -102,6 +102,26 @@ namespace BooruSharp.Others
 
         public override bool IsSafe()
             => false;
+
+        public override async Task AddFavoriteAsync(int postId)
+        {
+            var request = new HttpRequestMessage(new HttpMethod("POST"), _baseUrl + "/v2/illust/bookmark/add");
+            request.Headers.Add("Authorization", "Bearer " + AccessToken);
+            request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                { "illust_id", postId.ToString() },
+                { "restrict", "public" },
+                { "tags", "" }
+            });
+            var http = await HttpClient.SendAsync(request);
+            System.Console.WriteLine(http.StatusCode);
+            System.Console.WriteLine(await http.Content.ReadAsStringAsync());
+        }
+
+        public override Task RemoveFavoriteAsync(int postId)
+        {
+            return base.RemoveFavoriteAsync(postId);
+        }
 
         public override async Task<SearchResult> GetPostByIdAsync(int id)
         {
