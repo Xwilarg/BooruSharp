@@ -138,5 +138,8 @@ Console.WriteLine(String.Join(Environment.NewLine,
            .Select(delegate (BooruSharp.Search.Tag.SearchResult res) { return (res.name); })));
 ```
 
+# Want to contribute?
+Feel free to open a [pull request](https://github.com/Xwilarg/BooruSharp/pulls).
+
 # Need more help?
 Feel free to [open an issue](https://github.com/Xwilarg/BooruSharp/issues) or come ask [on Discord](https://discord.gg/H6wMRYV).
