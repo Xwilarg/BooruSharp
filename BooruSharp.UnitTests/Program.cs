@@ -223,7 +223,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Safebooru))]
         [InlineData(typeof(Sakugabooru))]
         [InlineData(typeof(SankakuComplex))]
-        [InlineData(typeof(Xbooru))]
+        // [InlineData(typeof(Xbooru))] // Xbooru allow to add post with invalid ID
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv))]
         public async Task SetFavoriteInvalidId(Type t)
