@@ -530,7 +530,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), "hibiki_(kantai_collection)", "old_school_swimsuit")]
         [InlineData(typeof(Xbooru), "kantai_collection")]
         [InlineData(typeof(Yandere), "kantai_collection")]
-        [InlineData(typeof(Pixiv), "響(艦隊これくしょん)", "スク水")]
+        [InlineData(typeof(Pixiv), "響(艦隊これくしょん)", "水着艦娘")]
         public async Task GetRandom2Tags(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "school_swimsuit")
         {
             var booru = await General.CreateBooru(t);
@@ -577,7 +577,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Atfbooru), false)]
         [InlineData(typeof(DanbooruDonmai), true)]
         [InlineData(typeof(E621), false, "sea", "loli", "swimwear")]
-        [InlineData(typeof(E926), false, "sea", "loli", "swimwear")]
+        [InlineData(typeof(E926), false, "sea", "breasts", "swimwear")]
         [InlineData(typeof(Furrybooru), false, "water")]
         [InlineData(typeof(Gelbooru), false)]
         [InlineData(typeof(Konachan), false, "water")]
