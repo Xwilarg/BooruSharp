@@ -196,7 +196,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Pixiv))]
         public async Task SetFavoriteError(Type t)
         {
-            var booru = await General.CreateBooru(t);
+            var booru = (ABooru)Activator.CreateInstance(t);
             booru.Auth = new BooruAuth("AAA", "AAA");
             if (!booru.HasFavoriteAPI())
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.AddFavoriteAsync(800); });
@@ -414,16 +414,10 @@ namespace BooruSharp.UnitTests
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetPostCountAsync(); });
             else
             {
-                int countEmpty;
-                if (booru.NoEmptyPostSearch()) // Pixiv doesn't handle PostCount with no tag
-                    countEmpty = 0;
-                else
-                {
-                    countEmpty = await booru.GetPostCountAsync();
-                    Assert.NotEqual(0, countEmpty);
-                }
+                int countEmpty = booru.NoEmptyPostSearch() ? int.MaxValue : await booru.GetPostCountAsync(); // Pixiv doesn't handle PostCount with no tag
                 var countOne = await booru.GetPostCountAsync(tag);
                 var countTwo = await booru.GetPostCountAsync(tag, tag2);
+                Assert.NotEqual(0, countEmpty);
                 Assert.NotEqual(0, countOne);
                 Assert.NotEqual(0, countTwo);
                 Assert.InRange(countOne, countTwo, countEmpty);
@@ -514,8 +508,11 @@ namespace BooruSharp.UnitTests
         {
             var booru = new Gelbooru();
             HttpClient hc = new HttpClient();
+            hc.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp-UnitTests");
             booru.HttpClient = hc;
             await General.CheckGetRandom(booru, "kantai_collection");
+            Assert.Single(hc.DefaultRequestHeaders.GetValues("User-Agent"));
+            Assert.Contains("Mozilla/5.0 BooruSharp-UnitTests", hc.DefaultRequestHeaders.GetValues("User-Agent"));
         }
 
         [Theory]
