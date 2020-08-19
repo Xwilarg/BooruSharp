@@ -199,11 +199,14 @@ namespace BooruSharp.UnitTests
             var booru = (ABooru)Activator.CreateInstance(t);
             if (booru is Pixiv)
                 await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async delegate () { await ((Pixiv)booru).LoginAsync("AAA", "AAA"); });
-            booru.Auth = new BooruAuth("AAA", "AAA");
-            if (!booru.HasFavoriteAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.AddFavoriteAsync(800); });
             else
-                await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async delegate () { await booru.AddFavoriteAsync(800); });
+            {
+                booru.Auth = new BooruAuth("AAA", "AAA");
+                if (!booru.HasFavoriteAPI())
+                    await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.AddFavoriteAsync(800); });
+                else
+                    await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async delegate () { await booru.AddFavoriteAsync(800); });
+            }
         }
 
         [Theory]
