@@ -35,7 +35,7 @@ namespace BooruSharp.Booru.Template
                     new Uri("http" + (UsesHttp() ? "" : "s") + "://" + url + "//images/" + elem["directory"].Value<string>() + "/" + elem["image"].Value<string>()),
                     new Uri("http" + (UsesHttp() ? "" : "s") + "://" + url + "//thumbnails/" + elem["directory"].Value<string>() + "/thumbnails_" + elem["image"].Value<string>()),
                     new Uri(_baseUrl + "/index.php?page=post&s=view&id=" + elem["id"].Value<int>()),
-                    GetRating(elem["rating"].Value<string>()[0]),
+                    GetRating(char.ToLower(elem["rating"].Value<string>()[0])),
                     elem["tags"].Value<string>().Split(' '),
                     elem["id"].Value<int>(),
                     null,
