@@ -595,7 +595,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), false, "ocean", "loli", "swimsuit")]
         [InlineData(typeof(Xbooru), false, "ocean", "small_breasts")]
         [InlineData(typeof(Yandere), false, "see_through", "loli", "swimsuits")]
-        [InlineData(typeof(Pixiv), false, "チルノ", "貧乳", "水着")]
+        [InlineData(typeof(Pixiv), false, "東方", "貧乳", "水着")]
         public async Task TooManyTags(Type t, bool throwError, string tag = "ocean", string tag2 = "flat_chest", string tag3 = "swimsuit")
         {
             var booru = await General.CreateBooru(t);
@@ -610,9 +610,9 @@ namespace BooruSharp.UnitTests
             else
             {
                 result = await booru.GetRandomPostAsync(tag, tag2, tag3);
-                Assert.Contains(tag, result.tags);
-                Assert.Contains(tag2, result.tags);
-                Assert.Contains(tag3, result.tags);
+                Assert.Contains(result.tags, x => x.Contains(tag));
+                Assert.Contains(result.tags, x => x.Contains(tag2));
+                Assert.Contains(result.tags, x => x.Contains(tag3));
             }
         }
 
