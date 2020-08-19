@@ -132,7 +132,7 @@ namespace BooruSharp.UnitTests
 
         public static async Task<Search.Post.SearchResult> GetRandomPost(ABooru booru)
         {
-            if (booru is Pixiv)
+            if (booru.NoEmptyPostSearch())
                 return await booru.GetRandomPostAsync("スク水"); // Pixiv doesn't handle random search with no tag
             return await booru.GetRandomPostAsync();
         }
@@ -349,10 +349,14 @@ namespace BooruSharp.UnitTests
         public async Task GetLastPosts(Type t)
         {
             var booru = await General.CreateBooru(t);
-            Search.Post.SearchResult[] results;
-            results = await booru.GetLastPostsAsync();
-            Assert.NotInRange(results.Length, 0, 1);
-            Assert.NotEqual(results[0].id, results[1].id);
+            if (booru.NoEmptyPostSearch())
+                await Assert.ThrowsAsync<ArgumentException>(async () => await booru.GetLastPostsAsync());
+            else
+            {
+                var results = await booru.GetLastPostsAsync();
+                Assert.NotInRange(results.Length, 0, 1);
+                Assert.NotEqual(results[0].id, results[1].id);
+            }
         }
 
         [Theory]
@@ -411,7 +415,7 @@ namespace BooruSharp.UnitTests
             else
             {
                 int countEmpty;
-                if (booru is Pixiv) // Pixiv doesn't handle PostCount with no tag
+                if (booru.NoEmptyPostSearch()) // Pixiv doesn't handle PostCount with no tag
                     countEmpty = 0;
                 else
                 {

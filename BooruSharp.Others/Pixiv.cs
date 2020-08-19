@@ -17,7 +17,7 @@ namespace BooruSharp.Others
     public class Pixiv : ABooru
     {
         public Pixiv() : base("app-api.pixiv.net", (UrlFormat)(-1), BooruOptions.noComment | BooruOptions.noLastComments | BooruOptions.noMultipleRandom |
-                BooruOptions.noPostByMd5 | BooruOptions.noRelated | BooruOptions.noTagById | BooruOptions.noWiki)
+                BooruOptions.noPostByMd5 | BooruOptions.noRelated | BooruOptions.noTagById | BooruOptions.noWiki | BooruOptions.noEmptyPostSearch)
         {
             AccessToken = null;
         }
@@ -150,7 +150,7 @@ namespace BooruSharp.Others
             if (AccessToken == null)
                 throw new AuthentificationRequired();
             if (tagsArg.Length == 0)
-                throw new InvalidTags();
+                throw new ArgumentException("You must provide at least one tag.");
             int max = await GetPostCountAsync(tagsArg); // GetPostCountAsync already check for UpdateToken
             if (max == 0)
                 throw new InvalidTags();

@@ -23,5 +23,6 @@ namespace BooruSharp.Booru
         tagApiXml = 1 << 12,
         limitOf20000 = 1 << 13, // Limit of 20000 posts per search, used for Gelbooru
         noMoreThan2Tags = 1 << 14,
+        noEmptyPostSearch = 1 << 15, // Post functions can't be called without tags
     }
 }
