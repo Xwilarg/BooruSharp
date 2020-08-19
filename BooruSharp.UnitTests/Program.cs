@@ -197,6 +197,8 @@ namespace BooruSharp.UnitTests
         public async Task SetFavoriteError(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
+            if (booru is Pixiv)
+                await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async delegate () { await ((Pixiv)booru).LoginAsync("AAA", "AAA"); });
             booru.Auth = new BooruAuth("AAA", "AAA");
             if (!booru.HasFavoriteAPI())
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.AddFavoriteAsync(800); });
@@ -590,7 +592,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(SankakuComplex), false, "ocean", "loli", "swimsuit")]
         [InlineData(typeof(Xbooru), false, "ocean", "small_breasts")]
         [InlineData(typeof(Yandere), false, "see_through", "loli", "swimsuits")]
-        [InlineData(typeof(Pixiv), false, "東方", "貧乳", "水着")]
+        [InlineData(typeof(Pixiv), false, "チルノ", "貧乳", "水着")]
         public async Task TooManyTags(Type t, bool throwError, string tag = "ocean", string tag2 = "flat_chest", string tag3 = "swimsuit")
         {
             var booru = await General.CreateBooru(t);
