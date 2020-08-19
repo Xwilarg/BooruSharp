@@ -105,6 +105,8 @@ namespace BooruSharp.Others
 
         public override async Task AddFavoriteAsync(int postId)
         {
+            if (AccessToken == null)
+                throw new AuthentificationRequired();
             var request = new HttpRequestMessage(HttpMethod.Post, _baseUrl + "/v2/illust/bookmark/add");
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
             request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
@@ -119,6 +121,8 @@ namespace BooruSharp.Others
 
         public override async Task RemoveFavoriteAsync(int postId)
         {
+            if (AccessToken == null)
+                throw new AuthentificationRequired();
             var request = new HttpRequestMessage(HttpMethod.Post, _baseUrl + "/v1/illust/bookmark/delete");
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
             request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
@@ -147,11 +151,7 @@ namespace BooruSharp.Others
 
         public override async Task<SearchResult> GetRandomPostAsync(params string[] tagsArg)
         {
-            if (AccessToken == null)
-                throw new AuthentificationRequired();
-            if (tagsArg.Length == 0)
-                throw new ArgumentException("You must provide at least one tag.");
-            int max = await GetPostCountAsync(tagsArg); // GetPostCountAsync already check for UpdateToken
+            int max = await GetPostCountAsync(tagsArg); // GetPostCountAsync already check for UpdateToken and if parameters are valid
             if (max == 0)
                 throw new InvalidTags();
             if (max > 5000)
