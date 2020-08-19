@@ -9,7 +9,6 @@
         /// E926 can provide images with an explicit rating, but the URL of the file will be null
         /// </summary>
         /// <returns></returns>
-        public override bool IsSafe()
-            => true;
+        public override bool IsSafe() => true;
     }
 }

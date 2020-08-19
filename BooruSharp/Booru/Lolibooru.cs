@@ -7,8 +7,7 @@ namespace BooruSharp.Booru
         public Lolibooru() : base("lolibooru.moe")
         { }
 
-        public override bool IsSafe()
-            => false;
+        public override bool IsSafe() => false;
 
         protected internal override Search.Tag.SearchResult GetTagSearchResult(object json)
         {

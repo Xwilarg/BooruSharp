@@ -17,8 +17,10 @@ namespace BooruSharp.Booru
         {
             if (!HasTagByIdAPI())
                 throw new Search.FeatureUnavailable();
+
             if (name == null)
                 throw new ArgumentNullException("Argument can't be null");
+
             return await SearchTagAsync(name, null);
         }
 
@@ -30,6 +32,7 @@ namespace BooruSharp.Booru
         {
             if (!HasTagByIdAPI())
                 throw new Search.FeatureUnavailable();
+
             return await SearchTagAsync(null, id);
         }
 
@@ -41,81 +44,89 @@ namespace BooruSharp.Booru
         {
             if (!HasTagByIdAPI())
                 throw new Search.FeatureUnavailable();
+
             if (name == null)
                 throw new ArgumentNullException("Argument can't be null");
-            List<string> urlTags = new List<string>() { SearchArg("name") + name };
+
+            var urlTags = new List<string>() { SearchArg("name") + name };
+
             if (_format == UrlFormat.postIndexJson)
                 urlTags.Add("limit=0");
+
             string url = CreateUrl(_tagUrl, urlTags.ToArray());
-            Search.Tag.SearchResult[] results;
+
             if (TagsUseXml())
             {
                 var xml = await GetXmlAsync(url);
-                results = new Search.Tag.SearchResult[xml.LastChild.ChildNodes.Count];
-                int i = 0;
+                // Can't use LINQ with XmlNodes so let's use list here.
+                var results = new List<Search.Tag.SearchResult>(xml.LastChild.ChildNodes.Count);
+
                 foreach (var node in xml.LastChild)
                 {
-                    results[i] = GetTagSearchResult(node);
-                    i++;
+                    results.Add(GetTagSearchResult(node));
                 }
+
+                return results.ToArray();
             }
             else
             {
-                var jsons = (JArray)JsonConvert.DeserializeObject(await GetJsonAsync(url));
-                results = new Search.Tag.SearchResult[jsons.Count];
-                int i = 0;
-                foreach (var json in jsons)
-                {
-                    results[i] = GetTagSearchResult(json);
-                    i++;
-                }
+                var jsonArray = JsonConvert.DeserializeObject<JArray>(await GetJsonAsync(url));
+                return jsonArray.Select(GetTagSearchResult).ToArray();
             }
-            return results;
         }
 
         private async Task<Search.Tag.SearchResult> SearchTagAsync(string name, int? id)
         {
-            List<string> urlTags = new List<string>();
-            if (name == null)
-                urlTags.Add(SearchArg("id") + id);
-            else
-                urlTags.Add(SearchArg("name") + name);
+            var urlTags = new List<string>();
+
+            urlTags.Add(name == null
+                ? SearchArg("id") + id
+                : SearchArg("name") + name);
+
             if (_format == UrlFormat.postIndexJson)
                 urlTags.Add("limit=0");
+
             string url = CreateUrl(_tagUrl, urlTags.ToArray());
+
             if (TagsUseXml())
             {
                 var xml = await GetXmlAsync(url);
+
                 foreach (var node in xml.LastChild)
                 {
                     var result = GetTagSearchResult(node);
+
                     if ((name == null && id == result.id) || (name != null && name == result.name))
                         return result;
                 }
             }
             else
             {
-                var jsons = (JArray)JsonConvert.DeserializeObject(await GetJsonAsync(url));
-                foreach (var json in jsons)
+                var jsonArray = JsonConvert.DeserializeObject<JArray>(await GetJsonAsync(url));
+
+                foreach (var json in jsonArray)
                 {
                     var result = GetTagSearchResult(json);
+
                     if ((name == null && id == result.id) || (name != null && name == result.name))
                         return result;
                 }
             }
+
             throw new Search.InvalidTags();
         }
 
         protected internal Search.Tag.TagType StringToTagType(string value)
         {
-            value = value.ToLower();
-            if (value == "tag")
+            StringComparer comparer = StringComparer.OrdinalIgnoreCase;
+
+            if (comparer.Equals(value, "tag"))
                 return Search.Tag.TagType.Trivia; // BooruSharp rename the tag "Tag" by "Trivia" for more clarity
-            for (Search.Tag.TagType i = 0; i <= Enum.GetValues(typeof(Search.Tag.TagType)).Cast<Search.Tag.TagType>().Max(); i++)
-            {
-                if (i.ToString().ToLower() == value)
-                    return i;
-            }
+
+            foreach (Search.Tag.TagType type in Enum.GetValues(typeof(Search.Tag.TagType)))
+                if (comparer.Equals(value, type.ToString()))
+                    return type;
+
             throw new ArgumentException("Invalid tag " + value);
         }
     }

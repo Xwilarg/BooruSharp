@@ -15,16 +15,17 @@ namespace BooruSharp.Booru
         {
             if (!HasWikiAPI())
                 throw new Search.FeatureUnavailable();
+
             if (query == null)
                 throw new ArgumentNullException("Argument can't be null");
-            var jsons = (JArray)JsonConvert.DeserializeObject(await GetJsonAsync(CreateUrl(_wikiUrl, SearchArg(_format == UrlFormat.danbooru ? "title" : "query") + query)));
-            int i = 0;
-            foreach (var json in jsons)
-            {
-                if (((JObject)json)["title"].Value<string>() == query)
-                    return GetWikiSearchResult(json);
-                i++;
-            }
+
+            var array = JsonConvert.DeserializeObject<JArray>(
+                await GetJsonAsync(CreateUrl(_wikiUrl, SearchArg(_format == UrlFormat.danbooru ? "title" : "query") + query)));
+
+            foreach (var token in array)
+                if (token["title"].Value<string>() == query)
+                    return GetWikiSearchResult(token);
+
             throw new Search.InvalidTags();
         }
     }

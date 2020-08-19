@@ -16,8 +16,10 @@ namespace BooruSharp.Booru
         {
             if (!HasPostByMd5API())
                 throw new Search.FeatureUnavailable();
+
             if (md5 == null)
                 throw new ArgumentNullException("Argument can't be null");
+
             return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", "md5=" + md5));
         }
 
@@ -30,9 +32,10 @@ namespace BooruSharp.Booru
         {
             if (!HasPostByIdAPI())
                 throw new Search.FeatureUnavailable();
-            if (_format == UrlFormat.danbooru)
-                return await GetSearchResultFromUrlAsync(_baseUrl + "/posts/" + id + ".json");
-            return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", "id=" + id));
+
+            return _format == UrlFormat.danbooru
+                ? await GetSearchResultFromUrlAsync(_baseUrl + "/posts/" + id + ".json")
+                : await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", "id=" + id));
         }
 
         /// <summary>
@@ -43,11 +46,15 @@ namespace BooruSharp.Booru
         {
             if (!HasPostCountAPI())
                 throw new Search.FeatureUnavailable();
-            if (tagsArg == null) tagsArg = new string[0];
-            else tagsArg = tagsArg.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
-            if (tagsArg.Length > 2 && NoMoreThanTwoTags())
+
+            string[] tags = tagsArg != null
+                ? tagsArg.Where(tag => !string.IsNullOrWhiteSpace(tag)).ToArray()
+                : Array.Empty<string>();
+
+            if (tags.Length > 2 && NoMoreThanTwoTags())
                 throw new Search.TooManyTags();
-            XmlDocument xml = await GetXmlAsync(CreateUrl(_imageUrlXml, "limit=1", TagsToString(tagsArg)));
+
+            XmlDocument xml = await GetXmlAsync(CreateUrl(_imageUrlXml, "limit=1", TagsToString(tags)));
             return int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
         }
 
@@ -57,29 +64,38 @@ namespace BooruSharp.Booru
         /// <param name="tagsArg">Tags that must be contained in the post (optional)</param>
         public virtual async Task<Search.Post.SearchResult> GetRandomPostAsync(params string[] tagsArg)
         {
-            if (tagsArg == null) tagsArg = new string[0];
-            else tagsArg = tagsArg.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
-            if (tagsArg.Length > 2 && NoMoreThanTwoTags())
+            string[] tags = tagsArg != null
+                ? tagsArg.Where(tag => !string.IsNullOrWhiteSpace(tag)).ToArray()
+                : Array.Empty<string>();
+
+            if (tags.Length > 2 && NoMoreThanTwoTags())
                 throw new Search.TooManyTags();
+
             if (_format == UrlFormat.indexPhp)
             {
                 if (this is Template.Gelbooru)
-                    return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tagsArg)) + "+sort:random");
-                if (tagsArg.Length == 0)
-                    return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", "id=" + await GetRandomIdAsync(TagsToString(tagsArg)))); // We need to request /index.php?page=post&s=random and get the id given by the redirect
+                    return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tags)) + "+sort:random");
+
+                if (tags.Length == 0)
+                    return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", "id=" + await GetRandomIdAsync(TagsToString(tags)))); // We need to request /index.php?page=post&s=random and get the id given by the redirect
+
                 // The previous option doesn't work if there are tags so we contact the XML endpoint to get post count
-                string url = CreateUrl(_imageUrlXml, "limit=1", TagsToString(tagsArg));
+                string url = CreateUrl(_imageUrlXml, "limit=1", TagsToString(tags));
                 XmlDocument xml = await GetXmlAsync(url);
                 int max = int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
+
                 if (max == 0)
                     throw new Search.InvalidTags();
+
                 if (SearchIncreasedPostLimit() && max > 20001)
                     max = 20001;
-                return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tagsArg), "pid=" + _random.Next(0, max)));
+
+                return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tags), "pid=" + _random.Next(0, max)));
             }
-            if (NoMoreThanTwoTags())
-                return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tagsArg), "random=true")); // +order:random count as a tag so we use random=true instead to save one
-            return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tagsArg)) + "+order:random");
+
+            return NoMoreThanTwoTags()
+                ? await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tags), "random=true")) // +order:random count as a tag so we use random=true instead to save one
+                : await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tags)) + "+order:random");
         }
 
         /// <summary>
@@ -91,15 +107,20 @@ namespace BooruSharp.Booru
         {
             if (!HasMultipleRandomAPI())
                 throw new Search.FeatureUnavailable();
-            if (tagsArg == null) tagsArg = new string[0];
-            else tagsArg = tagsArg.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
-            if (tagsArg.Length > 2 && NoMoreThanTwoTags())
+
+            string[] tags = tagsArg != null
+                ? tagsArg.Where(tag => !string.IsNullOrWhiteSpace(tag)).ToArray()
+                : Array.Empty<string>();
+
+            if (tags.Length > 2 && NoMoreThanTwoTags())
                 throw new Search.TooManyTags();
+
             if (_format == UrlFormat.indexPhp)
-                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tagsArg)) + "+sort:random");
-            if (NoMoreThanTwoTags())
-                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tagsArg), "random=true")); // +order:random count as a tag so we use random=true instead to save one
-            return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tagsArg)) + "+order:random");
+                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tags)) + "+sort:random");
+            else if (NoMoreThanTwoTags())
+                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tags), "random=true")); // +order:random count as a tag so we use random=true instead to save one
+            else
+                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tags)) + "+order:random");
         }
 
         /// <summary>

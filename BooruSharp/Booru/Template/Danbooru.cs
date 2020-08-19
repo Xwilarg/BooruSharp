@@ -15,11 +15,11 @@ namespace BooruSharp.Booru.Template
 
         protected internal override JToken ParseFirstPostSearchResult(object json)
         {
-            var array = json as JArray;
-            var elem = array == null ? ((JToken)json) : array.FirstOrDefault();
-            if (elem == null)
-                throw new Search.InvalidTags();
-            return elem;
+            JToken token = json is JArray array
+                ? array.FirstOrDefault()
+                : json as JToken;
+
+            return token ?? throw new Search.InvalidTags();
         }
 
         protected internal override Search.Post.SearchResult GetPostSearchResult(JToken elem)
@@ -29,12 +29,12 @@ namespace BooruSharp.Booru.Template
             var id = elem["id"];
             var md5 = elem["md5"];
             return new Search.Post.SearchResult(
-                    url == null ? null : new Uri(url.Value<string>()),
-                    previewUrl == null ? null : new Uri(previewUrl.Value<string>()),
-                    id == null ? null : new Uri(_baseUrl + "/posts/" + elem["id"].Value<int>()),
+                    url != null ? new Uri(url.Value<string>()) : null,
+                    previewUrl != null ? new Uri(previewUrl.Value<string>()) : null,
+                    id != null ? new Uri(_baseUrl + "/posts/" + id.Value<int>()) : null,
                     GetRating(elem["rating"].Value<string>()[0]),
                     elem["tag_string"].Value<string>().Split(' '),
-                    id == null ? 0 : elem["id"].Value<int>(),
+                    id?.Value<int>() ?? 0,
                     elem["file_size"].Value<int>(),
                     elem["image_height"].Value<int>(),
                     elem["image_width"].Value<int>(),
@@ -43,28 +43,18 @@ namespace BooruSharp.Booru.Template
                     elem["created_at"].Value<DateTime>(),
                     elem["source"].Value<string>(),
                     elem["score"].Value<int>(),
-                    md5 == null ? null : md5.Value<string>()
+                    md5?.Value<string>()
                 );
         }
 
         protected internal override Search.Post.SearchResult[] GetPostsSearchResult(object json)
         {
-            var arr = json as JArray;
-            if (arr == null)
-            {
-                var token = (JToken)json;
-                if (token == null)
-                    return new Search.Post.SearchResult[0];
-                return new Search.Post.SearchResult[1] { GetPostSearchResult(((JToken)json)["post"]) };
-            }
-            Search.Post.SearchResult[] res = new Search.Post.SearchResult[arr.Count];
-            int i = 0;
-            foreach (var elem in arr)
-            {
-                res[i] = GetPostSearchResult(elem);
-                i++;
-            }
-            return res;
+            if (json is JArray array)
+                return array.Select(GetPostSearchResult).ToArray();
+            else if (json is JToken token)
+                return new[] { GetPostSearchResult(token["post"]) };
+            else
+                return Array.Empty<Search.Post.SearchResult>();
         }
 
         protected internal override Search.Comment.SearchResult GetCommentSearchResult(object json)

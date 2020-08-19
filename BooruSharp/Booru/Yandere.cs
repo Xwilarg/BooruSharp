@@ -5,7 +5,6 @@
         public Yandere() : base("yande.re", BooruOptions.noLastComments)
         { }
 
-        public override bool IsSafe()
-            => false;
+        public override bool IsSafe() => false;
     }
 }

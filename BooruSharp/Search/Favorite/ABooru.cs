@@ -18,23 +18,19 @@ namespace BooruSharp.Booru
         {
             if (!HasFavoriteAPI())
                 throw new FeatureUnavailable();
+
             if (Auth == null)
                 throw new AuthentificationRequired();
-            int res;
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_baseUrl + "/public/addfav.php?id=" + postId);
-            request.Headers["Cookie"] = "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash;
-            request.UserAgent = "Mozilla/5.0 BooruSharp";
-            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-            using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
-            using (Stream stream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                var answer = await reader.ReadToEndAsync();
-                if (answer.Length == 0)
-                    throw new InvalidPostId();
-                res = int.Parse(answer);
-            }
-            if (res == 2)
+
+            HttpWebRequest request = CreateAuthRequest(_baseUrl + "/public/addfav.php?id=" + postId);
+            string response = await GetAuthResponseAndReadToEndAsync(request);
+
+            if (response.Length == 0)
+                throw new InvalidPostId();
+
+            int result = int.Parse(response);
+
+            if (result == 2)
                 throw new AuthentificationInvalid();
         }
 
@@ -49,20 +45,36 @@ namespace BooruSharp.Booru
         {
             if (!HasFavoriteAPI())
                 throw new FeatureUnavailable();
+
             if (Auth == null)
                 throw new AuthentificationRequired();
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_baseUrl + "/index.php?page=favorites&s=delete&id=" + postId);
-            request.Headers["Cookie"] = "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash;
-            request.UserAgent = "Mozilla/5.0 BooruSharp";
-            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+
+            HttpWebRequest request = CreateAuthRequest(_baseUrl + "/index.php?page=favorites&s=delete&id=" + postId);
+            string response = await GetAuthResponseAndReadToEndAsync(request);
+
+            // If the HTML contains the word "Login" we were probably sent back to the authentification form
+            if (response.Contains("Login")) 
+                throw new AuthentificationInvalid();
+        }
+
+        private static async Task<string> GetAuthResponseAndReadToEndAsync(HttpWebRequest request)
+        {
             using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
             using (Stream stream = response.GetResponseStream())
             using (StreamReader reader = new StreamReader(stream))
             {
-                var answer = await reader.ReadToEndAsync();
-                if (answer.Contains("Login")) // If the HTML contains the word "Login" we were probably sent back to the authentification form
-                    throw new AuthentificationInvalid();
+                return await reader.ReadToEndAsync();
             }
+        }
+
+        private HttpWebRequest CreateAuthRequest(string requestUrl)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUrl);
+            request.Headers["Cookie"] = "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash;
+            request.UserAgent = _userAgentHeaderValue;
+            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+
+            return request;
         }
     }
 }

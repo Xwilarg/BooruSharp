@@ -50,18 +50,8 @@ namespace BooruSharp.Booru.Template
 
         protected internal override JToken ParseFirstPostSearchResult(object json)
         {
-            JToken elem;
-            try
-            {
-                elem = ((JArray)json).FirstOrDefault();
-            }
-            catch (ArgumentNullException)
-            {
-                throw new Search.InvalidTags();
-            }
-            if (elem == null)
-                throw new Search.InvalidTags();
-            return elem;
+            JArray array = json as JArray;
+            return array?.FirstOrDefault() ?? throw new Search.InvalidTags();
         }
 
         protected internal override Search.Post.SearchResult GetPostSearchResult(JToken elem)
@@ -90,23 +80,9 @@ namespace BooruSharp.Booru.Template
 
         protected internal override Search.Post.SearchResult[] GetPostsSearchResult(object json)
         {
-            var arr = (JArray)json;
-            Search.Post.SearchResult[] res;
-            try
-            {
-                res = new Search.Post.SearchResult[arr.Count];
-            }
-            catch (NullReferenceException)
-            {
-                return new Search.Post.SearchResult[0];
-            }
-            int i = 0;
-            foreach (var elem in arr)
-            {
-                res[i] = GetPostSearchResult(elem);
-                i++;
-            }
-            return res;
+            return json is JArray array
+                ? array.Select(GetPostSearchResult).ToArray()
+                : Array.Empty<Search.Post.SearchResult>();
         }
 
         protected internal override Search.Comment.SearchResult GetCommentSearchResult(object json)
@@ -116,7 +92,7 @@ namespace BooruSharp.Booru.Template
             return new Search.Comment.SearchResult(
                 int.Parse(elem.Attributes.GetNamedItem("id").Value),
                 int.Parse(elem.Attributes.GetNamedItem("post_id").Value),
-                creatorId.InnerText == "" ? (int?)null : int.Parse(creatorId.Value),
+                creatorId.InnerText.Length > 0 ? int.Parse(creatorId.Value) : (int?)null,
                 DateTime.ParseExact(elem.Attributes.GetNamedItem("created_at").Value, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
                 elem.Attributes.GetNamedItem("creator").Value,
                 elem.Attributes.GetNamedItem("body").Value
@@ -129,7 +105,7 @@ namespace BooruSharp.Booru.Template
         {
             var elem = (JObject)json;
             return new Search.Tag.SearchResult(
-                int.Parse(elem["id"].Value<string>()),
+                elem["id"].Value<int>(),
                 elem["tag"].Value<string>(),
                 StringToTagType(elem["type"].Value<string>()),
                 elem["count"].Value<int>()

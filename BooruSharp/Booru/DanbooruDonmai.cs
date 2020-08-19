@@ -5,7 +5,6 @@
         public DanbooruDonmai() : base("danbooru.donmai.us", BooruOptions.noMoreThan2Tags)
         { }
 
-        public override bool IsSafe()
-            => false;
+        public override bool IsSafe() => false;
     }
 }

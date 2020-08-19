@@ -16,23 +16,21 @@ namespace BooruSharp.Booru.Template
 
         protected internal override JToken ParseFirstPostSearchResult(object json)
         {
-            var elem = ((JArray)json).FirstOrDefault();
-            if (elem == null)
-                throw new Search.InvalidTags();
-            return elem;
+            JArray array = json as JArray;
+            return array?.FirstOrDefault() ?? throw new Search.InvalidTags();
         }
 
         protected internal override Search.Post.SearchResult GetPostSearchResult(JToken elem)
         {
-            List<string> tags = new List<string>();
-            foreach (JObject tag in (JArray)elem["tags"])
-                tags.Add(tag["name"].Value<string>());
+            string[] tags = (from tag in (JArray)elem["tags"]
+                             select tag["name"].Value<string>()).ToArray();
+
             return new Search.Post.SearchResult(
                     new Uri(elem["file_url"].Value<string>()),
                     new Uri(elem["preview_url"].Value<string>()),
                     new Uri(_baseUrl.Replace("capi-v2", "beta") + "/post/show/" + elem["id"].Value<int>()),
                     GetRating(elem["rating"].Value<string>()[0]),
-                    tags.ToArray(),
+                    tags,
                     elem["id"].Value<int>(),
                     elem["file_size"].Value<int>(),
                     elem["height"].Value<int>(),
@@ -48,15 +46,9 @@ namespace BooruSharp.Booru.Template
 
         protected internal override Search.Post.SearchResult[] GetPostsSearchResult(object json)
         {
-            var arr = (JArray)json;
-            Search.Post.SearchResult[] res = new Search.Post.SearchResult[arr.Count];
-            int i = 0;
-            foreach (var elem in arr)
-            {
-                res[i] = GetPostSearchResult(elem);
-                i++;
-            }
-            return res;
+            return json is JArray array
+                ? array.Select(GetPostSearchResult).ToArray()
+                : Array.Empty<Search.Post.SearchResult>();
         }
 
         protected internal override Search.Comment.SearchResult GetCommentSearchResult(object json)
