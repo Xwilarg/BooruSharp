@@ -513,11 +513,11 @@ namespace BooruSharp.UnitTests
         {
             var booru = new Gelbooru();
             HttpClient hc = new HttpClient();
-            hc.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp-UnitTests");
+            hc.DefaultRequestHeaders.Add("User-Agent", "BooruSharp.Unit-Tests");
             booru.HttpClient = hc;
             await General.CheckGetRandom(booru, "kantai_collection");
             Assert.Single(hc.DefaultRequestHeaders.GetValues("User-Agent"));
-            Assert.Contains("Mozilla/5.0 BooruSharp-UnitTests", hc.DefaultRequestHeaders.GetValues("User-Agent"));
+            Assert.Contains("BooruSharp.Unit-Tests", hc.DefaultRequestHeaders.GetValues("User-Agent"));
         }
 
         [Theory]
