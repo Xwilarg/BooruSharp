@@ -295,19 +295,19 @@ namespace BooruSharp.Others
 
         public enum RankingMode
         {
-            Daily = 0,
-            Weekly = 1,
-            Monthly = 2,
-            Popular_among_male_users = 3,
-            Popular_among_female_users = 4,
-            Original = 5,
-            Manga_Rookie = 6,
-            Manga_Daily = 7,
-            R18_Daily = 8,
-            R18_Weekly = 9,
-            R18_Popular_among_male_users = 10,
-            R18_Popular_among_female_users = 11,
-            R18G_Weekly = 12
+            Daily,
+            Weekly,
+            Monthly,
+            PopularAmongMaleUsers,
+            PopularAmongFemaleUsers,
+            Original,
+            MangaRookie,
+            MangaDaily,
+            DailyR18,
+            WeeklyR18,
+            PopularAmongMaleUsersR18,
+            PopularAmongFemaleUsersR18,
+            WeeklyR18G
         }
 
         static private Dictionary<RankingMode, string> rankingModeValues = new Dictionary<RankingMode, string>
@@ -315,16 +315,16 @@ namespace BooruSharp.Others
             { RankingMode.Daily, "day" },
             { RankingMode.Weekly, "week" },
             { RankingMode.Monthly, "month" },
-            { RankingMode.Popular_among_male_users, "day_male" },
-            { RankingMode.Popular_among_female_users, "day_female" },
+            { RankingMode.PopularAmongMaleUsers, "day_male" },
+            { RankingMode.PopularAmongFemaleUsers, "day_female" },
             { RankingMode.Original, "week_original" },
-            { RankingMode.Manga_Rookie, "week_rookie" },
-            { RankingMode.Manga_Daily, "day_manga" },
-            { RankingMode.R18_Daily, "day_r18" },
-            { RankingMode.R18_Weekly, "week_r18" },
-            { RankingMode.R18_Popular_among_male_users, "day_male_r18" },
-            { RankingMode.R18_Popular_among_female_users, "day_female_r18" },
-            { RankingMode.R18G_Weekly, "week_r18g" }
+            { RankingMode.MangaRookie, "week_rookie" },
+            { RankingMode.MangaDaily, "day_manga" },
+            { RankingMode.DailyR18, "day_r18" },
+            { RankingMode.WeeklyR18, "week_r18" },
+            { RankingMode.PopularAmongMaleUsersR18, "day_male_r18" },
+            { RankingMode.PopularAmongFemaleUsersR18, "day_female_r18" },
+            { RankingMode.WeeklyR18G, "week_r18g" }
         };
 
         private SearchResult[] ParseSearchResults(JArray array)
