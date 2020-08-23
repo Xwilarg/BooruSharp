@@ -24,6 +24,29 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Test
-      run: dotnet test || true
+      env:
+        GELBOORU_USER_ID: ${{ secrets.GELBOORU_USER_ID }}
+        GELBOORU_PASSWORD_HASH: ${{ secrets.GELBOORU_PASSWORD_HASH }}
+        FURRYBOORU_USER_ID: ${{ secrets.FURRYBOORU_USER_ID }}
+        FURRYBOORU_PASSWORD_HASH: ${{ secrets.FURRYBOORU_PASSWORD_HASH }}
+        KONACHAN_USER_ID: ${{ secrets.KONACHAN_USER_ID }}
+        KONACHAN_PASSWORD_HASH: ${{ secrets.KONACHAN_PASSWORD_HASH }}
+        LOLIBOORU_USER_ID: ${{ secrets.LOLIBOORU_USER_ID }}
+        LOLIBOORU_PASSWORD_HASH: ${{ secrets.LOLIBOORU_PASSWORD_HASH }}
+        REALBOORU_USER_ID: ${{ secrets.REALBOORU_USER_ID }}
+        REALBOORU_PASSWORD_HASH: ${{ secrets.REALBOORU_PASSWORD_HASH }}
+        RULE34_USER_ID: ${{ secrets.RULE34_USER_ID }}
+        RULE34_PASSWORD_HASH: ${{ secrets.RULE34_PASSWORD_HASH }}
+        SAFEBOORU_USER_ID: ${{ secrets.SAFEBOORU_USER_ID }}
+        SAFEBOORU_PASSWORD_HASH: ${{ secrets.SAFEBOORU_PASSWORD_HASH }}
+        SAKUGABOORU_USER_ID: ${{ secrets.SAKUGABOORU_USER_ID }}
+        SAKUGABOORU_PASSWORD_HASH: ${{ secrets.SAKUGABOORU_PASSWORD_HASH }}
+        XBOORU_USER_ID: ${{ secrets.XBOORU_USER_ID }}
+        XBOORU_PASSWORD_HASH: ${{ secrets.XBOORU_PASSWORD_HASH }}
+        YANDERE_USER_ID: ${{ secrets.YANDERE_USER_ID }}
+        YANDERE_PASSWORD_HASH: ${{ secrets.YANDERE_PASSWORD_HASH }}
+        PIXIV_USER_ID: ${{ secrets.PIXIV_USER_ID }}
+        PIXIV_PASSWORD: ${{ secrets.PIXIV_PASSWORD }}
+      run: dotnet test --no-restore --verbosity normal
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1

@@ -41,7 +41,7 @@ namespace BooruSharp.Booru
         /// <param name="tagsArg">Tags for which you want the number of posts about (optional)</param>
         public virtual async Task<int> GetPostCountAsync(params string[] tagsArg)
         {
-            if (_imageUrlXml == null)
+            if (!HasPostCountAPI())
                 throw new Search.FeatureUnavailable();
             if (tagsArg == null) tagsArg = new string[0];
             else tagsArg = tagsArg.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
@@ -89,18 +89,14 @@ namespace BooruSharp.Booru
         /// <param name="tagsArg">Tags that must be contained in the post (optional)</param>
         public virtual async Task<Search.Post.SearchResult[]> GetRandomPostsAsync(int limit, params string[] tagsArg)
         {
+            if (!HasMultipleRandomAPI())
+                throw new Search.FeatureUnavailable();
             if (tagsArg == null) tagsArg = new string[0];
             else tagsArg = tagsArg.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
             if (tagsArg.Length > 2 && NoMoreThanTwoTags())
                 throw new Search.TooManyTags();
             if (_format == UrlFormat.indexPhp)
-            {
-                if (this is Template.Gelbooru)
-                    return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tagsArg)) + "+sort:random");
-                if (limit == 1)
-                    return new[] { await GetRandomPostAsync(tagsArg) };
-                throw new Search.FeatureUnavailable();
-            }
+                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tagsArg)) + "+sort:random");
             if (NoMoreThanTwoTags())
                 return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tagsArg), "random=true")); // +order:random count as a tag so we use random=true instead to save one
             return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tagsArg)) + "+order:random");
@@ -125,13 +121,16 @@ namespace BooruSharp.Booru
             return GetPostsSearchResult(JsonConvert.DeserializeObject(await GetJsonAsync(url)));
         }
 
-        protected internal Search.Post.Rating GetRating(char c)
+        /// <summary>
+        /// Convert letter to its maching Search.Post.Rating
+        /// </summary>
+        protected Search.Post.Rating GetRating(char c)
         {
             switch (c)
             {
-                case 's': return Search.Post.Rating.Safe;
-                case 'q': return Search.Post.Rating.Questionable;
-                case 'e': return Search.Post.Rating.Explicit;
+                case 's': case 'S': return Search.Post.Rating.Safe;
+                case 'q': case 'Q': return Search.Post.Rating.Questionable;
+                case 'e': case 'E': return Search.Post.Rating.Explicit;
                 default: throw new ArgumentException("Invalid rating " + c);
             }
         }

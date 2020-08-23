@@ -26,14 +26,15 @@ namespace BooruSharp.Booru.Template
         {
             var url = elem["file_url"];
             var previewUrl = elem["preview_file_url"];
+            var id = elem["id"];
             var md5 = elem["md5"];
             return new Search.Post.SearchResult(
                     url == null ? null : new Uri(url.Value<string>()),
                     previewUrl == null ? null : new Uri(previewUrl.Value<string>()),
-                    new Uri(_baseUrl + "/posts/" + elem["id"].Value<int>()),
+                    id == null ? null : new Uri(_baseUrl + "/posts/" + elem["id"].Value<int>()),
                     GetRating(elem["rating"].Value<string>()[0]),
                     elem["tag_string"].Value<string>().Split(' '),
-                    elem["id"].Value<int>(),
+                    id == null ? 0 : elem["id"].Value<int>(),
                     elem["file_size"].Value<int>(),
                     elem["image_height"].Value<int>(),
                     elem["image_width"].Value<int>(),

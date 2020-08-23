@@ -89,6 +89,11 @@ namespace BooruSharp.Booru
         /// </summary>
         public bool HasFavoriteAPI()
             => !_options.HasFlag(BooruOptions.noFavorite);
+        /// <summary>
+        /// Booru having this flag can't call post function without giving arguments
+        /// </summary>
+        public bool NoEmptyPostSearch()
+            => _options.HasFlag(BooruOptions.noEmptyPostSearch);
 
         /// <summary>
         /// Gets a value indicating whether http:// scheme is used instead of https://.
