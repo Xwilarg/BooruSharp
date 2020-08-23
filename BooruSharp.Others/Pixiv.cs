@@ -123,6 +123,11 @@ namespace BooruSharp.Others
             var responseToken = jsonToken["response"];
 
             AccessToken = responseToken["access_token"].Value<string>();
+
+            // Failback
+            if (string.IsNullOrWhiteSpace(AccessToken))
+                throw new AuthentificationInvalid();
+
             _refreshTime = DateTime.Now.AddSeconds(responseToken["expires_in"].Value<int>());
         }
 
@@ -268,6 +273,30 @@ namespace BooruSharp.Others
             return Uri.EscapeDataString(joined);
         }
 
+        /// <param name="mode">Safe: day, week, month, day_male, day_female, week_original, week_rookie, day_manga<br/>
+        /// R-18: day_r18, week_r18, day_male_r18, day_female_r18<br/>
+        /// R-18G: week_r18g</param>
+        public async Task<SearchResult[]> GetRankingAsync(string mode = "day", int offset = 0, DateTime? date = null)
+        {
+            if (AccessToken == null)
+                throw new AuthentificationRequired();
+            await CheckUpdateTokenAsync();
+            string url = _baseUrl + "/v1/illust/ranking?mode=" + mode;
+            if (offset != 0)
+                url += "&offset=" + offset;
+            if (date.HasValue)
+                url += "&date=" + date.Value.ToString("yyyy-MM-dd");
+            Console.WriteLine(url);
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            request.Headers.Add("Authorization", "Bearer " + AccessToken);
+
+            var http = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            if (!http.IsSuccessStatusCode)
+                throw new Exception(http.StatusCode.ToString()); //ToDo: Implement exception
+            JToken json = (JToken)JsonConvert.DeserializeObject(await http.Content.ReadAsStringAsync());
+            return ParseSearchResults((JArray)json["illusts"]);
+        }
+
         private SearchResult[] ParseSearchResults(JArray array)
         {
             return array.Select(ParseSearchResult).ToArray();
@@ -277,11 +306,18 @@ namespace BooruSharp.Others
         {
             var tags = post["tags"].Select(x => x["name"].Value<string>()).ToList();
 
-            bool isNsfw = tags.Contains("R-18");
-            if (isNsfw)
+            vai isNsfw = false;
+            if (tags.Contains("R-18"))
             {
                 tags.Remove("R-18");
+                isNsfw = true;
             }
+            if (tags.Contains("R-18G"))
+            {
+                tags.Remove("R-18G");
+                isNsfw = true;
+            }
+
 
             var originalImageUrlToken =
                  // If there's multiple image URLs, get the first one.
