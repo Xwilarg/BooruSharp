@@ -283,7 +283,6 @@ namespace BooruSharp.Others
                 url += "&offset=" + offset;
             if (date.HasValue)
                 url += "&date=" + date.Value.ToString("yyyy-MM-dd");
-            Console.WriteLine(url);
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
 
@@ -311,7 +310,7 @@ namespace BooruSharp.Others
             R18G_Weekly = 12
         }
 
-        static private Dictionary<RankingMode, string> rankingModeValues = new Dictionary<RankingMode, string>()
+        static private Dictionary<RankingMode, string> rankingModeValues = new Dictionary<RankingMode, string>
         {
             { RankingMode.Daily, "day" },
             { RankingMode.Weekly, "week" },
