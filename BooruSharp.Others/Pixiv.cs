@@ -273,15 +273,12 @@ namespace BooruSharp.Others
             return Uri.EscapeDataString(joined);
         }
 
-        /// <param name="mode">Safe: day, week, month, day_male, day_female, week_original, week_rookie, day_manga<br/>
-        /// R-18: day_r18, week_r18, day_male_r18, day_female_r18<br/>
-        /// R-18G: week_r18g</param>
-        public async Task<SearchResult[]> GetRankingAsync(string mode = "day", int offset = 0, DateTime? date = null)
+        public async Task<SearchResult[]> GetRankingAsync(RankingMode mode = RankingMode.Daily, int offset = 0, DateTime? date = null)
         {
             if (AccessToken == null)
                 throw new AuthentificationRequired();
             await CheckUpdateTokenAsync();
-            string url = _baseUrl + "/v1/illust/ranking?mode=" + mode;
+            string url = _baseUrl + "/v1/illust/ranking?mode=" + rankingModeValues[mode];
             if (offset != 0)
                 url += "&offset=" + offset;
             if (date.HasValue)
@@ -296,6 +293,40 @@ namespace BooruSharp.Others
             JToken json = (JToken)JsonConvert.DeserializeObject(await http.Content.ReadAsStringAsync());
             return ParseSearchResults((JArray)json["illusts"]);
         }
+
+        public enum RankingMode
+        {
+            Daily = 0,
+            Weekly = 1,
+            Monthly = 2,
+            Popular_among_male_users = 3,
+            Popular_among_female_users = 4,
+            Original = 5,
+            Manga_Rookie = 6,
+            Manga_Daily = 7,
+            R18_Daily = 8,
+            R18_Weekly = 9,
+            R18_Popular_among_male_users = 10,
+            R18_Popular_among_female_users = 11,
+            R18G_Weekly = 12
+        }
+
+        static private Dictionary<RankingMode, string> rankingModeValues = new Dictionary<RankingMode, string>()
+        {
+            { RankingMode.Daily, "day" },
+            { RankingMode.Weekly, "week" },
+            { RankingMode.Monthly, "month" },
+            { RankingMode.Popular_among_male_users, "day_male" },
+            { RankingMode.Popular_among_female_users, "day_female" },
+            { RankingMode.Original, "week_original" },
+            { RankingMode.Manga_Rookie, "week_rookie" },
+            { RankingMode.Manga_Daily, "day_manga" },
+            { RankingMode.R18_Daily, "day_r18" },
+            { RankingMode.R18_Weekly, "week_r18" },
+            { RankingMode.R18_Popular_among_male_users, "day_male_r18" },
+            { RankingMode.R18_Popular_among_female_users, "day_female_r18" },
+            { RankingMode.R18G_Weekly, "week_r18g" }
+        };
 
         private SearchResult[] ParseSearchResults(JArray array)
         {
