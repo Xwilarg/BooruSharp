@@ -17,7 +17,7 @@ namespace BooruSharp.Booru
                 throw new Search.FeatureUnavailable();
 
             if (query == null)
-                throw new ArgumentNullException("Argument can't be null");
+                throw new ArgumentNullException(nameof(query));
 
             var array = JsonConvert.DeserializeObject<JArray>(
                 await GetJsonAsync(CreateUrl(_wikiUrl, SearchArg(_format == UrlFormat.danbooru ? "title" : "query") + query)));

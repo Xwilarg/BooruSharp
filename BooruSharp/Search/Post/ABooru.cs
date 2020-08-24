@@ -18,7 +18,7 @@ namespace BooruSharp.Booru
                 throw new Search.FeatureUnavailable();
 
             if (md5 == null)
-                throw new ArgumentNullException("Argument can't be null");
+                throw new ArgumentNullException(nameof(md5));
 
             return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", "md5=" + md5));
         }
@@ -152,7 +152,7 @@ namespace BooruSharp.Booru
                 case 's': case 'S': return Search.Post.Rating.Safe;
                 case 'q': case 'Q': return Search.Post.Rating.Questionable;
                 case 'e': case 'E': return Search.Post.Rating.Explicit;
-                default: throw new ArgumentException("Invalid rating " + c);
+                default: throw new ArgumentException($"Invalid rating '{c}'.", nameof(c));
             }
         }
     }

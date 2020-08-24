@@ -26,7 +26,7 @@ namespace BooruSharp.Booru.Template
         public async override Task<Search.Post.SearchResult> GetPostByMd5Async(string md5)
         {
             if (md5 == null)
-                throw new ArgumentNullException("Argument can't be null");
+                throw new ArgumentNullException(nameof(md5));
 
             // Create a URL that will redirect us to Gelbooru post URL containing post ID.
             string url = $"{_baseUrl}/index.php?page=post&s=list&md5={md5}";
@@ -130,7 +130,7 @@ namespace BooruSharp.Booru.Template
                 case "Oct": return "10";
                 case "Nov": return "11";
                 case "Dec": return "12";
-                default: throw new ArgumentException("Invalid month " + value);
+                default: throw new ArgumentException($"Invalid month '{value}'.", nameof(value));
             }
         }
     }

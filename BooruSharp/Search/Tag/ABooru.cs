@@ -19,7 +19,7 @@ namespace BooruSharp.Booru
                 throw new Search.FeatureUnavailable();
 
             if (name == null)
-                throw new ArgumentNullException("Argument can't be null");
+                throw new ArgumentNullException(nameof(name));
 
             return await SearchTagAsync(name, null);
         }
@@ -46,7 +46,7 @@ namespace BooruSharp.Booru
                 throw new Search.FeatureUnavailable();
 
             if (name == null)
-                throw new ArgumentNullException("Argument can't be null");
+                throw new ArgumentNullException(nameof(name));
 
             var urlTags = new List<string>() { SearchArg("name") + name };
 
@@ -127,7 +127,7 @@ namespace BooruSharp.Booru
                 if (comparer.Equals(value, type.ToString()))
                     return type;
 
-            throw new ArgumentException("Invalid tag " + value);
+            throw new ArgumentException($"Invalid tag '{value}'.", nameof(value));
         }
     }
 }

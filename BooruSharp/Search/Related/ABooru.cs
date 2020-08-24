@@ -18,7 +18,7 @@ namespace BooruSharp.Booru
                 throw new Search.FeatureUnavailable();
 
             if (tag == null)
-                throw new ArgumentNullException("Argument can't be null");
+                throw new ArgumentNullException(nameof(tag));
 
             bool isDanbooruFormat = _format == UrlFormat.danbooru;
 
