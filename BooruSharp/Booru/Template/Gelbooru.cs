@@ -3,7 +3,6 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
@@ -56,25 +55,24 @@ namespace BooruSharp.Booru.Template
 
         protected internal override Search.Post.SearchResult GetPostSearchResult(JToken elem)
         {
-            Match match = Regex.Match(elem["created_at"].Value<string>(), "[\\w]{3} ([\\w]{3}) ([0-9]{2}) ([0-9:]{8}) ([-+0-9]{5}) ([0-9]{4})");
-            string timezone = match.Groups[4].Value;
-            string dt = match.Groups[5] + "-" + GetMonth(match.Groups[1].Value) + "-" + match.Groups[2].Value + "T" + match.Groups[3].Value + ".0000000" + timezone.Substring(0, 3) + ":" + timezone.Substring(3, 2);
+            const string gelbooruTimeFormat = "ddd MMM dd HH:mm:ss zzz yyyy";
+
             return new Search.Post.SearchResult(
-                    new Uri(elem["file_url"].Value<string>()),
-                    new Uri("https://gelbooru.com/thumbnails/" + elem["directory"].Value<string>() + "/thumbnail_" + elem["image"].Value<string>()),
-                    new Uri(_baseUrl + "/index.php?page=post&s=view&id=" + elem["id"].Value<int>()),
-                    GetRating(elem["rating"].Value<string>()[0]),
-                    elem["tags"].Value<string>().Split(' '),
-                    elem["id"].Value<int>(),
-                    null,
-                    elem["height"].Value<int>(),
-                    elem["width"].Value<int>(),
-                    null,
-                    null,
-                    DateTime.Parse(dt),
-                    elem["source"].Value<string>(),
-                    elem["score"].Value<int>(),
-                    elem["hash"].Value<string>()
+                new Uri(elem["file_url"].Value<string>()),
+                new Uri("https://gelbooru.com/thumbnails/" + elem["directory"].Value<string>() + "/thumbnail_" + elem["image"].Value<string>()),
+                new Uri(_baseUrl + "/index.php?page=post&s=view&id=" + elem["id"].Value<int>()),
+                GetRating(elem["rating"].Value<string>()[0]),
+                elem["tags"].Value<string>().Split(' '),
+                elem["id"].Value<int>(),
+                null,
+                elem["height"].Value<int>(),
+                elem["width"].Value<int>(),
+                null,
+                null,
+                DateTime.ParseExact(elem["created_at"].Value<string>(), gelbooruTimeFormat, CultureInfo.InvariantCulture),
+                elem["source"].Value<string>(),
+                elem["score"].Value<int>(),
+                elem["hash"].Value<string>()
                 );
         }
 
@@ -113,25 +111,5 @@ namespace BooruSharp.Booru.Template
         }
 
         // GetRelatedSearchResult not available
-
-        private string GetMonth(string value)
-        {
-            switch (value)
-            {
-                case "Jan": return "01";
-                case "Feb": return "02";
-                case "Mar": return "03";
-                case "Apr": return "04";
-                case "May": return "05";
-                case "Jun": return "06";
-                case "Jul": return "07";
-                case "Aug": return "08";
-                case "Sep": return "09";
-                case "Oct": return "10";
-                case "Nov": return "11";
-                case "Dec": return "12";
-                default: throw new ArgumentException($"Invalid month '{value}'.", nameof(value));
-            }
-        }
     }
 }
