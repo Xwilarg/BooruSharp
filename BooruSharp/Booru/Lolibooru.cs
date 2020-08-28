@@ -9,7 +9,7 @@ namespace BooruSharp.Booru
 
         public override bool IsSafe() => false;
 
-        protected internal override Search.Tag.SearchResult GetTagSearchResult(object json)
+        private protected override Search.Tag.SearchResult GetTagSearchResult(object json)
         {
             var elem = (JObject)json;
             return new Search.Tag.SearchResult(

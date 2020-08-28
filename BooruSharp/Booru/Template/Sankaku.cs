@@ -14,13 +14,13 @@ namespace BooruSharp.Booru.Template
         public Sankaku(string url, BooruOptions options = BooruOptions.none) : base(url, UrlFormat.sankaku, options | BooruOptions.noRelated | BooruOptions.noPostByMd5 | BooruOptions.noPostById | BooruOptions.noPostCount | BooruOptions.noFavorite | BooruOptions.noTagById)
         { }
 
-        protected internal override JToken ParseFirstPostSearchResult(object json)
+        private protected override JToken ParseFirstPostSearchResult(object json)
         {
             JArray array = json as JArray;
             return array?.FirstOrDefault() ?? throw new Search.InvalidTags();
         }
 
-        protected internal override Search.Post.SearchResult GetPostSearchResult(JToken elem)
+        private protected override Search.Post.SearchResult GetPostSearchResult(JToken elem)
         {
             string[] tags = (from tag in (JArray)elem["tags"]
                              select tag["name"].Value<string>()).ToArray();
@@ -44,14 +44,14 @@ namespace BooruSharp.Booru.Template
                 );
         }
 
-        protected internal override Search.Post.SearchResult[] GetPostsSearchResult(object json)
+        private protected override Search.Post.SearchResult[] GetPostsSearchResult(object json)
         {
             return json is JArray array
                 ? array.Select(GetPostSearchResult).ToArray()
                 : Array.Empty<Search.Post.SearchResult>();
         }
 
-        protected internal override Search.Comment.SearchResult GetCommentSearchResult(object json)
+        private protected override Search.Comment.SearchResult GetCommentSearchResult(object json)
         {
             var elem = (JObject)json;
             return new Search.Comment.SearchResult(
@@ -64,7 +64,7 @@ namespace BooruSharp.Booru.Template
                 );
         }
 
-        protected internal override Search.Wiki.SearchResult GetWikiSearchResult(object json)
+        private protected override Search.Wiki.SearchResult GetWikiSearchResult(object json)
         {
             var elem = (JObject)json;
             return new Search.Wiki.SearchResult(
@@ -76,7 +76,7 @@ namespace BooruSharp.Booru.Template
                 );
         }
 
-        protected internal override Search.Tag.SearchResult GetTagSearchResult(object json) // TODO: Fix TagType values
+        private protected override Search.Tag.SearchResult GetTagSearchResult(object json) // TODO: Fix TagType values
         {
             var elem = (JObject)json;
             return new Search.Tag.SearchResult(

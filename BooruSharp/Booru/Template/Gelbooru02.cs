@@ -21,13 +21,13 @@ namespace BooruSharp.Booru.Template
             _url = url;
         }
 
-        protected internal override JToken ParseFirstPostSearchResult(object json)
+        private protected override JToken ParseFirstPostSearchResult(object json)
         {
             JArray array = json as JArray;
             return array?.FirstOrDefault() ?? throw new Search.InvalidTags();
         }
 
-        protected internal override Search.Post.SearchResult GetPostSearchResult(JToken elem)
+        private protected override Search.Post.SearchResult GetPostSearchResult(JToken elem)
         {
             return new Search.Post.SearchResult(
                 new Uri("http" + (UsesHttp() ? "" : "s") + "://" + _url + "//images/" + elem["directory"].Value<string>() + "/" + elem["image"].Value<string>()),
@@ -48,14 +48,14 @@ namespace BooruSharp.Booru.Template
                 );
         }
 
-        protected internal override Search.Post.SearchResult[] GetPostsSearchResult(object json)
+        private protected override Search.Post.SearchResult[] GetPostsSearchResult(object json)
         {
             return json is JArray array 
                 ? array.Select(GetPostSearchResult).ToArray()
                 : Array.Empty<Search.Post.SearchResult>();
         }
 
-        protected internal override Search.Comment.SearchResult GetCommentSearchResult(object json)
+        private protected override Search.Comment.SearchResult GetCommentSearchResult(object json)
         {
             var elem = (XmlNode)json;
             XmlNode creatorId = elem.Attributes.GetNamedItem("creator_id");
@@ -71,7 +71,7 @@ namespace BooruSharp.Booru.Template
 
         // GetWikiSearchResult not available
 
-        protected internal override Search.Tag.SearchResult GetTagSearchResult(object json)
+        private protected override Search.Tag.SearchResult GetTagSearchResult(object json)
         {
             var elem = (XmlNode)json;
             return new Search.Tag.SearchResult(

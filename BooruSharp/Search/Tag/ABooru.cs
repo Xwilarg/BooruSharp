@@ -116,7 +116,7 @@ namespace BooruSharp.Booru
             throw new Search.InvalidTags();
         }
 
-        protected internal Search.Tag.TagType StringToTagType(string value)
+        private protected Search.Tag.TagType StringToTagType(string value)
         {
             StringComparer comparer = StringComparer.OrdinalIgnoreCase;
 

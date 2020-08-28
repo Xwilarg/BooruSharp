@@ -14,25 +14,25 @@ namespace BooruSharp.Booru
     {
         public abstract bool IsSafe();
 
-        protected internal virtual Search.Comment.SearchResult GetCommentSearchResult(object json)
+        private protected virtual Search.Comment.SearchResult GetCommentSearchResult(object json)
             => throw new FeatureUnavailable();
 
-        protected internal virtual Search.Post.SearchResult GetPostSearchResult(JToken obj)
+        private protected virtual Search.Post.SearchResult GetPostSearchResult(JToken obj)
             => throw new FeatureUnavailable();
 
-        protected internal virtual Search.Post.SearchResult[] GetPostsSearchResult(object json)
+        private protected virtual Search.Post.SearchResult[] GetPostsSearchResult(object json)
             => throw new FeatureUnavailable();
 
-        protected internal virtual JToken ParseFirstPostSearchResult(object json)
+        private protected virtual JToken ParseFirstPostSearchResult(object json)
             => throw new FeatureUnavailable();
 
-        protected internal virtual Search.Related.SearchResult GetRelatedSearchResult(object json)
+        private protected virtual Search.Related.SearchResult GetRelatedSearchResult(object json)
             => throw new FeatureUnavailable();
 
-        protected internal virtual Search.Tag.SearchResult GetTagSearchResult(object json)
+        private protected virtual Search.Tag.SearchResult GetTagSearchResult(object json)
             => throw new FeatureUnavailable();
 
-        protected internal virtual Search.Wiki.SearchResult GetWikiSearchResult(object json)
+        private protected virtual Search.Wiki.SearchResult GetWikiSearchResult(object json)
             => throw new FeatureUnavailable();
 
         // TODO: these flag checking methods need to be turned into properties at some point,
@@ -169,7 +169,7 @@ namespace BooruSharp.Booru
                 _commentUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "comment");
         }
 
-        protected internal static string GetUrl(UrlFormat format, string query, string squery = "index")
+        private protected static string GetUrl(UrlFormat format, string query, string squery = "index")
         {
             switch (format)
             {
@@ -239,7 +239,7 @@ namespace BooruSharp.Booru
 
         [Obsolete]
         // TODO: remove this method after removing obsolete constructors.
-        protected internal static BooruOptions[] CombineArrays(BooruOptions[] arr1, BooruOptions[] arr2)
+        private protected static BooruOptions[] CombineArrays(BooruOptions[] arr1, BooruOptions[] arr2)
         {
             var arr = new BooruOptions[arr1.Length + arr2.Length];
             arr1.CopyTo(arr, 0);
