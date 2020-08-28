@@ -38,7 +38,7 @@ namespace BooruSharp.UnitTests
         public async Task UnsetFavoriteError(Type t)
         {
             var booru = await Boorus.GetAsync(t);
-            var id = (await General.GetRandomPost(booru)).id;
+            var id = (await General.GetRandomPost(booru)).ID;
             booru.Auth = new BooruAuth("AAA", "AAA");
             if (!booru.HasFavoriteAPI())
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.RemoveFavoriteAsync(id));
@@ -139,7 +139,7 @@ namespace BooruSharp.UnitTests
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.AddFavoriteAsync(10));
             else
             {
-                var id = (await General.GetRandomPost(booru)).id;
+                var id = (await General.GetRandomPost(booru)).ID;
 
                 // Pixiv doesn't support authorization using Auth property.
                 if (!(booru is Pixiv))
@@ -181,9 +181,9 @@ namespace BooruSharp.UnitTests
                 do
                 {
                     result1 = await General.GetRandomPost(booru);
-                } while (result1.md5 == null);
-                var result2 = await booru.GetPostByMd5Async(result1.md5);
-                Assert.Equal(result1.id, result2.id);
+                } while (result1.MD5 == null);
+                var result2 = await booru.GetPostByMd5Async(result1.MD5);
+                Assert.Equal(result1.ID, result2.ID);
             }
         }
 
@@ -212,8 +212,8 @@ namespace BooruSharp.UnitTests
             else
             {
                 Search.Post.SearchResult result1 = await General.GetRandomPost(booru);
-                var result2 = await booru.GetPostByIdAsync(result1.id);
-                Assert.Equal(result1.id, result2.id);
+                var result2 = await booru.GetPostByIdAsync(result1.ID);
+                Assert.Equal(result1.ID, result2.ID);
             }
         }
 
@@ -243,7 +243,7 @@ namespace BooruSharp.UnitTests
             {
                 var results = await booru.GetLastPostsAsync();
                 Assert.NotInRange(results.Length, 0, 1);
-                Assert.NotEqual(results[0].id, results[1].id);
+                Assert.NotEqual(results[0].ID, results[1].ID);
             }
         }
 
@@ -270,11 +270,11 @@ namespace BooruSharp.UnitTests
             Search.Post.SearchResult[] results;
             results = await booru.GetLastPostsAsync(tag, tag2);
             Assert.NotInRange(results.Length, 0, 1);
-            Assert.NotEqual(results[0].id, results[1].id);
+            Assert.NotEqual(results[0].ID, results[1].ID);
             foreach (var elem in results)
             {
-                Assert.Contains(elem.tags, t => t.Contains(tag));
-                Assert.Contains(elem.tags, t => t.Contains(tag2));
+                Assert.Contains(elem.Tags, t => t.Contains(tag));
+                Assert.Contains(elem.Tags, t => t.Contains(tag2));
             }
         }
 
@@ -387,7 +387,7 @@ namespace BooruSharp.UnitTests
                 var result = await booru.GetRandomPostsAsync(int.MaxValue, tag);
                 Assert.NotEmpty(result);
                 foreach (var r in result)
-                    Assert.Contains(r.tags, t => t.Contains(tag));
+                    Assert.Contains(r.Tags, t => t.Contains(tag));
             }
         }
 
@@ -424,8 +424,8 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             var result = await booru.GetRandomPostAsync(tag, tag2);
-            Assert.Contains(result.tags, t => t.Contains(tag));
-            Assert.Contains(result.tags, t => t.Contains(tag2));
+            Assert.Contains(result.Tags, t => t.Contains(tag));
+            Assert.Contains(result.Tags, t => t.Contains(tag2));
         }
 
         [SkippableTheory]
@@ -456,8 +456,8 @@ namespace BooruSharp.UnitTests
                 Assert.NotEmpty(result);
                 foreach (var r in result)
                 {
-                    Assert.Contains(r.tags, t => t.Contains(tag));
-                    Assert.Contains(r.tags, t => t.Contains(tag2));
+                    Assert.Contains(r.Tags, t => t.Contains(tag));
+                    Assert.Contains(r.Tags, t => t.Contains(tag2));
                 }
             }
         }
@@ -493,9 +493,9 @@ namespace BooruSharp.UnitTests
             else
             {
                 result = await booru.GetRandomPostAsync(tag, tag2, tag3);
-                Assert.Contains(result.tags, x => x.Contains(tag));
-                Assert.Contains(result.tags, x => x.Contains(tag2));
-                Assert.Contains(result.tags, x => x.Contains(tag3));
+                Assert.Contains(result.Tags, x => x.Contains(tag));
+                Assert.Contains(result.Tags, x => x.Contains(tag2));
+                Assert.Contains(result.Tags, x => x.Contains(tag3));
             }
         }
 
@@ -534,9 +534,9 @@ namespace BooruSharp.UnitTests
                 result = await booru.GetRandomPostsAsync(5, tag, tag2, tag3);
                 foreach (var r in result)
                 {
-                    Assert.Contains(tag, r.tags);
-                    Assert.Contains(tag2, r.tags);
-                    Assert.Contains(tag3, r.tags);
+                    Assert.Contains(tag, r.Tags);
+                    Assert.Contains(tag2, r.Tags);
+                    Assert.Contains(tag3, r.Tags);
                 }
             }
         }
@@ -692,7 +692,7 @@ namespace BooruSharp.UnitTests
             if (!booru.HasTagByIdAPI())
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.GetTagAsync(tagId));
             else
-                Assert.Equal(tag, (await booru.GetTagAsync(tagId)).name);
+                Assert.Equal(tag, (await booru.GetTagAsync(tagId)).Name);
         }
 
         [SkippableTheory]
@@ -746,7 +746,7 @@ namespace BooruSharp.UnitTests
             else
             {
                 Search.Wiki.SearchResult result = await booru.GetWikiAsync(tag);
-                Assert.Equal(id, result.id);
+                Assert.Equal(id, result.ID);
                 General.CheckWiki(result);
             }
         }
@@ -803,7 +803,7 @@ namespace BooruSharp.UnitTests
             {
                 Search.Related.SearchResult[] result = await booru.GetRelatedAsync(tag);
                 General.CheckRelated(result);
-                Assert.Contains(result, x => x.name == related);
+                Assert.Contains(result, x => x.Name == related);
             }
         }
 
@@ -964,9 +964,9 @@ namespace BooruSharp.UnitTests
             for (int i = 0; i < 10; i++)
             {
                 var image = await b.GetRandomPostAsync(explicitTag);
-                if (isSafe && image.fileUrl != null)
-                    Assert.NotEqual(Search.Post.Rating.Explicit, image.rating);
-                if (image.rating == Search.Post.Rating.Explicit)
+                if (isSafe && image.FileUrl != null)
+                    Assert.NotEqual(Search.Post.Rating.Explicit, image.Rating);
+                if (image.Rating == Search.Post.Rating.Explicit)
                     foundExplicit = true;
             }
             if (!isSafe)

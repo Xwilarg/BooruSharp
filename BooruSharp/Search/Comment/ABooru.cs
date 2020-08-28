@@ -31,7 +31,7 @@ namespace BooruSharp.Booru
                 {
                     var result = GetCommentSearchResult(node);
 
-                    if (result.postId == postId)
+                    if (result.PostID == postId)
                         results.Add(result);
                 }
             }
@@ -43,7 +43,7 @@ namespace BooruSharp.Booru
                 {
                     var result = GetCommentSearchResult(json);
 
-                    if (result.postId == postId)
+                    if (result.PostID == postId)
                         results.Add(result);
                 }
             }

@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a related API search result.
     /// </summary>
-    public struct SearchResult
+    public readonly struct SearchResult
     {
         /// <summary>
         /// Initializes a <see cref="SearchResult"/> struct.
@@ -12,19 +12,19 @@
         /// <param name="count">The number of occurences of the tag.</param>
         public SearchResult(string name, int? count)
         {
-            this.name = name;
-            this.count = count;
+            Name = name;
+            Count = count;
         }
 
         /// <summary>
         /// Gets the name of the tag.
         /// </summary>
-        public readonly string name;
+        public string Name { get; }
 
         /// <summary>
         /// Gets the number of occurences of the tag, or
         /// <see langword="null"/> if that number is unknown.
         /// </summary>
-        public readonly int? count;
+        public int? Count { get; }
     }
 }

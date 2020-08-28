@@ -22,33 +22,33 @@ namespace BooruSharp.UnitTests
             }
             catch (WebException ex)
             { 
-                return ex.Message + " for " + url;
+                return ex.Message + " for " + url; 
             }
         }
 
         public static async Task CheckResult(Search.Post.SearchResult result, string inputTag)
         {
-            if (result.fileUrl != null)
+            if (result.FileUrl != null)
             {
-                string resFile = await CheckUrl(result.fileUrl);
-                string resPreview = await CheckUrl(result.previewUrl);
-                string resPost = await CheckUrl(result.postUrl);
+                string resFile = await CheckUrl(result.FileUrl);
+                string resPreview = await CheckUrl(result.PreviewUrl);
+                string resPost = await CheckUrl(result.PostUrl);
                 Assert.True(resPost == null, resPost);
                 Assert.True(resFile == null, resFile);
                 Assert.True(resPreview == null, resPreview);
-                Assert.NotEqual(0, result.height);
-                Assert.NotEqual(0, result.width);
-                if (result.previewHeight != null)
+                Assert.NotEqual(0, result.Height);
+                Assert.NotEqual(0, result.Width);
+                if (result.PreviewHeight != null)
                 {
-                    Assert.NotEqual(0, result.previewHeight);
-                    Assert.NotEqual(0, result.previewWidth);
+                    Assert.NotEqual(0, result.PreviewHeight);
+                    Assert.NotEqual(0, result.PreviewWidth);
                 }
             }
-            Assert.InRange(result.rating, Search.Post.Rating.Safe, Search.Post.Rating.Explicit);
-            Assert.Contains(result.tags, t => t.Contains(inputTag));
-            Assert.NotEqual(0, result.id);
-            if (result.size.HasValue)
-                Assert.NotEqual(0, result.size.Value);
+            Assert.InRange(result.Rating, Search.Post.Rating.Safe, Search.Post.Rating.Explicit);
+            Assert.Contains(result.Tags, t => t.Contains(inputTag));
+            Assert.NotEqual(0, result.ID);
+            if (result.Size.HasValue)
+                Assert.NotEqual(0, result.Size.Value);
         }
 
         public static async Task CheckGetRandom(ABooru booru, string s1)
@@ -60,8 +60,8 @@ namespace BooruSharp.UnitTests
             {
                 result2 = await booru.GetRandomPostAsync(s1);
                 i++;
-            } while (result.id == result2.id && i < 5);
-            Assert.NotEqual(result.id, result2.id);
+            } while (result.ID == result2.ID && i < 5);
+            Assert.NotEqual(result.ID, result2.ID);
             await CheckResult(result, s1);
         }
 
@@ -76,23 +76,23 @@ namespace BooruSharp.UnitTests
                 result2 = await booru.GetRandomPostsAsync(5, s1);
                 Assert.NotEmpty(result2);
                 i++;
-            } while (result[0].id == result2[0].id && i < 5);
-            Assert.NotEqual(result[0].id, result2[0].id);
+            } while (result[0].ID == result2[0].ID && i < 5);
+            Assert.NotEqual(result[0].ID, result2[0].ID);
             await CheckResult(result[0], s1);
         }
 
         public static async Task CheckTag(ABooru booru, string s1 = "pantyhose")
         {
             Search.Tag.SearchResult result = await booru.GetTagAsync(s1);
-            Assert.Equal(s1, result.name);
-            Assert.InRange(result.type, Search.Tag.TagType.Trivia, Search.Tag.TagType.Metadata);
-            Assert.NotEqual((Search.Tag.TagType)2, result.type);
-            Assert.NotEqual(0, result.count);
+            Assert.Equal(s1, result.Name);
+            Assert.InRange(result.Type, Search.Tag.TagType.Trivia, Search.Tag.TagType.Metadata);
+            Assert.NotEqual((Search.Tag.TagType)2, result.Type);
+            Assert.NotEqual(0, result.Count);
         }
 
         public static void CheckWiki(Search.Wiki.SearchResult result)
         {
-            Assert.InRange(result.lastUpdate, result.creation, DateTime.Now);
+            Assert.InRange(result.LastUpdate, result.Creation, DateTime.Now);
         }
 
         public static void CheckRelated(Search.Related.SearchResult[] result)
@@ -104,10 +104,10 @@ namespace BooruSharp.UnitTests
         {
             foreach (Search.Comment.SearchResult res in result)
             {
-                Assert.NotEqual(0, res.authorId);
-                Assert.NotEqual(0, res.commentId);
-                Assert.NotEqual(0, res.postId);
-                Assert.NotEmpty(res.body);
+                Assert.NotEqual(0, res.AuthorID);
+                Assert.NotEqual(0, res.CommentID);
+                Assert.NotEqual(0, res.PostID);
+                Assert.NotEmpty(res.Body);
             }
             Assert.NotEmpty(result);
         }
@@ -117,7 +117,7 @@ namespace BooruSharp.UnitTests
             if (res1.Length != res2.Length)
                 return false;
             for (int i = 0; i < res1.Length; i++)
-                if (res1[i].id != res2[i].id)
+                if (res1[i].ID != res2[i].ID)
                     return false;
             return true;
         }

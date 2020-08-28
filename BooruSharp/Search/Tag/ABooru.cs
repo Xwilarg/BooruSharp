@@ -109,7 +109,7 @@ namespace BooruSharp.Booru
                 {
                     var result = GetTagSearchResult(node);
 
-                    if ((name == null && id == result.id) || (name != null && name == result.name))
+                    if ((name == null && id == result.ID) || (name != null && name == result.Name))
                         return result;
                 }
             }
@@ -121,7 +121,7 @@ namespace BooruSharp.Booru
                 {
                     var result = GetTagSearchResult(json);
 
-                    if ((name == null && id == result.id) || (name != null && name == result.name))
+                    if ((name == null && id == result.ID) || (name != null && name == result.Name))
                         return result;
                 }
             }

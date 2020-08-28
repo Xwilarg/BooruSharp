@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a tag API search result.
     /// </summary>
-    public struct SearchResult
+    public readonly struct SearchResult
     {
         /// <summary>
         /// Initializes a <see cref="SearchResult"/> struct.
@@ -14,30 +14,30 @@
         /// <param name="count">The number of occurences of the tag.</param>
         public SearchResult(int id, string name, TagType type, int count)
         {
-            this.id = id;
-            this.name = name;
-            this.type = type;
-            this.count = count;
+            ID = id;
+            Name = name;
+            Type = type;
+            Count = count;
         }
 
         /// <summary>
         /// Gets the ID of the tag.
         /// </summary>
-        public readonly int id;
+        public int ID { get; }
 
         /// <summary>
         /// Gets the name of the tag.
         /// </summary>
-        public readonly string name;
+        public string Name { get; }
 
         /// <summary>
         /// Gets the type of the tag.
         /// </summary>
-        public readonly TagType type;
+        public TagType Type { get; }
 
         /// <summary>
         /// Gets the number of occurences of the tag.
         /// </summary>
-        public readonly int count;
+        public int Count { get; }
     }
 }
