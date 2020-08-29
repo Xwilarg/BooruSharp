@@ -15,6 +15,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Xunit.SkippableFact" Version="1.4.13" />
     <ProjectReference Include="..\BooruSharp.Others\BooruSharp.Others.csproj" />
     <ProjectReference Include="..\BooruSharp\BooruSharp.csproj" />
     <PackageReference Include="xunit" Version="2.4.1" />
