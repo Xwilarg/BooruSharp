@@ -53,6 +53,8 @@ namespace BooruSharp.Others
             if (response.StatusCode == HttpStatusCode.BadRequest)
                 throw new AuthentificationInvalid();
 
+            response.EnsureSuccessStatusCode();
+
             var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
             var responseToken = jsonToken["response"];
 
@@ -72,7 +74,11 @@ namespace BooruSharp.Others
             var request = new HttpRequestMessage(HttpMethod.Get, result.fileUrl);
             request.Headers.Add("Referer", result.postUrl.AbsoluteUri);
 
-            return await (await HttpClient.SendAsync(request)).Content.ReadAsByteArrayAsync();
+            var response = await HttpClient.SendAsync(request);
+
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsByteArrayAsync();
         }
 
         public async Task<byte[]> PreviewToByteArrayAsync(SearchResult result)
@@ -80,7 +86,11 @@ namespace BooruSharp.Others
             var request = new HttpRequestMessage(HttpMethod.Get, result.fileUrl);
             request.Headers.Add("Referer", result.previewUrl.AbsoluteUri);
 
-            return await (await HttpClient.SendAsync(request)).Content.ReadAsByteArrayAsync();
+            var response = await HttpClient.SendAsync(request);
+
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsByteArrayAsync();
         }
 
         public async Task CheckUpdateTokenAsync()
@@ -106,6 +116,8 @@ namespace BooruSharp.Others
 
             if (response.StatusCode == HttpStatusCode.BadRequest)
                 throw new AuthentificationInvalid();
+
+            response.EnsureSuccessStatusCode();
 
             var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
             var responseToken = jsonToken["response"];
@@ -135,6 +147,8 @@ namespace BooruSharp.Others
 
             if (response.StatusCode == HttpStatusCode.NotFound)
                 throw new InvalidPostId();
+
+            response.EnsureSuccessStatusCode();
         }
 
         public override async Task RemoveFavoriteAsync(int postId)
@@ -154,6 +168,8 @@ namespace BooruSharp.Others
 
             if (response.StatusCode == HttpStatusCode.NotFound)
                 throw new InvalidPostId("There is no post with this ID in your bookmarks");
+
+            response.EnsureSuccessStatusCode();
         }
 
         public override async Task<SearchResult> GetPostByIdAsync(int id)
@@ -170,6 +186,8 @@ namespace BooruSharp.Others
 
             if (response.StatusCode == HttpStatusCode.NotFound)
                 throw new InvalidTags();
+
+            response.EnsureSuccessStatusCode();
 
             var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
             return ParseSearchResult(jsonToken["illust"]);
@@ -193,6 +211,8 @@ namespace BooruSharp.Others
             if (response.StatusCode == HttpStatusCode.NotFound)
                 throw new InvalidTags();
 
+            response.EnsureSuccessStatusCode();
+
             var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
             var jsonArray = (JArray)jsonToken["illusts"];
             return ParseSearchResult(jsonArray[0]);
@@ -210,9 +230,11 @@ namespace BooruSharp.Others
 
             var request = new HttpRequestMessage(HttpMethod.Get, "https://www.pixiv.net/ajax/search/artworks/" + JoinTagsAndEscapeString(tagsArg));
 
-            var http = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
 
-            var jsonToken = JsonConvert.DeserializeObject<JToken>(await http.Content.ReadAsStringAsync());
+            response.EnsureSuccessStatusCode();
+
+            var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
             return jsonToken["body"]["illustManga"]["total"].Value<int>();
         }
 
@@ -233,6 +255,8 @@ namespace BooruSharp.Others
 
             if (response.StatusCode == HttpStatusCode.NotFound)
                 throw new InvalidTags();
+
+            response.EnsureSuccessStatusCode();
 
             var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
             return ParseSearchResults((JArray)jsonToken["illusts"]);

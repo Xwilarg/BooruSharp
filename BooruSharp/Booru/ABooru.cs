@@ -200,6 +200,8 @@ namespace BooruSharp.Booru
             if (msg.StatusCode == HttpStatusCode.Forbidden)
                 throw new AuthentificationRequired();
 
+            msg.EnsureSuccessStatusCode();
+
             return await msg.Content.ReadAsStringAsync();
         }
 
@@ -213,6 +215,7 @@ namespace BooruSharp.Booru
         private async Task<string> GetRandomIdAsync(string tags)
         {
             HttpResponseMessage msg = await HttpClient.GetAsync(_baseUrl + "/" + "index.php?page=post&s=random&tags=" + tags);
+            msg.EnsureSuccessStatusCode();
             return HttpUtility.ParseQueryString(msg.RequestMessage.RequestUri.Query).Get("id");
         }
 
