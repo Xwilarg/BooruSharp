@@ -97,6 +97,8 @@ namespace BooruSharp.Others
                 throw new AuthentificationInvalid();
             JToken json = (JToken)JsonConvert.DeserializeObject(await http.Content.ReadAsStringAsync());
             AccessToken = json["response"]["access_token"].Value<string>();
+            if (string.IsNullOrWhiteSpace(AccessToken))
+                throw new AuthentificationInvalid();
             _refreshTime = DateTime.Now.AddSeconds(json["response"]["expires_in"].Value<int>());
         }
 
@@ -195,6 +197,60 @@ namespace BooruSharp.Others
             return ParseSearchResults((JArray)json["illusts"]);
         }
 
+        public async Task<SearchResult[]> GetRankingAsync(RankingMode mode = RankingMode.Daily, int offset = 0, DateTime? date = null)
+        {
+            if (AccessToken == null)
+                throw new AuthentificationRequired();
+            await CheckUpdateTokenAsync();
+            string url = _baseUrl + "/v1/illust/ranking?mode=" + rankingModeValues[mode];
+            if (offset != 0)
+                url += "&offset=" + offset;
+            if (date.HasValue)
+                url += "&date=" + date.Value.ToString("yyyy-MM-dd");
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            request.Headers.Add("Authorization", "Bearer " + AccessToken);
+
+            var http = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            if (!http.IsSuccessStatusCode)
+                throw new Exception(http.StatusCode.ToString()); //ToDo: Implement exception
+            JToken json = (JToken)JsonConvert.DeserializeObject(await http.Content.ReadAsStringAsync());
+            return ParseSearchResults((JArray)json["illusts"]);
+        }
+
+        public enum RankingMode
+        {
+            Daily,
+            Weekly,
+            Monthly,
+            PopularAmongMaleUsers,
+            PopularAmongFemaleUsers,
+            Original,
+            MangaRookie,
+            MangaDaily,
+            DailyR18,
+            WeeklyR18,
+            PopularAmongMaleUsersR18,
+            PopularAmongFemaleUsersR18,
+            WeeklyR18G
+        }
+
+        static private Dictionary<RankingMode, string> rankingModeValues = new Dictionary<RankingMode, string>
+        {
+            { RankingMode.Daily, "day" },
+            { RankingMode.Weekly, "week" },
+            { RankingMode.Monthly, "month" },
+            { RankingMode.PopularAmongMaleUsers, "day_male" },
+            { RankingMode.PopularAmongFemaleUsers, "day_female" },
+            { RankingMode.Original, "week_original" },
+            { RankingMode.MangaRookie, "week_rookie" },
+            { RankingMode.MangaDaily, "day_manga" },
+            { RankingMode.DailyR18, "day_r18" },
+            { RankingMode.WeeklyR18, "week_r18" },
+            { RankingMode.PopularAmongMaleUsersR18, "day_male_r18" },
+            { RankingMode.PopularAmongFemaleUsersR18, "day_female_r18" },
+            { RankingMode.WeeklyR18G, "week_r18g" }
+        };
+
         private SearchResult[] ParseSearchResults(JArray array)
         {
             List<SearchResult> results = new List<SearchResult>();
@@ -211,6 +267,11 @@ namespace BooruSharp.Others
             {
                 isNsfw = true;
                 tags.Remove("R-18");
+            }
+            if (tags.Contains("R-18G"))
+            {
+                isNsfw = true;
+                tags.Remove("R-18G");
             }
             return new SearchResult(new Uri(post["image_urls"]["large"].Value<string>()), new Uri(post["image_urls"]["medium"].Value<string>()), new Uri("https://www.pixiv.net/en/artworks/" + post["id"].Value<int>()),
                 isNsfw ? Rating.Explicit : Rating.Safe, tags.ToArray(), post["id"].Value<int>(), null, post["height"].Value<int>(), post["width"].Value<int>(), null, null, post["create_date"].Value<DateTime>(),
