@@ -15,7 +15,10 @@ namespace BooruSharp.UnitTests
         {
             var b = (ABooru)Activator.CreateInstance(t);
             if (t == typeof(Pixiv))
+            {
+                Skip.If(Environment.GetEnvironmentVariable("PIXIV_USER_ID") == null);
                 await ((Pixiv)b).LoginAsync(Environment.GetEnvironmentVariable("PIXIV_USER_ID"), Environment.GetEnvironmentVariable("PIXIV_PASSWORD"));
+            }
             return b;
         }
 
@@ -149,7 +152,7 @@ namespace BooruSharp.UnitTests
             Assert.False(b.Auth == null);
         }
 
-        [Theory]
+        [SkipIfNoEnvTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
@@ -177,7 +180,7 @@ namespace BooruSharp.UnitTests
                 await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async delegate () { await booru.RemoveFavoriteAsync(id); });
         }
 
-        [Theory]
+        [SkipIfNoEnvTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
@@ -209,7 +212,7 @@ namespace BooruSharp.UnitTests
             }
         }
 
-        [Theory]
+        [SkipIfNoEnvTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
@@ -237,7 +240,7 @@ namespace BooruSharp.UnitTests
                 await Assert.ThrowsAsync<Search.InvalidPostId>(async delegate () { await booru.AddFavoriteAsync(int.MaxValue); });
         }
 
-        [SkipIfNoEnv]
+        [SkipIfNoEnvTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
@@ -270,7 +273,7 @@ namespace BooruSharp.UnitTests
             }
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
@@ -304,7 +307,7 @@ namespace BooruSharp.UnitTests
             }
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
@@ -334,7 +337,7 @@ namespace BooruSharp.UnitTests
             }
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
@@ -364,7 +367,7 @@ namespace BooruSharp.UnitTests
             }
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621), "kantai_collection", "swimwear")]
@@ -395,7 +398,7 @@ namespace BooruSharp.UnitTests
             }
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621), "kantai_collection", "swimwear")]
@@ -429,7 +432,7 @@ namespace BooruSharp.UnitTests
             }
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
@@ -451,7 +454,7 @@ namespace BooruSharp.UnitTests
             await General.CheckGetRandom(await General.CreateBooru(t), tag);
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
@@ -477,7 +480,7 @@ namespace BooruSharp.UnitTests
                 await General.CheckGetRandoms(booru, tag);
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
@@ -520,7 +523,7 @@ namespace BooruSharp.UnitTests
             Assert.Contains("BooruSharp.Unit-Tests", hc.DefaultRequestHeaders.GetValues("User-Agent"));
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621), "kantai_collection")]
@@ -545,7 +548,7 @@ namespace BooruSharp.UnitTests
             Assert.Contains(tag2, result.tags);
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621), "kantai_collection")]
@@ -579,7 +582,7 @@ namespace BooruSharp.UnitTests
             }
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru), false)]
         [InlineData(typeof(DanbooruDonmai), true)]
         [InlineData(typeof(E621), false, "sea", "loli", "swimwear")]
@@ -616,7 +619,7 @@ namespace BooruSharp.UnitTests
             }
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru), false)]
         [InlineData(typeof(DanbooruDonmai), true)]
         [InlineData(typeof(E621), false, "sea", "loli", "swimwear")]
@@ -658,7 +661,7 @@ namespace BooruSharp.UnitTests
             }
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
@@ -680,7 +683,7 @@ namespace BooruSharp.UnitTests
             await Assert.ThrowsAsync<Search.InvalidTags>(async () => await (await General.CreateBooru(t)).GetRandomPostAsync("someInvalidTag"));
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
@@ -706,7 +709,7 @@ namespace BooruSharp.UnitTests
                 Assert.Empty(await booru.GetRandomPostsAsync(5, "someInvalidTag"));
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
@@ -732,7 +735,7 @@ namespace BooruSharp.UnitTests
                 await General.CheckTag(booru, tag);
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
@@ -758,7 +761,7 @@ namespace BooruSharp.UnitTests
                 await Assert.ThrowsAsync<Search.InvalidTags>(() => booru.GetTagAsync("someRandomTag"));
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru), "female", true)]
         [InlineData(typeof(DanbooruDonmai), "hibi", true)]
         [InlineData(typeof(E621), "hibiki", true)]
@@ -786,7 +789,7 @@ namespace BooruSharp.UnitTests
                 Assert.NotInRange((await booru.GetTagsAsync(tag)).Length, 0, 1);
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru), "hibiki_(kantai_collection)", 2033)]
         [InlineData(typeof(DanbooruDonmai), "hibiki_(kantai_collection)", 1240738)]
         [InlineData(typeof(E621), "kantai_collection", 267881)]
@@ -812,7 +815,7 @@ namespace BooruSharp.UnitTests
                 Assert.Equal(tag, (await booru.GetTagAsync(tagId)).name);
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
@@ -838,7 +841,7 @@ namespace BooruSharp.UnitTests
                 await Assert.ThrowsAsync<Search.InvalidTags>(() => booru.GetTagAsync(int.MaxValue));
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru), "highres", 82)]
         [InlineData(typeof(DanbooruDonmai), "futanari", 3589)]
         [InlineData(typeof(E621), "futanari", 123)]
@@ -868,7 +871,7 @@ namespace BooruSharp.UnitTests
             }
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
@@ -894,7 +897,7 @@ namespace BooruSharp.UnitTests
                 await Assert.ThrowsAsync<Search.InvalidTags>(() => booru.GetWikiAsync("yetAnotherTag"));
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru), "kantai_collection", "anchor_symbol")]
         [InlineData(typeof(DanbooruDonmai), "kantai_collection", "serafuku")]
         [InlineData(typeof(E621), "sky", "cloud")]
@@ -924,7 +927,7 @@ namespace BooruSharp.UnitTests
             }
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
@@ -950,7 +953,7 @@ namespace BooruSharp.UnitTests
                 Assert.Empty(await booru.GetRelatedAsync("thisWillFail"));
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru), 257639)]
         [InlineData(typeof(DanbooruDonmai), 3193008)]
         [InlineData(typeof(E621), 59432)]
@@ -976,7 +979,7 @@ namespace BooruSharp.UnitTests
                 General.CheckComment(await booru.GetCommentsAsync(id));
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
@@ -1002,7 +1005,7 @@ namespace BooruSharp.UnitTests
                 Assert.Empty(await booru.GetCommentsAsync(int.MaxValue));
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
@@ -1028,7 +1031,7 @@ namespace BooruSharp.UnitTests
                 General.CheckComment(await booru.GetLastCommentsAsync());
         }
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
@@ -1050,13 +1053,13 @@ namespace BooruSharp.UnitTests
             await (await General.CreateBooru(t)).CheckAvailabilityAsync();
         }
 
-        /*[Theory]
+        /*[SkippableTheory]
         public async Task CheckNotAvailable(Type t)
         {
             await Assert.ThrowsAsync<HttpRequestException>(async () => await ((Booru.Booru)Activator.CreateInstance(t, (BooruAuth)null)).CheckAvailability());
         }*/
 
-        [Theory]
+        [SkippableTheory]
         [InlineData(typeof(Atfbooru))]
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]

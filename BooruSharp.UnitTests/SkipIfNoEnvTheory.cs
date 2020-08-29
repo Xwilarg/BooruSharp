@@ -3,9 +3,9 @@ using Xunit;
 
 namespace BooruSharp.UnitTests
 {
-    public sealed class SkipIfNoEnv : TheoryAttribute
+    public sealed class SkipIfNoEnvTheory : TheoryAttribute
     {
-        public SkipIfNoEnv()
+        public SkipIfNoEnvTheory()
         {
             Timeout = 30000;
 
