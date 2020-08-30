@@ -5,7 +5,6 @@
         public Atfbooru() : base("booru.allthefallen.moe")
         { }
 
-        public override bool IsSafe()
-            => false;
+        public override bool IsSafe() => false;
     }
 }

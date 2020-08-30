@@ -16,18 +16,20 @@ namespace BooruSharp.Booru
         {
             if (!HasRelatedAPI())
                 throw new Search.FeatureUnavailable();
+
             if (tag == null)
-                throw new ArgumentNullException("Argument can't be null");
-            var content = (JObject)JsonConvert.DeserializeObject(await GetJsonAsync(CreateUrl(_relatedUrl, (_format == UrlFormat.danbooru ? "query" : "tags") + "=" + tag)));
-            var jsons = (JArray)(_format == UrlFormat.danbooru ? content["tags"] : content[content.Properties().First().Name]);
-            Search.Related.SearchResult[] results = new Search.Related.SearchResult[jsons.Count];
-            int i = 0;
-            foreach (var json in jsons)
-            {
-                results[i] = GetRelatedSearchResult(json);
-                i++;
-            }
-            return results;
+                throw new ArgumentNullException(nameof(tag));
+
+            bool isDanbooruFormat = _format == UrlFormat.danbooru;
+
+            var content = JsonConvert.DeserializeObject<JObject>(
+                await GetJsonAsync(CreateUrl(_relatedUrl, (isDanbooruFormat ? "query" : "tags") + "=" + tag)));
+
+            var jsonArray = (JArray)(isDanbooruFormat
+                ? content["tags"]
+                : content[content.Properties().First().Name]);
+
+            return jsonArray.Select(GetRelatedSearchResult).ToArray();
         }
     }
 }

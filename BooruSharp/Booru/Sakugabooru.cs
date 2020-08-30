@@ -5,7 +5,6 @@
         public Sakugabooru() : base("sakugabooru.com", BooruOptions.noLastComments)
         { }
 
-        public override bool IsSafe()
-            => false;
+        public override bool IsSafe() => false;
     }
 }

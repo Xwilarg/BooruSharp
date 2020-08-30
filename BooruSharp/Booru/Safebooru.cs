@@ -5,7 +5,6 @@
         public Safebooru() : base("safebooru.org", BooruOptions.noComment)
         { }
 
-        public override bool IsSafe()
-            => true;
+        public override bool IsSafe() => true;
     }
 }

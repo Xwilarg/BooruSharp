@@ -5,7 +5,6 @@
         public E621() : base("e621.net")
         { }
 
-        public override bool IsSafe()
-            => false;
+        public override bool IsSafe() => false;
     }
 }

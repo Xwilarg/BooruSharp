@@ -5,7 +5,6 @@
         public Xbooru() : base("xbooru.com")
         { }
 
-        public override bool IsSafe()
-            => false;
+        public override bool IsSafe() => false;
     }
 }

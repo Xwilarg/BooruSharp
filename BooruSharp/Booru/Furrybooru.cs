@@ -5,7 +5,6 @@
         public Furrybooru() : base("furry.booru.org", BooruOptions.useHttp)
         { }
 
-        public override bool IsSafe()
-            => false;
+        public override bool IsSafe() => false;
     }
 }

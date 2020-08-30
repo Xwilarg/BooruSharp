@@ -14,25 +14,25 @@ namespace BooruSharp.Booru
     {
         public abstract bool IsSafe();
 
-        protected internal virtual Search.Comment.SearchResult GetCommentSearchResult(object json)
+        private protected virtual Search.Comment.SearchResult GetCommentSearchResult(object json)
             => throw new FeatureUnavailable();
 
-        protected internal virtual Search.Post.SearchResult GetPostSearchResult(JToken obj)
+        private protected virtual Search.Post.SearchResult GetPostSearchResult(JToken obj)
             => throw new FeatureUnavailable();
 
-        protected internal virtual Search.Post.SearchResult[] GetPostsSearchResult(object json)
+        private protected virtual Search.Post.SearchResult[] GetPostsSearchResult(object json)
             => throw new FeatureUnavailable();
 
-        protected internal virtual JToken ParseFirstPostSearchResult(object json)
+        private protected virtual JToken ParseFirstPostSearchResult(object json)
             => throw new FeatureUnavailable();
 
-        protected internal virtual Search.Related.SearchResult GetRelatedSearchResult(object json)
+        private protected virtual Search.Related.SearchResult GetRelatedSearchResult(object json)
             => throw new FeatureUnavailable();
 
-        protected internal virtual Search.Tag.SearchResult GetTagSearchResult(object json)
+        private protected virtual Search.Tag.SearchResult GetTagSearchResult(object json)
             => throw new FeatureUnavailable();
 
-        protected internal virtual Search.Wiki.SearchResult GetWikiSearchResult(object json)
+        private protected virtual Search.Wiki.SearchResult GetWikiSearchResult(object json)
             => throw new FeatureUnavailable();
 
         // TODO: these flag checking methods need to be turned into properties at some point,
@@ -67,17 +67,17 @@ namespace BooruSharp.Booru
         /// <summary>
         /// Is it possible to search for posts using their MD5 with this booru
         /// </summary>
-        public bool HasPostByMd5API() 
+        public bool HasPostByMd5API()
             => !_options.HasFlag(BooruOptions.noPostByMd5);
         /// <summary>
         /// Is it possible to search for posts using their ID with this booru
         /// </summary>
-        public bool HasPostByIdAPI() 
+        public bool HasPostByIdAPI()
             => !_options.HasFlag(BooruOptions.noPostById);
         /// <summary>
         /// Is it possible to get the total number of post
         /// </summary>
-        public bool HasPostCountAPI() 
+        public bool HasPostCountAPI()
             => !_options.HasFlag(BooruOptions.noPostCount);
         /// <summary>
         /// Is it possible to get multiple random images
@@ -152,8 +152,6 @@ namespace BooruSharp.Booru
                 _imageUrlXml = _imageUrl.Replace("json=1", "json=0");
             else if (_format == UrlFormat.postIndexJson)
                 _imageUrlXml = _imageUrl.Replace("index.json", "index.xml");
-            else
-                _imageUrlXml = null;
 
             _tagUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag");
 
@@ -171,7 +169,7 @@ namespace BooruSharp.Booru
                 _commentUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "comment");
         }
 
-        protected internal static string GetUrl(UrlFormat format, string query, string squery = "index")
+        private protected static string GetUrl(UrlFormat format, string query, string squery = "index")
         {
             switch (format)
             {
@@ -182,14 +180,10 @@ namespace BooruSharp.Booru
                     return "index.php?page=dapi&s=" + query + "&q=index&json=1";
 
                 case UrlFormat.danbooru:
-                    if (query == "related_tag")
-                        return query + ".json";
-                    return query + "s.json";
+                    return query == "related_tag" ? query + ".json" : query + "s.json";
 
                 case UrlFormat.sankaku:
-                    if (query == "wiki")
-                        return query;
-                    return query + "s";
+                    return query == "wiki" ? query : query + "s";
 
                 default:
                     return null;
@@ -202,8 +196,12 @@ namespace BooruSharp.Booru
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpResponseMessage msg = await HttpClient.GetAsync(url);
+
             if (msg.StatusCode == HttpStatusCode.Forbidden)
                 throw new AuthentificationRequired();
+
+            msg.EnsureSuccessStatusCode();
+
             return await msg.Content.ReadAsStringAsync();
         }
 
@@ -217,33 +215,34 @@ namespace BooruSharp.Booru
         private async Task<string> GetRandomIdAsync(string tags)
         {
             HttpResponseMessage msg = await HttpClient.GetAsync(_baseUrl + "/" + "index.php?page=post&s=random&tags=" + tags);
+            msg.EnsureSuccessStatusCode();
             return HttpUtility.ParseQueryString(msg.RequestMessage.RequestUri.Query).Get("id");
         }
 
         private string CreateUrl(string url, params string[] args)
         {
-            if (_format == UrlFormat.indexPhp)
-                return (url + "&" + string.Join("&", args));
-            else
-                return (url + "?" + string.Join("&", args));
+            return _format == UrlFormat.indexPhp
+                ? url + "&" + string.Join("&", args)
+                : url + "?" + string.Join("&", args);
         }
 
         private string TagsToString(string[] tags)
         {
-            return tags == null ? "" : "tags=" + string.Join("+", tags.Select(x => Uri.EscapeDataString(x))).ToLower();
+            return tags != null
+                ? "tags=" + string.Join("+", tags.Select(Uri.EscapeDataString)).ToLower()
+                : "";
         }
 
         private string SearchArg(string value)
         {
-            if (_format == UrlFormat.danbooru)
-                return "search[" + value + "]=";
-            else
-                return value + "=";
+            return _format == UrlFormat.danbooru
+                ? "search[" + value + "]="
+                : value + "=";
         }
 
         [Obsolete]
         // TODO: remove this method after removing obsolete constructors.
-        protected internal static BooruOptions[] CombineArrays(BooruOptions[] arr1, BooruOptions[] arr2)
+        private protected static BooruOptions[] CombineArrays(BooruOptions[] arr1, BooruOptions[] arr2)
         {
             var arr = new BooruOptions[arr1.Length + arr2.Length];
             arr1.CopyTo(arr, 0);
@@ -262,14 +261,13 @@ namespace BooruSharp.Booru
             BooruOptions options = BooruOptions.none;
 
             for (int i = 0; i < array.Length; i++)
-            {
                 options |= array[i];
-            }
 
             return options;
         }
 
         public BooruAuth Auth { set; get; } // Authentification
+
         public HttpClient HttpClient
         {
             protected get
@@ -284,9 +282,7 @@ namespace BooruSharp.Booru
 
                 // Add our User-Agent if client's User-Agent header is empty.
                 if (_client != null && !_client.DefaultRequestHeaders.Contains("User-Agent"))
-                {
-                    _client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
-                }
+                    _client.DefaultRequestHeaders.Add("User-Agent", _userAgentHeaderValue);
             }
         }
 
@@ -301,10 +297,11 @@ namespace BooruSharp.Booru
         protected static readonly Random _random = new Random();
         // TODO: remove this message after removing obsolete constructors.
         protected const string _deprecationMessage = "Use a contructor that accepts single BooruOptions parameter. Use | (bitwise OR) operator to combine multiple options.";
+        private const string _userAgentHeaderValue = "Mozilla/5.0 BooruSharp";
         private static readonly Lazy<HttpClient> _lazyClient = new Lazy<HttpClient>(() =>
         {
             HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 BooruSharp");
+            client.DefaultRequestHeaders.Add("User-Agent", _userAgentHeaderValue);
             return client;
         });
     }

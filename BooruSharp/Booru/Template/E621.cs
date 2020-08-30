@@ -14,31 +14,42 @@ namespace BooruSharp.Booru.Template
         public E621(string url, BooruOptions options = BooruOptions.none) : base(url, UrlFormat.danbooru, options | BooruOptions.noWiki | BooruOptions.noRelated | BooruOptions.noComment | BooruOptions.noTagById | BooruOptions.noPostById | BooruOptions.noPostCount | BooruOptions.noFavorite)
         { }
 
-        protected internal override JToken ParseFirstPostSearchResult(object json)
+        private protected override JToken ParseFirstPostSearchResult(object json)
         {
-            var posts = ((JObject)json)["posts"];
-            var elem = posts == null ? ((JObject)json)["post"] : ((JArray)posts).FirstOrDefault();
-            if (elem == null)
-                throw new Search.InvalidTags();
-            return elem;
+            JObject jObject = (JObject)json;
+
+            JToken token = jObject["posts"] is JArray posts
+                ? posts.FirstOrDefault()
+                : jObject["post"];
+
+            return token ?? throw new Search.InvalidTags();
         }
 
-        protected internal override Search.Post.SearchResult GetPostSearchResult(JToken elem)
+        private protected override Search.Post.SearchResult GetPostSearchResult(JToken elem)
         {
-            List<string> tags = elem["tags"]["general"].ToObject<string[]>().ToList();
-            tags.AddRange(elem["tags"]["species"].ToObject<string[]>().ToList());
-            tags.AddRange(elem["tags"]["character"].ToObject<string[]>().ToList());
-            tags.AddRange(elem["tags"]["copyright"].ToObject<string[]>().ToList());
-            tags.AddRange(elem["tags"]["artist"].ToObject<string[]>().ToList());
-            tags.AddRange(elem["tags"]["meta"].ToObject<string[]>().ToList()); // TODO: Check others tags
+            // TODO: Check others tags
+            string[] categories =
+            {
+                "general",
+                "species",
+                "character",
+                "copyright",
+                "artist",
+                "meta",
+            };
+
+            string[] tags = categories
+                .SelectMany(category => elem["tags"][category].ToObject<string[]>())
+                .ToArray();
+
             string url = elem["file"]["url"].Value<string>();
             string previewUrl = elem["preview"]["url"].Value<string>();
             return new Search.Post.SearchResult(
-                    url == null ? null : new Uri(url),
-                    previewUrl == null ? null : new Uri(previewUrl),
+                    url != null ? new Uri(url) : null,
+                    previewUrl != null ? new Uri(previewUrl) : null,
                     new Uri(_baseUrl + "/posts/" + elem["id"].Value<int>()),
                     GetRating(elem["rating"].Value<string>()[0]),
-                    tags.ToArray(),
+                    tags,
                     elem["id"].Value<int>(),
                     elem["file"]["size"].Value<int>(),
                     elem["file"]["height"].Value<int>(),
@@ -46,37 +57,29 @@ namespace BooruSharp.Booru.Template
                     elem["preview"]["height"].Value<int>(),
                     elem["preview"]["width"].Value<int>(),
                     elem["created_at"].Value<DateTime>(),
-                    elem["sources"].Count() > 0 ? elem["sources"][0].Value<string>() : null,
+                    elem["sources"].FirstOrDefault()?.Value<string>(),
                     elem["score"]["total"].Value<int>(),
                     elem["file"]["md5"].Value<string>()
                 );
         }
 
-        protected internal override Search.Post.SearchResult[] GetPostsSearchResult(object json)
+        private protected override Search.Post.SearchResult[] GetPostsSearchResult(object json)
         {
-            var arr = (JArray)((JObject)json)["posts"];
-            if (arr == null)
-            {
-                var token = ((JToken)json)["post"];
-                if (token == null)
-                    return new Search.Post.SearchResult[0];
-                return new Search.Post.SearchResult[1] { GetPostSearchResult(((JToken)json)["post"]) };
-            }
-            Search.Post.SearchResult[] res = new Search.Post.SearchResult[arr.Count];
-            int i = 0;
-            foreach (var elem in arr)
-            {
-                res[i] = GetPostSearchResult(elem);
-                i++;
-            }
-            return res;
+            JObject obj = (JObject)json;
+
+            if (obj["posts"] is JArray array)
+                return array.Select(GetPostSearchResult).ToArray();
+            else if (obj["post"] is JToken token)
+                return new[] { GetPostSearchResult(token) };
+            else
+                return Array.Empty<Search.Post.SearchResult>();
         }
 
         // GetCommentSearchResult not available
 
         // GetWikiSearchResult not available
 
-        protected internal override Search.Tag.SearchResult GetTagSearchResult(object json)
+        private protected override Search.Tag.SearchResult GetTagSearchResult(object json)
         {
             var elem = (JObject)json;
             return new Search.Tag.SearchResult(
