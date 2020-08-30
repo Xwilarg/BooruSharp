@@ -70,7 +70,8 @@ namespace BooruSharp.Booru
             if (NoMoreThanTwoTags && tags.Length > _limitedTagsSearchCount)
                 throw new Search.TooManyTags();
 
-            XmlDocument xml = await GetXmlAsync(CreateUrl(_imageUrlXml, _queryOptionLimitOfOne, TagsToString(tags)));
+            string tagString = TagsToString(tags);
+            XmlDocument xml = await GetXmlAsync(CreateUrl(_imageUrlXml, _queryOptionLimitOfOne, tagString));
             return int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
         }
 
@@ -115,7 +116,7 @@ namespace BooruSharp.Booru
 
                 if (SearchIncreasedPostLimit && max > _increasedPostLimitCount)
                     max = _increasedPostLimitCount;
-
+                
                 return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, tagString, "pid=" + Random.Next(0, max)));
             }
 
@@ -167,7 +168,8 @@ namespace BooruSharp.Booru
         /// <exception cref="System.Net.Http.HttpRequestException"/>
         public virtual async Task<Search.Post.SearchResult[]> GetLastPostsAsync(params string[] tagsArg)
         {
-            return GetPostsSearchResult(await GetJsonAsync<JToken>(CreateUrl(_imageUrl, TagsToString(tagsArg))));
+            string tagString = TagsToString(tagsArg);
+            return GetPostsSearchResult(await GetJsonAsync<JToken>(CreateUrl(_imageUrl, tagString)));
         }
 
 

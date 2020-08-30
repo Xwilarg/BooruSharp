@@ -1,4 +1,5 @@
 ﻿using BooruSharp.Search;
+using BooruSharp.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -320,9 +321,7 @@ namespace BooruSharp.Booru
 
         private string TagsToString(string[] tags)
         {
-            return tags != null
-                ? "tags=" + string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant()
-                : "";
+            return tags != null ? $"tags={TextUtils.JoinAndEscape(tags)}" : "";
         }
 
         private string SearchArg(string value)

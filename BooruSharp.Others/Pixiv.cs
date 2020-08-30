@@ -1,6 +1,7 @@
 ﻿using BooruSharp.Booru;
 using BooruSharp.Search;
 using BooruSharp.Search.Post;
+using BooruSharp.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -268,8 +269,9 @@ namespace BooruSharp.Others
             if (max == 0)
                 throw new InvalidTags();
 
+            var tagString = TextUtils.JoinAndEscape(tagsArg);
             int id = Random.Next(1, max + 1);
-            var requestUrl = BaseUrl + "v1/search/illust?word=" + JoinTagsAndEscapeString(tagsArg) + "&offset=" + id;
+            var requestUrl = BaseUrl + "v1/search/illust?word=" + tagString + "&offset=" + id;
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
             AddAuthorizationHeader(request);
 
@@ -293,7 +295,8 @@ namespace BooruSharp.Others
             if (tagsArg.Length == 0)
                 throw new ArgumentException("You must provide at least one tag.", nameof(tagsArg));
 
-            var requestUrl = "https://www.pixiv.net/ajax/search/artworks/" + JoinTagsAndEscapeString(tagsArg);
+            var tagString = TextUtils.JoinAndEscape(tagsArg);
+            var requestUrl = "https://www.pixiv.net/ajax/search/artworks/" + tagString;
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
             using (var response = await GetResponseAsync(request))
@@ -321,7 +324,8 @@ namespace BooruSharp.Others
 
             await CheckUpdateTokenAsync();
 
-            string requestUrl = BaseUrl + "v1/search/illust?word=" + JoinTagsAndEscapeString(tagsArg);
+            var tagString = TextUtils.JoinAndEscape(tagsArg);
+            var requestUrl = BaseUrl + "v1/search/illust?word=" + tagString;
 
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
             AddAuthorizationHeader(request);
@@ -425,12 +429,6 @@ namespace BooruSharp.Others
                 // Make sure semaphore is released in case exception is thrown.
                 _loginSemaphore.Release();
             }
-        }
-
-        private static string JoinTagsAndEscapeString(string[] tags)
-        {
-            string joined = string.Join(" ", tags).ToLowerInvariant();
-            return Uri.EscapeDataString(joined);
         }
 
         private SearchResult[] ParseSearchResults(JArray array)
