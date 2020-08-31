@@ -10,9 +10,14 @@ namespace BooruSharp.Booru
     public abstract partial class ABooru
     {
         /// <summary>
-        /// Get information about a tag
+        /// Gets information about a tag.
         /// </summary>
-        /// <param name="name">The name of the tag you want information about</param>
+        /// <param name="name">The name of the tag to get the information about.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="Search.FeatureUnavailable"/>
+        /// <exception cref="System.Net.Http.HttpRequestException"/>
+        /// <exception cref="Search.InvalidTags"/>
         public virtual async Task<Search.Tag.SearchResult> GetTagAsync(string name)
         {
             if (!HasTagByIdAPI())
@@ -25,9 +30,13 @@ namespace BooruSharp.Booru
         }
 
         /// <summary>
-        /// Get information about a tag
+        /// Gets information about a tag.
         /// </summary>
-        /// <param name="name">The ID of the tag you want information about</param>
+        /// <param name="id">The ID of the tag to get the information about.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="Search.FeatureUnavailable"/>
+        /// <exception cref="System.Net.Http.HttpRequestException"/>
+        /// <exception cref="Search.InvalidTags"/>
         public virtual async Task<Search.Tag.SearchResult> GetTagAsync(int id)
         {
             if (!HasTagByIdAPI())
@@ -37,9 +46,13 @@ namespace BooruSharp.Booru
         }
 
         /// <summary>
-        /// Get the similar tags of the one given
+        /// Gets the tags similar to the tag specified by its <paramref name="name"/>.
         /// </summary>
-        /// <param name="name">The name of the tag you want others similar</param>
+        /// <param name="name">The name of the tag to find similar tags to.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="Search.FeatureUnavailable"/>
+        /// <exception cref="System.Net.Http.HttpRequestException"/>
         public virtual async Task<Search.Tag.SearchResult[]> GetTagsAsync(string name)
         {
             if (!HasTagByIdAPI())
