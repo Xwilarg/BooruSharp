@@ -207,9 +207,10 @@ namespace BooruSharp.Booru
 
         private async Task<XmlDocument> GetXmlAsync(string url)
         {
-            XmlDocument xml = new XmlDocument();
-            xml.LoadXml(await GetJsonAsync(url));
-            return xml;
+            var xmlDoc = new XmlDocument();
+            var xmlString = await GetJsonAsync(url);
+            xmlDoc.LoadXml(XmlEntity.ReplaceAll(xmlString));
+            return xmlDoc;
         }
 
         private async Task<string> GetRandomIdAsync(string tags)

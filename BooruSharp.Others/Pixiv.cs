@@ -83,7 +83,7 @@ namespace BooruSharp.Others
 
         public async Task<byte[]> PreviewToByteArrayAsync(SearchResult result)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, result.fileUrl);
+            var request = new HttpRequestMessage(HttpMethod.Get, result.previewUrl);
             request.Headers.Add("Referer", result.previewUrl.AbsoluteUri);
 
             var response = await HttpClient.SendAsync(request);
