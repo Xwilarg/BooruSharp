@@ -283,8 +283,16 @@ namespace BooruSharp.Others
                 tags.Remove("R-18");
             }
 
+            var originalImageUrlToken =
+                 // If there's multiple image URLs, get the first one.
+                 (post["meta_pages"]?.FirstOrDefault()?["image_urls"]?["original"])
+                 // If there's only one original image URL, use that one.
+                 ?? (post["meta_single_page"]?["original_image_url"])
+                 // Fallback to large image in case neither of the above succeeds.
+                 ?? (post["image_urls"]["large"]);
+
             return new SearchResult(
-                new Uri(post["image_urls"]["large"].Value<string>()),
+                new Uri(originalImageUrlToken.Value<string>()),
                 new Uri(post["image_urls"]["medium"].Value<string>()),
                 new Uri("https://www.pixiv.net/en/artworks/" + post["id"].Value<int>()),
                 isNsfw ? Rating.Explicit : Rating.Safe,
