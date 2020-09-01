@@ -2,7 +2,7 @@
 {
     /// <summary>
     /// Yande.re.
-    /// <para>https://yande.re/post</para>
+    /// <para>https://yande.re/</para>
     /// </summary>
     public sealed class Yandere : Template.Moebooru
     {

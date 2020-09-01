@@ -2,7 +2,7 @@
 {
     /// <summary>
     /// Sankaku Complex.
-    /// <para>https://chan.sankakucomplex.com/</para>
+    /// <para>https://beta.sankakucomplex.com/</para>
     /// </summary>
     public class SankakuComplex : Template.Sankaku
     {

@@ -30,8 +30,7 @@ namespace BooruSharp.Others
         }
 
         /// <summary>
-        /// Sends a login API request using specified
-        /// <paramref name="username"/> and <paramref name="password"/>.
+        /// Sends a login API request using specified user name and password.
         /// </summary>
         /// <param name="username">Pixiv user name.</param>
         /// <param name="password">Pixiv user password.</param>
@@ -87,7 +86,7 @@ namespace BooruSharp.Others
         }
 
         /// <summary>
-        /// Updates <see cref="AccessToken"/> using specified <paramref name="refreshToken"/>.
+        /// Sends a login API request using specified refresh token.
         /// </summary>
         /// <returns>The task object representing the asynchronous operation.</returns>
         /// <exception cref="AuthentificationInvalid"/>
