@@ -272,7 +272,17 @@ namespace BooruSharp.Others
             return Uri.EscapeDataString(joined);
         }
 
-        public async Task<SearchResult[]> GetRankingAsync(RankingMode mode = RankingMode.Daily, int offset = 0, DateTime? date = null)
+        public async Task<SearchResult[]> GetRankingAsync()
+        {
+            return await GetRankingAsync(RankingMode.Daily, 0, null);
+        }
+
+        public async Task<SearchResult[]> GetRankingAsync(RankingMode mode)
+        {
+            return await GetRankingAsync(mode, 0, null);
+        }
+
+        public async Task<SearchResult[]> GetRankingAsync(RankingMode mode, int offset, DateTime? date)
         {
             if (string.IsNullOrWhiteSpace(AccessToken))
                 throw new AuthentificationRequired();
