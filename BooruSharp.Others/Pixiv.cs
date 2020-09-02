@@ -275,14 +275,17 @@ namespace BooruSharp.Others
 
         public async Task<SearchResult[]> GetRankingAsync(RankingMode mode = RankingMode.Daily, int offset = 0, DateTime? date = null)
         {
-            if (AccessToken == null)
+            if (string.IsNullOrWhiteSpace(AccessToken))
                 throw new AuthentificationRequired();
+
             await CheckUpdateTokenAsync();
-            string url = _baseUrl + "/v1/illust/ranking?mode=" + rankingModeValues[mode];
+
+            string url = _baseUrl + "/v1/illust/ranking?mode=" + _rankingModeValues[mode];
             if (offset != 0)
                 url += "&offset=" + offset;
             if (date.HasValue)
                 url += "&date=" + date.Value.ToString("yyyy-MM-dd");
+
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
 
@@ -337,7 +340,7 @@ namespace BooruSharp.Others
         {
             var tags = post["tags"].Select(x => x["name"].Value<string>()).ToList();
 
-            vai isNsfw = false;
+            var isNsfw = false;
             if (tags.Contains("R-18"))
             {
                 tags.Remove("R-18");
