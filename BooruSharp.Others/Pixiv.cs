@@ -286,11 +286,12 @@ namespace BooruSharp.Others
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
 
-            var http = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-            if (!http.IsSuccessStatusCode)
-                throw new Exception(http.StatusCode.ToString()); //ToDo: Implement exception
-            JToken json = (JToken)JsonConvert.DeserializeObject(await http.Content.ReadAsStringAsync());
-            return ParseSearchResults((JArray)json["illusts"]);
+            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            
+            response.EnsureSuccessStatusCode();
+            
+            var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
+            return ParseSearchResults((JArray)jsonToken["illusts"]);
         }
 
         public enum RankingMode
