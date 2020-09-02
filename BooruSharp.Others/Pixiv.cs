@@ -124,7 +124,6 @@ namespace BooruSharp.Others
 
             AccessToken = responseToken["access_token"].Value<string>();
 
-            // Failback
             if (string.IsNullOrWhiteSpace(AccessToken))
                 throw new AuthentificationInvalid();
 
