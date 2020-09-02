@@ -311,7 +311,7 @@ namespace BooruSharp.Others
             WeeklyR18G
         }
 
-        static private Dictionary<RankingMode, string> rankingModeValues = new Dictionary<RankingMode, string>
+        private static Dictionary<RankingMode, string> _rankingModeValues = new Dictionary<RankingMode, string>
         {
             { RankingMode.Daily, "day" },
             { RankingMode.Weekly, "week" },
