@@ -351,7 +351,6 @@ namespace BooruSharp.Others
                 isNsfw = true;
             }
 
-
             var originalImageUrlToken =
                  // If there's multiple image URLs, get the first one.
                  (post["meta_pages"]?.FirstOrDefault()?["image_urls"]?["original"])
