@@ -189,8 +189,8 @@ namespace BooruSharp.UnitTests
         public async Task SetFavoriteError(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
-            if (booru is Pixiv)
-                await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async () => await ((Pixiv)booru).LoginAsync("AAA", "AAA"));
+            if (booru is Pixiv pixiv)
+                await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async () => await pixiv.LoginAsync("AAA", "AAA"));
             else
             {
                 booru.Auth = new BooruAuth("AAA", "AAA");
