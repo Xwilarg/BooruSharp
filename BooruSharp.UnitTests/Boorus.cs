@@ -15,9 +15,12 @@ namespace BooruSharp.UnitTests
 
         public static Task<ABooru> GetAsync(Type type)
         {
-            return _boorus.TryGetValue(type, out var booruTask) 
-                ? booruTask 
-                : (_boorus[type] = CreateBooruAsync(type));
+            lock (_boorus)
+            {
+                return _boorus.TryGetValue(type, out var booruTask)
+                    ? booruTask
+                    : (_boorus[type] = CreateBooruAsync(type));
+            }
         }
 
         public static Task<ABooru> GetAsync<T>() where T : ABooru
