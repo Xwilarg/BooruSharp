@@ -9,9 +9,12 @@ namespace BooruSharp.Booru
     public abstract partial class ABooru
     {
         /// <summary>
-        /// Get the comments posted on a post
+        /// Get the comments posted on a post.
         /// </summary>
-        /// <param name="postId">The ID of the post to get information about</param>
+        /// <param name="postId">The ID of the post to get information about.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="Search.FeatureUnavailable"/>
+        /// <exception cref="System.Net.Http.HttpRequestException"/>
         public virtual async Task<Search.Comment.SearchResult[]> GetCommentsAsync(int postId)
         {
             if (!HasCommentAPI())
@@ -49,8 +52,11 @@ namespace BooruSharp.Booru
         }
 
         /// <summary>
-        /// Get the lasts comments posted on the website
+        /// Get the last comments posted on the website.
         /// </summary>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="Search.FeatureUnavailable"/>
+        /// <exception cref="System.Net.Http.HttpRequestException"/>
         public virtual async Task<Search.Comment.SearchResult[]> GetLastCommentsAsync()
         {
             if (!HasSearchLastComment())

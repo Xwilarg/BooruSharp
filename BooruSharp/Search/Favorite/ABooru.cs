@@ -8,12 +8,18 @@ namespace BooruSharp.Booru
     public abstract partial class ABooru
     {
         /// <summary>
-        /// Add a post to your favorite
+        /// Adds a post to your favorites.
         /// </summary>
         /// <remarks>
-        /// You must login using SetBooruAuth before using this function
+        /// You must login using <see cref="Auth"/> property before calling this method.
         /// </remarks>
-        /// <param name="postId">The ID of the post you want to add to your favorite</param>
+        /// <param name="postId">The ID of the post you want to add to your favorites.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="AuthentificationInvalid"/>
+        /// <exception cref="AuthentificationRequired"/>
+        /// <exception cref="FeatureUnavailable"/>
+        /// <exception cref="System.Net.Http.HttpRequestException"/>
+        /// <exception cref="InvalidPostId"/>
         public virtual async Task AddFavoriteAsync(int postId)
         {
             if (!HasFavoriteAPI())
@@ -35,12 +41,17 @@ namespace BooruSharp.Booru
         }
 
         /// <summary>
-        /// Remove a post from your favorite
+        /// Removes a post from your favorites.
         /// </summary>
         /// <remarks>
-        /// You must login using SetBooruAuth before using this function
+        /// You must login using <see cref="Auth"/> property before calling this method.
         /// </remarks>
-        /// <param name="postId">The ID of the post you want to remove from your favorite</param>
+        /// <param name="postId">The ID of the post you want to remove from your favorites.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="AuthentificationInvalid"/>
+        /// <exception cref="AuthentificationRequired"/>
+        /// <exception cref="FeatureUnavailable"/>
+        /// <exception cref="System.Net.Http.HttpRequestException"/>
         public virtual async Task RemoveFavoriteAsync(int postId)
         {
             if (!HasFavoriteAPI())

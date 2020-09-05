@@ -9,9 +9,13 @@ namespace BooruSharp.Booru
     public abstract partial class ABooru
     {
         /// <summary>
-        /// Get the tags related to another one
+        /// Gets the tags related to the specified <paramref name="tag"/>.
         /// </summary>
-        /// <param name="tag">The tag that the others must be related to</param>
+        /// <param name="tag">The tag that other tags must be related to.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="Search.FeatureUnavailable"/>
+        /// <exception cref="System.Net.Http.HttpRequestException"/>
         public virtual async Task<Search.Related.SearchResult[]> GetRelatedAsync(string tag)
         {
             if (!HasRelatedAPI())

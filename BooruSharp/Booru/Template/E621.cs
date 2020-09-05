@@ -1,16 +1,28 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace BooruSharp.Booru.Template
 {
+    /// <summary>
+    /// Template booru based on E621. This class is <see langword="abstract"/>.
+    /// </summary>
     public abstract class E621 : ABooru
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="E621"/> template class.
+        /// </summary>
+        /// <param name="url">The base URL to use. This should be a host name.</param>
+        /// <param name="options">The collection of option values.</param>
         [Obsolete(_deprecationMessage)]
         public E621(string url, params BooruOptions[] options) : this(url, MergeOptions(options))
         { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="E621"/> template class.
+        /// </summary>
+        /// <param name="url">The base URL to use. This should be a host name.</param>
+        /// <param name="options">The options to use. Use | (bitwise OR) operator to combine multiple options.</param>
         public E621(string url, BooruOptions options = BooruOptions.none) : base(url, UrlFormat.danbooru, options | BooruOptions.noWiki | BooruOptions.noRelated | BooruOptions.noComment | BooruOptions.noTagById | BooruOptions.noPostById | BooruOptions.noPostCount | BooruOptions.noFavorite)
         { }
 

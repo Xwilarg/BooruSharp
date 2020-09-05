@@ -14,7 +14,14 @@
     <RepositoryType>Library</RepositoryType>
     <PackageReleaseNotes>Internal changes on HttpClient (#6), Improvements in BooruSharp.Others (#7, #8)</PackageReleaseNotes>
     <PackageTags>Booru Gelbooru Image C-Sharp Atfbooru DanbooruDonmai Danbooru E621 E926 FurryBooru Konachan Lolibooru Realbooru Rule34 SankakuComplex Safebooru Sakugabooru Xbooru Yandere</PackageTags>
+    <DocumentationFile>.\xmldoc\$(TargetFramework)\BooruSharp.xml</DocumentationFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="xmldoc\**" />
+    <EmbeddedResource Remove="xmldoc\**" />
+    <None Remove="xmldoc\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Include="..\LICENSE">

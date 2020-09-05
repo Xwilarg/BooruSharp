@@ -14,16 +14,38 @@ using System.Threading.Tasks;
 
 namespace BooruSharp.Others
 {
+    /// <summary>
+    /// Pixiv.
+    /// <para>https://www.pixiv.net/</para>
+    /// </summary>
     public class Pixiv : ABooru
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Pixiv"/> class.
+        /// </summary>
         public Pixiv() : base("app-api.pixiv.net", (UrlFormat)(-1), BooruOptions.noComment | BooruOptions.noLastComments | BooruOptions.noMultipleRandom |
                 BooruOptions.noPostByMd5 | BooruOptions.noRelated | BooruOptions.noTagById | BooruOptions.noWiki | BooruOptions.noEmptyPostSearch)
         {
             AccessToken = null;
         }
 
+        /// <summary>
+        /// Sends a login API request using specified user name and password.
+        /// </summary>
+        /// <param name="username">Pixiv user name.</param>
+        /// <param name="password">Pixiv user password.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="AuthentificationInvalid"/>
+        /// <exception cref="HttpRequestException"/>
         public async Task LoginAsync(string username, string password)
         {
+            if (username == null)
+                throw new ArgumentNullException(nameof(username));
+
+            if (password == null)
+                throw new ArgumentNullException(nameof(password));
+
             var request = new HttpRequestMessage(HttpMethod.Post, "https://oauth.secure.pixiv.net/auth/token");
 
             string time = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss+00:00");
@@ -63,12 +85,24 @@ namespace BooruSharp.Others
             _refreshTime = DateTime.Now.AddSeconds(responseToken["expires_in"].Value<int>());
         }
 
+        /// <summary>
+        /// Sends a login API request using specified refresh token.
+        /// </summary>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="AuthentificationInvalid"/>
+        /// <exception cref="HttpRequestException"/>
         public async Task LoginAsync(string refreshToken)
         {
             RefreshToken = refreshToken;
             await UpdateTokenAsync();
         }
 
+        /// <summary>
+        /// Downloads the <paramref name="result"/>'s image as an array of bytes.
+        /// </summary>
+        /// <param name="result">The post to get the image from.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="HttpRequestException"/>
         public async Task<byte[]> ImageToByteArrayAsync(SearchResult result)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, result.fileUrl);
@@ -81,6 +115,12 @@ namespace BooruSharp.Others
             return await response.Content.ReadAsByteArrayAsync();
         }
 
+        /// <summary>
+        /// Downloads the <paramref name="result"/>'s preview image as an array of bytes.
+        /// </summary>
+        /// <param name="result">The post to get the preview image from.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="HttpRequestException"/>
         public async Task<byte[]> PreviewToByteArrayAsync(SearchResult result)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, result.previewUrl);
@@ -93,6 +133,13 @@ namespace BooruSharp.Others
             return await response.Content.ReadAsByteArrayAsync();
         }
 
+        /// <summary>
+        /// Checks if the <see cref="AccessToken"/> needs to be updated,
+        /// and updates it if needed.
+        /// </summary>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="AuthentificationInvalid"/>
+        /// <exception cref="HttpRequestException"/>
         public async Task CheckUpdateTokenAsync()
         {
             if (DateTime.Now > _refreshTime)
@@ -126,9 +173,18 @@ namespace BooruSharp.Others
             _refreshTime = DateTime.Now.AddSeconds(responseToken["expires_in"].Value<int>());
         }
 
+        /// <inheritdoc/>
         public override bool IsSafe()
             => false;
 
+        /// <summary>
+        /// Adds a post with the specified ID to favorites.
+        /// </summary>
+        /// <param name="postId">The ID of the post to add to favorites.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="AuthentificationRequired"/>
+        /// <exception cref="HttpRequestException"/>
+        /// <exception cref="InvalidPostId"/>
         public override async Task AddFavoriteAsync(int postId)
         {
             if (AccessToken == null)
@@ -151,6 +207,14 @@ namespace BooruSharp.Others
             response.EnsureSuccessStatusCode();
         }
 
+        /// <summary>
+        /// Removes a post with the specified ID from favorites.
+        /// </summary>
+        /// <param name="postId">The ID of the post to remove from favorites.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="AuthentificationRequired"/>
+        /// <exception cref="HttpRequestException"/>
+        /// <exception cref="InvalidPostId"/>
         public override async Task RemoveFavoriteAsync(int postId)
         {
             if (AccessToken == null)
@@ -172,6 +236,7 @@ namespace BooruSharp.Others
             response.EnsureSuccessStatusCode();
         }
 
+        /// <inheritdoc/>
         public override async Task<SearchResult> GetPostByIdAsync(int id)
         {
             if (AccessToken == null)
@@ -193,6 +258,8 @@ namespace BooruSharp.Others
             return ParseSearchResult(jsonToken["illust"]);
         }
 
+        /// <inheritdoc/>
+        /// <exception cref="InvalidTags"/>
         public override async Task<SearchResult> GetRandomPostAsync(params string[] tagsArg)
         {
             // GetPostCountAsync already check for UpdateToken and if parameters are valid
@@ -218,6 +285,9 @@ namespace BooruSharp.Others
             return ParseSearchResult(jsonArray[0]);
         }
 
+        /// <inheritdoc/>
+        /// <exception cref="ArgumentException"/>
+        /// <exception cref="AuthentificationRequired"/>
         public override async Task<int> GetPostCountAsync(params string[] tagsArg)
         {
             if (AccessToken == null)
@@ -238,6 +308,10 @@ namespace BooruSharp.Others
             return jsonToken["body"]["illustManga"]["total"].Value<int>();
         }
 
+        /// <inheritdoc/>
+        /// <exception cref="ArgumentException"/>
+        /// <exception cref="AuthentificationRequired"/>
+        /// <exception cref="InvalidTags"/>
         public override async Task<SearchResult[]> GetLastPostsAsync(params string[] tagsArg)
         {
             if (AccessToken == null)
@@ -309,8 +383,15 @@ namespace BooruSharp.Others
                 null);
         }
 
-        public string AccessToken { private set; get; }
-        public string RefreshToken { private set; get; }
+        /// <summary>
+        /// Gets the access token associated with the current Pixiv session.
+        /// </summary>
+        public string AccessToken { get; private set; }
+
+        /// <summary>
+        /// Gets the refresh token associated with the current Pixiv session.
+        /// </summary>
+        public string RefreshToken { get; private set; }
 
         private DateTime _refreshTime;
 

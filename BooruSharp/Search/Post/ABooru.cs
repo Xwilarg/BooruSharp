@@ -9,9 +9,13 @@ namespace BooruSharp.Booru
     public abstract partial class ABooru
     {
         /// <summary>
-        /// Search for a post using its MD5
+        /// Searches for a post using its MD5 hash.
         /// </summary>
-        /// <param name="md5">The MD5 of the post to search</param>
+        /// <param name="md5">The MD5 hash of the post to search.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="Search.FeatureUnavailable"/>
+        /// <exception cref="System.Net.Http.HttpRequestException"/>
         public virtual async Task<Search.Post.SearchResult> GetPostByMd5Async(string md5)
         {
             if (!HasPostByMd5API())
@@ -24,10 +28,12 @@ namespace BooruSharp.Booru
         }
 
         /// <summary>
-        /// Search for a post using its ID
+        /// Searches for a post using its ID.
         /// </summary>
-        /// <param name="id">The ID fo the post to search</param>
-        /// <returns></returns>
+        /// <param name="id">The ID of the post to search.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="Search.FeatureUnavailable"/>
+        /// <exception cref="System.Net.Http.HttpRequestException"/>
         public virtual async Task<Search.Post.SearchResult> GetPostByIdAsync(int id)
         {
             if (!HasPostByIdAPI())
@@ -39,9 +45,14 @@ namespace BooruSharp.Booru
         }
 
         /// <summary>
-        /// Get the number of posts available
+        /// Gets the total number of available posts. If <paramref name="tagsArg"/> array is specified
+        /// and isn't empty, the total number of posts containing these tags will be returned.
         /// </summary>
-        /// <param name="tagsArg">Tags for which you want the number of posts about (optional)</param>
+        /// <param name="tagsArg">The optional array of tags.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="Search.FeatureUnavailable"/>
+        /// <exception cref="System.Net.Http.HttpRequestException"/>
+        /// <exception cref="Search.TooManyTags"/>
         public virtual async Task<int> GetPostCountAsync(params string[] tagsArg)
         {
             if (!HasPostCountAPI())
@@ -59,9 +70,13 @@ namespace BooruSharp.Booru
         }
 
         /// <summary>
-        /// Search for a random post
+        /// Searches for a random post. If <paramref name="tagsArg"/> array is specified
+        /// and isn't empty, random post containing those tags will be returned.
         /// </summary>
-        /// <param name="tagsArg">Tags that must be contained in the post (optional)</param>
+        /// <param name="tagsArg">The optional array of tags that must be contained in the post.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="System.Net.Http.HttpRequestException"/>
+        /// <exception cref="Search.TooManyTags"/>
         public virtual async Task<Search.Post.SearchResult> GetRandomPostAsync(params string[] tagsArg)
         {
             string[] tags = tagsArg != null
@@ -99,10 +114,15 @@ namespace BooruSharp.Booru
         }
 
         /// <summary>
-        /// Search for random posts
+        /// Searches for multiple random posts. If <paramref name="tagsArg"/> array is
+        /// specified and isn't empty, random posts containing those tags will be returned.
         /// </summary>
-        /// <param name="limit">Number of posts you want to get</param>
-        /// <param name="tagsArg">Tags that must be contained in the post (optional)</param>
+        /// <param name="limit">The number of posts to get.</param>
+        /// <param name="tagsArg">The optional array of tags that must be contained in the posts.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="Search.FeatureUnavailable"/>
+        /// <exception cref="System.Net.Http.HttpRequestException"/>
+        /// <exception cref="Search.TooManyTags"/>
         public virtual async Task<Search.Post.SearchResult[]> GetRandomPostsAsync(int limit, params string[] tagsArg)
         {
             if (!HasMultipleRandomAPI())
@@ -124,9 +144,12 @@ namespace BooruSharp.Booru
         }
 
         /// <summary>
-        /// Get the latest posts of the website
+        /// Gets the latest posts on the website. If <paramref name="tagsArg"/> array is
+        /// specified and isn't empty, latest posts containing those tags will be returned.
         /// </summary>
-        /// <param name="tagsArg">Tags that must be contained in the post (optional)</param>
+        /// <param name="tagsArg">The optional array of tags that must be contained in the posts.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="System.Net.Http.HttpRequestException"/>
         public virtual async Task<Search.Post.SearchResult[]> GetLastPostsAsync(params string[] tagsArg)
         {
             return GetPostsSearchResult(JsonConvert.DeserializeObject(await GetJsonAsync(CreateUrl(_imageUrl, TagsToString(tagsArg)))));
@@ -143,7 +166,7 @@ namespace BooruSharp.Booru
         }
 
         /// <summary>
-        /// Convert letter to its maching Search.Post.Rating
+        /// Converts a letter to its maching <see cref="Search.Post.Rating"/>.
         /// </summary>
         protected Search.Post.Rating GetRating(char c)
         {

@@ -13,7 +13,14 @@
     <RepositoryUrl>https://github.com/Xwilarg/BooruSharp</RepositoryUrl>
     <RepositoryType>Library</RepositoryType>
     <PackageTags>Image C-Sharp Pixiv</PackageTags>
+    <DocumentationFile>.\xmldoc\$(TargetFramework)\BooruSharp.Others.xml</DocumentationFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="xmldoc\**" />
+    <EmbeddedResource Remove="xmldoc\**" />
+    <None Remove="xmldoc\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
