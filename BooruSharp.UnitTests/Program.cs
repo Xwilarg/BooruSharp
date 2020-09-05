@@ -164,9 +164,9 @@ namespace BooruSharp.UnitTests
             var id = (await General.GetRandomPost(booru)).id;
             booru.Auth = new BooruAuth("AAA", "AAA");
             if (!booru.HasFavoriteAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.RemoveFavoriteAsync(id); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.RemoveFavoriteAsync(id));
             else if (t == typeof(Gelbooru))
-                await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async delegate () { await booru.RemoveFavoriteAsync(id); });
+                await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async () => await booru.RemoveFavoriteAsync(id));
         }
 
         [SkipIfNoEnvTheory]
@@ -190,14 +190,14 @@ namespace BooruSharp.UnitTests
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             if (booru is Pixiv)
-                await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async delegate () { await ((Pixiv)booru).LoginAsync("AAA", "AAA"); });
+                await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async () => await ((Pixiv)booru).LoginAsync("AAA", "AAA"));
             else
             {
                 booru.Auth = new BooruAuth("AAA", "AAA");
                 if (!booru.HasFavoriteAPI())
-                    await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.AddFavoriteAsync(800); });
+                    await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.AddFavoriteAsync(800));
                 else
-                    await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async delegate () { await booru.AddFavoriteAsync(800); });
+                    await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async () => await booru.AddFavoriteAsync(800));
             }
         }
 
@@ -224,9 +224,9 @@ namespace BooruSharp.UnitTests
             string name = t.ToString().ToUpper().Split('.').Last();
             booru.Auth = new BooruAuth(Environment.GetEnvironmentVariable(name + "_USER_ID"), Environment.GetEnvironmentVariable(name + "_PASSWORD_HASH"));
             if (!booru.HasFavoriteAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.AddFavoriteAsync(int.MaxValue); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.AddFavoriteAsync(int.MaxValue));
             else
-                await Assert.ThrowsAsync<Search.InvalidPostId>(async delegate () { await booru.AddFavoriteAsync(int.MaxValue); });
+                await Assert.ThrowsAsync<Search.InvalidPostId>(async () => await booru.AddFavoriteAsync(int.MaxValue));
         }
 
         [SkipIfNoEnvTheory]
@@ -250,7 +250,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasFavoriteAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.AddFavoriteAsync(10); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.AddFavoriteAsync(10));
             else
             {
                 var id = (await General.GetRandomPost(booru)).id;
@@ -283,7 +283,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasPostByMd5API())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetPostByMd5Async("0"); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.GetPostByMd5Async("0"));
             else
             {
                 Search.Post.SearchResult result1;
@@ -317,7 +317,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasPostByIdAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetPostByIdAsync(0); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.GetPostByIdAsync(0));
             else
             {
                 Search.Post.SearchResult result1 = await General.GetRandomPost(booru);
@@ -408,7 +408,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasPostCountAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetPostCountAsync(); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.GetPostCountAsync());
             else
             {
                 int countEmpty = booru.NoEmptyPostSearch() ? int.MaxValue : await booru.GetPostCountAsync(); // Pixiv doesn't handle PostCount with no tag
@@ -464,7 +464,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasMultipleRandomAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await General.CheckGetRandoms(booru, tag); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await General.CheckGetRandoms(booru, tag));
             else
                 await General.CheckGetRandoms(booru, tag);
         }
@@ -490,7 +490,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasMultipleRandomAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetRandomPostsAsync(int.MaxValue, tag); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.GetRandomPostsAsync(int.MaxValue, tag));
             else
             {
                 var result = await booru.GetRandomPostsAsync(int.MaxValue, tag);
@@ -558,7 +558,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasMultipleRandomAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetRandomPostsAsync(5, tag, tag2); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.GetRandomPostsAsync(5, tag, tag2));
             else
             {
                 var result = await booru.GetRandomPostsAsync(5, tag, tag2);
@@ -637,7 +637,7 @@ namespace BooruSharp.UnitTests
                 });
             }
             else if (!booru.HasMultipleRandomAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetRandomPostsAsync(5, tag, tag2, tag3); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.GetRandomPostsAsync(5, tag, tag2, tag3));
             else
             {
                 result = await booru.GetRandomPostsAsync(5, tag, tag2, tag3);
@@ -693,7 +693,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasMultipleRandomAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetRandomPostsAsync(5, "someInvalidTag"); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.GetRandomPostsAsync(5, "someInvalidTag"));
             else
                 Assert.Empty(await booru.GetRandomPostsAsync(5, "someInvalidTag"));
         }
@@ -719,7 +719,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasTagByIdAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetTagAsync(tag); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.GetTagAsync(tag));
             else
                 await General.CheckTag(booru, tag);
         }
@@ -745,7 +745,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasTagByIdAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetTagAsync("someRandomTag"); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.GetTagAsync("someRandomTag"));
             else
                 await Assert.ThrowsAsync<Search.InvalidTags>(() => booru.GetTagAsync("someRandomTag"));
         }
@@ -771,7 +771,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasTagByIdAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetTagAsync(tag); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.GetTagAsync(tag));
             else if (onlyOnce)
                 Assert.NotEmpty(await booru.GetTagsAsync(tag));
             else
@@ -799,7 +799,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasTagByIdAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetTagAsync(tagId); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.GetTagAsync(tagId));
             else
                 Assert.Equal(tag, (await booru.GetTagAsync(tagId)).name);
         }
@@ -825,7 +825,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasTagByIdAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetTagAsync(int.MaxValue); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.GetTagAsync(int.MaxValue));
             else
                 await Assert.ThrowsAsync<Search.InvalidTags>(() => booru.GetTagAsync(int.MaxValue));
         }
@@ -851,7 +851,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasWikiAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetWikiAsync(tag); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.GetWikiAsync(tag));
             else
             {
                 Search.Wiki.SearchResult result = await booru.GetWikiAsync(tag);
@@ -881,7 +881,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasWikiAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetWikiAsync("yetAnotherTag"); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.GetWikiAsync("yetAnotherTag"));
             else
                 await Assert.ThrowsAsync<Search.InvalidTags>(() => booru.GetWikiAsync("yetAnotherTag"));
         }
@@ -907,7 +907,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasRelatedAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetRelatedAsync(tag); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.GetRelatedAsync(tag));
             else
             {
                 Search.Related.SearchResult[] result = await booru.GetRelatedAsync(tag);
@@ -937,7 +937,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasRelatedAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetRelatedAsync("thisWillFail"); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.GetRelatedAsync("thisWillFail"));
             else
                 Assert.Empty(await booru.GetRelatedAsync("thisWillFail"));
         }
@@ -963,7 +963,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasCommentAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetCommentsAsync(id); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.GetCommentsAsync(id));
             else
                 General.CheckComment(await booru.GetCommentsAsync(id));
         }
@@ -989,7 +989,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasCommentAPI())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetCommentsAsync(int.MaxValue); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.GetCommentsAsync(int.MaxValue));
             else
                 Assert.Empty(await booru.GetCommentsAsync(int.MaxValue));
         }
@@ -1015,7 +1015,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasSearchLastComment())
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async delegate () { await booru.GetLastCommentsAsync(); });
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.GetLastCommentsAsync());
             else
                 General.CheckComment(await booru.GetLastCommentsAsync());
         }
