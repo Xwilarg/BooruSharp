@@ -259,8 +259,8 @@ namespace BooruSharp.UnitTests
             Assert.NotEqual(results[0].id, results[1].id);
             foreach (var elem in results)
             {
-                Assert.Contains(tag, elem.tags);
-                Assert.Contains(tag2, elem.tags);
+                Assert.Contains(elem.tags, t => t.Contains(tag));
+                Assert.Contains(elem.tags, t => t.Contains(tag2));
             }
         }
 
@@ -373,7 +373,7 @@ namespace BooruSharp.UnitTests
                 var result = await booru.GetRandomPostsAsync(int.MaxValue, tag);
                 Assert.NotEmpty(result);
                 foreach (var r in result)
-                    Assert.Contains(tag, r.tags);
+                    Assert.Contains(r.tags, t=>t.Contains(tag));
             }
         }
 
@@ -410,8 +410,8 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             var result = await booru.GetRandomPostAsync(tag, tag2);
-            Assert.Contains(tag, result.tags);
-            Assert.Contains(tag2, result.tags);
+            Assert.Contains(result.tags, t => t.Contains(tag));
+            Assert.Contains(result.tags, t => t.Contains(tag2));
         }
 
         [SkippableTheory]
@@ -442,8 +442,8 @@ namespace BooruSharp.UnitTests
                 Assert.NotEmpty(result);
                 foreach (var r in result)
                 {
-                    Assert.Contains(tag, r.tags);
-                    Assert.Contains(tag2, r.tags);
+                    Assert.Contains(r.tags, t => t.Contains(tag));
+                    Assert.Contains(r.tags, t => t.Contains(tag2));
                 }
             }
         }

@@ -45,7 +45,7 @@ namespace BooruSharp.UnitTests
                 }
             }
             Assert.InRange(result.rating, Search.Post.Rating.Safe, Search.Post.Rating.Explicit);
-            Assert.Contains(inputTag, result.tags);
+            Assert.Contains(result.tags, t => t.Contains(inputTag));
             Assert.NotEqual(0, result.id);
             if (result.size.HasValue)
                 Assert.NotEqual(0, result.size.Value);
