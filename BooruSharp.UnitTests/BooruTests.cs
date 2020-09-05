@@ -98,12 +98,20 @@ namespace BooruSharp.UnitTests
         public async Task SetFavoriteInvalidId(Type t)
         {
             var booru = await Boorus.GetAsync(t);
-            string name = t.Name.ToUpperInvariant();
-            booru.Auth = new BooruAuth(Environment.GetEnvironmentVariable(name + "_USER_ID"), Environment.GetEnvironmentVariable(name + "_PASSWORD_HASH"));
+
             if (!booru.HasFavoriteAPI())
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.AddFavoriteAsync(int.MaxValue));
             else
+            {
+                // Pixiv doesn't support authorization using Auth property.
+                if (!(booru is Pixiv))
+                {
+                    string name = t.Name.ToUpperInvariant();
+                    booru.Auth = new BooruAuth(Environment.GetEnvironmentVariable(name + "_USER_ID"), Environment.GetEnvironmentVariable(name + "_PASSWORD_HASH"));
+                }
+
                 await Assert.ThrowsAsync<Search.InvalidPostId>(async () => await booru.AddFavoriteAsync(int.MaxValue));
+            }
         }
 
         [SkipIfNoEnvTheory]
@@ -126,13 +134,19 @@ namespace BooruSharp.UnitTests
         public async Task SetFavorite(Type t)
         {
             var booru = await Boorus.GetAsync(t);
+
             if (!booru.HasFavoriteAPI())
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.AddFavoriteAsync(10));
             else
             {
                 var id = (await General.GetRandomPost(booru)).id;
-                string name = t.Name.ToUpperInvariant();
-                booru.Auth = new BooruAuth(Environment.GetEnvironmentVariable(name + "_USER_ID"), Environment.GetEnvironmentVariable(name + "_PASSWORD_HASH"));
+
+                // Pixiv doesn't support authorization using Auth property.
+                if (!(booru is Pixiv))
+                {
+                    string name = t.Name.ToUpperInvariant();
+                    booru.Auth = new BooruAuth(Environment.GetEnvironmentVariable(name + "_USER_ID"), Environment.GetEnvironmentVariable(name + "_PASSWORD_HASH"));
+                }
 
                 await booru.AddFavoriteAsync(id);
                 await booru.RemoveFavoriteAsync(id);
@@ -373,7 +387,7 @@ namespace BooruSharp.UnitTests
                 var result = await booru.GetRandomPostsAsync(int.MaxValue, tag);
                 Assert.NotEmpty(result);
                 foreach (var r in result)
-                    Assert.Contains(r.tags, t=>t.Contains(tag));
+                    Assert.Contains(r.tags, t => t.Contains(tag));
             }
         }
 
