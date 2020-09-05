@@ -221,7 +221,7 @@ namespace BooruSharp.UnitTests
         public async Task SetFavoriteInvalidId(Type t)
         {
             var booru = await Boorus.GetAsync(t);
-            string name = t.ToString().ToUpper().Split('.').Last();
+            string name = t.Name.ToUpperInvariant();
             booru.Auth = new BooruAuth(Environment.GetEnvironmentVariable(name + "_USER_ID"), Environment.GetEnvironmentVariable(name + "_PASSWORD_HASH"));
             if (!booru.HasFavoriteAPI())
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.AddFavoriteAsync(int.MaxValue));
@@ -254,7 +254,7 @@ namespace BooruSharp.UnitTests
             else
             {
                 var id = (await General.GetRandomPost(booru)).id;
-                string name = t.ToString().ToUpper().Split('.').Last();
+                string name = t.Name.ToUpperInvariant();
                 booru.Auth = new BooruAuth(Environment.GetEnvironmentVariable(name + "_USER_ID"), Environment.GetEnvironmentVariable(name + "_PASSWORD_HASH"));
 
                 await booru.AddFavoriteAsync(id);
