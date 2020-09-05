@@ -9,32 +9,15 @@ namespace BooruSharp.UnitTests
 {
     internal static class Boorus
     {
-        private static readonly Dictionary<Type, Task<ABooru>> _boorus =
-            new Dictionary<Type, Task<ABooru>>()
-            {
-                [typeof(Atfbooru)] = CreateBooruAsync<Atfbooru>(),
-                [typeof(DanbooruDonmai)] = CreateBooruAsync<DanbooruDonmai>(),
-                [typeof(E621)] = CreateBooruAsync<E621>(),
-                [typeof(E926)] = CreateBooruAsync<E926>(),
-                [typeof(Furrybooru)] = CreateBooruAsync<Furrybooru>(),
-                [typeof(Gelbooru)] = CreateBooruAsync<Gelbooru>(),
-                [typeof(Konachan)] = CreateBooruAsync<Konachan>(),
-                [typeof(Lolibooru)] = CreateBooruAsync<Lolibooru>(),
-                [typeof(Realbooru)] = CreateBooruAsync<Realbooru>(),
-                [typeof(Rule34)] = CreateBooruAsync<Rule34>(),
-                [typeof(Safebooru)] = CreateBooruAsync<Safebooru>(),
-                [typeof(Sakugabooru)] = CreateBooruAsync<Sakugabooru>(),
-                [typeof(SankakuComplex)] = CreateBooruAsync<SankakuComplex>(),
-                [typeof(Xbooru)] = CreateBooruAsync<Xbooru>(),
-                [typeof(Yandere)] = CreateBooruAsync<Yandere>(),
-                [typeof(Pixiv)] = CreateBooruAsync<Pixiv>(),
-            };
+        private static readonly Dictionary<Type, Task<ABooru>> _boorus = new Dictionary<Type, Task<ABooru>>();
 
 
 
         public static Task<ABooru> GetAsync(Type type)
         {
-            return _boorus[type];
+            return _boorus.TryGetValue(type, out var booruTask) 
+                ? booruTask 
+                : (_boorus[type] = CreateBooruAsync(type));
         }
 
         public static Task<ABooru> GetAsync<T>() where T : ABooru
@@ -42,9 +25,9 @@ namespace BooruSharp.UnitTests
             return GetAsync(typeof(T));
         }
 
-        private static async Task<ABooru> CreateBooruAsync<T>() where T : ABooru
+        private static async Task<ABooru> CreateBooruAsync(Type type)
         {
-            var booru = (ABooru)Activator.CreateInstance(typeof(T));
+            var booru = (ABooru)Activator.CreateInstance(type);
 
             if (booru is Pixiv pixiv)
             {
