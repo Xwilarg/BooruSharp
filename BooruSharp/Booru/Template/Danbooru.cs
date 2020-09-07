@@ -13,15 +13,6 @@ namespace BooruSharp.Booru.Template
         /// Initializes a new instance of the <see cref="Danbooru"/> template class.
         /// </summary>
         /// <param name="url">The base URL to use. This should be a host name.</param>
-        /// <param name="options">The collection of option values.</param>
-        [Obsolete(_deprecationMessage)]
-        public Danbooru(string url, params BooruOptions[] options) : this(url, MergeOptions(options))
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Danbooru"/> template class.
-        /// </summary>
-        /// <param name="url">The base URL to use. This should be a host name.</param>
         /// <param name="options">The options to use. Use | (bitwise OR) operator to combine multiple options.</param>
         public Danbooru(string url, BooruOptions options = BooruOptions.None) : base(url, UrlFormat.Danbooru, options | BooruOptions.NoLastComments | BooruOptions.NoPostCount | BooruOptions.NoFavorite)
         { }

@@ -13,15 +13,6 @@ namespace BooruSharp.Booru.Template
         /// Initializes a new instance of the <see cref="Sankaku"/> template class.
         /// </summary>
         /// <param name="url">The base URL to use. This should be a host name.</param>
-        /// <param name="options">The collection of option values.</param>
-        [Obsolete(_deprecationMessage)]
-        public Sankaku(string url, params BooruOptions[] options) : this(url, MergeOptions(options))
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Sankaku"/> template class.
-        /// </summary>
-        /// <param name="url">The base URL to use. This should be a host name.</param>
         /// <param name="options">The options to use. Use | (bitwise OR) operator to combine multiple options.</param>
         public Sankaku(string url, BooruOptions options = BooruOptions.None) : base(url, UrlFormat.Sankaku, options | BooruOptions.NoRelated | BooruOptions.NoPostByMD5 | BooruOptions.NoPostByID | BooruOptions.NoPostCount | BooruOptions.NoFavorite | BooruOptions.NoTagByID)
         { }

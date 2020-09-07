@@ -137,17 +137,6 @@ namespace BooruSharp.Booru
         /// </summary>
         /// <param name="baseUrl">The base URL to use. This should be a host name.</param>
         /// <param name="format">The URL format to use.</param>
-        /// <param name="options">The collection of option values.</param>
-        [Obsolete(_deprecationMessage)]
-        protected ABooru(string baseUrl, UrlFormat format, params BooruOptions[] options)
-            : this(baseUrl, format, MergeOptions(options))
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ABooru"/> class.
-        /// </summary>
-        /// <param name="baseUrl">The base URL to use. This should be a host name.</param>
-        /// <param name="format">The URL format to use.</param>
         /// <param name="options">The options to use. Use | (bitwise OR) operator to combine multiple options.</param>
         protected ABooru(string baseUrl, UrlFormat format, BooruOptions options)
         {
@@ -156,9 +145,6 @@ namespace BooruSharp.Booru
             _options = options;
 
             bool useHttp = UsesHttp; // Cache returned value for faster access.
-#pragma warning disable CS0618 // Keep this field for a while in case someone still depends on it.
-            _useHttp = useHttp;
-#pragma warning restore CS0618
             _baseUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl;
             _format = format;
             _imageUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "post");
@@ -256,32 +242,6 @@ namespace BooruSharp.Booru
                 : value + "=";
         }
 
-        [Obsolete]
-        // TODO: remove this method after removing obsolete constructors.
-        private protected static BooruOptions[] CombineArrays(BooruOptions[] arr1, BooruOptions[] arr2)
-        {
-            var arr = new BooruOptions[arr1.Length + arr2.Length];
-            arr1.CopyTo(arr, 0);
-            arr2.CopyTo(arr, arr1.Length);
-            return arr;
-        }
-
-        /// <summary>
-        /// Method for compatibility with old API. Combines multiple options
-        /// into singular <see cref="BooruOptions"/> object.
-        /// </summary>
-        // TODO: remove this method after removing obsolete constructors.
-        [Obsolete("This method will be removed in the future version of the API.")]
-        protected static BooruOptions MergeOptions(BooruOptions[] array)
-        {
-            BooruOptions options = BooruOptions.None;
-
-            for (int i = 0; i < array.Length; i++)
-                options |= array[i];
-
-            return options;
-        }
-
         /// <summary>
         /// Gets or sets authentication credentials.
         /// </summary>
@@ -316,16 +276,9 @@ namespace BooruSharp.Booru
         /// </summary>
         protected static readonly Random _random = new Random();
         /// <summary>
-        /// Contains a value indicating whether http:// scheme is used instead of https://.
-        /// </summary>
-        [Obsolete("UsesHttp method should be used instead.")]
-        protected readonly bool _useHttp; // Use http instead of https
-        /// <summary>
         /// Contains the base request URL of this booru.
         /// </summary>
         protected readonly string _baseUrl;
-        // TODO: remove this message after removing obsolete constructors.
-        private protected const string _deprecationMessage = "Use a contructor that accepts single BooruOptions parameter. Use | (bitwise OR) operator to combine multiple options.";
         private HttpClient _client;
         private readonly string _imageUrlXml, _imageUrl, _tagUrl, _wikiUrl, _relatedUrl, _commentUrl; // URLs for differents endpoints
         // All options are stored in a bit field and can be retrieved using related methods/properties.
