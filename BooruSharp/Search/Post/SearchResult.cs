@@ -27,8 +27,10 @@ namespace BooruSharp.Search.Post
         /// <param name="source">The original source of the file.</param>
         /// <param name="score">The score of the post.</param>
         /// <param name="md5">The MD5 hash of the file.</param>
-        public SearchResult(Uri fileUrl, Uri previewUrl, Uri postUrl, Rating rating, IList<string> tags, int id,
-                            int? size, int height, int width, int? previewHeight, int? previewWidth, DateTime? creation, string source, int? score, string md5)
+        public SearchResult(
+            Uri fileUrl, Uri previewUrl, Uri postUrl, Rating rating, IList<string> tags,
+            int id, int? size, int height, int width, int? previewHeight, int? previewWidth,
+            DateTime? creation, string source, int? score, string md5)
         {
             FileUrl = fileUrl;
             PreviewUrl = previewUrl;

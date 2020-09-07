@@ -9,6 +9,10 @@ namespace BooruSharp.UnitTests
 {
     public static class General
     {
+        private const int _randomPostIterationCount = 5;
+        private const int _randomPostCount = 5;
+        private const Search.Tag.TagType _unknownTagType = (Search.Tag.TagType)2;
+
         private static async Task<string> CheckUrl(Uri url)
         {
             try
@@ -21,7 +25,7 @@ namespace BooruSharp.UnitTests
                 return null;
             }
             catch (WebException ex)
-            { 
+            {
                 return ex.Message + " for " + url;
             }
         }
@@ -60,23 +64,23 @@ namespace BooruSharp.UnitTests
             {
                 result2 = await booru.GetRandomPostAsync(s1);
                 i++;
-            } while (result.ID == result2.ID && i < 5);
+            } while (result.ID == result2.ID && i < _randomPostIterationCount);
             Assert.NotEqual(result.ID, result2.ID);
             await CheckResult(result, s1);
         }
 
         public static async Task CheckGetRandoms(ABooru booru, string s1)
         {
-            Search.Post.SearchResult[] result = await booru.GetRandomPostsAsync(5, s1);
+            Search.Post.SearchResult[] result = await booru.GetRandomPostsAsync(_randomPostCount, s1);
             Assert.NotEmpty(result);
             Search.Post.SearchResult[] result2;
             int i = 0;
             do
             {
-                result2 = await booru.GetRandomPostsAsync(5, s1);
+                result2 = await booru.GetRandomPostsAsync(_randomPostCount, s1);
                 Assert.NotEmpty(result2);
                 i++;
-            } while (result[0].ID == result2[0].ID && i < 5);
+            } while (result[0].ID == result2[0].ID && i < _randomPostIterationCount);
             Assert.NotEqual(result[0].ID, result2[0].ID);
             await CheckResult(result[0], s1);
         }
@@ -86,7 +90,7 @@ namespace BooruSharp.UnitTests
             Search.Tag.SearchResult result = await booru.GetTagAsync(s1);
             Assert.Equal(s1, result.Name);
             Assert.InRange(result.Type, Search.Tag.TagType.Trivia, Search.Tag.TagType.Metadata);
-            Assert.NotEqual((Search.Tag.TagType)2, result.Type);
+            Assert.NotEqual(_unknownTagType, result.Type);
             Assert.NotEqual(0, result.Count);
         }
 

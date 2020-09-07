@@ -153,6 +153,8 @@ namespace BooruSharp.Booru
                 _imageUrlXml = _imageUrl.Replace("json=1", "json=0");
             else if (_format == UrlFormat.PostIndexJson)
                 _imageUrlXml = _imageUrl.Replace("index.json", "index.xml");
+            else
+                _imageUrlXml = null;
 
             _tagUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag");
 

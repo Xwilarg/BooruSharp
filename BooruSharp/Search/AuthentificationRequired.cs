@@ -11,7 +11,8 @@ namespace BooruSharp.Search
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthentificationRequired"/> class.
         /// </summary>
-        public AuthentificationRequired() : base("Authentification is required for this feature")
+        public AuthentificationRequired()
+            : base("Authentification is required for this feature")
         { }
     }
 }

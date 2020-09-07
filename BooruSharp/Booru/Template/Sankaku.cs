@@ -14,7 +14,9 @@ namespace BooruSharp.Booru.Template
         /// </summary>
         /// <param name="url">The base URL to use. This should be a host name.</param>
         /// <param name="options">The options to use. Use | (bitwise OR) operator to combine multiple options.</param>
-        public Sankaku(string url, BooruOptions options = BooruOptions.None) : base(url, UrlFormat.Sankaku, options | BooruOptions.NoRelated | BooruOptions.NoPostByMD5 | BooruOptions.NoPostByID | BooruOptions.NoPostCount | BooruOptions.NoFavorite | BooruOptions.NoTagByID)
+        protected Sankaku(string url, BooruOptions options = BooruOptions.None)
+            : base(url, UrlFormat.Sankaku, options | BooruOptions.NoRelated | BooruOptions.NoPostByMD5 | BooruOptions.NoPostByID
+                  | BooruOptions.NoPostCount | BooruOptions.NoFavorite | BooruOptions.NoTagByID)
         { }
 
         private protected override JToken ParseFirstPostSearchResult(object json)

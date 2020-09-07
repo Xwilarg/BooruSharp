@@ -9,7 +9,8 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="TooManyTags"/> class.
         /// </summary>
-        public TooManyTags() : base("You can't have more than 2 tags for a search with this booru")
+        public TooManyTags()
+            : base("You can't have more than 2 tags for a search with this booru")
         { }
     }
 }

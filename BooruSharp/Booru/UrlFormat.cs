@@ -6,6 +6,11 @@
     public enum UrlFormat
     {
         /// <summary>
+        /// Indicates that the API doesn't use any particular query
+        /// scheme and requires custom logic to handle requests.
+        /// </summary>
+        None,
+        /// <summary>
         /// Indicates that the API uses <c>/post/index.json</c> query scheme.
         /// </summary>
         PostIndexJson,

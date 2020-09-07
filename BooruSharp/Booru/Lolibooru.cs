@@ -11,7 +11,8 @@ namespace BooruSharp.Booru
         /// <summary>
         /// Initializes a new instance of the <see cref="Lolibooru"/> class.
         /// </summary>
-        public Lolibooru() : base("lolibooru.moe")
+        public Lolibooru()
+            : base("lolibooru.moe")
         { }
 
         /// <inheritdoc/>

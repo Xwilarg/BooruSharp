@@ -9,7 +9,8 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Xbooru"/> class.
         /// </summary>
-        public Xbooru() : base("xbooru.com")
+        public Xbooru()
+            : base("xbooru.com")
         { }
 
         /// <inheritdoc/>

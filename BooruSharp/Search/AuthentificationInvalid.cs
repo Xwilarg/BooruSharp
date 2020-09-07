@@ -11,7 +11,8 @@ namespace BooruSharp.Search
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthentificationInvalid"/> class.
         /// </summary>
-        public AuthentificationInvalid() : base("Your credentials are invalid")
+        public AuthentificationInvalid()
+            : base("Your credentials are invalid")
         { }
     }
 }
