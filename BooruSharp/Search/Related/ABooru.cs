@@ -18,7 +18,7 @@ namespace BooruSharp.Booru
         /// <exception cref="System.Net.Http.HttpRequestException"/>
         public virtual async Task<Search.Related.SearchResult[]> GetRelatedAsync(string tag)
         {
-            if (!HasRelatedAPI())
+            if (!HasRelatedAPI)
                 throw new Search.FeatureUnavailable();
 
             if (tag == null)

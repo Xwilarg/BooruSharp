@@ -174,8 +174,7 @@ namespace BooruSharp.Others
         }
 
         /// <inheritdoc/>
-        public override bool IsSafe()
-            => false;
+        public override bool IsSafe => false;
 
         /// <summary>
         /// Adds a post with the specified ID to favorites.

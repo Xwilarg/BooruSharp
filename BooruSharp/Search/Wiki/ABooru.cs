@@ -18,7 +18,7 @@ namespace BooruSharp.Booru
         /// <exception cref="Search.InvalidTags"/>
         public virtual async Task<Search.Wiki.SearchResult> GetWikiAsync(string query)
         {
-            if (!HasWikiAPI())
+            if (!HasWikiAPI)
                 throw new Search.FeatureUnavailable();
 
             if (query == null)

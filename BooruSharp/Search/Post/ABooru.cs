@@ -18,7 +18,7 @@ namespace BooruSharp.Booru
         /// <exception cref="System.Net.Http.HttpRequestException"/>
         public virtual async Task<Search.Post.SearchResult> GetPostByMd5Async(string md5)
         {
-            if (!HasPostByMd5API())
+            if (!HasPostByMd5API)
                 throw new Search.FeatureUnavailable();
 
             if (md5 == null)
@@ -36,7 +36,7 @@ namespace BooruSharp.Booru
         /// <exception cref="System.Net.Http.HttpRequestException"/>
         public virtual async Task<Search.Post.SearchResult> GetPostByIdAsync(int id)
         {
-            if (!HasPostByIdAPI())
+            if (!HasPostByIdAPI)
                 throw new Search.FeatureUnavailable();
 
             return _format == UrlFormat.Danbooru
@@ -55,14 +55,14 @@ namespace BooruSharp.Booru
         /// <exception cref="Search.TooManyTags"/>
         public virtual async Task<int> GetPostCountAsync(params string[] tagsArg)
         {
-            if (!HasPostCountAPI())
+            if (!HasPostCountAPI)
                 throw new Search.FeatureUnavailable();
 
             string[] tags = tagsArg != null
                 ? tagsArg.Where(tag => !string.IsNullOrWhiteSpace(tag)).ToArray()
                 : Array.Empty<string>();
 
-            if (tags.Length > 2 && NoMoreThanTwoTags())
+            if (tags.Length > 2 && NoMoreThanTwoTags)
                 throw new Search.TooManyTags();
 
             XmlDocument xml = await GetXmlAsync(CreateUrl(_imageUrlXml, "limit=1", TagsToString(tags)));
@@ -83,7 +83,7 @@ namespace BooruSharp.Booru
                 ? tagsArg.Where(tag => !string.IsNullOrWhiteSpace(tag)).ToArray()
                 : Array.Empty<string>();
 
-            if (tags.Length > 2 && NoMoreThanTwoTags())
+            if (tags.Length > 2 && NoMoreThanTwoTags)
                 throw new Search.TooManyTags();
 
             if (_format == UrlFormat.IndexPhp)
@@ -102,13 +102,13 @@ namespace BooruSharp.Booru
                 if (max == 0)
                     throw new Search.InvalidTags();
 
-                if (SearchIncreasedPostLimit() && max > 20001)
+                if (SearchIncreasedPostLimit && max > 20001)
                     max = 20001;
 
                 return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tags), "pid=" + _random.Next(0, max)));
             }
 
-            return NoMoreThanTwoTags()
+            return NoMoreThanTwoTags
                 ? await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tags), "random=true")) // +order:random count as a tag so we use random=true instead to save one
                 : await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tags)) + "+order:random");
         }
@@ -125,19 +125,19 @@ namespace BooruSharp.Booru
         /// <exception cref="Search.TooManyTags"/>
         public virtual async Task<Search.Post.SearchResult[]> GetRandomPostsAsync(int limit, params string[] tagsArg)
         {
-            if (!HasMultipleRandomAPI())
+            if (!HasMultipleRandomAPI)
                 throw new Search.FeatureUnavailable();
 
             string[] tags = tagsArg != null
                 ? tagsArg.Where(tag => !string.IsNullOrWhiteSpace(tag)).ToArray()
                 : Array.Empty<string>();
 
-            if (tags.Length > 2 && NoMoreThanTwoTags())
+            if (tags.Length > 2 && NoMoreThanTwoTags)
                 throw new Search.TooManyTags();
 
             if (_format == UrlFormat.IndexPhp)
                 return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tags)) + "+sort:random");
-            else if (NoMoreThanTwoTags())
+            else if (NoMoreThanTwoTags)
                 return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tags), "random=true")); // +order:random count as a tag so we use random=true instead to save one
             else
                 return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tags)) + "+order:random");

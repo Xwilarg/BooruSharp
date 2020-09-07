@@ -15,7 +15,7 @@ namespace BooruSharp.Booru
         { }
 
         /// <inheritdoc/>
-        public override bool IsSafe() => false;
+        public override bool IsSafe => false;
 
         private protected override Search.Tag.SearchResult GetTagSearchResult(object json)
         {

@@ -22,7 +22,7 @@ namespace BooruSharp.Booru
         /// <exception cref="InvalidPostId"/>
         public virtual async Task AddFavoriteAsync(int postId)
         {
-            if (!HasFavoriteAPI())
+            if (!HasFavoriteAPI)
                 throw new FeatureUnavailable();
 
             if (Auth == null)
@@ -54,7 +54,7 @@ namespace BooruSharp.Booru
         /// <exception cref="System.Net.Http.HttpRequestException"/>
         public virtual async Task RemoveFavoriteAsync(int postId)
         {
-            if (!HasFavoriteAPI())
+            if (!HasFavoriteAPI)
                 throw new FeatureUnavailable();
 
             if (Auth == null)

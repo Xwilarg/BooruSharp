@@ -22,7 +22,7 @@ namespace BooruSharp.UnitTests
             }
             catch (WebException ex)
             { 
-                return ex.Message + " for " + url; 
+                return ex.Message + " for " + url;
             }
         }
 
@@ -124,7 +124,7 @@ namespace BooruSharp.UnitTests
 
         public static async Task<Search.Post.SearchResult> GetRandomPost(ABooru booru)
         {
-            if (booru.NoEmptyPostSearch())
+            if (booru.NoEmptyPostSearch)
                 return await booru.GetRandomPostAsync("スク水"); // Pixiv doesn't handle random search with no tag
             return await booru.GetRandomPostAsync();
         }

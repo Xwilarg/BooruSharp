@@ -20,7 +20,7 @@ namespace BooruSharp.Booru
         /// <exception cref="Search.InvalidTags"/>
         public virtual async Task<Search.Tag.SearchResult> GetTagAsync(string name)
         {
-            if (!HasTagByIdAPI())
+            if (!HasTagByIdAPI)
                 throw new Search.FeatureUnavailable();
 
             if (name == null)
@@ -39,7 +39,7 @@ namespace BooruSharp.Booru
         /// <exception cref="Search.InvalidTags"/>
         public virtual async Task<Search.Tag.SearchResult> GetTagAsync(int id)
         {
-            if (!HasTagByIdAPI())
+            if (!HasTagByIdAPI)
                 throw new Search.FeatureUnavailable();
 
             return await SearchTagAsync(null, id);
@@ -55,7 +55,7 @@ namespace BooruSharp.Booru
         /// <exception cref="System.Net.Http.HttpRequestException"/>
         public virtual async Task<Search.Tag.SearchResult[]> GetTagsAsync(string name)
         {
-            if (!HasTagByIdAPI())
+            if (!HasTagByIdAPI)
                 throw new Search.FeatureUnavailable();
 
             if (name == null)
@@ -68,7 +68,7 @@ namespace BooruSharp.Booru
 
             string url = CreateUrl(_tagUrl, urlTags.ToArray());
 
-            if (TagsUseXml())
+            if (TagsUseXml)
             {
                 var xml = await GetXmlAsync(url);
                 // Can't use LINQ with XmlNodes so let's use list here.
@@ -100,8 +100,7 @@ namespace BooruSharp.Booru
                 urlTags.Add("limit=0");
 
             string url = CreateUrl(_tagUrl, urlTags.ToArray());
-
-            if (TagsUseXml())
+            if (TagsUseXml)
             {
                 var xml = await GetXmlAsync(url);
 

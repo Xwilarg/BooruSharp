@@ -13,6 +13,6 @@
         { }
 
         /// <inheritdoc/>
-        public override bool IsSafe() => true;
+        public override bool IsSafe => true;
     }
 }
