@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace BooruSharp.Search.Post
 {
@@ -25,14 +27,14 @@ namespace BooruSharp.Search.Post
         /// <param name="source">The original source of the file.</param>
         /// <param name="score">The score of the post.</param>
         /// <param name="md5">The MD5 hash of the file.</param>
-        public SearchResult(Uri fileUrl, Uri previewUrl, Uri postUrl, Rating rating, string[] tags, int id,
+        public SearchResult(Uri fileUrl, Uri previewUrl, Uri postUrl, Rating rating, IList<string> tags, int id,
                             int? size, int height, int width, int? previewHeight, int? previewWidth, DateTime? creation, string source, int? score, string md5)
         {
             FileUrl = fileUrl;
             PreviewUrl = previewUrl;
             PostUrl = postUrl;
             Rating = rating;
-            Tags = tags;
+            Tags = new ReadOnlyCollection<string>(tags);
             ID = id;
             Size = size;
             Height = height;
@@ -66,9 +68,9 @@ namespace BooruSharp.Search.Post
         public Rating Rating { get; }
 
         /// <summary>
-        /// Gets the array containing all the tags associated with the file.
+        /// Gets the read-only collection containing all the tags associated with the file.
         /// </summary>
-        public string[] Tags { get; }
+        public ReadOnlyCollection<string> Tags { get; }
 
         /// <summary>
         /// Gets the ID of the post.

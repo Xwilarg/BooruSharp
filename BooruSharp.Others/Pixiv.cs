@@ -369,7 +369,7 @@ namespace BooruSharp.Others
                 new Uri(post["image_urls"]["medium"].Value<string>()),
                 new Uri("https://www.pixiv.net/en/artworks/" + post["id"].Value<int>()),
                 isNsfw ? Rating.Explicit : Rating.Safe,
-                tags.ToArray(),
+                tags,
                 post["id"].Value<int>(),
                 null,
                 post["height"].Value<int>(),
