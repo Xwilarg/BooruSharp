@@ -37,10 +37,10 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv))]
-        public async Task UnsetFavoriteError(Type t)
+        public async Task UnsetFavoriteErrorAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
-            var id = (await General.GetRandomPost(booru)).ID;
+            var id = (await General.GetRandomPostAsync(booru)).ID;
             booru.Auth = new BooruAuth("AAA", "AAA");
             if (!booru.HasFavoriteAPI)
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.RemoveFavoriteAsync(id));
@@ -65,7 +65,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv))]
-        public async Task SetFavoriteError(Type t)
+        public async Task SetFavoriteErrorAsync(Type t)
         {
             var booru = (ABooru)Activator.CreateInstance(t);
             if (booru is Pixiv pixiv)
@@ -97,7 +97,7 @@ namespace BooruSharp.UnitTests
         // [InlineData(typeof(Xbooru))] // Xbooru allow to add post with invalid ID
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv))]
-        public async Task SetFavoriteInvalidId(Type t)
+        public async Task SetFavoriteInvalidIdAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
 
@@ -135,7 +135,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv))]
-        public async Task SetFavorite(Type t)
+        public async Task SetFavoriteAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
 
@@ -143,7 +143,7 @@ namespace BooruSharp.UnitTests
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.AddFavoriteAsync(10));
             else
             {
-                var id = (await General.GetRandomPost(booru)).ID;
+                var id = (await General.GetRandomPostAsync(booru)).ID;
 
                 // Pixiv doesn't support authorization using Auth property.
                 if (!(booru is Pixiv))
@@ -176,7 +176,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv))]
-        public async Task GetByMd5(Type t)
+        public async Task GetByMd5Async(Type t)
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasPostByMd5API)
@@ -186,7 +186,7 @@ namespace BooruSharp.UnitTests
                 Search.Post.SearchResult result1;
                 do
                 {
-                    result1 = await General.GetRandomPost(booru);
+                    result1 = await General.GetRandomPostAsync(booru);
                 } while (result1.MD5 == null);
                 var result2 = await booru.GetPostByMd5Async(result1.MD5);
                 Assert.Equal(result1.ID, result2.ID);
@@ -210,14 +210,14 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv))]
-        public async Task GetById(Type t)
+        public async Task GetByIdAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasPostByIdAPI)
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.GetPostByIdAsync(0));
             else
             {
-                Search.Post.SearchResult result1 = await General.GetRandomPost(booru);
+                Search.Post.SearchResult result1 = await General.GetRandomPostAsync(booru);
                 var result2 = await booru.GetPostByIdAsync(result1.ID);
                 Assert.Equal(result1.ID, result2.ID);
             }
@@ -240,7 +240,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv))]
-        public async Task GetLastPosts(Type t)
+        public async Task GetLastPostsAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
             if (booru.NoEmptyPostSearch)
@@ -270,7 +270,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru), "kantai_collection")]
         [InlineData(typeof(Yandere), "kantai_collection", "swimsuits")]
         [InlineData(typeof(Pixiv), "響(艦隊これくしょん)", "水着艦娘")]
-        public async Task GetLastPostsWithTags(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "swimsuit")
+        public async Task GetLastPostsWithTagsAsync(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "swimsuit")
         {
             var booru = await Boorus.GetAsync(t);
             Search.Post.SearchResult[] results;
@@ -301,7 +301,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru), "kantai_collection")]
         [InlineData(typeof(Yandere), "kantai_collection", "swimsuits")]
         [InlineData(typeof(Pixiv), "響(艦隊これくしょん)", "水着")]
-        public async Task GetPostCount(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "swimsuit")
+        public async Task GetPostCountAsync(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "swimsuit")
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasPostCountAPI)
@@ -338,9 +338,9 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv), "スク水")]
-        public async Task GetRandom(Type t, string tag = "school_swimsuit")
+        public async Task GetRandomAsync(Type t, string tag = "school_swimsuit")
         {
-            await General.CheckGetRandom(await Boorus.GetAsync(t), tag);
+            await General.CheckGetRandomAsync(await Boorus.GetAsync(t), tag);
         }
 
         [SkippableTheory]
@@ -360,13 +360,13 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv), "スク水")]
-        public async Task GetRandoms(Type t, string tag = "school_swimsuit")
+        public async Task GetRandomsAsync(Type t, string tag = "school_swimsuit")
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasMultipleRandomAPI)
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await General.CheckGetRandoms(booru, tag));
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await General.CheckGetRandomsAsync(booru, tag));
             else
-                await General.CheckGetRandoms(booru, tag);
+                await General.CheckGetRandomsAsync(booru, tag);
         }
 
         [SkippableTheory]
@@ -386,7 +386,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv), "スク水")]
-        public async Task GetRandomsTooMany(Type t, string tag = "school_swimsuit")
+        public async Task GetRandomsTooManyAsync(Type t, string tag = "school_swimsuit")
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasMultipleRandomAPI)
@@ -401,13 +401,13 @@ namespace BooruSharp.UnitTests
         }
 
         [Fact]
-        public async Task SetHttpClient()
+        public async Task SetHttpClientAsync()
         {
             var booru = new Gelbooru();
             HttpClient hc = new HttpClient();
             hc.DefaultRequestHeaders.Add("User-Agent", "BooruSharp.Unit-Tests");
             booru.HttpClient = hc;
-            await General.CheckGetRandom(booru, "kantai_collection");
+            await General.CheckGetRandomAsync(booru, "kantai_collection");
             Assert.Single(hc.DefaultRequestHeaders.GetValues("User-Agent"));
             Assert.Contains("BooruSharp.Unit-Tests", hc.DefaultRequestHeaders.GetValues("User-Agent"));
         }
@@ -429,7 +429,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru), "kantai_collection")]
         [InlineData(typeof(Yandere), "kantai_collection")]
         [InlineData(typeof(Pixiv), "響(艦隊これくしょん)", "水着艦娘")]
-        public async Task GetRandom2Tags(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "school_swimsuit")
+        public async Task GetRandom2TagsAsync(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "school_swimsuit")
         {
             var booru = await Boorus.GetAsync(t);
             var result = await booru.GetRandomPostAsync(tag, tag2);
@@ -454,7 +454,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru), "kantai_collection")]
         [InlineData(typeof(Yandere), "kantai_collection")]
         [InlineData(typeof(Pixiv), "響(艦隊これくしょん)", "スク水")]
-        public async Task GetRandoms2Tags(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "school_swimsuit")
+        public async Task GetRandoms2TagsAsync(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "school_swimsuit")
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasMultipleRandomAPI)
@@ -488,7 +488,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru), false, "ocean", "small_breasts")]
         [InlineData(typeof(Yandere), false, "see_through", "loli", "swimsuits")]
         [InlineData(typeof(Pixiv), false, "東方", "貧乳", "水着")]
-        public async Task TooManyTags(
+        public async Task TooManyTagsAsync(
             Type t, bool throwError, string tag = "ocean", string tag2 = "flat_chest", string tag3 = "swimsuit")
         {
             var booru = await Boorus.GetAsync(t);
@@ -526,7 +526,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru), false, "ocean", "small_breasts")]
         [InlineData(typeof(Yandere), false, "see_through", "loli", "swimsuits")]
         [InlineData(typeof(Pixiv), false, "水", "貧乳", "水着")]
-        public async Task TooManyTagsMany(
+        public async Task TooManyTagsManyAsync(
             Type t, bool throwError, string tag = "ocean", string tag2 = "flat_chest", string tag3 = "swimsuit")
         {
             var booru = await Boorus.GetAsync(t);
@@ -570,7 +570,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv))]
-        public async Task GetRandomFail(Type t)
+        public async Task GetRandomFailAsync(Type t)
         {
             await Assert.ThrowsAsync<Search.InvalidTags>(
                 async () => await (await Boorus.GetAsync(t)).GetRandomPostAsync("someInvalidTag"));
@@ -593,7 +593,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv))]
-        public async Task GetRandomsFail(Type t)
+        public async Task GetRandomsFailAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasMultipleRandomAPI)
@@ -619,13 +619,13 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv), "パンスト")]
-        public async Task CheckTag(Type t, string tag = "pantyhose")
+        public async Task CheckTagAsync(Type t, string tag = "pantyhose")
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasTagByIdAPI)
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.GetTagAsync(tag));
             else
-                await General.CheckTag(booru, tag);
+                await General.CheckTagAsync(booru, tag);
         }
 
         [SkippableTheory]
@@ -645,7 +645,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv))]
-        public async Task CheckTagFail(Type t)
+        public async Task CheckTagFailAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasTagByIdAPI)
@@ -671,7 +671,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru), "hibiki", true)]
         [InlineData(typeof(Yandere), "hibiki", false)]
         [InlineData(typeof(Pixiv), "艦隊こ", false)]
-        public async Task CheckTags(Type t, string tag, bool onlyOnce)
+        public async Task CheckTagsAsync(Type t, string tag, bool onlyOnce)
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasTagByIdAPI)
@@ -699,7 +699,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru), "hibiki_(kantai_collection)", 151883)]
         [InlineData(typeof(Yandere), "hibiki_(kancolle)", 98153)]
         [InlineData(typeof(Pixiv), "響(艦隊これくしょん)", -1)]
-        public async Task TagId(Type t, string tag, int tagId)
+        public async Task TagIdAsync(Type t, string tag, int tagId)
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasTagByIdAPI)
@@ -725,7 +725,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv))]
-        public async Task TagIdFail(Type t)
+        public async Task TagIdFailAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasTagByIdAPI)
@@ -751,7 +751,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru), "futanari", -1)]
         [InlineData(typeof(Yandere), "futanari", 167)]
         [InlineData(typeof(Pixiv), "ふたなり", -1)]
-        public async Task CheckWiki(Type t, string tag, int? id)
+        public async Task CheckWikiAsync(Type t, string tag, int? id)
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasWikiAPI)
@@ -781,7 +781,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv))]
-        public async Task CheckWikiFail(Type t)
+        public async Task CheckWikiFailAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasWikiAPI)
@@ -807,7 +807,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru), "sky", "clouds")]
         [InlineData(typeof(Yandere), "landscape", "wallpaper")]
         [InlineData(typeof(Pixiv), "空", "雲")]
-        public async Task CheckRelated(Type t, string tag, string related)
+        public async Task CheckRelatedAsync(Type t, string tag, string related)
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasRelatedAPI)
@@ -837,7 +837,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv))]
-        public async Task CheckRelatedFail(Type t)
+        public async Task CheckRelatedFailAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasRelatedAPI)
@@ -863,7 +863,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru), 740157)]
         [InlineData(typeof(Yandere), 619494)]
         [InlineData(typeof(Pixiv), -1)]
-        public async Task CheckComment(Type t, int id)
+        public async Task CheckCommentAsync(Type t, int id)
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasCommentAPI)
@@ -889,7 +889,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv))]
-        public async Task CheckCommentFail(Type t)
+        public async Task CheckCommentFailAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasCommentAPI)
@@ -915,7 +915,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv))]
-        public async Task CheckLastComment(Type t)
+        public async Task CheckLastCommentAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasSearchLastComment)
@@ -941,7 +941,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv))]
-        public async Task CheckAvailable(Type t)
+        public async Task CheckAvailableAsync(Type t)
         {
             await (await Boorus.GetAsync(t)).CheckAvailabilityAsync();
         }
@@ -970,7 +970,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv), "おまんこ")]
-        public async Task CheckIsSafe(Type t, string explicitTag = "pussy")
+        public async Task CheckIsSafeAsync(Type t, string explicitTag = "pussy")
         {
             ABooru b = await Boorus.GetAsync(t);
             bool isSafe = b.IsSafe;

@@ -13,7 +13,7 @@ namespace BooruSharp.UnitTests
         private const int _randomPostCount = 5;
         private const Search.Tag.TagType _unknownTagType = (Search.Tag.TagType)2;
 
-        private static async Task<string> CheckUrl(Uri url)
+        private static async Task<string> CheckUrlAsync(Uri url)
         {
             try
             {
@@ -30,13 +30,13 @@ namespace BooruSharp.UnitTests
             }
         }
 
-        public static async Task CheckResult(Search.Post.SearchResult result, string inputTag)
+        public static async Task CheckResultAsync(Search.Post.SearchResult result, string inputTag)
         {
             if (result.FileUrl != null)
             {
-                string resFile = await CheckUrl(result.FileUrl);
-                string resPreview = await CheckUrl(result.PreviewUrl);
-                string resPost = await CheckUrl(result.PostUrl);
+                string resFile = await CheckUrlAsync(result.FileUrl);
+                string resPreview = await CheckUrlAsync(result.PreviewUrl);
+                string resPost = await CheckUrlAsync(result.PostUrl);
                 Assert.True(resPost == null, resPost);
                 Assert.True(resFile == null, resFile);
                 Assert.True(resPreview == null, resPreview);
@@ -55,7 +55,7 @@ namespace BooruSharp.UnitTests
                 Assert.NotEqual(0, result.Size.Value);
         }
 
-        public static async Task CheckGetRandom(ABooru booru, string s1)
+        public static async Task CheckGetRandomAsync(ABooru booru, string s1)
         {
             Search.Post.SearchResult result = await booru.GetRandomPostAsync(s1);
             Search.Post.SearchResult result2;
@@ -66,10 +66,10 @@ namespace BooruSharp.UnitTests
                 i++;
             } while (result.ID == result2.ID && i < _randomPostIterationCount);
             Assert.NotEqual(result.ID, result2.ID);
-            await CheckResult(result, s1);
+            await CheckResultAsync(result, s1);
         }
 
-        public static async Task CheckGetRandoms(ABooru booru, string s1)
+        public static async Task CheckGetRandomsAsync(ABooru booru, string s1)
         {
             Search.Post.SearchResult[] result = await booru.GetRandomPostsAsync(_randomPostCount, s1);
             Assert.NotEmpty(result);
@@ -82,10 +82,10 @@ namespace BooruSharp.UnitTests
                 i++;
             } while (result[0].ID == result2[0].ID && i < _randomPostIterationCount);
             Assert.NotEqual(result[0].ID, result2[0].ID);
-            await CheckResult(result[0], s1);
+            await CheckResultAsync(result[0], s1);
         }
 
-        public static async Task CheckTag(ABooru booru, string s1 = "pantyhose")
+        public static async Task CheckTagAsync(ABooru booru, string s1 = "pantyhose")
         {
             Search.Tag.SearchResult result = await booru.GetTagAsync(s1);
             Assert.Equal(s1, result.Name);
@@ -126,7 +126,7 @@ namespace BooruSharp.UnitTests
             return true;
         }
 
-        public static async Task<Search.Post.SearchResult> GetRandomPost(ABooru booru)
+        public static async Task<Search.Post.SearchResult> GetRandomPostAsync(ABooru booru)
         {
             if (booru.NoEmptyPostSearch)
                 return await booru.GetRandomPostAsync("スク水"); // Pixiv doesn't handle random search with no tag

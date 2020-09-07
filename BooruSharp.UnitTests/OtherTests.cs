@@ -9,7 +9,7 @@ namespace BooruSharp.UnitTests
     public class OtherTests
     {
         [Fact]
-        public async Task GelbooruTagCharacter()
+        public async Task GelbooruTagCharacterAsync()
         {
             Assert.Equal(
                 Search.Tag.TagType.Character,
@@ -17,7 +17,7 @@ namespace BooruSharp.UnitTests
         }
 
         [Fact]
-        public async Task GelbooruTagCopyright()
+        public async Task GelbooruTagCopyrightAsync()
         {
             Assert.Equal(
                 Search.Tag.TagType.Copyright,
@@ -25,7 +25,7 @@ namespace BooruSharp.UnitTests
         }
 
         [Fact]
-        public async Task GelbooruTagArtist()
+        public async Task GelbooruTagArtistAsync()
         {
             Assert.Equal(
                 Search.Tag.TagType.Artist,
@@ -33,7 +33,7 @@ namespace BooruSharp.UnitTests
         }
 
         [Fact]
-        public async Task GelbooruTagMetadata()
+        public async Task GelbooruTagMetadataAsync()
         {
             Assert.Equal(
                 Search.Tag.TagType.Metadata,
@@ -41,7 +41,7 @@ namespace BooruSharp.UnitTests
         }
 
         [Fact]
-        public async Task GelbooruTagTrivia()
+        public async Task GelbooruTagTriviaAsync()
         {
             Assert.Equal(
                 Search.Tag.TagType.Trivia,
