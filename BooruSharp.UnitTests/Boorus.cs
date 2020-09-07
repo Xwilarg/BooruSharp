@@ -17,9 +17,13 @@ namespace BooruSharp.UnitTests
         {
             lock (_boorus)
             {
-                return _boorus.TryGetValue(type, out var booruTask)
-                    ? booruTask
-                    : (_boorus[type] = Task.Run(() => CreateBooruAsync(type)));
+                if (!_boorus.TryGetValue(type, out var booruTask))
+                {
+                    booruTask = Task.Run(() => CreateBooruAsync(type));
+                    _boorus[type] = booruTask;
+                }
+
+                return booruTask;
             }
         }
 

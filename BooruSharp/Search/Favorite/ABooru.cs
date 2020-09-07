@@ -7,6 +7,8 @@ namespace BooruSharp.Booru
 {
     public abstract partial class ABooru
     {
+        private const int _invalidAuthErrorCode = 2;
+
         /// <summary>
         /// Adds a post to your favorites.
         /// </summary>
@@ -36,7 +38,7 @@ namespace BooruSharp.Booru
 
             int result = int.Parse(response);
 
-            if (result == 2)
+            if (result == _invalidAuthErrorCode)
                 throw new AuthentificationInvalid();
         }
 

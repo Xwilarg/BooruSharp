@@ -56,7 +56,7 @@ namespace BooruSharp.Others
             using (var md5 = MD5.Create())
             {
                 var hashBytes = md5.ComputeHash(Encoding.UTF8.GetBytes(time + _hashSecret));
-                var hashString = BitConverter.ToString(hashBytes).Replace("-", null).ToLower();
+                var hashString = BitConverter.ToString(hashBytes).Replace("-", null).ToLowerInvariant();
 
                 request.Headers.Add("X-Client-Hash", hashString);
             }
@@ -192,7 +192,7 @@ namespace BooruSharp.Others
                 throw new AuthentificationRequired();
 
             var request = new HttpRequestMessage(HttpMethod.Post, _baseUrl + "/v2/illust/bookmark/add");
-            request.Headers.Add("Authorization", "Bearer " + AccessToken);
+            AddAuthorizationHeader(request);
             request.Content = new FormUrlEncodedContent(
                 new Dictionary<string, string>
                 {
@@ -222,7 +222,7 @@ namespace BooruSharp.Others
                 throw new AuthentificationRequired();
 
             var request = new HttpRequestMessage(HttpMethod.Post, _baseUrl + "/v1/illust/bookmark/delete");
-            request.Headers.Add("Authorization", "Bearer " + AccessToken);
+            AddAuthorizationHeader(request);
             request.Content = new FormUrlEncodedContent(
                 new Dictionary<string, string>
                 {
@@ -246,7 +246,7 @@ namespace BooruSharp.Others
             await CheckUpdateTokenAsync();
 
             var request = new HttpRequestMessage(HttpMethod.Get, _baseUrl + "/v1/illust/detail?illust_id=" + id);
-            request.Headers.Add("Authorization", "Bearer " + AccessToken);
+            AddAuthorizationHeader(request);
 
             var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
 
@@ -273,7 +273,7 @@ namespace BooruSharp.Others
             var requestUrl = _baseUrl + "/v1/search/illust?word=" + JoinTagsAndEscapeString(tagsArg) + "&offset=" + id;
 
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
-            request.Headers.Add("Authorization", "Bearer " + AccessToken);
+            AddAuthorizationHeader(request);
 
             var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
 
@@ -329,7 +329,7 @@ namespace BooruSharp.Others
             string requestUrl = _baseUrl + "/v1/search/illust?word=" + JoinTagsAndEscapeString(tagsArg);
 
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
-            request.Headers.Add("Authorization", "Bearer " + AccessToken);
+            AddAuthorizationHeader(request);
 
             var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
 
@@ -344,7 +344,7 @@ namespace BooruSharp.Others
 
         private static string JoinTagsAndEscapeString(string[] tags)
         {
-            string joined = string.Join(" ", tags).ToLower();
+            string joined = string.Join(" ", tags).ToLowerInvariant();
             return Uri.EscapeDataString(joined);
         }
 
@@ -387,6 +387,11 @@ namespace BooruSharp.Others
                 null,
                 post["total_bookmarks"].Value<int>(),
                 null);
+        }
+
+        private void AddAuthorizationHeader(HttpRequestMessage request)
+        {
+            request.Headers.Add("Authorization", "Bearer " + AccessToken);
         }
 
         /// <summary>

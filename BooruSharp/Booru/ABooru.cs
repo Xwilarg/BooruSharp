@@ -147,7 +147,7 @@ namespace BooruSharp.Booru
             bool useHttp = UsesHttp; // Cache returned value for faster access.
             _baseUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl;
             _format = format;
-            _imageUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "post");
+            _imageUrl = _baseUrl + "/" + GetUrl(format, "post");
 
             if (_format == UrlFormat.IndexPhp)
                 _imageUrlXml = _imageUrl.Replace("json=1", "json=0");
@@ -156,20 +156,20 @@ namespace BooruSharp.Booru
             else
                 _imageUrlXml = null;
 
-            _tagUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag");
+            _tagUrl = _baseUrl + "/" + GetUrl(format, "tag");
 
             if (HasWikiAPI)
                 _wikiUrl = format == UrlFormat.Danbooru
-                    ? "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "wiki_page")
-                    : "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "wiki");
+                    ? _baseUrl + "/" + GetUrl(format, "wiki_page")
+                    : _baseUrl + "/" + GetUrl(format, "wiki");
 
             if (HasRelatedAPI)
                 _relatedUrl = format == UrlFormat.Danbooru
-                    ? "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "related_tag")
-                    : "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag", "related");
+                    ? _baseUrl + "/" + GetUrl(format, "related_tag")
+                    : _baseUrl + "/" + GetUrl(format, "tag", "related");
 
             if (HasCommentAPI)
-                _commentUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "comment");
+                _commentUrl = _baseUrl + "/" + GetUrl(format, "comment");
         }
 
         private protected static string GetUrl(UrlFormat format, string query, string squery = "index")
@@ -233,7 +233,7 @@ namespace BooruSharp.Booru
         private string TagsToString(string[] tags)
         {
             return tags != null
-                ? "tags=" + string.Join("+", tags.Select(Uri.EscapeDataString)).ToLower()
+                ? "tags=" + string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant()
                 : "";
         }
 
@@ -276,7 +276,7 @@ namespace BooruSharp.Booru
         /// <summary>
         /// The instance of <see cref="Random"/> class used for generating random post IDs.
         /// </summary>
-        protected static readonly Random _random = new Random();
+        protected static readonly Random _random = new ThreadSafeRandom();
         /// <summary>
         /// Contains the base request URL of this booru.
         /// </summary>
@@ -287,6 +287,7 @@ namespace BooruSharp.Booru
         private readonly BooruOptions _options;
         private readonly UrlFormat _format; // URL format
         private const string _userAgentHeaderValue = "Mozilla/5.0 BooruSharp";
+        private protected readonly DateTime _unixTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private static readonly Lazy<HttpClient> _lazyClient = new Lazy<HttpClient>(() =>
         {
             HttpClient client = new HttpClient();

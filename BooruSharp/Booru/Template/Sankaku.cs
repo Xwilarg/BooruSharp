@@ -42,7 +42,7 @@ namespace BooruSharp.Booru.Template
                     elem["width"].Value<int>(),
                     elem["preview_height"].Value<int>(),
                     elem["preview_width"].Value<int>(),
-                    new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(elem["created_at"]["s"].Value<int>()),
+                    _unixTime.AddSeconds(elem["created_at"]["s"].Value<int>()),
                     elem["source"].Value<string>(),
                     elem["total_score"].Value<int>(),
                     elem["md5"].Value<string>()
@@ -63,7 +63,7 @@ namespace BooruSharp.Booru.Template
                 elem["id"].Value<int>(),
                 elem["post_id"].Value<int>(),
                 elem["author"]["id"].Value<int?>(),
-                new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(elem["created_at"]["s"].Value<int>()),
+                _unixTime.AddSeconds(elem["created_at"]["s"].Value<int>()),
                 elem["author"]["name"].Value<string>(),
                 elem["body"].Value<string>()
                 );
@@ -75,8 +75,8 @@ namespace BooruSharp.Booru.Template
             return new Search.Wiki.SearchResult(
                 elem["id"].Value<int>(),
                 elem["title"].Value<string>(),
-                new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(elem["created_at"]["s"].Value<int>()),
-                new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(elem["updated_at"]["s"].Value<int>()),
+                _unixTime.AddSeconds(elem["created_at"]["s"].Value<int>()),
+                _unixTime.AddSeconds(elem["updated_at"]["s"].Value<int>()),
                 elem["body"].Value<string>()
                 );
         }

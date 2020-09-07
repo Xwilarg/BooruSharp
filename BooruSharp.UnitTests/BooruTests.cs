@@ -42,9 +42,11 @@ namespace BooruSharp.UnitTests
             var booru = await Boorus.GetAsync(t);
             var id = (await General.GetRandomPostAsync(booru)).ID;
             booru.Auth = new BooruAuth("AAA", "AAA");
+
             if (!booru.HasFavoriteAPI)
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.RemoveFavoriteAsync(id));
-            else if (t == typeof(Gelbooru))
+
+            if (booru is Gelbooru)
                 await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async () => await booru.RemoveFavoriteAsync(id));
         }
 
@@ -67,6 +69,8 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Pixiv))]
         public async Task SetFavoriteErrorAsync(Type t)
         {
+            const int invalidPostId = 800;
+
             var booru = (ABooru)Activator.CreateInstance(t);
             if (booru is Pixiv pixiv)
                 await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async () => await pixiv.LoginAsync("AAA", "AAA"));
@@ -74,9 +78,9 @@ namespace BooruSharp.UnitTests
             {
                 booru.Auth = new BooruAuth("AAA", "AAA");
                 if (!booru.HasFavoriteAPI)
-                    await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.AddFavoriteAsync(800));
+                    await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.AddFavoriteAsync(invalidPostId));
                 else
-                    await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async () => await booru.AddFavoriteAsync(800));
+                    await Assert.ThrowsAsync<Search.AuthentificationInvalid>(async () => await booru.AddFavoriteAsync(invalidPostId));
             }
         }
 
@@ -137,10 +141,14 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Pixiv))]
         public async Task SetFavoriteAsync(Type t)
         {
+            const int postID = 10;
             var booru = await Boorus.GetAsync(t);
 
             if (!booru.HasFavoriteAPI)
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.AddFavoriteAsync(10));
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () =>
+                {
+                    await booru.AddFavoriteAsync(postID);
+                });
             else
             {
                 var id = (await General.GetRandomPostAsync(booru)).ID;
@@ -597,9 +605,10 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasMultipleRandomAPI)
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(async () => await booru.GetRandomPostsAsync(5, "someInvalidTag"));
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(
+                    async () => await booru.GetRandomPostsAsync(_randomPostCount, "someInvalidTag"));
             else
-                Assert.Empty(await booru.GetRandomPostsAsync(5, "someInvalidTag"));
+                Assert.Empty(await booru.GetRandomPostsAsync(_randomPostCount, "someInvalidTag"));
         }
 
         [SkippableTheory]

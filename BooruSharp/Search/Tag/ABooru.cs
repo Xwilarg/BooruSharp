@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -61,7 +62,7 @@ namespace BooruSharp.Booru
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
 
-            var urlTags = new List<string>() { SearchArg("name") + name };
+            var urlTags = new List<string> { SearchArg("name") + name };
 
             if (_format == UrlFormat.PostIndexJson)
                 urlTags.Add("limit=0");
@@ -100,29 +101,24 @@ namespace BooruSharp.Booru
                 urlTags.Add("limit=0");
 
             string url = CreateUrl(_tagUrl, urlTags.ToArray());
+            IEnumerable enumerable;
+
             if (TagsUseXml)
             {
                 var xml = await GetXmlAsync(url);
-
-                foreach (var node in xml.LastChild)
-                {
-                    var result = GetTagSearchResult(node);
-
-                    if ((name == null && id == result.ID) || (name != null && name == result.Name))
-                        return result;
-                }
+                enumerable = xml.LastChild;
             }
             else
             {
-                var jsonArray = JsonConvert.DeserializeObject<JArray>(await GetJsonAsync(url));
+                enumerable = JsonConvert.DeserializeObject<JArray>(await GetJsonAsync(url));
+            }
 
-                foreach (var json in jsonArray)
-                {
-                    var result = GetTagSearchResult(json);
+            foreach (object item in enumerable)
+            {
+                var result = GetTagSearchResult(item);
 
-                    if ((name == null && id == result.ID) || (name != null && name == result.Name))
-                        return result;
-                }
+                if ((name == null && id == result.ID) || (name != null && name == result.Name))
+                    return result;
             }
 
             throw new Search.InvalidTags();

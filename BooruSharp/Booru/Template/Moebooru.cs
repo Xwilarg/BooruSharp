@@ -39,7 +39,7 @@ namespace BooruSharp.Booru.Template
                 elem["width"].Value<int>(),
                 elem["preview_height"].Value<int>(),
                 elem["preview_width"].Value<int>(),
-                new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(elem["created_at"].Value<int>()),
+                _unixTime.AddSeconds(elem["created_at"].Value<int>()),
                 elem["source"].Value<string>(),
                 elem["score"].Value<int>(),
                 elem["md5"].Value<string>()
