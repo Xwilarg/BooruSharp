@@ -17,13 +17,13 @@ namespace BooruSharp.Booru
         /// <exception cref="System.Net.Http.HttpRequestException"/>
         public virtual async Task<Search.Comment.SearchResult[]> GetCommentsAsync(int postId)
         {
-            if (!HasCommentAPI())
+            if (!HasCommentAPI)
                 throw new Search.FeatureUnavailable();
 
             var url = CreateUrl(_commentUrl, SearchArg("post_id") + postId);
             var results = new List<Search.Comment.SearchResult>();
 
-            if (CommentsUseXml())
+            if (CommentsUseXml)
             {
                 var xml = await GetXmlAsync(url);
 
@@ -31,7 +31,7 @@ namespace BooruSharp.Booru
                 {
                     var result = GetCommentSearchResult(node);
 
-                    if (result.postId == postId)
+                    if (result.PostID == postId)
                         results.Add(result);
                 }
             }
@@ -43,7 +43,7 @@ namespace BooruSharp.Booru
                 {
                     var result = GetCommentSearchResult(json);
 
-                    if (result.postId == postId)
+                    if (result.PostID == postId)
                         results.Add(result);
                 }
             }
@@ -59,12 +59,12 @@ namespace BooruSharp.Booru
         /// <exception cref="System.Net.Http.HttpRequestException"/>
         public virtual async Task<Search.Comment.SearchResult[]> GetLastCommentsAsync()
         {
-            if (!HasSearchLastComment())
+            if (!HasSearchLastComment)
                 throw new Search.FeatureUnavailable();
 
             string url = CreateUrl(_commentUrl);
 
-            if (CommentsUseXml())
+            if (CommentsUseXml)
             {
                 var xml = await GetXmlAsync(url);
                 var results = new List<Search.Comment.SearchResult>(xml.LastChild.ChildNodes.Count);

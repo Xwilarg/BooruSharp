@@ -18,14 +18,14 @@ namespace BooruSharp.Booru
         /// <exception cref="Search.InvalidTags"/>
         public virtual async Task<Search.Wiki.SearchResult> GetWikiAsync(string query)
         {
-            if (!HasWikiAPI())
+            if (!HasWikiAPI)
                 throw new Search.FeatureUnavailable();
 
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
 
             var array = JsonConvert.DeserializeObject<JArray>(
-                await GetJsonAsync(CreateUrl(_wikiUrl, SearchArg(_format == UrlFormat.danbooru ? "title" : "query") + query)));
+                await GetJsonAsync(CreateUrl(_wikiUrl, SearchArg(_format == UrlFormat.Danbooru ? "title" : "query") + query)));
 
             foreach (var token in array)
                 if (token["title"].Value<string>() == query)

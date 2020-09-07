@@ -5,7 +5,7 @@ namespace BooruSharp.Search.Wiki
     /// <summary>
     /// Represents a wiki entry API search result.
     /// </summary>
-    public struct SearchResult
+    public readonly struct SearchResult
     {
         /// <summary>
         /// Initializes a <see cref="SearchResult"/> struct.
@@ -17,36 +17,36 @@ namespace BooruSharp.Search.Wiki
         /// <param name="body">The tag description.</param>
         public SearchResult(int id, string title, DateTime creation, DateTime lastUpdate, string body)
         {
-            this.id = id;
-            this.title = title;
-            this.creation = creation;
-            this.lastUpdate = lastUpdate;
-            this.body = body;
+            ID = id;
+            Title = title;
+            Creation = creation;
+            LastUpdate = lastUpdate;
+            Body = body;
         }
 
         /// <summary>
         /// Gets the ID of the wiki entry.
         /// </summary>
-        public readonly int id;
+        public int ID { get; }
 
         /// <summary>
         /// Gets the name of the described tag.
         /// </summary>
-        public readonly string title;
+        public string Title { get; }
 
         /// <summary>
         /// Gets the date when the wiki entry was created.
         /// </summary>
-        public readonly DateTime creation;
+        public DateTime Creation { get; }
 
         /// <summary>
         /// Gets the date of the latest update to the wiki entry.
         /// </summary>
-        public readonly DateTime lastUpdate;
+        public DateTime LastUpdate { get; }
 
         /// <summary>
         /// Gets the tag description.
         /// </summary>
-        public readonly string body;
+        public string Body { get; }
     }
 }

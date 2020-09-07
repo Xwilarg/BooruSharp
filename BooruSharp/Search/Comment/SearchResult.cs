@@ -5,7 +5,7 @@ namespace BooruSharp.Search.Comment
     /// <summary>
     /// Represents a comment API search result.
     /// </summary>
-    public struct SearchResult
+    public readonly struct SearchResult
     {
         /// <summary>
         /// Initializes a <see cref="SearchResult"/> struct. 
@@ -19,43 +19,43 @@ namespace BooruSharp.Search.Comment
         /// <param name="body">The comment's message.</param>
         public SearchResult(int commentId, int postId, int? authorId, DateTime creation, string authorName, string body)
         {
-            this.commentId = commentId;
-            this.postId = postId;
-            this.authorId = authorId;
-            this.creation = creation;
-            this.authorName = authorName;
-            this.body = body;
+            CommentID = commentId;
+            PostID = postId;
+            AuthorID = authorId;
+            Creation = creation;
+            AuthorName = authorName;
+            Body = body;
         }
 
         /// <summary>
         /// Gets the ID of the comment.
         /// </summary>
-        public readonly int commentId;
+        public int CommentID { get; }
 
         /// <summary>
         /// Gets the ID of the image associated with the comment.
         /// </summary>
-        public readonly int postId;
+        public int PostID { get; }
 
         /// <summary>
         /// Gets the ID of the author of the comment, or
         /// <see langword="null"/> if the author is anonymous.
         /// </summary>
-        public readonly int? authorId;
+        public int? AuthorID { get; }
 
         /// <summary>
         /// Gets the date when the comment was posted.
         /// </summary>
-        public readonly DateTime creation;
+        public DateTime Creation { get; }
 
         /// <summary>
         /// Gets the name of the author of the comment.
         /// </summary>
-        public readonly string authorName;
+        public string AuthorName { get; }
 
         /// <summary>
         /// Gets the comment's message.
         /// </summary>
-        public readonly string body;
+        public string Body { get; }
     }
 }

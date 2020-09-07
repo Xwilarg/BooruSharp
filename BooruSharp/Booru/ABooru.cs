@@ -19,7 +19,7 @@ namespace BooruSharp.Booru
         /// Gets whether this booru is considered safe (that is, all posts on
         /// this booru have rating of <see cref="Search.Post.Rating.Safe"/>).
         /// </summary>
-        public abstract bool IsSafe();
+        public abstract bool IsSafe { get; }
 
         private protected virtual Search.Comment.SearchResult GetCommentSearchResult(object json)
             => throw new FeatureUnavailable();
@@ -42,89 +42,86 @@ namespace BooruSharp.Booru
         private protected virtual Search.Wiki.SearchResult GetWikiSearchResult(object json)
             => throw new FeatureUnavailable();
 
-        // TODO: these flag checking methods need to be turned into properties at some point,
-        // using properties for these kind of checks expresses the intent behind them more clearly.
-
         /// <summary>
         /// Gets whether it is possible to search for related tags on this booru.
         /// </summary>
-        public bool HasRelatedAPI() => !_options.HasFlag(BooruOptions.noRelated);
+        public bool HasRelatedAPI => !_options.HasFlag(BooruOptions.NoRelated);
 
         /// <summary>
         /// Gets whether it is possible to search for wiki entries on this booru.
         /// </summary>
-        public bool HasWikiAPI() => !_options.HasFlag(BooruOptions.noWiki);
+        public bool HasWikiAPI => !_options.HasFlag(BooruOptions.NoWiki);
 
         /// <summary>
         /// Gets whether it is possible to search for comments on this booru.
         /// </summary>
-        public bool HasCommentAPI() => !_options.HasFlag(BooruOptions.noComment);
+        public bool HasCommentAPI => !_options.HasFlag(BooruOptions.NoComment);
 
         /// <summary>
         /// Gets whether it is possible to search for tags by their IDs on this booru.
         /// </summary>
-        public bool HasTagByIdAPI() => !_options.HasFlag(BooruOptions.noTagById);
+        public bool HasTagByIdAPI => !_options.HasFlag(BooruOptions.NoTagByID);
 
         /// <summary>
         /// Gets whether it is possible to search for the last comments on this booru.
         /// </summary>
-            // As a failsafe also check for the availability of comment API.
-        public bool HasSearchLastComment() => HasCommentAPI() && !_options.HasFlag(BooruOptions.noLastComments);
+        // As a failsafe also check for the availability of comment API.
+        public bool HasSearchLastComment => HasCommentAPI && !_options.HasFlag(BooruOptions.NoLastComments);
 
         /// <summary>
         /// Gets whether it is possible to search for posts by their MD5 on this booru.
         /// </summary>
-        public bool HasPostByMd5API() => !_options.HasFlag(BooruOptions.noPostByMd5);
+        public bool HasPostByMd5API => !_options.HasFlag(BooruOptions.NoPostByMD5);
 
         /// <summary>
         /// Gets whether it is possible to search for posts by their ID on this booru.
         /// </summary>
-        public bool HasPostByIdAPI() => !_options.HasFlag(BooruOptions.noPostById);
+        public bool HasPostByIdAPI => !_options.HasFlag(BooruOptions.NoPostByID);
 
         /// <summary>
         /// Gets whether it is possible to get the total number of posts on this booru.
         /// </summary>
-        public bool HasPostCountAPI() => !_options.HasFlag(BooruOptions.noPostCount);
+        public bool HasPostCountAPI => !_options.HasFlag(BooruOptions.NoPostCount);
 
         /// <summary>
         /// Gets whether it is possible to get multiple random images on this booru.
         /// </summary>
-        public bool HasMultipleRandomAPI() => !_options.HasFlag(BooruOptions.noMultipleRandom);
+        public bool HasMultipleRandomAPI => !_options.HasFlag(BooruOptions.NoMultipleRandom);
 
         /// <summary>
         /// Gets whether this booru supports adding or removing favorite posts.
         /// </summary>
-        public bool HasFavoriteAPI() => !_options.HasFlag(BooruOptions.noFavorite);
+        public bool HasFavoriteAPI => !_options.HasFlag(BooruOptions.NoFavorite);
 
         /// <summary>
         /// Gets whether this booru can't call post functions without search arguments.
         /// </summary>
-        public bool NoEmptyPostSearch() => _options.HasFlag(BooruOptions.noEmptyPostSearch);
+        public bool NoEmptyPostSearch => _options.HasFlag(BooruOptions.NoEmptyPostSearch);
 
         /// <summary>
         /// Gets a value indicating whether http:// scheme is used instead of https://.
         /// </summary>
-        protected bool UsesHttp() => _options.HasFlag(BooruOptions.useHttp);
+        protected bool UsesHttp => _options.HasFlag(BooruOptions.UseHttp);
 
         /// <summary>
         /// Gets a value indicating whether tags API uses XML instead of JSON.
         /// </summary>
-        protected bool TagsUseXml() => _options.HasFlag(BooruOptions.tagApiXml);
+        protected bool TagsUseXml => _options.HasFlag(BooruOptions.TagApiXml);
 
         /// <summary>
         /// Gets a value indicating whether comments API uses XML instead of JSON.
         /// </summary>
-        protected bool CommentsUseXml() => _options.HasFlag(BooruOptions.commentApiXml);
+        protected bool CommentsUseXml => _options.HasFlag(BooruOptions.CommentApiXml);
 
         /// <summary>
         /// Gets a value indicating whether searching by more than two tags at once is not allowed.
         /// </summary>
-        protected bool NoMoreThanTwoTags() => _options.HasFlag(BooruOptions.noMoreThan2Tags);
+        protected bool NoMoreThanTwoTags => _options.HasFlag(BooruOptions.NoMoreThan2Tags);
 
         /// <summary>
         /// Gets a value indicating whether the max limit of posts per search is increased (used by Gelbooru).
         /// </summary>
-        protected bool SearchIncreasedPostLimit() => _options.HasFlag(BooruOptions.limitOf20000);
+        protected bool SearchIncreasedPostLimit => _options.HasFlag(BooruOptions.LimitOf20000);
 
         /// <summary>
         /// Checks for the booru availability.
@@ -140,17 +137,6 @@ namespace BooruSharp.Booru
         /// </summary>
         /// <param name="baseUrl">The base URL to use. This should be a host name.</param>
         /// <param name="format">The URL format to use.</param>
-        /// <param name="options">The collection of option values.</param>
-        [Obsolete(_deprecationMessage)]
-        protected ABooru(string baseUrl, UrlFormat format, params BooruOptions[] options)
-            : this(baseUrl, format, MergeOptions(options))
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ABooru"/> class.
-        /// </summary>
-        /// <param name="baseUrl">The base URL to use. This should be a host name.</param>
-        /// <param name="format">The URL format to use.</param>
         /// <param name="options">The options to use. Use | (bitwise OR) operator to combine multiple options.</param>
         protected ABooru(string baseUrl, UrlFormat format, BooruOptions options)
         {
@@ -158,32 +144,31 @@ namespace BooruSharp.Booru
             HttpClient = null;
             _options = options;
 
-            bool useHttp = UsesHttp(); // Cache returned value for faster access.
-#pragma warning disable CS0618 // Keep this field for a while in case someone still depends on it.
-            _useHttp = useHttp;
-#pragma warning restore CS0618
+            bool useHttp = UsesHttp; // Cache returned value for faster access.
             _baseUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl;
             _format = format;
             _imageUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "post");
 
-            if (_format == UrlFormat.indexPhp)
+            if (_format == UrlFormat.IndexPhp)
                 _imageUrlXml = _imageUrl.Replace("json=1", "json=0");
-            else if (_format == UrlFormat.postIndexJson)
+            else if (_format == UrlFormat.PostIndexJson)
                 _imageUrlXml = _imageUrl.Replace("index.json", "index.xml");
+            else
+                _imageUrlXml = null;
 
             _tagUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag");
 
-            if (HasWikiAPI())
-                _wikiUrl = format == UrlFormat.danbooru
+            if (HasWikiAPI)
+                _wikiUrl = format == UrlFormat.Danbooru
                     ? "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "wiki_page")
                     : "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "wiki");
 
-            if (HasRelatedAPI())
-                _relatedUrl = format == UrlFormat.danbooru
+            if (HasRelatedAPI)
+                _relatedUrl = format == UrlFormat.Danbooru
                     ? "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "related_tag")
                     : "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag", "related");
 
-            if (HasCommentAPI())
+            if (HasCommentAPI)
                 _commentUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "comment");
         }
 
@@ -191,16 +176,16 @@ namespace BooruSharp.Booru
         {
             switch (format)
             {
-                case UrlFormat.postIndexJson:
+                case UrlFormat.PostIndexJson:
                     return query + "/" + squery + ".json";
 
-                case UrlFormat.indexPhp:
+                case UrlFormat.IndexPhp:
                     return "index.php?page=dapi&s=" + query + "&q=index&json=1";
 
-                case UrlFormat.danbooru:
+                case UrlFormat.Danbooru:
                     return query == "related_tag" ? query + ".json" : query + "s.json";
 
-                case UrlFormat.sankaku:
+                case UrlFormat.Sankaku:
                     return query == "wiki" ? query : query + "s";
 
                 default:
@@ -240,7 +225,7 @@ namespace BooruSharp.Booru
 
         private string CreateUrl(string url, params string[] args)
         {
-            return _format == UrlFormat.indexPhp
+            return _format == UrlFormat.IndexPhp
                 ? url + "&" + string.Join("&", args)
                 : url + "?" + string.Join("&", args);
         }
@@ -254,35 +239,9 @@ namespace BooruSharp.Booru
 
         private string SearchArg(string value)
         {
-            return _format == UrlFormat.danbooru
+            return _format == UrlFormat.Danbooru
                 ? "search[" + value + "]="
                 : value + "=";
-        }
-
-        [Obsolete]
-        // TODO: remove this method after removing obsolete constructors.
-        private protected static BooruOptions[] CombineArrays(BooruOptions[] arr1, BooruOptions[] arr2)
-        {
-            var arr = new BooruOptions[arr1.Length + arr2.Length];
-            arr1.CopyTo(arr, 0);
-            arr2.CopyTo(arr, arr1.Length);
-            return arr;
-        }
-
-        /// <summary>
-        /// Method for compatibility with old API. Combines multiple options
-        /// into singular <see cref="BooruOptions"/> object.
-        /// </summary>
-        // TODO: remove this method after removing obsolete constructors.
-        [Obsolete("This method will be removed in the future version of the API.")]
-        protected static BooruOptions MergeOptions(BooruOptions[] array)
-        {
-            BooruOptions options = BooruOptions.none;
-
-            for (int i = 0; i < array.Length; i++)
-                options |= array[i];
-
-            return options;
         }
 
         /// <summary>
@@ -319,16 +278,9 @@ namespace BooruSharp.Booru
         /// </summary>
         protected static readonly Random _random = new Random();
         /// <summary>
-        /// Contains a value indicating whether http:// scheme is used instead of https://.
-        /// </summary>
-        [Obsolete("UsesHttp method should be used instead.")]
-        protected readonly bool _useHttp; // Use http instead of https
-        /// <summary>
         /// Contains the base request URL of this booru.
         /// </summary>
         protected readonly string _baseUrl;
-        // TODO: remove this message after removing obsolete constructors.
-        private protected const string _deprecationMessage = "Use a contructor that accepts single BooruOptions parameter. Use | (bitwise OR) operator to combine multiple options.";
         private HttpClient _client;
         private readonly string _imageUrlXml, _imageUrl, _tagUrl, _wikiUrl, _relatedUrl, _commentUrl; // URLs for differents endpoints
         // All options are stored in a bit field and can be retrieved using related methods/properties.

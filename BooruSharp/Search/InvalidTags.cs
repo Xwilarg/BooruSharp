@@ -9,7 +9,8 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidTags"/> class.
         /// </summary>
-        public InvalidTags() : base("There is nothing available with these tags")
+        public InvalidTags()
+            : base("There is nothing available with these tags")
         { }
     }
 }

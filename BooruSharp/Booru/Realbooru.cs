@@ -9,10 +9,11 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Realbooru"/> class.
         /// </summary>
-        public Realbooru() : base("realbooru.com")
+        public Realbooru()
+            : base("realbooru.com")
         { }
 
         /// <inheritdoc/>
-        public override bool IsSafe() => false;
+        public override bool IsSafe => false;
     }
 }

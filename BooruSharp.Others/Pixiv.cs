@@ -23,8 +23,10 @@ namespace BooruSharp.Others
         /// <summary>
         /// Initializes a new instance of the <see cref="Pixiv"/> class.
         /// </summary>
-        public Pixiv() : base("app-api.pixiv.net", (UrlFormat)(-1), BooruOptions.noComment | BooruOptions.noLastComments | BooruOptions.noMultipleRandom |
-                BooruOptions.noPostByMd5 | BooruOptions.noRelated | BooruOptions.noTagById | BooruOptions.noWiki | BooruOptions.noEmptyPostSearch)
+        public Pixiv()
+            : base("app-api.pixiv.net", UrlFormat.None, BooruOptions.NoComment | BooruOptions.NoLastComments
+                  | BooruOptions.NoMultipleRandom | BooruOptions.NoPostByMD5 | BooruOptions.NoRelated | BooruOptions.NoTagByID
+                  | BooruOptions.NoWiki | BooruOptions.NoEmptyPostSearch)
         {
             AccessToken = null;
         }
@@ -105,8 +107,8 @@ namespace BooruSharp.Others
         /// <exception cref="HttpRequestException"/>
         public async Task<byte[]> ImageToByteArrayAsync(SearchResult result)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, result.fileUrl);
-            request.Headers.Add("Referer", result.postUrl.AbsoluteUri);
+            var request = new HttpRequestMessage(HttpMethod.Get, result.FileUrl);
+            request.Headers.Add("Referer", result.PostUrl.AbsoluteUri);
 
             var response = await HttpClient.SendAsync(request);
 
@@ -123,8 +125,8 @@ namespace BooruSharp.Others
         /// <exception cref="HttpRequestException"/>
         public async Task<byte[]> PreviewToByteArrayAsync(SearchResult result)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, result.previewUrl);
-            request.Headers.Add("Referer", result.postUrl.AbsoluteUri);
+            var request = new HttpRequestMessage(HttpMethod.Get, result.PreviewUrl);
+            request.Headers.Add("Referer", result.PostUrl.AbsoluteUri);
 
             var response = await HttpClient.SendAsync(request);
 
@@ -174,8 +176,7 @@ namespace BooruSharp.Others
         }
 
         /// <inheritdoc/>
-        public override bool IsSafe()
-            => false;
+        public override bool IsSafe => false;
 
         /// <summary>
         /// Adds a post with the specified ID to favorites.
@@ -269,8 +270,9 @@ namespace BooruSharp.Others
                 throw new InvalidTags();
 
             int id = _random.Next(1, max + 1);
+            var requestUrl = _baseUrl + "/v1/search/illust?word=" + JoinTagsAndEscapeString(tagsArg) + "&offset=" + id;
 
-            var request = new HttpRequestMessage(HttpMethod.Get, _baseUrl + "/v1/search/illust?word=" + JoinTagsAndEscapeString(tagsArg) + "&offset=" + id);
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
 
             var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
@@ -298,7 +300,9 @@ namespace BooruSharp.Others
 
             await CheckUpdateTokenAsync();
 
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://www.pixiv.net/ajax/search/artworks/" + JoinTagsAndEscapeString(tagsArg));
+            var requestUrl = "https://www.pixiv.net/ajax/search/artworks/" + JoinTagsAndEscapeString(tagsArg);
+
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
             var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
 
@@ -322,7 +326,9 @@ namespace BooruSharp.Others
 
             await CheckUpdateTokenAsync();
 
-            var request = new HttpRequestMessage(HttpMethod.Get, _baseUrl + "/v1/search/illust?word=" + JoinTagsAndEscapeString(tagsArg));
+            string requestUrl = _baseUrl + "/v1/search/illust?word=" + JoinTagsAndEscapeString(tagsArg);
+
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
 
             var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
@@ -370,7 +376,7 @@ namespace BooruSharp.Others
                 new Uri(post["image_urls"]["medium"].Value<string>()),
                 new Uri("https://www.pixiv.net/en/artworks/" + post["id"].Value<int>()),
                 isNsfw ? Rating.Explicit : Rating.Safe,
-                tags.ToArray(),
+                tags,
                 post["id"].Value<int>(),
                 null,
                 post["height"].Value<int>(),

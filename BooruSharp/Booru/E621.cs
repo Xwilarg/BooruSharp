@@ -9,10 +9,11 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="E621"/> class.
         /// </summary>
-        public E621() : base("e621.net")
+        public E621()
+            : base("e621.net")
         { }
 
         /// <inheritdoc/>
-        public override bool IsSafe() => false;
+        public override bool IsSafe => false;
     }
 }

@@ -20,7 +20,7 @@ namespace BooruSharp.Booru
         /// <exception cref="Search.InvalidTags"/>
         public virtual async Task<Search.Tag.SearchResult> GetTagAsync(string name)
         {
-            if (!HasTagByIdAPI())
+            if (!HasTagByIdAPI)
                 throw new Search.FeatureUnavailable();
 
             if (name == null)
@@ -39,7 +39,7 @@ namespace BooruSharp.Booru
         /// <exception cref="Search.InvalidTags"/>
         public virtual async Task<Search.Tag.SearchResult> GetTagAsync(int id)
         {
-            if (!HasTagByIdAPI())
+            if (!HasTagByIdAPI)
                 throw new Search.FeatureUnavailable();
 
             return await SearchTagAsync(null, id);
@@ -55,7 +55,7 @@ namespace BooruSharp.Booru
         /// <exception cref="System.Net.Http.HttpRequestException"/>
         public virtual async Task<Search.Tag.SearchResult[]> GetTagsAsync(string name)
         {
-            if (!HasTagByIdAPI())
+            if (!HasTagByIdAPI)
                 throw new Search.FeatureUnavailable();
 
             if (name == null)
@@ -63,12 +63,12 @@ namespace BooruSharp.Booru
 
             var urlTags = new List<string>() { SearchArg("name") + name };
 
-            if (_format == UrlFormat.postIndexJson)
+            if (_format == UrlFormat.PostIndexJson)
                 urlTags.Add("limit=0");
 
             string url = CreateUrl(_tagUrl, urlTags.ToArray());
 
-            if (TagsUseXml())
+            if (TagsUseXml)
             {
                 var xml = await GetXmlAsync(url);
                 // Can't use LINQ with XmlNodes so let's use list here.
@@ -96,12 +96,11 @@ namespace BooruSharp.Booru
                 ? SearchArg("id") + id
                 : SearchArg("name") + name);
 
-            if (_format == UrlFormat.postIndexJson)
+            if (_format == UrlFormat.PostIndexJson)
                 urlTags.Add("limit=0");
 
             string url = CreateUrl(_tagUrl, urlTags.ToArray());
-
-            if (TagsUseXml())
+            if (TagsUseXml)
             {
                 var xml = await GetXmlAsync(url);
 
@@ -109,7 +108,7 @@ namespace BooruSharp.Booru
                 {
                     var result = GetTagSearchResult(node);
 
-                    if ((name == null && id == result.id) || (name != null && name == result.name))
+                    if ((name == null && id == result.ID) || (name != null && name == result.Name))
                         return result;
                 }
             }
@@ -121,7 +120,7 @@ namespace BooruSharp.Booru
                 {
                     var result = GetTagSearchResult(json);
 
-                    if ((name == null && id == result.id) || (name != null && name == result.name))
+                    if ((name == null && id == result.ID) || (name != null && name == result.Name))
                         return result;
                 }
             }

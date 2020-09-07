@@ -11,7 +11,8 @@ namespace BooruSharp.Search
         /// <summary>
         /// Initializes a new instance of the <see cref="FeatureUnavailable"/> class.
         /// </summary>
-        public FeatureUnavailable() : base("This feature isn't available for this Booru")
+        public FeatureUnavailable()
+            : base("This feature isn't available for this Booru")
         { }
     }
 }

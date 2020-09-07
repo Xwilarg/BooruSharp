@@ -18,18 +18,10 @@ namespace BooruSharp.Booru.Template
         /// Initializes a new instance of the <see cref="Gelbooru"/> template class.
         /// </summary>
         /// <param name="url">The base URL to use. This should be a host name.</param>
-        /// <param name="options">The collection of option values.</param>
-        [Obsolete(_deprecationMessage)]
-        public Gelbooru(string url, params BooruOptions[] options) : this(url, MergeOptions(options))
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Gelbooru"/> template class.
-        /// </summary>
-        /// <param name="url">The base URL to use. This should be a host name.</param>
         /// <param name="options">The options to use. Use | (bitwise OR) operator to combine multiple options.</param>
-        public Gelbooru(string url, BooruOptions options = BooruOptions.none) : base(url, UrlFormat.indexPhp, options |
-             BooruOptions.noWiki | BooruOptions.noRelated | BooruOptions.limitOf20000 | BooruOptions.commentApiXml)
+        protected Gelbooru(string url, BooruOptions options = BooruOptions.None)
+            : base(url, UrlFormat.IndexPhp, options | BooruOptions.NoWiki | BooruOptions.NoRelated | BooruOptions.LimitOf20000
+                  | BooruOptions.CommentApiXml)
         { }
 
         /// <inheritdoc/>
@@ -68,9 +60,12 @@ namespace BooruSharp.Booru.Template
         {
             const string gelbooruTimeFormat = "ddd MMM dd HH:mm:ss zzz yyyy";
 
+            string directory = elem["directory"].Value<string>();
+            string image = elem["image"].Value<string>();
+
             return new Search.Post.SearchResult(
                 new Uri(elem["file_url"].Value<string>()),
-                new Uri("https://gelbooru.com/thumbnails/" + elem["directory"].Value<string>() + "/thumbnail_" + elem["image"].Value<string>()),
+                new Uri("https://gelbooru.com/thumbnails/" + directory + "/thumbnail_" + image),
                 new Uri(_baseUrl + "/index.php?page=post&s=view&id=" + elem["id"].Value<int>()),
                 GetRating(elem["rating"].Value<string>()[0]),
                 elem["tags"].Value<string>().Split(' '),

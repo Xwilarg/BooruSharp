@@ -11,11 +11,12 @@ namespace BooruSharp.Booru
         /// <summary>
         /// Initializes a new instance of the <see cref="Lolibooru"/> class.
         /// </summary>
-        public Lolibooru() : base("lolibooru.moe")
+        public Lolibooru()
+            : base("lolibooru.moe")
         { }
 
         /// <inheritdoc/>
-        public override bool IsSafe() => false;
+        public override bool IsSafe => false;
 
         private protected override Search.Tag.SearchResult GetTagSearchResult(object json)
         {

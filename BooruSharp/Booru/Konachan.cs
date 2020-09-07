@@ -9,10 +9,11 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Konachan"/> class.
         /// </summary>
-        public Konachan() : base("konachan.com")
+        public Konachan()
+            : base("konachan.com")
         { }
 
         /// <inheritdoc/>
-        public override bool IsSafe() => false;
+        public override bool IsSafe => false;
     }
 }

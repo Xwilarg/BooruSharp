@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace BooruSharp.Search.Post
 {
     /// <summary>
     /// Represents a post API search result.
     /// </summary>
-    public struct SearchResult
+    public readonly struct SearchResult
     {
         /// <summary>
         /// Initializes a <see cref="SearchResult"/> struct.
@@ -25,105 +27,107 @@ namespace BooruSharp.Search.Post
         /// <param name="source">The original source of the file.</param>
         /// <param name="score">The score of the post.</param>
         /// <param name="md5">The MD5 hash of the file.</param>
-        public SearchResult(Uri fileUrl, Uri previewUrl, Uri postUrl, Rating rating, string[] tags, int id,
-                            int? size, int height, int width, int? previewHeight, int? previewWidth, DateTime? creation, string source, int? score, string md5)
+        public SearchResult(
+            Uri fileUrl, Uri previewUrl, Uri postUrl, Rating rating, IList<string> tags,
+            int id, int? size, int height, int width, int? previewHeight, int? previewWidth,
+            DateTime? creation, string source, int? score, string md5)
         {
-            this.fileUrl = fileUrl;
-            this.previewUrl = previewUrl;
-            this.postUrl = postUrl;
-            this.rating = rating;
-            this.tags = tags;
-            this.id = id;
-            this.size = size;
-            this.height = height;
-            this.width = width;
-            this.previewHeight = previewHeight;
-            this.previewWidth = previewWidth;
-            this.creation = creation;
-            this.source = source;
-            this.score = score;
-            this.md5 = md5;
+            FileUrl = fileUrl;
+            PreviewUrl = previewUrl;
+            PostUrl = postUrl;
+            Rating = rating;
+            Tags = new ReadOnlyCollection<string>(tags);
+            ID = id;
+            Size = size;
+            Height = height;
+            Width = width;
+            PreviewHeight = previewHeight;
+            PreviewWidth = previewWidth;
+            Creation = creation;
+            Source = source;
+            Score = score;
+            MD5 = md5;
         }
 
         /// <summary>
         /// Gets the URI of the file.
         /// </summary>
-        public readonly Uri fileUrl;
+        public Uri FileUrl { get; }
 
         /// <summary>
         /// Gets the URI of the preview image.
         /// </summary>
-        public readonly Uri previewUrl;
+        public Uri PreviewUrl { get; }
 
         /// <summary>
         /// Gets the URI of the post.
         /// </summary>
-        public readonly Uri postUrl;
+        public Uri PostUrl { get; }
 
         /// <summary>
         /// Gets the post's rating.
         /// </summary>
-        public readonly Rating rating;
+        public Rating Rating { get; }
 
         /// <summary>
-        /// Gets the array containing all the tags associated with the file.
+        /// Gets the read-only collection containing all the tags associated with the file.
         /// </summary>
-        public readonly string[] tags;
+        public ReadOnlyCollection<string> Tags { get; }
 
         /// <summary>
         /// Gets the ID of the post.
         /// </summary>
-        public readonly int id;
+        public int ID { get; }
 
         /// <summary>
         /// Gets the size of the file, in bytes, or
         /// <see langword="null"/> if file size is unknown.
         /// </summary>
-        public readonly int? size;
+        public int? Size { get; }
 
         /// <summary>
         /// Gets the height of the image, in pixels.
         /// </summary>
-        public readonly int height;
+        public int Height { get; }
 
         /// <summary>
         /// Gets the width of the image, in pixels.
         /// </summary>
-        public readonly int width;
+        public int Width { get; }
 
         /// <summary>
         /// Gets the height of the preview image, in pixels,
         /// or <see langword="null"/> if the height is unknown.
         /// </summary>
-        public readonly int? previewHeight;
+        public int? PreviewHeight { get; }
 
         /// <summary>
         /// Gets the width of the preview image, in pixels,
         /// or <see langword="null"/> if the width is unknown.
         /// </summary>
-        public readonly int? previewWidth;
+        public int? PreviewWidth { get; }
 
         /// <summary>
         /// Gets the creation date of the post, or
         /// <see langword="null"/> if the date is unknown.
         /// </summary>
-        public readonly DateTime? creation;
+        public DateTime? Creation { get; }
 
         /// <summary>
         /// Gets the original source of the file.
         /// </summary>
-        public readonly string source;
+        public string Source { get; }
 
         /// <summary>
         /// Gets the score of the post, or
         /// <see langword="null"/> if the score is unknown.
         /// </summary>
-        public readonly int? score;
+        public int? Score { get; }
 
         /// <summary>
         /// Gets the MD5 hash of the file, represented as
         /// a sequence of 32 hexadecimal lowercase digits.
         /// </summary>
-        public readonly string md5;
+        public string MD5 { get; }
     }
 }

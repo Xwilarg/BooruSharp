@@ -9,10 +9,11 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Furrybooru"/> class.
         /// </summary>
-        public Furrybooru() : base("furry.booru.org", BooruOptions.useHttp)
+        public Furrybooru()
+            : base("furry.booru.org", BooruOptions.UseHttp)
         { }
 
         /// <inheritdoc/>
-        public override bool IsSafe() => false;
+        public override bool IsSafe => false;
     }
 }
