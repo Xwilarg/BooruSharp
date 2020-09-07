@@ -9,7 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -47,6 +47,13 @@ jobs:
         YANDERE_PASSWORD_HASH: ${{ secrets.YANDERE_PASSWORD_HASH }}
         PIXIV_USER_ID: ${{ secrets.PIXIV_USER_ID }}
         PIXIV_PASSWORD: ${{ secrets.PIXIV_PASSWORD }}
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test --no-restore --verbosity normal --collect:"XPlat Code Coverage"
+    - name: Copy coverage
+      run: sh copy_coverage.sh
+    - name: Upload coverage to Codacy
+      uses: codacy/codacy-coverage-reporter-action@master
+      with:
+        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        coverage-reports: coverage.xml
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
