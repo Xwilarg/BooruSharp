@@ -24,7 +24,7 @@ namespace BooruSharp.Booru
             if (tag == null)
                 throw new ArgumentNullException(nameof(tag));
 
-            bool isDanbooruFormat = _format == UrlFormat.danbooru;
+            bool isDanbooruFormat = _format == UrlFormat.Danbooru;
 
             var content = JsonConvert.DeserializeObject<JObject>(
                 await GetJsonAsync(CreateUrl(_relatedUrl, (isDanbooruFormat ? "query" : "tags") + "=" + tag)));

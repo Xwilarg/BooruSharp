@@ -25,7 +25,7 @@ namespace BooruSharp.Booru
                 throw new ArgumentNullException(nameof(query));
 
             var array = JsonConvert.DeserializeObject<JArray>(
-                await GetJsonAsync(CreateUrl(_wikiUrl, SearchArg(_format == UrlFormat.danbooru ? "title" : "query") + query)));
+                await GetJsonAsync(CreateUrl(_wikiUrl, SearchArg(_format == UrlFormat.Danbooru ? "title" : "query") + query)));
 
             foreach (var token in array)
                 if (token["title"].Value<string>() == query)

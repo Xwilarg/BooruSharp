@@ -63,7 +63,7 @@ namespace BooruSharp.Booru
 
             var urlTags = new List<string>() { SearchArg("name") + name };
 
-            if (_format == UrlFormat.postIndexJson)
+            if (_format == UrlFormat.PostIndexJson)
                 urlTags.Add("limit=0");
 
             string url = CreateUrl(_tagUrl, urlTags.ToArray());
@@ -96,7 +96,7 @@ namespace BooruSharp.Booru
                 ? SearchArg("id") + id
                 : SearchArg("name") + name);
 
-            if (_format == UrlFormat.postIndexJson)
+            if (_format == UrlFormat.PostIndexJson)
                 urlTags.Add("limit=0");
 
             string url = CreateUrl(_tagUrl, urlTags.ToArray());

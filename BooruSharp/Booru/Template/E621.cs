@@ -23,7 +23,7 @@ namespace BooruSharp.Booru.Template
         /// </summary>
         /// <param name="url">The base URL to use. This should be a host name.</param>
         /// <param name="options">The options to use. Use | (bitwise OR) operator to combine multiple options.</param>
-        public E621(string url, BooruOptions options = BooruOptions.none) : base(url, UrlFormat.danbooru, options | BooruOptions.noWiki | BooruOptions.noRelated | BooruOptions.noComment | BooruOptions.noTagById | BooruOptions.noPostById | BooruOptions.noPostCount | BooruOptions.noFavorite)
+        public E621(string url, BooruOptions options = BooruOptions.None) : base(url, UrlFormat.Danbooru, options | BooruOptions.NoWiki | BooruOptions.NoRelated | BooruOptions.NoComment | BooruOptions.NoTagByID | BooruOptions.NoPostByID | BooruOptions.NoPostCount | BooruOptions.NoFavorite)
         { }
 
         private protected override JToken ParseFirstPostSearchResult(object json)

@@ -39,7 +39,7 @@ namespace BooruSharp.Booru
             if (!HasPostByIdAPI())
                 throw new Search.FeatureUnavailable();
 
-            return _format == UrlFormat.danbooru
+            return _format == UrlFormat.Danbooru
                 ? await GetSearchResultFromUrlAsync(_baseUrl + "/posts/" + id + ".json")
                 : await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", "id=" + id));
         }
@@ -86,7 +86,7 @@ namespace BooruSharp.Booru
             if (tags.Length > 2 && NoMoreThanTwoTags())
                 throw new Search.TooManyTags();
 
-            if (_format == UrlFormat.indexPhp)
+            if (_format == UrlFormat.IndexPhp)
             {
                 if (this is Template.Gelbooru)
                     return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", TagsToString(tags)) + "+sort:random");
@@ -135,7 +135,7 @@ namespace BooruSharp.Booru
             if (tags.Length > 2 && NoMoreThanTwoTags())
                 throw new Search.TooManyTags();
 
-            if (_format == UrlFormat.indexPhp)
+            if (_format == UrlFormat.IndexPhp)
                 return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tags)) + "+sort:random");
             else if (NoMoreThanTwoTags())
                 return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, TagsToString(tags), "random=true")); // +order:random count as a tag so we use random=true instead to save one

@@ -23,8 +23,8 @@ namespace BooruSharp.Others
         /// <summary>
         /// Initializes a new instance of the <see cref="Pixiv"/> class.
         /// </summary>
-        public Pixiv() : base("app-api.pixiv.net", (UrlFormat)(-1), BooruOptions.noComment | BooruOptions.noLastComments | BooruOptions.noMultipleRandom |
-                BooruOptions.noPostByMd5 | BooruOptions.noRelated | BooruOptions.noTagById | BooruOptions.noWiki | BooruOptions.noEmptyPostSearch)
+        public Pixiv() : base("app-api.pixiv.net", (UrlFormat)(-1), BooruOptions.NoComment | BooruOptions.NoLastComments | BooruOptions.NoMultipleRandom |
+                BooruOptions.NoPostByMD5 | BooruOptions.NoRelated | BooruOptions.NoTagByID | BooruOptions.NoWiki | BooruOptions.NoEmptyPostSearch)
         {
             AccessToken = null;
         }

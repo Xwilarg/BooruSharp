@@ -25,8 +25,8 @@ namespace BooruSharp.Booru.Template
         /// </summary>
         /// <param name="url">The base URL to use. This should be a host name.</param>
         /// <param name="options">The options to use. Use | (bitwise OR) operator to combine multiple options.</param>
-        public Gelbooru02(string url, BooruOptions options = BooruOptions.none) : base(url, UrlFormat.indexPhp, options |
-             BooruOptions.noRelated | BooruOptions.noWiki | BooruOptions.noPostByMd5 | BooruOptions.commentApiXml | BooruOptions.tagApiXml | BooruOptions.noMultipleRandom)
+        public Gelbooru02(string url, BooruOptions options = BooruOptions.None) : base(url, UrlFormat.IndexPhp, options |
+             BooruOptions.NoRelated | BooruOptions.NoWiki | BooruOptions.NoPostByMD5 | BooruOptions.CommentApiXml | BooruOptions.TagApiXml | BooruOptions.NoMultipleRandom)
         {
             _url = url;
         }

@@ -9,7 +9,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Sakugabooru"/> class.
         /// </summary>
-        public Sakugabooru() : base("sakugabooru.com", BooruOptions.noLastComments)
+        public Sakugabooru() : base("sakugabooru.com", BooruOptions.NoLastComments)
         { }
 
         /// <inheritdoc/>
