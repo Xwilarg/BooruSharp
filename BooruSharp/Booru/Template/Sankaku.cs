@@ -1,38 +1,48 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace BooruSharp.Booru.Template
 {
+    /// <summary>
+    /// Template booru based on Sankaku. This class is <see langword="abstract"/>.
+    /// </summary>
     public abstract class Sankaku : ABooru
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Sankaku"/> template class.
+        /// </summary>
+        /// <param name="url">The base URL to use. This should be a host name.</param>
+        /// <param name="options">The collection of option values.</param>
         [Obsolete(_deprecationMessage)]
         public Sankaku(string url, params BooruOptions[] options) : this(url, MergeOptions(options))
         { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Sankaku"/> template class.
+        /// </summary>
+        /// <param name="url">The base URL to use. This should be a host name.</param>
+        /// <param name="options">The options to use. Use | (bitwise OR) operator to combine multiple options.</param>
         public Sankaku(string url, BooruOptions options = BooruOptions.none) : base(url, UrlFormat.sankaku, options | BooruOptions.noRelated | BooruOptions.noPostByMd5 | BooruOptions.noPostById | BooruOptions.noPostCount | BooruOptions.noFavorite | BooruOptions.noTagById)
         { }
 
-        protected internal override JToken ParseFirstPostSearchResult(object json)
+        private protected override JToken ParseFirstPostSearchResult(object json)
         {
-            var elem = ((JArray)json).FirstOrDefault();
-            if (elem == null)
-                throw new Search.InvalidTags();
-            return elem;
+            JArray array = json as JArray;
+            return array?.FirstOrDefault() ?? throw new Search.InvalidTags();
         }
 
-        protected internal override Search.Post.SearchResult GetPostSearchResult(JToken elem)
+        private protected override Search.Post.SearchResult GetPostSearchResult(JToken elem)
         {
-            List<string> tags = new List<string>();
-            foreach (JObject tag in (JArray)elem["tags"])
-                tags.Add(tag["name"].Value<string>());
+            string[] tags = (from tag in (JArray)elem["tags"]
+                             select tag["name"].Value<string>()).ToArray();
+
             return new Search.Post.SearchResult(
                     new Uri(elem["file_url"].Value<string>()),
                     new Uri(elem["preview_url"].Value<string>()),
                     new Uri(_baseUrl.Replace("capi-v2", "beta") + "/post/show/" + elem["id"].Value<int>()),
                     GetRating(elem["rating"].Value<string>()[0]),
-                    tags.ToArray(),
+                    tags,
                     elem["id"].Value<int>(),
                     elem["file_size"].Value<int>(),
                     elem["height"].Value<int>(),
@@ -46,20 +56,14 @@ namespace BooruSharp.Booru.Template
                 );
         }
 
-        protected internal override Search.Post.SearchResult[] GetPostsSearchResult(object json)
+        private protected override Search.Post.SearchResult[] GetPostsSearchResult(object json)
         {
-            var arr = (JArray)json;
-            Search.Post.SearchResult[] res = new Search.Post.SearchResult[arr.Count];
-            int i = 0;
-            foreach (var elem in arr)
-            {
-                res[i] = GetPostSearchResult(elem);
-                i++;
-            }
-            return res;
+            return json is JArray array
+                ? array.Select(GetPostSearchResult).ToArray()
+                : Array.Empty<Search.Post.SearchResult>();
         }
 
-        protected internal override Search.Comment.SearchResult GetCommentSearchResult(object json)
+        private protected override Search.Comment.SearchResult GetCommentSearchResult(object json)
         {
             var elem = (JObject)json;
             return new Search.Comment.SearchResult(
@@ -72,7 +76,7 @@ namespace BooruSharp.Booru.Template
                 );
         }
 
-        protected internal override Search.Wiki.SearchResult GetWikiSearchResult(object json)
+        private protected override Search.Wiki.SearchResult GetWikiSearchResult(object json)
         {
             var elem = (JObject)json;
             return new Search.Wiki.SearchResult(
@@ -84,7 +88,7 @@ namespace BooruSharp.Booru.Template
                 );
         }
 
-        protected internal override Search.Tag.SearchResult GetTagSearchResult(object json) // TODO: Fix TagType values
+        private protected override Search.Tag.SearchResult GetTagSearchResult(object json) // TODO: Fix TagType values
         {
             var elem = (JObject)json;
             return new Search.Tag.SearchResult(

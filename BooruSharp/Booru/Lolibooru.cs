@@ -2,15 +2,22 @@
 
 namespace BooruSharp.Booru
 {
+    /// <summary>
+    /// Lolibooru.
+    /// <para>https://lolibooru.moe/</para>
+    /// </summary>
     public sealed class Lolibooru : Template.Moebooru
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Lolibooru"/> class.
+        /// </summary>
         public Lolibooru() : base("lolibooru.moe")
         { }
 
-        public override bool IsSafe()
-            => false;
+        /// <inheritdoc/>
+        public override bool IsSafe() => false;
 
-        protected internal override Search.Tag.SearchResult GetTagSearchResult(object json)
+        private protected override Search.Tag.SearchResult GetTagSearchResult(object json)
         {
             var elem = (JObject)json;
             return new Search.Tag.SearchResult(

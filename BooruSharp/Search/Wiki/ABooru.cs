@@ -8,23 +8,29 @@ namespace BooruSharp.Booru
     public abstract partial class ABooru
     {
         /// <summary>
-        /// Get the wiki of a tag
+        /// Gets the wiki page of a tag.
         /// </summary>
-        /// <param name="query">The tag you want to get the wiki</param>
+        /// <param name="query">The tag to get the wiki page for.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="Search.FeatureUnavailable"/>
+        /// <exception cref="System.Net.Http.HttpRequestException"/>
+        /// <exception cref="Search.InvalidTags"/>
         public virtual async Task<Search.Wiki.SearchResult> GetWikiAsync(string query)
         {
             if (!HasWikiAPI())
                 throw new Search.FeatureUnavailable();
+
             if (query == null)
-                throw new ArgumentNullException("Argument can't be null");
-            var jsons = (JArray)JsonConvert.DeserializeObject(await GetJsonAsync(CreateUrl(_wikiUrl, SearchArg(_format == UrlFormat.danbooru ? "title" : "query") + query)));
-            int i = 0;
-            foreach (var json in jsons)
-            {
-                if (((JObject)json)["title"].Value<string>() == query)
-                    return GetWikiSearchResult(json);
-                i++;
-            }
+                throw new ArgumentNullException(nameof(query));
+
+            var array = JsonConvert.DeserializeObject<JArray>(
+                await GetJsonAsync(CreateUrl(_wikiUrl, SearchArg(_format == UrlFormat.danbooru ? "title" : "query") + query)));
+
+            foreach (var token in array)
+                if (token["title"].Value<string>() == query)
+                    return GetWikiSearchResult(token);
+
             throw new Search.InvalidTags();
         }
     }

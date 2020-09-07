@@ -3,7 +3,6 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
@@ -11,22 +10,33 @@ using System.Xml;
 namespace BooruSharp.Booru.Template
 {
     /// <summary>
-    /// Gelbooru 0.2
+    /// Template booru based on Gelbooru. This class is <see langword="abstract"/>.
     /// </summary>
     public abstract class Gelbooru : ABooru
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Gelbooru"/> template class.
+        /// </summary>
+        /// <param name="url">The base URL to use. This should be a host name.</param>
+        /// <param name="options">The collection of option values.</param>
         [Obsolete(_deprecationMessage)]
         public Gelbooru(string url, params BooruOptions[] options) : this(url, MergeOptions(options))
         { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Gelbooru"/> template class.
+        /// </summary>
+        /// <param name="url">The base URL to use. This should be a host name.</param>
+        /// <param name="options">The options to use. Use | (bitwise OR) operator to combine multiple options.</param>
         public Gelbooru(string url, BooruOptions options = BooruOptions.none) : base(url, UrlFormat.indexPhp, options |
              BooruOptions.noWiki | BooruOptions.noRelated | BooruOptions.limitOf20000 | BooruOptions.commentApiXml)
         { }
 
+        /// <inheritdoc/>
         public async override Task<Search.Post.SearchResult> GetPostByMd5Async(string md5)
         {
             if (md5 == null)
-                throw new ArgumentNullException("Argument can't be null");
+                throw new ArgumentNullException(nameof(md5));
 
             // Create a URL that will redirect us to Gelbooru post URL containing post ID.
             string url = $"{_baseUrl}/index.php?page=post&s=list&md5={md5}";
@@ -48,75 +58,50 @@ namespace BooruSharp.Booru.Template
             }
         }
 
-        protected internal override JToken ParseFirstPostSearchResult(object json)
+        private protected override JToken ParseFirstPostSearchResult(object json)
         {
-            JToken elem;
-            try
-            {
-                elem = ((JArray)json).FirstOrDefault();
-            }
-            catch (ArgumentNullException)
-            {
-                throw new Search.InvalidTags();
-            }
-            if (elem == null)
-                throw new Search.InvalidTags();
-            return elem;
+            JArray array = json as JArray;
+            return array?.FirstOrDefault() ?? throw new Search.InvalidTags();
         }
 
-        protected internal override Search.Post.SearchResult GetPostSearchResult(JToken elem)
+        private protected override Search.Post.SearchResult GetPostSearchResult(JToken elem)
         {
-            Match match = Regex.Match(elem["created_at"].Value<string>(), "[\\w]{3} ([\\w]{3}) ([0-9]{2}) ([0-9:]{8}) ([-+0-9]{5}) ([0-9]{4})");
-            string timezone = match.Groups[4].Value;
-            string dt = match.Groups[5] + "-" + GetMonth(match.Groups[1].Value) + "-" + match.Groups[2].Value + "T" + match.Groups[3].Value + ".0000000" + timezone.Substring(0, 3) + ":" + timezone.Substring(3, 2);
+            const string gelbooruTimeFormat = "ddd MMM dd HH:mm:ss zzz yyyy";
+
             return new Search.Post.SearchResult(
-                    new Uri(elem["file_url"].Value<string>()),
-                    new Uri("https://gelbooru.com/thumbnails/" + elem["directory"].Value<string>() + "/thumbnail_" + elem["image"].Value<string>()),
-                    new Uri(_baseUrl + "/index.php?page=post&s=view&id=" + elem["id"].Value<int>()),
-                    GetRating(elem["rating"].Value<string>()[0]),
-                    elem["tags"].Value<string>().Split(' '),
-                    elem["id"].Value<int>(),
-                    null,
-                    elem["height"].Value<int>(),
-                    elem["width"].Value<int>(),
-                    null,
-                    null,
-                    DateTime.Parse(dt),
-                    elem["source"].Value<string>(),
-                    elem["score"].Value<int>(),
-                    elem["hash"].Value<string>()
+                new Uri(elem["file_url"].Value<string>()),
+                new Uri("https://gelbooru.com/thumbnails/" + elem["directory"].Value<string>() + "/thumbnail_" + elem["image"].Value<string>()),
+                new Uri(_baseUrl + "/index.php?page=post&s=view&id=" + elem["id"].Value<int>()),
+                GetRating(elem["rating"].Value<string>()[0]),
+                elem["tags"].Value<string>().Split(' '),
+                elem["id"].Value<int>(),
+                null,
+                elem["height"].Value<int>(),
+                elem["width"].Value<int>(),
+                null,
+                null,
+                DateTime.ParseExact(elem["created_at"].Value<string>(), gelbooruTimeFormat, CultureInfo.InvariantCulture),
+                elem["source"].Value<string>(),
+                elem["score"].Value<int>(),
+                elem["hash"].Value<string>()
                 );
         }
 
-        protected internal override Search.Post.SearchResult[] GetPostsSearchResult(object json)
+        private protected override Search.Post.SearchResult[] GetPostsSearchResult(object json)
         {
-            var arr = (JArray)json;
-            Search.Post.SearchResult[] res;
-            try
-            {
-                res = new Search.Post.SearchResult[arr.Count];
-            }
-            catch (NullReferenceException)
-            {
-                return new Search.Post.SearchResult[0];
-            }
-            int i = 0;
-            foreach (var elem in arr)
-            {
-                res[i] = GetPostSearchResult(elem);
-                i++;
-            }
-            return res;
+            return json is JArray array
+                ? array.Select(GetPostSearchResult).ToArray()
+                : Array.Empty<Search.Post.SearchResult>();
         }
 
-        protected internal override Search.Comment.SearchResult GetCommentSearchResult(object json)
+        private protected override Search.Comment.SearchResult GetCommentSearchResult(object json)
         {
             var elem = (XmlNode)json;
             XmlNode creatorId = elem.Attributes.GetNamedItem("creator_id");
             return new Search.Comment.SearchResult(
                 int.Parse(elem.Attributes.GetNamedItem("id").Value),
                 int.Parse(elem.Attributes.GetNamedItem("post_id").Value),
-                creatorId.InnerText == "" ? (int?)null : int.Parse(creatorId.Value),
+                creatorId.InnerText.Length > 0 ? int.Parse(creatorId.Value) : (int?)null,
                 DateTime.ParseExact(elem.Attributes.GetNamedItem("created_at").Value, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
                 elem.Attributes.GetNamedItem("creator").Value,
                 elem.Attributes.GetNamedItem("body").Value
@@ -125,11 +110,11 @@ namespace BooruSharp.Booru.Template
 
         // GetWikiSearchResult not available
 
-        protected internal override Search.Tag.SearchResult GetTagSearchResult(object json)
+        private protected override Search.Tag.SearchResult GetTagSearchResult(object json)
         {
             var elem = (JObject)json;
             return new Search.Tag.SearchResult(
-                int.Parse(elem["id"].Value<string>()),
+                elem["id"].Value<int>(),
                 elem["tag"].Value<string>(),
                 StringToTagType(elem["type"].Value<string>()),
                 elem["count"].Value<int>()
@@ -137,25 +122,5 @@ namespace BooruSharp.Booru.Template
         }
 
         // GetRelatedSearchResult not available
-
-        private string GetMonth(string value)
-        {
-            switch (value)
-            {
-                case "Jan": return "01";
-                case "Feb": return "02";
-                case "Mar": return "03";
-                case "Apr": return "04";
-                case "May": return "05";
-                case "Jun": return "06";
-                case "Jul": return "07";
-                case "Aug": return "08";
-                case "Sep": return "09";
-                case "Oct": return "10";
-                case "Nov": return "11";
-                case "Dec": return "12";
-                default: throw new ArgumentException("Invalid month " + value);
-            }
-        }
     }
 }

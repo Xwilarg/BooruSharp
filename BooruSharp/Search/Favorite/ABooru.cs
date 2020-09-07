@@ -8,61 +8,84 @@ namespace BooruSharp.Booru
     public abstract partial class ABooru
     {
         /// <summary>
-        /// Add a post to your favorite
+        /// Adds a post to your favorites.
         /// </summary>
         /// <remarks>
-        /// You must login using SetBooruAuth before using this function
+        /// You must login using <see cref="Auth"/> property before calling this method.
         /// </remarks>
-        /// <param name="postId">The ID of the post you want to add to your favorite</param>
+        /// <param name="postId">The ID of the post you want to add to your favorites.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="AuthentificationInvalid"/>
+        /// <exception cref="AuthentificationRequired"/>
+        /// <exception cref="FeatureUnavailable"/>
+        /// <exception cref="System.Net.Http.HttpRequestException"/>
+        /// <exception cref="InvalidPostId"/>
         public virtual async Task AddFavoriteAsync(int postId)
         {
             if (!HasFavoriteAPI())
                 throw new FeatureUnavailable();
+
             if (Auth == null)
                 throw new AuthentificationRequired();
-            int res;
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_baseUrl + "/public/addfav.php?id=" + postId);
-            request.Headers["Cookie"] = "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash;
-            request.UserAgent = "Mozilla/5.0 BooruSharp";
-            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-            using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
-            using (Stream stream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                var answer = await reader.ReadToEndAsync();
-                if (answer.Length == 0)
-                    throw new InvalidPostId();
-                res = int.Parse(answer);
-            }
-            if (res == 2)
+
+            HttpWebRequest request = CreateAuthRequest(_baseUrl + "/public/addfav.php?id=" + postId);
+            string response = await GetAuthResponseAndReadToEndAsync(request);
+
+            if (response.Length == 0)
+                throw new InvalidPostId();
+
+            int result = int.Parse(response);
+
+            if (result == 2)
                 throw new AuthentificationInvalid();
         }
 
         /// <summary>
-        /// Remove a post from your favorite
+        /// Removes a post from your favorites.
         /// </summary>
         /// <remarks>
-        /// You must login using SetBooruAuth before using this function
+        /// You must login using <see cref="Auth"/> property before calling this method.
         /// </remarks>
-        /// <param name="postId">The ID of the post you want to remove from your favorite</param>
+        /// <param name="postId">The ID of the post you want to remove from your favorites.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="AuthentificationInvalid"/>
+        /// <exception cref="AuthentificationRequired"/>
+        /// <exception cref="FeatureUnavailable"/>
+        /// <exception cref="System.Net.Http.HttpRequestException"/>
         public virtual async Task RemoveFavoriteAsync(int postId)
         {
             if (!HasFavoriteAPI())
                 throw new FeatureUnavailable();
+
             if (Auth == null)
                 throw new AuthentificationRequired();
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_baseUrl + "/index.php?page=favorites&s=delete&id=" + postId);
-            request.Headers["Cookie"] = "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash;
-            request.UserAgent = "Mozilla/5.0 BooruSharp";
-            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+
+            HttpWebRequest request = CreateAuthRequest(_baseUrl + "/index.php?page=favorites&s=delete&id=" + postId);
+            string response = await GetAuthResponseAndReadToEndAsync(request);
+
+            // If the HTML contains the word "Login" we were probably sent back to the authentification form
+            if (response.Contains("Login")) 
+                throw new AuthentificationInvalid();
+        }
+
+        private static async Task<string> GetAuthResponseAndReadToEndAsync(HttpWebRequest request)
+        {
             using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
             using (Stream stream = response.GetResponseStream())
             using (StreamReader reader = new StreamReader(stream))
             {
-                var answer = await reader.ReadToEndAsync();
-                if (answer.Contains("Login")) // If the HTML contains the word "Login" we were probably sent back to the authentification form
-                    throw new AuthentificationInvalid();
+                return await reader.ReadToEndAsync();
             }
+        }
+
+        private HttpWebRequest CreateAuthRequest(string requestUrl)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUrl);
+            request.Headers["Cookie"] = "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash;
+            request.UserAgent = _userAgentHeaderValue;
+            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+
+            return request;
         }
     }
 }

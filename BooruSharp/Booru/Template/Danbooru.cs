@@ -4,37 +4,50 @@ using System.Linq;
 
 namespace BooruSharp.Booru.Template
 {
+    /// <summary>
+    /// Template booru based on Danbooru. This class is <see langword="abstract"/>.
+    /// </summary>
     public abstract class Danbooru : ABooru
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Danbooru"/> template class.
+        /// </summary>
+        /// <param name="url">The base URL to use. This should be a host name.</param>
+        /// <param name="options">The collection of option values.</param>
         [Obsolete(_deprecationMessage)]
         public Danbooru(string url, params BooruOptions[] options) : this(url, MergeOptions(options))
         { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Danbooru"/> template class.
+        /// </summary>
+        /// <param name="url">The base URL to use. This should be a host name.</param>
+        /// <param name="options">The options to use. Use | (bitwise OR) operator to combine multiple options.</param>
         public Danbooru(string url, BooruOptions options = BooruOptions.none) : base(url, UrlFormat.danbooru, options | BooruOptions.noLastComments | BooruOptions.noPostCount | BooruOptions.noFavorite)
         { }
 
-        protected internal override JToken ParseFirstPostSearchResult(object json)
+        private protected override JToken ParseFirstPostSearchResult(object json)
         {
-            var array = json as JArray;
-            var elem = array == null ? ((JToken)json) : array.FirstOrDefault();
-            if (elem == null)
-                throw new Search.InvalidTags();
-            return elem;
+            JToken token = json is JArray array
+                ? array.FirstOrDefault()
+                : json as JToken;
+
+            return token ?? throw new Search.InvalidTags();
         }
 
-        protected internal override Search.Post.SearchResult GetPostSearchResult(JToken elem)
+        private protected override Search.Post.SearchResult GetPostSearchResult(JToken elem)
         {
             var url = elem["file_url"];
             var previewUrl = elem["preview_file_url"];
             var id = elem["id"];
             var md5 = elem["md5"];
             return new Search.Post.SearchResult(
-                    url == null ? null : new Uri(url.Value<string>()),
-                    previewUrl == null ? null : new Uri(previewUrl.Value<string>()),
-                    id == null ? null : new Uri(_baseUrl + "/posts/" + elem["id"].Value<int>()),
+                    url != null ? new Uri(url.Value<string>()) : null,
+                    previewUrl != null ? new Uri(previewUrl.Value<string>()) : null,
+                    id != null ? new Uri(_baseUrl + "/posts/" + id.Value<int>()) : null,
                     GetRating(elem["rating"].Value<string>()[0]),
                     elem["tag_string"].Value<string>().Split(' '),
-                    id == null ? 0 : elem["id"].Value<int>(),
+                    id?.Value<int>() ?? 0,
                     elem["file_size"].Value<int>(),
                     elem["image_height"].Value<int>(),
                     elem["image_width"].Value<int>(),
@@ -43,31 +56,21 @@ namespace BooruSharp.Booru.Template
                     elem["created_at"].Value<DateTime>(),
                     elem["source"].Value<string>(),
                     elem["score"].Value<int>(),
-                    md5 == null ? null : md5.Value<string>()
+                    md5?.Value<string>()
                 );
         }
 
-        protected internal override Search.Post.SearchResult[] GetPostsSearchResult(object json)
+        private protected override Search.Post.SearchResult[] GetPostsSearchResult(object json)
         {
-            var arr = json as JArray;
-            if (arr == null)
-            {
-                var token = (JToken)json;
-                if (token == null)
-                    return new Search.Post.SearchResult[0];
-                return new Search.Post.SearchResult[1] { GetPostSearchResult(((JToken)json)["post"]) };
-            }
-            Search.Post.SearchResult[] res = new Search.Post.SearchResult[arr.Count];
-            int i = 0;
-            foreach (var elem in arr)
-            {
-                res[i] = GetPostSearchResult(elem);
-                i++;
-            }
-            return res;
+            if (json is JArray array)
+                return array.Select(GetPostSearchResult).ToArray();
+            else if (json is JToken token)
+                return new[] { GetPostSearchResult(token["post"]) };
+            else
+                return Array.Empty<Search.Post.SearchResult>();
         }
 
-        protected internal override Search.Comment.SearchResult GetCommentSearchResult(object json)
+        private protected override Search.Comment.SearchResult GetCommentSearchResult(object json)
         {
             var elem = (JObject)json;
             return new Search.Comment.SearchResult(
@@ -80,7 +83,7 @@ namespace BooruSharp.Booru.Template
                 );
         }
 
-        protected internal override Search.Wiki.SearchResult GetWikiSearchResult(object json)
+        private protected override Search.Wiki.SearchResult GetWikiSearchResult(object json)
         {
             var elem = (JObject)json;
             return new Search.Wiki.SearchResult(
@@ -92,7 +95,7 @@ namespace BooruSharp.Booru.Template
                 );
         }
 
-        protected internal override Search.Tag.SearchResult GetTagSearchResult(object json)
+        private protected override Search.Tag.SearchResult GetTagSearchResult(object json)
         {
             var elem = (JObject)json;
             return new Search.Tag.SearchResult(
@@ -103,7 +106,7 @@ namespace BooruSharp.Booru.Template
                 );
         }
 
-        protected internal override Search.Related.SearchResult GetRelatedSearchResult(object json)
+        private protected override Search.Related.SearchResult GetRelatedSearchResult(object json)
         {
             var elem = (JArray)json;
             return new Search.Related.SearchResult(

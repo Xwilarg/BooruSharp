@@ -1,10 +1,25 @@
 ﻿namespace BooruSharp.Booru
 {
+    /// <summary>
+    /// Indicates the API URL format that will be used to create API requests.
+    /// </summary>
     public enum UrlFormat
     {
-        postIndexJson, //post/index.json
-        indexPhp, // index.php?page=dapi&s=post&q=index&json=1
-        danbooru, // posts.json
-        sankaku // posts
+        /// <summary>
+        /// Indicates that the API uses <c>/post/index.json</c> query scheme.
+        /// </summary>
+        postIndexJson,
+        /// <summary>
+        /// Indicates that the API uses <c>/index.php?page=dapi&amp;s=post&amp;q=index&amp;json=1</c> query scheme.
+        /// </summary>
+        indexPhp,
+        /// <summary>
+        /// Indicates that the API uses <c>/posts.json</c> query scheme.
+        /// </summary>
+        danbooru,
+        /// <summary>
+        /// Indicates that the API uses <c>/posts</c> query scheme.
+        /// </summary>
+        sankaku
     }
 }
