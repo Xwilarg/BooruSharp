@@ -4,9 +4,6 @@ using System.Threading;
 
 namespace BooruSharp
 {
-    /// <summary>
-    /// Represents a thread-safe, pseudo-random number generator.
-    /// </summary>
     internal sealed class ThreadSafeRandom : Random, IDisposable
     {
         private static readonly RNGCryptoServiceProvider _global = new RNGCryptoServiceProvider();

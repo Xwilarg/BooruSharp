@@ -10,6 +10,7 @@ namespace BooruSharp.Booru
     {
         private const int _limitedTagsSearchCount = 2;
         private const int _increasedPostLimitCount = 20001;
+        private const string _queryOptionLimitOfOne = "limit=1";
 
         /// <summary>
         /// Searches for a post using its MD5 hash.
@@ -27,7 +28,7 @@ namespace BooruSharp.Booru
             if (md5 == null)
                 throw new ArgumentNullException(nameof(md5));
 
-            return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", "md5=" + md5));
+            return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, "md5=" + md5));
         }
 
         /// <summary>
@@ -43,8 +44,8 @@ namespace BooruSharp.Booru
                 throw new Search.FeatureUnavailable();
 
             return _format == UrlFormat.Danbooru
-                ? await GetSearchResultFromUrlAsync(_baseUrl + "/posts/" + id + ".json")
-                : await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", "id=" + id));
+                ? await GetSearchResultFromUrlAsync(BaseUrl + "/posts/" + id + ".json")
+                : await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, "id=" + id));
         }
 
         /// <summary>
@@ -68,7 +69,7 @@ namespace BooruSharp.Booru
             if (NoMoreThanTwoTags && tags.Length > _limitedTagsSearchCount)
                 throw new Search.TooManyTags();
 
-            XmlDocument xml = await GetXmlAsync(CreateUrl(_imageUrlXml, "limit=1", TagsToString(tags)));
+            XmlDocument xml = await GetXmlAsync(CreateUrl(_imageUrlXml, _queryOptionLimitOfOne, TagsToString(tags)));
             return int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
         }
 
@@ -94,17 +95,17 @@ namespace BooruSharp.Booru
             if (_format == UrlFormat.IndexPhp)
             {
                 if (this is Template.Gelbooru)
-                    return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", tagString) + "+sort:random");
+                    return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, tagString) + "+sort:random");
 
                 if (tags.Length == 0)
                 {
                     // We need to request /index.php?page=post&s=random and get the id given by the redirect
                     string id = await GetRandomIdAsync(tagString);
-                    return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", "id=" + id));
+                    return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, "id=" + id));
                 }
 
                 // The previous option doesn't work if there are tags so we contact the XML endpoint to get post count
-                string url = CreateUrl(_imageUrlXml, "limit=1", tagString);
+                string url = CreateUrl(_imageUrlXml, _queryOptionLimitOfOne, tagString);
                 XmlDocument xml = await GetXmlAsync(url);
                 int max = int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
 
@@ -114,13 +115,13 @@ namespace BooruSharp.Booru
                 if (SearchIncreasedPostLimit && max > _increasedPostLimitCount)
                     max = _increasedPostLimitCount;
 
-                return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", tagString, "pid=" + _random.Next(0, max)));
+                return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, tagString, "pid=" + Random.Next(0, max)));
             }
 
             return NoMoreThanTwoTags
                 // +order:random count as a tag so we use random=true instead to save one
-                ? await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", tagString, "random=true"))
-                : await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, "limit=1", tagString) + "+order:random");
+                ? await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, tagString, "random=true"))
+                : await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, tagString) + "+order:random");
         }
 
         /// <summary>

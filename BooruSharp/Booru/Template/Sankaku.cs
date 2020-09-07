@@ -12,10 +12,15 @@ namespace BooruSharp.Booru.Template
         /// <summary>
         /// Initializes a new instance of the <see cref="Sankaku"/> template class.
         /// </summary>
-        /// <param name="url">The base URL to use. This should be a host name.</param>
-        /// <param name="options">The options to use. Use | (bitwise OR) operator to combine multiple options.</param>
-        protected Sankaku(string url, BooruOptions options = BooruOptions.None)
-            : base(url, UrlFormat.Sankaku, options | BooruOptions.NoRelated | BooruOptions.NoPostByMD5 | BooruOptions.NoPostByID
+        /// <param name="domain">
+        /// The fully qualified domain name. Example domain
+        /// name should look like <c>www.google.com</c>.
+        /// </param>
+        /// <param name="options">
+        /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
+        /// </param>
+        protected Sankaku(string domain, BooruOptions options = BooruOptions.None)
+            : base(domain, UrlFormat.Sankaku, options | BooruOptions.NoRelated | BooruOptions.NoPostByMD5 | BooruOptions.NoPostByID
                   | BooruOptions.NoPostCount | BooruOptions.NoFavorite | BooruOptions.NoTagByID)
         { }
 
@@ -33,7 +38,7 @@ namespace BooruSharp.Booru.Template
             return new Search.Post.SearchResult(
                     new Uri(elem["file_url"].Value<string>()),
                     new Uri(elem["preview_url"].Value<string>()),
-                    new Uri(_baseUrl.Replace("capi-v2", "beta") + "/post/show/" + elem["id"].Value<int>()),
+                    new Uri(BaseUrl.Replace("capi-v2", "beta") + "/post/show/" + elem["id"].Value<int>()),
                     GetRating(elem["rating"].Value<string>()[0]),
                     tags,
                     elem["id"].Value<int>(),

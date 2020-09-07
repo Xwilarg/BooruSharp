@@ -17,10 +17,15 @@ namespace BooruSharp.Booru.Template
         /// <summary>
         /// Initializes a new instance of the <see cref="Gelbooru"/> template class.
         /// </summary>
-        /// <param name="url">The base URL to use. This should be a host name.</param>
-        /// <param name="options">The options to use. Use | (bitwise OR) operator to combine multiple options.</param>
-        protected Gelbooru(string url, BooruOptions options = BooruOptions.None)
-            : base(url, UrlFormat.IndexPhp, options | BooruOptions.NoWiki | BooruOptions.NoRelated | BooruOptions.LimitOf20000
+        /// <param name="domain">
+        /// The fully qualified domain name. Example domain
+        /// name should look like <c>www.google.com</c>.
+        /// </param>
+        /// <param name="options">
+        /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
+        /// </param>
+        protected Gelbooru(string domain, BooruOptions options = BooruOptions.None)
+            : base(domain, UrlFormat.IndexPhp, options | BooruOptions.NoWiki | BooruOptions.NoRelated | BooruOptions.LimitOf20000
                   | BooruOptions.CommentApiXml)
         { }
 
@@ -31,7 +36,7 @@ namespace BooruSharp.Booru.Template
                 throw new ArgumentNullException(nameof(md5));
 
             // Create a URL that will redirect us to Gelbooru post URL containing post ID.
-            string url = $"{_baseUrl}/index.php?page=post&s=list&md5={md5}";
+            string url = $"{BaseUrl}/index.php?page=post&s=list&md5={md5}";
 
             using (HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Head, url))
             using (HttpResponseMessage response = await HttpClient.SendAsync(message))
@@ -66,7 +71,7 @@ namespace BooruSharp.Booru.Template
             return new Search.Post.SearchResult(
                 new Uri(elem["file_url"].Value<string>()),
                 new Uri("https://gelbooru.com/thumbnails/" + directory + "/thumbnail_" + image),
-                new Uri(_baseUrl + "/index.php?page=post&s=view&id=" + elem["id"].Value<int>()),
+                new Uri(BaseUrl + "/index.php?page=post&s=view&id=" + elem["id"].Value<int>()),
                 GetRating(elem["rating"].Value<string>()[0]),
                 elem["tags"].Value<string>().Split(' '),
                 elem["id"].Value<int>(),

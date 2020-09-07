@@ -135,19 +135,24 @@ namespace BooruSharp.Booru
         /// <summary>
         /// Initializes a new instance of the <see cref="ABooru"/> class.
         /// </summary>
-        /// <param name="baseUrl">The base URL to use. This should be a host name.</param>
+        /// <param name="domain">
+        /// The fully qualified domain name. Example domain
+        /// name should look like <c>www.google.com</c>.
+        /// </param>
         /// <param name="format">The URL format to use.</param>
-        /// <param name="options">The options to use. Use | (bitwise OR) operator to combine multiple options.</param>
-        protected ABooru(string baseUrl, UrlFormat format, BooruOptions options)
+        /// <param name="options">
+        /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
+        /// </param>
+        protected ABooru(string domain, UrlFormat format, BooruOptions options)
         {
             Auth = null;
             HttpClient = null;
             _options = options;
 
             bool useHttp = UsesHttp; // Cache returned value for faster access.
-            _baseUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl;
+            BaseUrl = "http" + (useHttp ? "" : "s") + "://" + domain;
             _format = format;
-            _imageUrl = _baseUrl + "/" + GetUrl(format, "post");
+            _imageUrl = BaseUrl + "/" + GetUrl(format, "post");
 
             if (_format == UrlFormat.IndexPhp)
                 _imageUrlXml = _imageUrl.Replace("json=1", "json=0");
@@ -156,20 +161,20 @@ namespace BooruSharp.Booru
             else
                 _imageUrlXml = null;
 
-            _tagUrl = _baseUrl + "/" + GetUrl(format, "tag");
+            _tagUrl = BaseUrl + "/" + GetUrl(format, "tag");
 
             if (HasWikiAPI)
                 _wikiUrl = format == UrlFormat.Danbooru
-                    ? _baseUrl + "/" + GetUrl(format, "wiki_page")
-                    : _baseUrl + "/" + GetUrl(format, "wiki");
+                    ? BaseUrl + "/" + GetUrl(format, "wiki_page")
+                    : BaseUrl + "/" + GetUrl(format, "wiki");
 
             if (HasRelatedAPI)
                 _relatedUrl = format == UrlFormat.Danbooru
-                    ? _baseUrl + "/" + GetUrl(format, "related_tag")
-                    : _baseUrl + "/" + GetUrl(format, "tag", "related");
+                    ? BaseUrl + "/" + GetUrl(format, "related_tag")
+                    : BaseUrl + "/" + GetUrl(format, "tag", "related");
 
             if (HasCommentAPI)
-                _commentUrl = _baseUrl + "/" + GetUrl(format, "comment");
+                _commentUrl = BaseUrl + "/" + GetUrl(format, "comment");
         }
 
         private protected static string GetUrl(UrlFormat format, string query, string squery = "index")
@@ -218,7 +223,7 @@ namespace BooruSharp.Booru
 
         private async Task<string> GetRandomIdAsync(string tags)
         {
-            HttpResponseMessage msg = await HttpClient.GetAsync(_baseUrl + "/" + "index.php?page=post&s=random&tags=" + tags);
+            HttpResponseMessage msg = await HttpClient.GetAsync(BaseUrl + "/" + "index.php?page=post&s=random&tags=" + tags);
             msg.EnsureSuccessStatusCode();
             return HttpUtility.ParseQueryString(msg.RequestMessage.RequestUri.Query).Get("id");
         }
@@ -266,7 +271,7 @@ namespace BooruSharp.Booru
             set
             {
                 _client = value;
-
+                
                 // Add our User-Agent if client's User-Agent header is empty.
                 if (_client != null && !_client.DefaultRequestHeaders.Contains("User-Agent"))
                     _client.DefaultRequestHeaders.Add("User-Agent", _userAgentHeaderValue);
@@ -274,13 +279,15 @@ namespace BooruSharp.Booru
         }
 
         /// <summary>
-        /// The instance of <see cref="Random"/> class used for generating random post IDs.
+        /// Gets the instance of the thread-safe, pseudo-random number generator.
         /// </summary>
-        protected static readonly Random _random = new ThreadSafeRandom();
+        protected static Random Random { get; } = new ThreadSafeRandom();
+
         /// <summary>
-        /// Contains the base request URL of this booru.
+        /// Gets the base API request URL.
         /// </summary>
-        protected readonly string _baseUrl;
+        protected string BaseUrl { get; }
+
         private HttpClient _client;
         private readonly string _imageUrlXml, _imageUrl, _tagUrl, _wikiUrl, _relatedUrl, _commentUrl; // URLs for differents endpoints
         // All options are stored in a bit field and can be retrieved using related methods/properties.
