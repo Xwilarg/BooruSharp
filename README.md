@@ -10,10 +10,10 @@
 # BooruSharp
 BooruSharp is a C# library to browse Booru websites easily<br/>
 You can download it from [NuGet](https://www.nuget.org/packages/BooruSharp):
-```
+```powershell
 Install-Package BooruSharp
 ```
-```
+```powershell
 Install-Package BooruSharp.Others
 ```
 BooruSharp currently handle the following websites:
@@ -36,13 +36,13 @@ BooruSharp currently handle the following websites:
 BooruSharp.Others allow to handle more websites that aren't booru:
  - pixiv.net
 
-# Documentation
+## Documentation
 
-Version >= 2.0.0: https://boorusharp.zirk.eu/<br/>
-Version <= 1.4.8: https://github.com/Xwilarg/BooruSharp/wiki<br/>
-Transition from 1.4.8 to 2.0.0: https://boorusharp.zirk.eu/transition.html
+Version >= 2.0.0: <https://boorusharp.zirk.eu/><br/>
+Version <= 1.4.8: <https://github.com/Xwilarg/BooruSharp/wiki><br/>
+Transition from 1.4.8 to 2.0.0: <https://boorusharp.zirk.eu/transition.html>
 
-# Features availability
+## Features availability
 
 | Booru | Multiple Random Images | Post by ID | Post by MD5 | Tag by ID | Comment API | Last Comments API | Wiki API | Related Tag API | Post Count API | Favorite API |
 | ---                   | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -63,7 +63,7 @@ Transition from 1.4.8 to 2.0.0: https://boorusharp.zirk.eu/transition.html
 | Yandere		| ✔️ | ❌ | ❌ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ❌ |
 | Pixiv		        | ❌ | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ |
 
-# Examples
+## Examples
 
 Random image:
 ```Cs
@@ -134,8 +134,8 @@ Console.WriteLine(String.Join(Environment.NewLine,
            .Select(delegate (BooruSharp.Search.Tag.SearchResult res) { return (res.name); })));
 ```
 
-# Want to contribute?
+## Want to contribute
 Feel free to open a [pull request](https://github.com/Xwilarg/BooruSharp/pulls).
 
-# Need more help?
+## Need more help
 Feel free to [open an issue](https://github.com/Xwilarg/BooruSharp/issues) or come ask [on Discord](https://discord.gg/H6wMRYV).
