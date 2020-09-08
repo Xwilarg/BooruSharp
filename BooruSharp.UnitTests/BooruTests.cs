@@ -1,6 +1,7 @@
 ﻿using BooruSharp.Booru;
 using BooruSharp.Others;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
@@ -10,6 +11,106 @@ namespace BooruSharp.UnitTests
     public class BooruTests
     {
         private const int _randomPostCount = 5;
+
+        public static IEnumerable<object[]> BooruParams { get; } = new object[][]
+        {
+            new object[] { typeof(Atfbooru) },
+            new object[] { typeof(DanbooruDonmai) },
+            new object[] { typeof(E621) },
+            new object[] { typeof(E926) },
+            new object[] { typeof(Furrybooru) },
+            new object[] { typeof(Gelbooru) },
+            new object[] { typeof(Konachan) },
+            new object[] { typeof(Lolibooru) },
+            new object[] { typeof(Realbooru) },
+            new object[] { typeof(Rule34) },
+            new object[] { typeof(Safebooru) },
+            new object[] { typeof(Sakugabooru) },
+            new object[] { typeof(SankakuComplex) },
+            new object[] { typeof(Xbooru) },
+            new object[] { typeof(Yandere) },
+            new object[] { typeof(Pixiv) },
+        };
+
+        public static IEnumerable<object[]> BooruPostCountParams { get; } = new object[][]
+        {
+            new object[] { typeof(Atfbooru) },
+            new object[] { typeof(DanbooruDonmai) },
+            new object[] { typeof(E621), "kantai_collection", "swimwear" },
+            new object[] { typeof(E926), "kantai_collection", "swimwear" },
+            new object[] { typeof(Furrybooru), "kantai_collection" },
+            new object[] { typeof(Gelbooru) },
+            new object[] { typeof(Konachan), "hibiki_(kancolle)" },
+            new object[] { typeof(Lolibooru) },
+            new object[] { typeof(Realbooru), "swimsuit", "asian" },
+            new object[] { typeof(Rule34) },
+            new object[] { typeof(Safebooru) },
+            new object[] { typeof(Sakugabooru), "kantai_collection", "explosions" },
+            new object[] { typeof(SankakuComplex) },
+            new object[] { typeof(Xbooru), "kantai_collection" },
+            new object[] { typeof(Yandere), "kantai_collection", "swimsuits" },
+            new object[] { typeof(Pixiv), "響(艦隊これくしょん)", "水着艦娘" },
+        };
+
+        public static IEnumerable<object[]> BooruRandomPostsParams { get; } = new object[][]
+        {
+            new object[] { typeof(Atfbooru) },
+            new object[] { typeof(DanbooruDonmai) },
+            new object[] { typeof(E621) },
+            new object[] { typeof(E926) },
+            new object[] { typeof(Furrybooru) },
+            new object[] { typeof(Gelbooru) },
+            new object[] { typeof(Konachan) },
+            new object[] { typeof(Lolibooru) },
+            new object[] { typeof(Realbooru), "small_breasts" },
+            new object[] { typeof(Rule34) },
+            new object[] { typeof(Safebooru) },
+            new object[] { typeof(Sakugabooru), "kantai_collection" },
+            new object[] { typeof(SankakuComplex), "small_breasts" },
+            new object[] { typeof(Xbooru) },
+            new object[] { typeof(Yandere) },
+            new object[] { typeof(Pixiv), "スク水" },
+        };
+
+        public static IEnumerable<object[]> BooruRandomTwoTagsParams { get; } = new object[][]
+        {
+            new object[] { typeof(Atfbooru) },
+            new object[] { typeof(DanbooruDonmai) },
+            new object[] { typeof(E621), "kantai_collection" },
+            new object[] { typeof(E926), "kantai_collection" },
+            new object[] { typeof(Furrybooru), "kantai_collection" },
+            new object[] { typeof(Gelbooru) },
+            new object[] { typeof(Konachan), "hibiki_(kancolle)" },
+            new object[] { typeof(Lolibooru) },
+            new object[] { typeof(Realbooru), "school_swimsuit", "small_breasts" },
+            new object[] { typeof(Rule34) },
+            new object[] { typeof(Safebooru) },
+            new object[] { typeof(Sakugabooru), "kantai_collection", "explosions" },
+            new object[] { typeof(SankakuComplex), "hibiki_(kantai_collection)", "old_school_swimsuit" },
+            new object[] { typeof(Xbooru), "kantai_collection" },
+            new object[] { typeof(Yandere), "kantai_collection" },
+            new object[] { typeof(Pixiv), "響(艦隊これくしょん)", "スク水" },
+        };
+
+        public static IEnumerable<object[]> BooruTooManyTagsParams { get; } = new object[][]
+        {
+            new object[] { typeof(Atfbooru), false },
+            new object[] { typeof(DanbooruDonmai), true },
+            new object[] { typeof(E621), false, "sea", "loli", "swimwear" },
+            new object[] { typeof(E926), false, "sea", "breasts", "swimwear" },
+            new object[] { typeof(Furrybooru), false, "water" },
+            new object[] { typeof(Gelbooru), false },
+            new object[] { typeof(Konachan), false, "water" },
+            new object[] { typeof(Lolibooru), false },
+            new object[] { typeof(Realbooru), false, "water" },
+            new object[] { typeof(Rule34), false },
+            new object[] { typeof(Safebooru), false },
+            new object[] { typeof(Sakugabooru), false, "kantai_collection", "explosions", "fire" },
+            new object[] { typeof(SankakuComplex), false, "ocean", "loli", "swimsuit" },
+            new object[] { typeof(Xbooru), false, "ocean", "small_breasts" },
+            new object[] { typeof(Yandere), false, "see_through", "loli", "swimsuits" },
+            new object[] { typeof(Pixiv), false, "東方", "貧乳", "水着" },
+        };
 
         [Fact]
         public void IsBooruAuthSet()
@@ -21,22 +122,7 @@ namespace BooruSharp.UnitTests
         }
 
         [Theory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621))]
-        [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan))]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru))]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru))]
-        [InlineData(typeof(SankakuComplex))]
-        [InlineData(typeof(Xbooru))]
-        [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv))]
+        [MemberData(nameof(BooruParams))]
         public async Task UnsetFavoriteErrorAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
@@ -51,22 +137,7 @@ namespace BooruSharp.UnitTests
         }
 
         [Theory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621))]
-        [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan))]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru))]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru))]
-        [InlineData(typeof(SankakuComplex))]
-        [InlineData(typeof(Xbooru))]
-        [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv))]
+        [MemberData(nameof(BooruParams))]
         public async Task SetFavoriteErrorAsync(Type t)
         {
             const int invalidPostId = 800;
@@ -85,25 +156,12 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621))]
-        [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan))]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru))]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru))]
-        [InlineData(typeof(SankakuComplex))]
-        // [InlineData(typeof(Xbooru))] // Xbooru allow to add post with invalid ID
-        [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv))]
+        [MemberData(nameof(BooruParams))]
         public async Task SetFavoriteInvalidIdAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
+
+            Skip.If(booru is Xbooru, "Xbooru allows adding a post with invalid ID.");
 
             if (!booru.HasFavoriteAPI)
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(() => booru.AddFavoriteAsync(int.MaxValue));
@@ -120,22 +178,7 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621))]
-        [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan))]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru))]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru))]
-        [InlineData(typeof(SankakuComplex))]
-        [InlineData(typeof(Xbooru))]
-        [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv))]
+        [MemberData(nameof(BooruParams))]
         public async Task SetFavoriteAsync(Type t)
         {
             const int postID = 10;
@@ -159,22 +202,7 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621))]
-        [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan))]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru))]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru))]
-        [InlineData(typeof(SankakuComplex))]
-        [InlineData(typeof(Xbooru))]
-        [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv))]
+        [MemberData(nameof(BooruParams))]
         public async Task GetByMd5Async(Type t)
         {
             var booru = await Boorus.GetAsync(t);
@@ -193,22 +221,7 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621))]
-        [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan))]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru))]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru))]
-        [InlineData(typeof(SankakuComplex))]
-        [InlineData(typeof(Xbooru))]
-        [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv))]
+        [MemberData(nameof(BooruParams))]
         public async Task GetByIdAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
@@ -223,22 +236,7 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621))]
-        [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan))]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru))]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru))]
-        [InlineData(typeof(SankakuComplex))]
-        [InlineData(typeof(Xbooru))]
-        [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv))]
+        [MemberData(nameof(BooruParams))]
         public async Task GetLastPostsAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
@@ -253,22 +251,7 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621), "kantai_collection", "swimwear")]
-        [InlineData(typeof(E926), "kantai_collection", "swimwear")]
-        [InlineData(typeof(Furrybooru), "kantai_collection")]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan), "hibiki_(kancolle)")]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru), "swimsuit", "asian")]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru), "kantai_collection", "explosions")]
-        [InlineData(typeof(SankakuComplex))]
-        [InlineData(typeof(Xbooru), "kantai_collection")]
-        [InlineData(typeof(Yandere), "kantai_collection", "swimsuits")]
-        [InlineData(typeof(Pixiv), "響(艦隊これくしょん)", "水着艦娘")]
+        [MemberData(nameof(BooruPostCountParams))]
         public async Task GetLastPostsWithTagsAsync(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "swimsuit")
         {
             var booru = await Boorus.GetAsync(t);
@@ -284,22 +267,7 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621), "kantai_collection", "swimwear")]
-        [InlineData(typeof(E926), "kantai_collection", "swimwear")]
-        [InlineData(typeof(Furrybooru), "kantai_collection")]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan), "hibiki_(kancolle)")]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru), "swimsuit", "asian")]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru), "kantai_collection", "explosions")]
-        [InlineData(typeof(SankakuComplex))]
-        [InlineData(typeof(Xbooru), "kantai_collection")]
-        [InlineData(typeof(Yandere), "kantai_collection", "swimsuits")]
-        [InlineData(typeof(Pixiv), "響(艦隊これくしょん)", "水着")]
+        [MemberData(nameof(BooruPostCountParams))]
         public async Task GetPostCountAsync(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "swimsuit")
         {
             var booru = await Boorus.GetAsync(t);
@@ -321,44 +289,14 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621))]
-        [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan))]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru), "small_breasts")]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru), "kantai_collection")]
-        [InlineData(typeof(SankakuComplex), "small_breasts")]
-        [InlineData(typeof(Xbooru))]
-        [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv), "スク水")]
+        [MemberData(nameof(BooruRandomPostsParams))]
         public async Task GetRandomAsync(Type t, string tag = "school_swimsuit")
         {
             await General.CheckGetRandomAsync(await Boorus.GetAsync(t), tag);
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621))]
-        [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan))]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru), "small_breasts")]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru), "kantai_collection")]
-        [InlineData(typeof(SankakuComplex), "small_breasts")]
-        [InlineData(typeof(Xbooru))]
-        [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv), "スク水")]
+        [MemberData(nameof(BooruRandomPostsParams))]
         public async Task GetRandomsAsync(Type t, string tag = "school_swimsuit")
         {
             var booru = await Boorus.GetAsync(t);
@@ -369,22 +307,7 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621))]
-        [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan))]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru), "small_breasts")]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru), "kantai_collection")]
-        [InlineData(typeof(SankakuComplex), "small_breasts")]
-        [InlineData(typeof(Xbooru))]
-        [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv), "スク水")]
+        [MemberData(nameof(BooruRandomPostsParams))]
         public async Task GetRandomsTooManyAsync(Type t, string tag = "school_swimsuit")
         {
             var booru = await Boorus.GetAsync(t);
@@ -412,22 +335,7 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621), "kantai_collection")]
-        [InlineData(typeof(E926), "kantai_collection")]
-        [InlineData(typeof(Furrybooru), "kantai_collection")]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan), "hibiki_(kancolle)")]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru), "school_swimsuit", "small_breasts")]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru), "kantai_collection", "explosions")]
-        [InlineData(typeof(SankakuComplex), "hibiki_(kantai_collection)", "old_school_swimsuit")]
-        [InlineData(typeof(Xbooru), "kantai_collection")]
-        [InlineData(typeof(Yandere), "kantai_collection")]
-        [InlineData(typeof(Pixiv), "響(艦隊これくしょん)", "水着艦娘")]
+        [MemberData(nameof(BooruRandomTwoTagsParams))]
         public async Task GetRandom2TagsAsync(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "school_swimsuit")
         {
             var booru = await Boorus.GetAsync(t);
@@ -437,30 +345,15 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621), "kantai_collection")]
-        [InlineData(typeof(E926), "kantai_collection")]
-        [InlineData(typeof(Furrybooru), "kantai_collection")]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan), "hibiki_(kancolle)")]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru), "school_swimsuit", "small_breasts")]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru), "kantai_collection", "explosions")]
-        [InlineData(typeof(SankakuComplex), "hibiki_(kantai_collection)", "old_school_swimsuit")]
-        [InlineData(typeof(Xbooru), "kantai_collection")]
-        [InlineData(typeof(Yandere), "kantai_collection")]
-        [InlineData(typeof(Pixiv), "響(艦隊これくしょん)", "スク水")]
+        [MemberData(nameof(BooruRandomTwoTagsParams))]
         public async Task GetRandoms2TagsAsync(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "school_swimsuit")
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasMultipleRandomAPI)
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(() => booru.GetRandomPostsAsync(5, tag, tag2));
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(() => booru.GetRandomPostsAsync(_randomPostCount, tag, tag2));
             else
             {
-                var result = await booru.GetRandomPostsAsync(5, tag, tag2);
+                var result = await booru.GetRandomPostsAsync(_randomPostCount, tag, tag2);
                 Assert.NotEmpty(result);
                 foreach (var r in result)
                 {
@@ -471,22 +364,7 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru), false)]
-        [InlineData(typeof(DanbooruDonmai), true)]
-        [InlineData(typeof(E621), false, "sea", "loli", "swimwear")]
-        [InlineData(typeof(E926), false, "sea", "breasts", "swimwear")]
-        [InlineData(typeof(Furrybooru), false, "water")]
-        [InlineData(typeof(Gelbooru), false)]
-        [InlineData(typeof(Konachan), false, "water")]
-        [InlineData(typeof(Lolibooru), false)]
-        [InlineData(typeof(Realbooru), false, "water")]
-        [InlineData(typeof(Rule34), false)]
-        [InlineData(typeof(Safebooru), false)]
-        [InlineData(typeof(Sakugabooru), false, "kantai_collection", "explosions", "fire")]
-        [InlineData(typeof(SankakuComplex), false, "ocean", "loli", "swimsuit")]
-        [InlineData(typeof(Xbooru), false, "ocean", "small_breasts")]
-        [InlineData(typeof(Yandere), false, "see_through", "loli", "swimsuits")]
-        [InlineData(typeof(Pixiv), false, "東方", "貧乳", "水着")]
+        [MemberData(nameof(BooruTooManyTagsParams))]
         public async Task TooManyTagsAsync(
             Type t, bool throwError, string tag = "ocean", string tag2 = "flat_chest", string tag3 = "swimsuit")
         {
@@ -509,22 +387,7 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru), false)]
-        [InlineData(typeof(DanbooruDonmai), true)]
-        [InlineData(typeof(E621), false, "sea", "loli", "swimwear")]
-        [InlineData(typeof(E926), false, "sea", "loli", "swimwear")]
-        [InlineData(typeof(Furrybooru), false, "water")]
-        [InlineData(typeof(Gelbooru), false)]
-        [InlineData(typeof(Konachan), false, "water")]
-        [InlineData(typeof(Lolibooru), false)]
-        [InlineData(typeof(Realbooru), false, "water")]
-        [InlineData(typeof(Rule34), false)]
-        [InlineData(typeof(Safebooru), false)]
-        [InlineData(typeof(Sakugabooru), false, "kantai_collection", "explosions", "fire")]
-        [InlineData(typeof(SankakuComplex), false, "ocean", "loli", "swimsuit")]
-        [InlineData(typeof(Xbooru), false, "ocean", "small_breasts")]
-        [InlineData(typeof(Yandere), false, "see_through", "loli", "swimsuits")]
-        [InlineData(typeof(Pixiv), false, "水", "貧乳", "水着")]
+        [MemberData(nameof(BooruTooManyTagsParams))]
         public async Task TooManyTagsManyAsync(
             Type t, bool throwError, string tag = "ocean", string tag2 = "flat_chest", string tag3 = "swimsuit")
         {
@@ -553,22 +416,7 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621))]
-        [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan))]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru))]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru))]
-        [InlineData(typeof(SankakuComplex))]
-        [InlineData(typeof(Xbooru))]
-        [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv))]
+        [MemberData(nameof(BooruParams))]
         public async Task GetRandomFailAsync(Type t)
         {
             await Assert.ThrowsAsync<Search.InvalidTags>(
@@ -576,22 +424,7 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621))]
-        [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan))]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru))]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru))]
-        [InlineData(typeof(SankakuComplex))]
-        [InlineData(typeof(Xbooru))]
-        [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv))]
+        [MemberData(nameof(BooruParams))]
         public async Task GetRandomsFailAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
@@ -629,22 +462,7 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621))]
-        [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan))]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru))]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru))]
-        [InlineData(typeof(SankakuComplex))]
-        [InlineData(typeof(Xbooru))]
-        [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv))]
+        [MemberData(nameof(BooruParams))]
         public async Task CheckTagFailAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
@@ -709,22 +527,7 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621))]
-        [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan))]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru))]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru))]
-        [InlineData(typeof(SankakuComplex))]
-        [InlineData(typeof(Xbooru))]
-        [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv))]
+        [MemberData(nameof(BooruParams))]
         public async Task TagIdFailAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
@@ -765,22 +568,7 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621))]
-        [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan))]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru))]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru))]
-        [InlineData(typeof(SankakuComplex))]
-        [InlineData(typeof(Xbooru))]
-        [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv))]
+        [MemberData(nameof(BooruParams))]
         public async Task CheckWikiFailAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
@@ -821,22 +609,7 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621))]
-        [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan))]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru))]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru))]
-        [InlineData(typeof(SankakuComplex))]
-        [InlineData(typeof(Xbooru))]
-        [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv))]
+        [MemberData(nameof(BooruParams))]
         public async Task CheckRelatedFailAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
@@ -873,22 +646,7 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621))]
-        [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan))]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru))]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru))]
-        [InlineData(typeof(SankakuComplex))]
-        [InlineData(typeof(Xbooru))]
-        [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv))]
+        [MemberData(nameof(BooruParams))]
         public async Task CheckCommentFailAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
@@ -899,22 +657,7 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621))]
-        [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan))]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru))]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru))]
-        [InlineData(typeof(SankakuComplex))]
-        [InlineData(typeof(Xbooru))]
-        [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv))]
+        [MemberData(nameof(BooruParams))]
         public async Task CheckLastCommentAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
@@ -925,22 +668,7 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru))]
-        [InlineData(typeof(DanbooruDonmai))]
-        [InlineData(typeof(E621))]
-        [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
-        [InlineData(typeof(Gelbooru))]
-        [InlineData(typeof(Konachan))]
-        [InlineData(typeof(Lolibooru))]
-        [InlineData(typeof(Realbooru))]
-        [InlineData(typeof(Rule34))]
-        [InlineData(typeof(Safebooru))]
-        [InlineData(typeof(Sakugabooru))]
-        [InlineData(typeof(SankakuComplex))]
-        [InlineData(typeof(Xbooru))]
-        [InlineData(typeof(Yandere))]
-        [InlineData(typeof(Pixiv))]
+        [MemberData(nameof(BooruParams))]
         public async Task CheckAvailableAsync(Type t)
         {
             await (await Boorus.GetAsync(t)).CheckAvailabilityAsync();
