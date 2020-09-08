@@ -36,7 +36,7 @@ namespace BooruSharp.Booru.Template
                 throw new ArgumentNullException(nameof(md5));
 
             // Create a URL that will redirect us to Gelbooru post URL containing post ID.
-            string url = $"{BaseUrl}/index.php?page=post&s=list&md5={md5}";
+            string url = $"{BaseUrl}index.php?page=post&s=list&md5={md5}";
 
             using (HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Head, url))
             using (HttpResponseMessage response = await HttpClient.SendAsync(message))
@@ -71,7 +71,7 @@ namespace BooruSharp.Booru.Template
             return new Search.Post.SearchResult(
                 new Uri(elem["file_url"].Value<string>()),
                 new Uri("https://gelbooru.com/thumbnails/" + directory + "/thumbnail_" + image),
-                new Uri(BaseUrl + "/index.php?page=post&s=view&id=" + elem["id"].Value<int>()),
+                new Uri(BaseUrl + "index.php?page=post&s=view&id=" + elem["id"].Value<int>()),
                 GetRating(elem["rating"].Value<string>()[0]),
                 elem["tags"].Value<string>().Split(' '),
                 elem["id"].Value<int>(),

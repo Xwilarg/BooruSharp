@@ -150,52 +150,60 @@ namespace BooruSharp.Booru
             _options = options;
 
             bool useHttp = UsesHttp; // Cache returned value for faster access.
-            BaseUrl = "http" + (useHttp ? "" : "s") + "://" + domain;
+            BaseUrl = new Uri("http" + (useHttp ? "" : "s") + "://" + domain, UriKind.Absolute);
             _format = format;
-            _imageUrl = BaseUrl + "/" + GetUrl(format, "post");
+            _imageUrl = CreateQueryString(format, "post");
 
             if (_format == UrlFormat.IndexPhp)
-                _imageUrlXml = _imageUrl.Replace("json=1", "json=0");
+                _imageUrlXml = new Uri(_imageUrl.AbsoluteUri.Replace("json=1", "json=0"));
             else if (_format == UrlFormat.PostIndexJson)
-                _imageUrlXml = _imageUrl.Replace("index.json", "index.xml");
+                _imageUrlXml = new Uri(_imageUrl.AbsoluteUri.Replace("index.json", "index.xml"));
             else
                 _imageUrlXml = null;
 
-            _tagUrl = BaseUrl + "/" + GetUrl(format, "tag");
+            _tagUrl = CreateQueryString(format, "tag");
 
             if (HasWikiAPI)
                 _wikiUrl = format == UrlFormat.Danbooru
-                    ? BaseUrl + "/" + GetUrl(format, "wiki_page")
-                    : BaseUrl + "/" + GetUrl(format, "wiki");
+                    ? CreateQueryString(format, "wiki_page")
+                    : CreateQueryString(format, "wiki");
 
             if (HasRelatedAPI)
                 _relatedUrl = format == UrlFormat.Danbooru
-                    ? BaseUrl + "/" + GetUrl(format, "related_tag")
-                    : BaseUrl + "/" + GetUrl(format, "tag", "related");
+                    ? CreateQueryString(format, "related_tag")
+                    : CreateQueryString(format, "tag", "related");
 
             if (HasCommentAPI)
-                _commentUrl = BaseUrl + "/" + GetUrl(format, "comment");
+                _commentUrl = CreateQueryString(format, "comment");
         }
 
-        private protected static string GetUrl(UrlFormat format, string query, string squery = "index")
+        private protected Uri CreateQueryString(UrlFormat format, string query, string squery = "index")
         {
+            string queryString;
+
             switch (format)
             {
                 case UrlFormat.PostIndexJson:
-                    return query + "/" + squery + ".json";
+                    queryString = query + "/" + squery + ".json";
+                    break;
 
                 case UrlFormat.IndexPhp:
-                    return "index.php?page=dapi&s=" + query + "&q=index&json=1";
+                    queryString = "index.php?page=dapi&s=" + query + "&q=index&json=1";
+                    break;
 
                 case UrlFormat.Danbooru:
-                    return query == "related_tag" ? query + ".json" : query + "s.json";
+                    queryString = query == "related_tag" ? query + ".json" : query + "s.json";
+                    break;
 
                 case UrlFormat.Sankaku:
-                    return query == "wiki" ? query : query + "s";
+                    queryString = query == "wiki" ? query : query + "s";
+                    break;
 
                 default:
-                    return null;
+                    return BaseUrl;
             }
+
+            return new Uri(BaseUrl + queryString);
         }
 
         // TODO: Handle limitrate
@@ -213,6 +221,11 @@ namespace BooruSharp.Booru
             return await msg.Content.ReadAsStringAsync();
         }
 
+        private Task<string> GetJsonAsync(Uri url)
+        {
+            return GetJsonAsync(url.AbsoluteUri);
+        }
+
         private async Task<XmlDocument> GetXmlAsync(string url)
         {
             var xmlDoc = new XmlDocument();
@@ -221,18 +234,28 @@ namespace BooruSharp.Booru
             return xmlDoc;
         }
 
+        private Task<XmlDocument> GetXmlAsync(Uri url)
+        {
+            return GetXmlAsync(url.AbsoluteUri);
+        }
+
         private async Task<string> GetRandomIdAsync(string tags)
         {
-            HttpResponseMessage msg = await HttpClient.GetAsync(BaseUrl + "/" + "index.php?page=post&s=random&tags=" + tags);
+            HttpResponseMessage msg = await HttpClient.GetAsync(BaseUrl + "index.php?page=post&s=random&tags=" + tags);
             msg.EnsureSuccessStatusCode();
             return HttpUtility.ParseQueryString(msg.RequestMessage.RequestUri.Query).Get("id");
         }
 
-        private string CreateUrl(string url, params string[] args)
+        private Uri CreateUrl(Uri url, params string[] args)
         {
-            return _format == UrlFormat.IndexPhp
-                ? url + "&" + string.Join("&", args)
-                : url + "?" + string.Join("&", args);
+            var builder = new UriBuilder(url);
+
+            if (_format == UrlFormat.IndexPhp)
+                builder.Query += "&" + string.Join("&", args);
+            else
+                builder.Query = "?" + string.Join("&", args);
+
+            return builder.Uri;
         }
 
         private string TagsToString(string[] tags)
@@ -271,7 +294,7 @@ namespace BooruSharp.Booru
             set
             {
                 _client = value;
-                
+
                 // Add our User-Agent if client's User-Agent header is empty.
                 if (_client != null && !_client.DefaultRequestHeaders.Contains("User-Agent"))
                     _client.DefaultRequestHeaders.Add("User-Agent", _userAgentHeaderValue);
@@ -286,10 +309,10 @@ namespace BooruSharp.Booru
         /// <summary>
         /// Gets the base API request URL.
         /// </summary>
-        protected string BaseUrl { get; }
+        protected Uri BaseUrl { get; }
 
         private HttpClient _client;
-        private readonly string _imageUrlXml, _imageUrl, _tagUrl, _wikiUrl, _relatedUrl, _commentUrl; // URLs for differents endpoints
+        private readonly Uri _imageUrlXml, _imageUrl, _tagUrl, _wikiUrl, _relatedUrl, _commentUrl; // URLs for differents endpoints
         // All options are stored in a bit field and can be retrieved using related methods/properties.
         private readonly BooruOptions _options;
         private readonly UrlFormat _format; // URL format

@@ -30,7 +30,7 @@ namespace BooruSharp.Booru
             if (Auth == null)
                 throw new AuthentificationRequired();
 
-            HttpWebRequest request = CreateAuthRequest(BaseUrl + "/public/addfav.php?id=" + postId);
+            HttpWebRequest request = CreateAuthRequest(BaseUrl + "public/addfav.php?id=" + postId);
             string response = await GetAuthResponseAndReadToEndAsync(request);
 
             if (response.Length == 0)
@@ -62,7 +62,7 @@ namespace BooruSharp.Booru
             if (Auth == null)
                 throw new AuthentificationRequired();
 
-            HttpWebRequest request = CreateAuthRequest(BaseUrl + "/index.php?page=favorites&s=delete&id=" + postId);
+            HttpWebRequest request = CreateAuthRequest(BaseUrl + "index.php?page=favorites&s=delete&id=" + postId);
             string response = await GetAuthResponseAndReadToEndAsync(request);
 
             // If the HTML contains the word "Login" we were probably sent back to the authentification form

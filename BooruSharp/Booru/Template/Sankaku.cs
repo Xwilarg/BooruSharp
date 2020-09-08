@@ -35,10 +35,16 @@ namespace BooruSharp.Booru.Template
             string[] tags = (from tag in (JArray)elem["tags"]
                              select tag["name"].Value<string>()).ToArray();
 
+            var postUriBuilder = new UriBuilder(BaseUrl)
+            {
+                Host = BaseUrl.Host.Replace("capi-v2", "beta"),
+                Path = $"/post/show/{elem["id"].Value<int>()}",
+            };
+
             return new Search.Post.SearchResult(
                     new Uri(elem["file_url"].Value<string>()),
                     new Uri(elem["preview_url"].Value<string>()),
-                    new Uri(BaseUrl.Replace("capi-v2", "beta") + "/post/show/" + elem["id"].Value<int>()),
+                    postUriBuilder.Uri,
                     GetRating(elem["rating"].Value<string>()[0]),
                     tags,
                     elem["id"].Value<int>(),

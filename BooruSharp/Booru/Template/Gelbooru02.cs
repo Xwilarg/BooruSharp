@@ -42,7 +42,7 @@ namespace BooruSharp.Booru.Template
             return new Search.Post.SearchResult(
                 new Uri("http" + (UsesHttp ? "" : "s") + "://" + _url + "//images/" + directory + "/" + image),
                 new Uri("http" + (UsesHttp ? "" : "s") + "://" + _url + "//thumbnails/" + directory + "/thumbnails_" + image),
-                new Uri(BaseUrl + "/index.php?page=post&s=view&id=" + elem["id"].Value<int>()),
+                new Uri(BaseUrl + "index.php?page=post&s=view&id=" + elem["id"].Value<int>()),
                 GetRating(elem["rating"].Value<string>()[0]),
                 elem["tags"].Value<string>().Split(' '),
                 elem["id"].Value<int>(),

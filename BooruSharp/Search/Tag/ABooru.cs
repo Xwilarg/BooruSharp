@@ -67,7 +67,7 @@ namespace BooruSharp.Booru
             if (_format == UrlFormat.PostIndexJson)
                 urlTags.Add("limit=0");
 
-            string url = CreateUrl(_tagUrl, urlTags.ToArray());
+            var url = CreateUrl(_tagUrl, urlTags.ToArray());
 
             if (TagsUseXml)
             {
@@ -99,8 +99,8 @@ namespace BooruSharp.Booru
 
             if (_format == UrlFormat.PostIndexJson)
                 urlTags.Add("limit=0");
-
-            string url = CreateUrl(_tagUrl, urlTags.ToArray());
+            
+            var url = CreateUrl(_tagUrl, urlTags.ToArray());
             IEnumerable enumerable;
 
             if (TagsUseXml)

@@ -44,7 +44,7 @@ namespace BooruSharp.Booru
                 throw new Search.FeatureUnavailable();
 
             return _format == UrlFormat.Danbooru
-                ? await GetSearchResultFromUrlAsync(BaseUrl + "/posts/" + id + ".json")
+                ? await GetSearchResultFromUrlAsync(BaseUrl + "posts/" + id + ".json")
                 : await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, "id=" + id));
         }
 
@@ -105,7 +105,7 @@ namespace BooruSharp.Booru
                 }
 
                 // The previous option doesn't work if there are tags so we contact the XML endpoint to get post count
-                string url = CreateUrl(_imageUrlXml, _queryOptionLimitOfOne, tagString);
+                Uri url = CreateUrl(_imageUrlXml, _queryOptionLimitOfOne, tagString);
                 XmlDocument xml = await GetXmlAsync(url);
                 int max = int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
 
@@ -174,9 +174,19 @@ namespace BooruSharp.Booru
             return GetPostSearchResult(ParseFirstPostSearchResult(JsonConvert.DeserializeObject(await GetJsonAsync(url))));
         }
 
+        private Task<Search.Post.SearchResult> GetSearchResultFromUrlAsync(Uri url)
+        {
+            return GetSearchResultFromUrlAsync(url.AbsoluteUri);
+        }
+
         private async Task<Search.Post.SearchResult[]> GetSearchResultsFromUrlAsync(string url)
         {
             return GetPostsSearchResult(JsonConvert.DeserializeObject(await GetJsonAsync(url)));
+        }
+
+        private Task<Search.Post.SearchResult[]> GetSearchResultsFromUrlAsync(Uri url)
+        {
+            return GetSearchResultsFromUrlAsync(url.AbsoluteUri);
         }
 
         /// <summary>
