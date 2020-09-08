@@ -37,15 +37,16 @@ namespace BooruSharp.Booru.Template
         {
             var url = elem["file_url"];
             var previewUrl = elem["preview_file_url"];
-            var id = elem["id"];
+            var id = elem["id"]?.Value<int>();
             var md5 = elem["md5"];
+
             return new Search.Post.SearchResult(
                     url != null ? new Uri(url.Value<string>()) : null,
                     previewUrl != null ? new Uri(previewUrl.Value<string>()) : null,
-                    id != null ? new Uri(BaseUrl + "posts/" + id.Value<int>()) : null,
+                    id.HasValue ? new Uri(BaseUrl + "posts/" + id.Value) : null,
                     GetRating(elem["rating"].Value<string>()[0]),
                     elem["tag_string"].Value<string>().Split(' '),
-                    id?.Value<int>() ?? 0,
+                    id ?? 0,
                     elem["file_size"].Value<int>(),
                     elem["image_height"].Value<int>(),
                     elem["image_width"].Value<int>(),
@@ -62,8 +63,8 @@ namespace BooruSharp.Booru.Template
         {
             if (json is JArray array)
                 return array.Select(GetPostSearchResult).ToArray();
-            else if (json is JToken token)
-                return new[] { GetPostSearchResult(token["post"]) };
+            else if (json is JToken token && token["post"] is JToken post)
+                return new[] { GetPostSearchResult(post) };
             else
                 return Array.Empty<Search.Post.SearchResult>();
         }

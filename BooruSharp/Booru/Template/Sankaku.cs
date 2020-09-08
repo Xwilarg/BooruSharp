@@ -32,31 +32,33 @@ namespace BooruSharp.Booru.Template
 
         private protected override Search.Post.SearchResult GetPostSearchResult(JToken elem)
         {
-            string[] tags = (from tag in (JArray)elem["tags"]
-                             select tag["name"].Value<string>()).ToArray();
+            int id = elem["id"].Value<int>();
 
             var postUriBuilder = new UriBuilder(BaseUrl)
             {
                 Host = BaseUrl.Host.Replace("capi-v2", "beta"),
-                Path = $"/post/show/{elem["id"].Value<int>()}",
+                Path = $"/post/show/{id}",
             };
 
+            string[] tags = (from tag in (JArray)elem["tags"]
+                             select tag["name"].Value<string>()).ToArray();
+
             return new Search.Post.SearchResult(
-                    new Uri(elem["file_url"].Value<string>()),
-                    new Uri(elem["preview_url"].Value<string>()),
-                    postUriBuilder.Uri,
-                    GetRating(elem["rating"].Value<string>()[0]),
-                    tags,
-                    elem["id"].Value<int>(),
-                    elem["file_size"].Value<int>(),
-                    elem["height"].Value<int>(),
-                    elem["width"].Value<int>(),
-                    elem["preview_height"].Value<int>(),
-                    elem["preview_width"].Value<int>(),
-                    _unixTime.AddSeconds(elem["created_at"]["s"].Value<int>()),
-                    elem["source"].Value<string>(),
-                    elem["total_score"].Value<int>(),
-                    elem["md5"].Value<string>()
+                new Uri(elem["file_url"].Value<string>()),
+                new Uri(elem["preview_url"].Value<string>()),
+                postUriBuilder.Uri,
+                GetRating(elem["rating"].Value<string>()[0]),
+                tags,
+                id,
+                elem["file_size"].Value<int>(),
+                elem["height"].Value<int>(),
+                elem["width"].Value<int>(),
+                elem["preview_height"].Value<int>(),
+                elem["preview_width"].Value<int>(),
+                _unixTime.AddSeconds(elem["created_at"]["s"].Value<int>()),
+                elem["source"].Value<string>(),
+                elem["total_score"].Value<int>(),
+                elem["md5"].Value<string>()
                 );
         }
 
@@ -70,12 +72,14 @@ namespace BooruSharp.Booru.Template
         private protected override Search.Comment.SearchResult GetCommentSearchResult(object json)
         {
             var elem = (JObject)json;
+            var authorToken = elem["author"];
+
             return new Search.Comment.SearchResult(
                 elem["id"].Value<int>(),
                 elem["post_id"].Value<int>(),
-                elem["author"]["id"].Value<int?>(),
+                authorToken["id"].Value<int?>(),
                 _unixTime.AddSeconds(elem["created_at"]["s"].Value<int>()),
-                elem["author"]["name"].Value<string>(),
+                authorToken["name"].Value<string>(),
                 elem["body"].Value<string>()
                 );
         }

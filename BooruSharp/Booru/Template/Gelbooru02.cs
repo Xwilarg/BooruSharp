@@ -36,16 +36,18 @@ namespace BooruSharp.Booru.Template
 
         private protected override Search.Post.SearchResult GetPostSearchResult(JToken elem)
         {
+            string baseUrl = BaseUrl.Scheme + "://" + _url;
             string directory = elem["directory"].Value<string>();
             string image = elem["image"].Value<string>();
+            int id = elem["id"].Value<int>();
 
             return new Search.Post.SearchResult(
-                new Uri("http" + (UsesHttp ? "" : "s") + "://" + _url + "//images/" + directory + "/" + image),
-                new Uri("http" + (UsesHttp ? "" : "s") + "://" + _url + "//thumbnails/" + directory + "/thumbnails_" + image),
-                new Uri(BaseUrl + "index.php?page=post&s=view&id=" + elem["id"].Value<int>()),
+                new Uri(baseUrl + "//images/" + directory + "/" + image),
+                new Uri(baseUrl + "//thumbnails/" + directory + "/thumbnails_" + image),
+                new Uri(BaseUrl + "index.php?page=post&s=view&id=" + id),
                 GetRating(elem["rating"].Value<string>()[0]),
                 elem["tags"].Value<string>().Split(' '),
-                elem["id"].Value<int>(),
+                id,
                 null,
                 elem["height"].Value<int>(),
                 elem["width"].Value<int>(),

@@ -32,13 +32,15 @@ namespace BooruSharp.Booru.Template
 
         private protected override Search.Post.SearchResult GetPostSearchResult(JToken elem)
         {
+            int id = elem["id"].Value<int>();
+
             return new Search.Post.SearchResult(
                 new Uri(elem["file_url"].Value<string>()),
                 new Uri(elem["preview_url"].Value<string>()),
-                new Uri(BaseUrl + "post/show/" + elem["id"].Value<int>()),
+                new Uri(BaseUrl + "post/show/" + id),
                 GetRating(elem["rating"].Value<string>()[0]),
                 elem["tags"].Value<string>().Split(' '),
-                elem["id"].Value<int>(),
+                id,
                 elem["file_size"].Value<int>(),
                 elem["height"].Value<int>(),
                 elem["width"].Value<int>(),
