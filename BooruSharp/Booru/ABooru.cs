@@ -135,62 +135,75 @@ namespace BooruSharp.Booru
         /// <summary>
         /// Initializes a new instance of the <see cref="ABooru"/> class.
         /// </summary>
-        /// <param name="baseUrl">The base URL to use. This should be a host name.</param>
+        /// <param name="domain">
+        /// The fully qualified domain name. Example domain
+        /// name should look like <c>www.google.com</c>.
+        /// </param>
         /// <param name="format">The URL format to use.</param>
-        /// <param name="options">The options to use. Use | (bitwise OR) operator to combine multiple options.</param>
-        protected ABooru(string baseUrl, UrlFormat format, BooruOptions options)
+        /// <param name="options">
+        /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
+        /// </param>
+        protected ABooru(string domain, UrlFormat format, BooruOptions options)
         {
             Auth = null;
             HttpClient = null;
             _options = options;
 
             bool useHttp = UsesHttp; // Cache returned value for faster access.
-            _baseUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl;
+            BaseUrl = new Uri("http" + (useHttp ? "" : "s") + "://" + domain, UriKind.Absolute);
             _format = format;
-            _imageUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "post");
+            _imageUrl = CreateQueryString(format, "post");
 
             if (_format == UrlFormat.IndexPhp)
-                _imageUrlXml = _imageUrl.Replace("json=1", "json=0");
+                _imageUrlXml = new Uri(_imageUrl.AbsoluteUri.Replace("json=1", "json=0"));
             else if (_format == UrlFormat.PostIndexJson)
-                _imageUrlXml = _imageUrl.Replace("index.json", "index.xml");
+                _imageUrlXml = new Uri(_imageUrl.AbsoluteUri.Replace("index.json", "index.xml"));
             else
                 _imageUrlXml = null;
 
-            _tagUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag");
+            _tagUrl = CreateQueryString(format, "tag");
 
             if (HasWikiAPI)
                 _wikiUrl = format == UrlFormat.Danbooru
-                    ? "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "wiki_page")
-                    : "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "wiki");
+                    ? CreateQueryString(format, "wiki_page")
+                    : CreateQueryString(format, "wiki");
 
             if (HasRelatedAPI)
                 _relatedUrl = format == UrlFormat.Danbooru
-                    ? "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "related_tag")
-                    : "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "tag", "related");
+                    ? CreateQueryString(format, "related_tag")
+                    : CreateQueryString(format, "tag", "related");
 
             if (HasCommentAPI)
-                _commentUrl = "http" + (useHttp ? "" : "s") + "://" + baseUrl + "/" + GetUrl(format, "comment");
+                _commentUrl = CreateQueryString(format, "comment");
         }
 
-        private protected static string GetUrl(UrlFormat format, string query, string squery = "index")
+        private protected Uri CreateQueryString(UrlFormat format, string query, string squery = "index")
         {
+            string queryString;
+
             switch (format)
             {
                 case UrlFormat.PostIndexJson:
-                    return query + "/" + squery + ".json";
+                    queryString = query + "/" + squery + ".json";
+                    break;
 
                 case UrlFormat.IndexPhp:
-                    return "index.php?page=dapi&s=" + query + "&q=index&json=1";
+                    queryString = "index.php?page=dapi&s=" + query + "&q=index&json=1";
+                    break;
 
                 case UrlFormat.Danbooru:
-                    return query == "related_tag" ? query + ".json" : query + "s.json";
+                    queryString = query == "related_tag" ? query + ".json" : query + "s.json";
+                    break;
 
                 case UrlFormat.Sankaku:
-                    return query == "wiki" ? query : query + "s";
+                    queryString = query == "wiki" ? query : query + "s";
+                    break;
 
                 default:
-                    return null;
+                    return BaseUrl;
             }
+
+            return new Uri(BaseUrl + queryString);
         }
 
         // TODO: Handle limitrate
@@ -208,6 +221,11 @@ namespace BooruSharp.Booru
             return await msg.Content.ReadAsStringAsync();
         }
 
+        private Task<string> GetJsonAsync(Uri url)
+        {
+            return GetJsonAsync(url.AbsoluteUri);
+        }
+
         private async Task<XmlDocument> GetXmlAsync(string url)
         {
             var xmlDoc = new XmlDocument();
@@ -216,24 +234,34 @@ namespace BooruSharp.Booru
             return xmlDoc;
         }
 
+        private Task<XmlDocument> GetXmlAsync(Uri url)
+        {
+            return GetXmlAsync(url.AbsoluteUri);
+        }
+
         private async Task<string> GetRandomIdAsync(string tags)
         {
-            HttpResponseMessage msg = await HttpClient.GetAsync(_baseUrl + "/" + "index.php?page=post&s=random&tags=" + tags);
+            HttpResponseMessage msg = await HttpClient.GetAsync(BaseUrl + "index.php?page=post&s=random&tags=" + tags);
             msg.EnsureSuccessStatusCode();
             return HttpUtility.ParseQueryString(msg.RequestMessage.RequestUri.Query).Get("id");
         }
 
-        private string CreateUrl(string url, params string[] args)
+        private Uri CreateUrl(Uri url, params string[] args)
         {
-            return _format == UrlFormat.IndexPhp
-                ? url + "&" + string.Join("&", args)
-                : url + "?" + string.Join("&", args);
+            var builder = new UriBuilder(url);
+
+            if (_format == UrlFormat.IndexPhp)
+                builder.Query += "&" + string.Join("&", args);
+            else
+                builder.Query = "?" + string.Join("&", args);
+
+            return builder.Uri;
         }
 
         private string TagsToString(string[] tags)
         {
             return tags != null
-                ? "tags=" + string.Join("+", tags.Select(Uri.EscapeDataString)).ToLower()
+                ? "tags=" + string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant()
                 : "";
         }
 
@@ -274,19 +302,22 @@ namespace BooruSharp.Booru
         }
 
         /// <summary>
-        /// The instance of <see cref="Random"/> class used for generating random post IDs.
+        /// Gets the instance of the thread-safe, pseudo-random number generator.
         /// </summary>
-        protected static readonly Random _random = new Random();
+        protected static Random Random { get; } = new ThreadSafeRandom();
+
         /// <summary>
-        /// Contains the base request URL of this booru.
+        /// Gets the base API request URL.
         /// </summary>
-        protected readonly string _baseUrl;
+        protected Uri BaseUrl { get; }
+
         private HttpClient _client;
-        private readonly string _imageUrlXml, _imageUrl, _tagUrl, _wikiUrl, _relatedUrl, _commentUrl; // URLs for differents endpoints
+        private readonly Uri _imageUrlXml, _imageUrl, _tagUrl, _wikiUrl, _relatedUrl, _commentUrl; // URLs for differents endpoints
         // All options are stored in a bit field and can be retrieved using related methods/properties.
         private readonly BooruOptions _options;
         private readonly UrlFormat _format; // URL format
         private const string _userAgentHeaderValue = "Mozilla/5.0 BooruSharp";
+        private protected readonly DateTime _unixTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private static readonly Lazy<HttpClient> _lazyClient = new Lazy<HttpClient>(() =>
         {
             HttpClient client = new HttpClient();

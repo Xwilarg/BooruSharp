@@ -7,7 +7,7 @@ namespace BooruSharp
     internal static class XmlEntity
     {
         private static readonly ReadOnlyDictionary<string, string> _xmlEntities =
-           new ReadOnlyDictionary<string, string>(new Dictionary<string, string>()
+           new ReadOnlyDictionary<string, string>(new Dictionary<string, string>
            {
                // https://www.key-shortcut.com/en/all-html-entities/all-entities/
                ["&Agrave;"] = "\x00C0",

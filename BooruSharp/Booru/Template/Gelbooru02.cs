@@ -14,13 +14,18 @@ namespace BooruSharp.Booru.Template
         /// <summary>
         /// Initializes a new instance of the <see cref="Gelbooru02"/> template class.
         /// </summary>
-        /// <param name="url">The base URL to use. This should be a host name.</param>
-        /// <param name="options">The options to use. Use | (bitwise OR) operator to combine multiple options.</param>
-        protected Gelbooru02(string url, BooruOptions options = BooruOptions.None) 
-            : base(url, UrlFormat.IndexPhp, options | BooruOptions.NoRelated | BooruOptions.NoWiki | BooruOptions.NoPostByMD5
+        /// <param name="domain">
+        /// The fully qualified domain name. Example domain
+        /// name should look like <c>www.google.com</c>.
+        /// </param>
+        /// <param name="options">
+        /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
+        /// </param>
+        protected Gelbooru02(string domain, BooruOptions options = BooruOptions.None) 
+            : base(domain, UrlFormat.IndexPhp, options | BooruOptions.NoRelated | BooruOptions.NoWiki | BooruOptions.NoPostByMD5
                   | BooruOptions.CommentApiXml | BooruOptions.TagApiXml | BooruOptions.NoMultipleRandom)
         {
-            _url = url;
+            _url = domain;
         }
 
         private protected override JToken ParseFirstPostSearchResult(object json)
@@ -31,16 +36,18 @@ namespace BooruSharp.Booru.Template
 
         private protected override Search.Post.SearchResult GetPostSearchResult(JToken elem)
         {
+            string baseUrl = BaseUrl.Scheme + "://" + _url;
             string directory = elem["directory"].Value<string>();
             string image = elem["image"].Value<string>();
+            int id = elem["id"].Value<int>();
 
             return new Search.Post.SearchResult(
-                new Uri("http" + (UsesHttp ? "" : "s") + "://" + _url + "//images/" + directory + "/" + image),
-                new Uri("http" + (UsesHttp ? "" : "s") + "://" + _url + "//thumbnails/" + directory + "/thumbnails_" + image),
-                new Uri(_baseUrl + "/index.php?page=post&s=view&id=" + elem["id"].Value<int>()),
+                new Uri(baseUrl + "//images/" + directory + "/" + image),
+                new Uri(baseUrl + "//thumbnails/" + directory + "/thumbnails_" + image),
+                new Uri(BaseUrl + "index.php?page=post&s=view&id=" + id),
                 GetRating(elem["rating"].Value<string>()[0]),
                 elem["tags"].Value<string>().Split(' '),
-                elem["id"].Value<int>(),
+                id,
                 null,
                 elem["height"].Value<int>(),
                 elem["width"].Value<int>(),

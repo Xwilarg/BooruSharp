@@ -12,10 +12,15 @@ namespace BooruSharp.Booru.Template
         /// <summary>
         /// Initializes a new instance of the <see cref="E621"/> template class.
         /// </summary>
-        /// <param name="url">The base URL to use. This should be a host name.</param>
-        /// <param name="options">The options to use. Use | (bitwise OR) operator to combine multiple options.</param>
-        protected E621(string url, BooruOptions options = BooruOptions.None)
-            : base(url, UrlFormat.Danbooru, options | BooruOptions.NoWiki | BooruOptions.NoRelated | BooruOptions.NoComment 
+        /// <param name="domain">
+        /// The fully qualified domain name. Example domain
+        /// name should look like <c>www.google.com</c>.
+        /// </param>
+        /// <param name="options">
+        /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
+        /// </param>
+        protected E621(string domain, BooruOptions options = BooruOptions.None)
+            : base(domain, UrlFormat.Danbooru, options | BooruOptions.NoWiki | BooruOptions.NoRelated | BooruOptions.NoComment 
                   | BooruOptions.NoTagByID | BooruOptions.NoPostByID | BooruOptions.NoPostCount | BooruOptions.NoFavorite)
         { }
 
@@ -43,28 +48,32 @@ namespace BooruSharp.Booru.Template
                 "meta",
             };
 
+            var fileToken = elem["file"];
+            var previewToken = elem["preview"];
+
+            string url = fileToken["url"].Value<string>();
+            string previewUrl = previewToken["url"].Value<string>();
+            int id = elem["id"].Value<int>();
             string[] tags = categories
                 .SelectMany(category => elem["tags"][category].ToObject<string[]>())
                 .ToArray();
 
-            string url = elem["file"]["url"].Value<string>();
-            string previewUrl = elem["preview"]["url"].Value<string>();
             return new Search.Post.SearchResult(
                     url != null ? new Uri(url) : null,
                     previewUrl != null ? new Uri(previewUrl) : null,
-                    new Uri(_baseUrl + "/posts/" + elem["id"].Value<int>()),
+                    new Uri(BaseUrl + "posts/" + id),
                     GetRating(elem["rating"].Value<string>()[0]),
                     tags,
-                    elem["id"].Value<int>(),
-                    elem["file"]["size"].Value<int>(),
-                    elem["file"]["height"].Value<int>(),
-                    elem["file"]["width"].Value<int>(),
-                    elem["preview"]["height"].Value<int>(),
-                    elem["preview"]["width"].Value<int>(),
+                    id,
+                    fileToken["size"].Value<int>(),
+                    fileToken["height"].Value<int>(),
+                    fileToken["width"].Value<int>(),
+                    previewToken["height"].Value<int>(),
+                    previewToken["width"].Value<int>(),
                     elem["created_at"].Value<DateTime>(),
                     elem["sources"].FirstOrDefault()?.Value<string>(),
                     elem["score"]["total"].Value<int>(),
-                    elem["file"]["md5"].Value<string>()
+                    fileToken["md5"].Value<string>()
                 );
         }
 

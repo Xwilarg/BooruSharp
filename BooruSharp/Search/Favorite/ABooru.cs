@@ -7,6 +7,8 @@ namespace BooruSharp.Booru
 {
     public abstract partial class ABooru
     {
+        private const int _invalidAuthErrorCode = 2;
+
         /// <summary>
         /// Adds a post to your favorites.
         /// </summary>
@@ -28,7 +30,7 @@ namespace BooruSharp.Booru
             if (Auth == null)
                 throw new AuthentificationRequired();
 
-            HttpWebRequest request = CreateAuthRequest(_baseUrl + "/public/addfav.php?id=" + postId);
+            HttpWebRequest request = CreateAuthRequest(BaseUrl + "public/addfav.php?id=" + postId);
             string response = await GetAuthResponseAndReadToEndAsync(request);
 
             if (response.Length == 0)
@@ -36,7 +38,7 @@ namespace BooruSharp.Booru
 
             int result = int.Parse(response);
 
-            if (result == 2)
+            if (result == _invalidAuthErrorCode)
                 throw new AuthentificationInvalid();
         }
 
@@ -60,7 +62,7 @@ namespace BooruSharp.Booru
             if (Auth == null)
                 throw new AuthentificationRequired();
 
-            HttpWebRequest request = CreateAuthRequest(_baseUrl + "/index.php?page=favorites&s=delete&id=" + postId);
+            HttpWebRequest request = CreateAuthRequest(BaseUrl + "index.php?page=favorites&s=delete&id=" + postId);
             string response = await GetAuthResponseAndReadToEndAsync(request);
 
             // If the HTML contains the word "Login" we were probably sent back to the authentification form

@@ -62,7 +62,7 @@ namespace BooruSharp.Booru
             if (!HasSearchLastComment)
                 throw new Search.FeatureUnavailable();
 
-            string url = CreateUrl(_commentUrl);
+            var url = CreateUrl(_commentUrl);
 
             if (CommentsUseXml)
             {
