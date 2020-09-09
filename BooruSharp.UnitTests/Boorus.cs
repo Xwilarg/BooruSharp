@@ -7,11 +7,12 @@ using Xunit;
 
 namespace BooruSharp.UnitTests
 {
+    // TODO: make async methods into regular methods.
+    // Pixiv now uses internal Task to achieve thread safety and
+    // we don't need to wait until LoginAsync completes.
     internal static class Boorus
     {
         private static readonly Dictionary<Type, Task<ABooru>> _boorus = new Dictionary<Type, Task<ABooru>>();
-
-
 
         public static Task<ABooru> GetAsync(Type type)
         {
@@ -32,7 +33,7 @@ namespace BooruSharp.UnitTests
             return GetAsync(typeof(T));
         }
 
-        private static async Task<ABooru> CreateBooruAsync(Type type)
+        private static Task<ABooru> CreateBooruAsync(Type type)
         {
             var booru = (ABooru)Activator.CreateInstance(type);
 
@@ -43,10 +44,10 @@ namespace BooruSharp.UnitTests
 
                 Skip.If(userID == null || password == null, "Pixiv user ID and/or password aren't set.");
 
-                await pixiv.LoginAsync(userID, password);
+                pixiv.Auth = new BooruAuth(userID, password);
             }
 
-            return booru;
+            return Task.FromResult(booru);
         }
     }
 }

@@ -275,7 +275,7 @@ namespace BooruSharp.Booru
         /// <summary>
         /// Gets or sets authentication credentials.
         /// </summary>
-        public BooruAuth Auth { set; get; } // Authentification
+        public virtual BooruAuth Auth { get; set; }
 
         /// <summary>
         /// Sets the <see cref="System.Net.Http.HttpClient"/> instance that will be used

@@ -1,4 +1,5 @@
 ﻿using BooruSharp.Booru;
+using BooruSharp.Others;
 using System;
 using System.Net;
 using System.Net.Http;
@@ -133,11 +134,13 @@ namespace BooruSharp.UnitTests
             return await booru.GetRandomPostAsync();
         }
 
-        public static void Authorize(ABooru booru)
+        public static void Authorize(ABooru booru, bool usesPlainTextPassword)
         {
             string booruName = booru.GetType().Name.ToUpperInvariant();
             string userID = Environment.GetEnvironmentVariable(booruName + "_USER_ID");
-            string passwordHash = Environment.GetEnvironmentVariable(booruName + "_PASSWORD_HASH");
+            string passwordHash = usesPlainTextPassword
+                ? Environment.GetEnvironmentVariable(booruName + "_PASSWORD")
+                : Environment.GetEnvironmentVariable(booruName + "_PASSWORD_HASH");
 
             Skip.If(
                 userID == null || passwordHash == null,

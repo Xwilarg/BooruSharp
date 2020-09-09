@@ -27,27 +27,275 @@ namespace BooruSharp.Others
             : base("app-api.pixiv.net", UrlFormat.None, BooruOptions.NoComment | BooruOptions.NoLastComments
                   | BooruOptions.NoMultipleRandom | BooruOptions.NoPostByMD5 | BooruOptions.NoRelated | BooruOptions.NoTagByID
                   | BooruOptions.NoWiki | BooruOptions.NoEmptyPostSearch)
+        { }
+
+        private readonly struct SessionInfo
         {
-            AccessToken = null;
+            public SessionInfo(string accessToken, string refreshToken, DateTime expirationDate)
+            {
+                AccessToken = accessToken ?? throw new ArgumentNullException(nameof(accessToken));
+                RefreshToken = refreshToken ?? throw new ArgumentNullException(nameof(refreshToken));
+                ExpirationDate = expirationDate;
+            }
+
+            public string AccessToken { get; }
+
+            public string RefreshToken { get; }
+
+            public DateTime ExpirationDate { get; }
+        }
+
+        /// <inheritdoc/>
+        public override bool IsSafe => false;
+
+        /// <summary>
+        /// Sends a login API request using specified refresh token.
+        /// </summary>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="AuthentificationInvalid"/>
+        /// <exception cref="HttpRequestException"/>
+        public Task LoginAsync(string refreshToken)
+        {
+            _sessionInfoTask = Task.Run(() => GetSessionInfoAsync(refreshToken));
+            return _sessionInfoTask;
         }
 
         /// <summary>
-        /// Sends a login API request using specified user name and password.
+        /// Downloads the <paramref name="result"/>'s image as an array of bytes.
         /// </summary>
-        /// <param name="username">Pixiv user name.</param>
-        /// <param name="password">Pixiv user password.</param>
+        /// <param name="result">The post to get the image from.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        /// <exception cref="ArgumentNullException"/>
-        /// <exception cref="AuthentificationInvalid"/>
         /// <exception cref="HttpRequestException"/>
-        public async Task LoginAsync(string username, string password)
+        public async Task<byte[]> ImageToByteArrayAsync(SearchResult result)
         {
-            if (username == null)
-                throw new ArgumentNullException(nameof(username));
+            var request = new HttpRequestMessage(HttpMethod.Get, result.FileUrl);
+            request.Headers.Add("Referer", result.PostUrl.AbsoluteUri);
 
-            if (password == null)
-                throw new ArgumentNullException(nameof(password));
+            var response = await GetResponseAsync(request);
 
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsByteArrayAsync();
+        }
+
+        /// <summary>
+        /// Downloads the <paramref name="result"/>'s preview image as an array of bytes.
+        /// </summary>
+        /// <param name="result">The post to get the preview image from.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="HttpRequestException"/>
+        public async Task<byte[]> PreviewToByteArrayAsync(SearchResult result)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, result.PreviewUrl);
+            request.Headers.Add("Referer", result.PostUrl.AbsoluteUri);
+
+            var response = await GetResponseAsync(request);
+
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsByteArrayAsync();
+        }
+
+        /// <summary>
+        /// Checks if the authentication token needs to be updated,
+        /// and updates it if needed.
+        /// </summary>
+        /// <remarks>
+        /// You must login using <see cref="Auth"/> property before calling this method.
+        /// </remarks>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="AuthentificationInvalid"/>
+        /// <exception cref="AuthentificationRequired"/>
+        /// <exception cref="HttpRequestException"/>
+        // TODO: does this have to be public?
+        public async Task CheckUpdateTokenAsync()
+        {
+            if (_sessionInfoTask == null)
+                throw new AuthentificationRequired();
+
+            var sessionInfo = await _sessionInfoTask;
+
+            if (DateTime.Now > sessionInfo.ExpirationDate)
+                _sessionInfoTask = Task.Run(() => GetSessionInfoAsync(sessionInfo.RefreshToken));
+        }
+
+        /// <inheritdoc/>
+        public override async Task AddFavoriteAsync(int postId)
+        {
+            await CheckUpdateTokenAsync();
+
+            var request = new HttpRequestMessage(HttpMethod.Post, BaseUrl + "v2/illust/bookmark/add");
+            await AddAuthorizationHeaderAsync(request);
+            request.Content = new FormUrlEncodedContent(
+                new Dictionary<string, string>
+                {
+                    { "illust_id", postId.ToString() },
+                    { "restrict", "public" }
+                });
+
+            var response = await GetResponseAsync(request);
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+                throw new InvalidPostId();
+
+            response.EnsureSuccessStatusCode();
+        }
+
+        /// <inheritdoc/>
+        /// <exception cref="InvalidPostId"/>
+        public override async Task RemoveFavoriteAsync(int postId)
+        {
+            await CheckUpdateTokenAsync();
+
+            var request = new HttpRequestMessage(HttpMethod.Post, BaseUrl + "v1/illust/bookmark/delete");
+            await AddAuthorizationHeaderAsync(request);
+            request.Content = new FormUrlEncodedContent(
+                new Dictionary<string, string>
+                {
+                    { "illust_id", postId.ToString() }
+                });
+
+            var response = await GetResponseAsync(request);
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+                throw new InvalidPostId("There is no post with this ID in your bookmarks");
+
+            response.EnsureSuccessStatusCode();
+        }
+
+        /// <inheritdoc/>
+        /// <remarks>
+        /// You must login using <see cref="Auth"/> property before calling this method.
+        /// </remarks>
+        /// <exception cref="AuthentificationInvalid"/>
+        /// <exception cref="AuthentificationRequired"/>
+        /// <exception cref="InvalidTags"/>
+        public override async Task<SearchResult> GetPostByIdAsync(int id)
+        {
+            await CheckUpdateTokenAsync();
+
+            var request = new HttpRequestMessage(HttpMethod.Get, BaseUrl + "v1/illust/detail?illust_id=" + id);
+            await AddAuthorizationHeaderAsync(request);
+
+            var response = await GetResponseAsync(request);
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+                throw new InvalidTags();
+
+            response.EnsureSuccessStatusCode();
+
+            var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
+            return ParseSearchResult(jsonToken["illust"]);
+        }
+
+        /// <inheritdoc/>
+        /// <remarks>
+        /// You must login using <see cref="Auth"/> property before calling this method.
+        /// </remarks>
+        /// <exception cref="ArgumentException"/>
+        /// <exception cref="AuthentificationInvalid"/>
+        /// <exception cref="AuthentificationRequired"/>
+        /// <exception cref="InvalidTags"/>
+        public override async Task<SearchResult> GetRandomPostAsync(params string[] tagsArg)
+        {
+            // GetPostCountAsync already check for UpdateToken and if parameters are valid
+            int max = Math.Min(await GetPostCountAsync(tagsArg), 5000);
+
+            if (max == 0)
+                throw new InvalidTags();
+
+            int id = Random.Next(1, max + 1);
+            var requestUrl = BaseUrl + "v1/search/illust?word=" + JoinTagsAndEscapeString(tagsArg) + "&offset=" + id;
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+            await AddAuthorizationHeaderAsync(request);
+
+            var response = await GetResponseAsync(request);
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+                throw new InvalidTags();
+
+            response.EnsureSuccessStatusCode();
+
+            var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
+            var jsonArray = (JArray)jsonToken["illusts"];
+            return ParseSearchResult(jsonArray[0]);
+        }
+
+        /// <inheritdoc/>
+        /// <remarks>
+        /// You must login using <see cref="Auth"/> property before calling this method.
+        /// </remarks>
+        /// <exception cref="ArgumentException"/>
+        /// <exception cref="AuthentificationInvalid"/>
+        /// <exception cref="AuthentificationRequired"/>
+        public override async Task<int> GetPostCountAsync(params string[] tagsArg)
+        {
+            if (tagsArg.Length == 0)
+                throw new ArgumentException("You must provide at least one tag.", nameof(tagsArg));
+
+            // TODO: does this have to be updated?
+            // Doesn't seem like session info is used in this method.
+            await CheckUpdateTokenAsync();
+
+            var requestUrl = "https://www.pixiv.net/ajax/search/artworks/" + JoinTagsAndEscapeString(tagsArg);
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+
+            var response = await GetResponseAsync(request);
+
+            response.EnsureSuccessStatusCode();
+
+            var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
+            return jsonToken["body"]["illustManga"]["total"].Value<int>();
+        }
+
+        /// <inheritdoc/>
+        /// <remarks>
+        /// You must login using <see cref="Auth"/> property before calling this method.
+        /// </remarks>
+        /// <exception cref="ArgumentException"/>
+        /// <exception cref="AuthentificationInvalid"/>
+        /// <exception cref="AuthentificationRequired"/>
+        /// <exception cref="InvalidTags"/>
+        public override async Task<SearchResult[]> GetLastPostsAsync(params string[] tagsArg)
+        {
+            if (tagsArg.Length == 0)
+                throw new ArgumentException("You must provide at least one tag.", nameof(tagsArg));
+
+            await CheckUpdateTokenAsync();
+
+            string requestUrl = BaseUrl + "v1/search/illust?word=" + JoinTagsAndEscapeString(tagsArg);
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+            await AddAuthorizationHeaderAsync(request);
+
+            var response = await GetResponseAsync(request);
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+                throw new InvalidTags();
+
+            response.EnsureSuccessStatusCode();
+
+            var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
+            return ParseSearchResults((JArray)jsonToken["illusts"]);
+        }
+
+        private Task<SessionInfo> GetSessionInfoAsync(string refreshToken)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://oauth.secure.pixiv.net/auth/token");
+            request.Content = new FormUrlEncodedContent(
+                new Dictionary<string, string>
+                {
+                    { "get_secure_url", "1" },
+                    { "client_id", _clientID },
+                    { "client_secret", _clientSecret},
+                    { "grant_type", "refresh_token" },
+                    { "refresh_token", refreshToken }
+                });
+
+            return SendLoginRequestAsync(request);
+        }
+
+        private Task<SessionInfo> GetSessionInfoAsync(string userId, string password)
+        {
             var request = new HttpRequestMessage(HttpMethod.Post, "https://oauth.secure.pixiv.net/auth/token");
 
             string time = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss+00:00");
@@ -68,11 +316,16 @@ namespace BooruSharp.Others
                     { "client_id", _clientID },
                     { "client_secret", _clientSecret},
                     { "grant_type", "password" },
-                    { "username", username },
+                    { "username", userId },
                     { "password", password }
                 });
 
-            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            return SendLoginRequestAsync(request);
+        }
+
+        private async Task<SessionInfo> SendLoginRequestAsync(HttpRequestMessage requestMessage)
+        {
+            var response = await GetResponseAsync(requestMessage);
 
             if (response.StatusCode == HttpStatusCode.BadRequest)
                 throw new AuthentificationInvalid();
@@ -82,264 +335,23 @@ namespace BooruSharp.Others
             var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
             var responseToken = jsonToken["response"];
 
-            AccessToken = responseToken["access_token"].Value<string>();
-            RefreshToken = responseToken["refresh_token"].Value<string>();
-            _refreshTime = DateTime.Now.AddSeconds(responseToken["expires_in"].Value<int>());
+            return new SessionInfo(
+                responseToken["access_token"].Value<string>(),
+                responseToken["refresh_token"].Value<string>(),
+                DateTime.Now.AddSeconds(responseToken["expires_in"].Value<int>()));
         }
 
-        /// <summary>
-        /// Sends a login API request using specified refresh token.
-        /// </summary>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        /// <exception cref="AuthentificationInvalid"/>
-        /// <exception cref="HttpRequestException"/>
-        public async Task LoginAsync(string refreshToken)
+        private Task<HttpResponseMessage> GetResponseAsync(HttpRequestMessage requestMessage)
         {
-            RefreshToken = refreshToken;
-            await UpdateTokenAsync();
+            return HttpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
         }
 
-        /// <summary>
-        /// Downloads the <paramref name="result"/>'s image as an array of bytes.
-        /// </summary>
-        /// <param name="result">The post to get the image from.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        /// <exception cref="HttpRequestException"/>
-        public async Task<byte[]> ImageToByteArrayAsync(SearchResult result)
+        // Make sure to call and await CheckUpdateTokenAsync
+        // first before calling this method.
+        private async Task AddAuthorizationHeaderAsync(HttpRequestMessage request)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, result.FileUrl);
-            request.Headers.Add("Referer", result.PostUrl.AbsoluteUri);
-
-            var response = await HttpClient.SendAsync(request);
-
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadAsByteArrayAsync();
-        }
-
-        /// <summary>
-        /// Downloads the <paramref name="result"/>'s preview image as an array of bytes.
-        /// </summary>
-        /// <param name="result">The post to get the preview image from.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        /// <exception cref="HttpRequestException"/>
-        public async Task<byte[]> PreviewToByteArrayAsync(SearchResult result)
-        {
-            var request = new HttpRequestMessage(HttpMethod.Get, result.PreviewUrl);
-            request.Headers.Add("Referer", result.PostUrl.AbsoluteUri);
-
-            var response = await HttpClient.SendAsync(request);
-
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadAsByteArrayAsync();
-        }
-
-        /// <summary>
-        /// Checks if the <see cref="AccessToken"/> needs to be updated,
-        /// and updates it if needed.
-        /// </summary>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        /// <exception cref="AuthentificationInvalid"/>
-        /// <exception cref="HttpRequestException"/>
-        public async Task CheckUpdateTokenAsync()
-        {
-            if (DateTime.Now > _refreshTime)
-                await UpdateTokenAsync();
-        }
-
-        private async Task UpdateTokenAsync()
-        {
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://oauth.secure.pixiv.net/auth/token");
-            request.Content = new FormUrlEncodedContent(
-                new Dictionary<string, string>
-                {
-                    { "get_secure_url", "1" },
-                    { "client_id", _clientID },
-                    { "client_secret", _clientSecret},
-                    { "grant_type", "refresh_token" },
-                    { "refresh_token", RefreshToken }
-                });
-
-            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-
-            if (response.StatusCode == HttpStatusCode.BadRequest)
-                throw new AuthentificationInvalid();
-
-            response.EnsureSuccessStatusCode();
-
-            var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
-            var responseToken = jsonToken["response"];
-
-            AccessToken = responseToken["access_token"].Value<string>();
-            _refreshTime = DateTime.Now.AddSeconds(responseToken["expires_in"].Value<int>());
-        }
-
-        /// <inheritdoc/>
-        public override bool IsSafe => false;
-
-        /// <summary>
-        /// Adds a post with the specified ID to favorites.
-        /// </summary>
-        /// <param name="postId">The ID of the post to add to favorites.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        /// <exception cref="AuthentificationRequired"/>
-        /// <exception cref="HttpRequestException"/>
-        /// <exception cref="InvalidPostId"/>
-        public override async Task AddFavoriteAsync(int postId)
-        {
-            if (AccessToken == null)
-                throw new AuthentificationRequired();
-
-            var request = new HttpRequestMessage(HttpMethod.Post, BaseUrl + "v2/illust/bookmark/add");
-            AddAuthorizationHeader(request);
-            request.Content = new FormUrlEncodedContent(
-                new Dictionary<string, string>
-                {
-                    { "illust_id", postId.ToString() },
-                    { "restrict", "public" }
-                });
-
-            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-
-            if (response.StatusCode == HttpStatusCode.NotFound)
-                throw new InvalidPostId();
-
-            response.EnsureSuccessStatusCode();
-        }
-
-        /// <summary>
-        /// Removes a post with the specified ID from favorites.
-        /// </summary>
-        /// <param name="postId">The ID of the post to remove from favorites.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        /// <exception cref="AuthentificationRequired"/>
-        /// <exception cref="HttpRequestException"/>
-        /// <exception cref="InvalidPostId"/>
-        public override async Task RemoveFavoriteAsync(int postId)
-        {
-            if (AccessToken == null)
-                throw new AuthentificationRequired();
-
-            var request = new HttpRequestMessage(HttpMethod.Post, BaseUrl + "v1/illust/bookmark/delete");
-            AddAuthorizationHeader(request);
-            request.Content = new FormUrlEncodedContent(
-                new Dictionary<string, string>
-                {
-                    { "illust_id", postId.ToString() }
-                });
-
-            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-
-            if (response.StatusCode == HttpStatusCode.NotFound)
-                throw new InvalidPostId("There is no post with this ID in your bookmarks");
-
-            response.EnsureSuccessStatusCode();
-        }
-
-        /// <inheritdoc/>
-        public override async Task<SearchResult> GetPostByIdAsync(int id)
-        {
-            if (AccessToken == null)
-                throw new AuthentificationRequired();
-
-            await CheckUpdateTokenAsync();
-
-            var request = new HttpRequestMessage(HttpMethod.Get, BaseUrl + "v1/illust/detail?illust_id=" + id);
-            AddAuthorizationHeader(request);
-
-            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-
-            if (response.StatusCode == HttpStatusCode.NotFound)
-                throw new InvalidTags();
-
-            response.EnsureSuccessStatusCode();
-
-            var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
-            return ParseSearchResult(jsonToken["illust"]);
-        }
-
-        /// <inheritdoc/>
-        /// <exception cref="InvalidTags"/>
-        public override async Task<SearchResult> GetRandomPostAsync(params string[] tagsArg)
-        {
-            // GetPostCountAsync already check for UpdateToken and if parameters are valid
-            int max = Math.Min(await GetPostCountAsync(tagsArg), 5000);
-
-            if (max == 0)
-                throw new InvalidTags();
-
-            int id = Random.Next(1, max + 1);
-            var requestUrl = BaseUrl + "v1/search/illust?word=" + JoinTagsAndEscapeString(tagsArg) + "&offset=" + id;
-
-            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
-            AddAuthorizationHeader(request);
-
-            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-
-            if (response.StatusCode == HttpStatusCode.NotFound)
-                throw new InvalidTags();
-
-            response.EnsureSuccessStatusCode();
-
-            var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
-            var jsonArray = (JArray)jsonToken["illusts"];
-            return ParseSearchResult(jsonArray[0]);
-        }
-
-        /// <inheritdoc/>
-        /// <exception cref="ArgumentException"/>
-        /// <exception cref="AuthentificationRequired"/>
-        public override async Task<int> GetPostCountAsync(params string[] tagsArg)
-        {
-            if (AccessToken == null)
-                throw new AuthentificationRequired();
-
-            if (tagsArg.Length == 0)
-                throw new ArgumentException("You must provide at least one tag.", nameof(tagsArg));
-
-            await CheckUpdateTokenAsync();
-
-            var requestUrl = "https://www.pixiv.net/ajax/search/artworks/" + JoinTagsAndEscapeString(tagsArg);
-
-            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
-
-            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-
-            response.EnsureSuccessStatusCode();
-
-            var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
-            return jsonToken["body"]["illustManga"]["total"].Value<int>();
-        }
-
-        /// <inheritdoc/>
-        /// <exception cref="ArgumentException"/>
-        /// <exception cref="AuthentificationRequired"/>
-        /// <exception cref="InvalidTags"/>
-        public override async Task<SearchResult[]> GetLastPostsAsync(params string[] tagsArg)
-        {
-            if (AccessToken == null)
-                throw new AuthentificationRequired();
-
-            if (tagsArg.Length == 0)
-                throw new ArgumentException("You must provide at least one tag.", nameof(tagsArg));
-
-            await CheckUpdateTokenAsync();
-
-            string requestUrl = BaseUrl + "v1/search/illust?word=" + JoinTagsAndEscapeString(tagsArg);
-
-            var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
-            AddAuthorizationHeader(request);
-
-            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-
-            if (response.StatusCode == HttpStatusCode.NotFound)
-                throw new InvalidTags();
-
-            response.EnsureSuccessStatusCode();
-
-            var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
-            return ParseSearchResults((JArray)jsonToken["illusts"]);
+            var sessionInfo = await _sessionInfoTask;
+            request.Headers.Add("Authorization", "Bearer " + sessionInfo.AccessToken);
         }
 
         private static string JoinTagsAndEscapeString(string[] tags)
@@ -389,22 +401,30 @@ namespace BooruSharp.Others
                 null);
         }
 
-        private void AddAuthorizationHeader(HttpRequestMessage request)
+        /// <inheritdoc/>
+        public override BooruAuth Auth
         {
-            request.Headers.Add("Authorization", "Bearer " + AccessToken);
+            get => base.Auth;
+            set
+            {
+                if (value != null)
+                {
+                    // Don't start a new task if the new user ID and password are the same.
+                    if (!value.Equals(Auth))
+                    {
+                        _sessionInfoTask = Task.Run(() => GetSessionInfoAsync(value.UserId, value.PasswordHash));
+                    }
+                }
+                else
+                {
+                    _sessionInfoTask = null;
+                }
+
+                base.Auth = value;
+            }
         }
 
-        /// <summary>
-        /// Gets the access token associated with the current Pixiv session.
-        /// </summary>
-        public string AccessToken { get; private set; }
-
-        /// <summary>
-        /// Gets the refresh token associated with the current Pixiv session.
-        /// </summary>
-        public string RefreshToken { get; private set; }
-
-        private DateTime _refreshTime;
+        private Task<SessionInfo> _sessionInfoTask;
 
         // https://github.com/tobiichiamane/pixivcs/blob/master/PixivBaseAPI.cs#L61-L63
         private readonly string _clientID = "MOBrBDS8blbauoSck0ZfDbtuzpyT";

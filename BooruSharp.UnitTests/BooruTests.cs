@@ -121,12 +121,14 @@ namespace BooruSharp.UnitTests
             Assert.False(b.Auth == null);
         }
 
-        [Theory]
+        [SkippableTheory]
         [MemberData(nameof(BooruParams))]
         public async Task UnsetFavoriteErrorAsync(Type t)
         {
             var booru = await Boorus.GetAsync(t);
             var id = (await General.GetRandomPostAsync(booru)).ID;
+
+            var prevAuth = booru.Auth;
             booru.Auth = new BooruAuth("AAA", "AAA");
 
             if (!booru.HasFavoriteAPI)
@@ -134,6 +136,8 @@ namespace BooruSharp.UnitTests
 
             if (booru is Gelbooru)
                 await Assert.ThrowsAsync<Search.AuthentificationInvalid>(() => booru.RemoveFavoriteAsync(id));
+
+            booru.Auth = prevAuth;
         }
 
         [Theory]
@@ -143,16 +147,12 @@ namespace BooruSharp.UnitTests
             const int invalidPostId = 800;
 
             var booru = (ABooru)Activator.CreateInstance(t);
-            if (booru is Pixiv pixiv)
-                await Assert.ThrowsAsync<Search.AuthentificationInvalid>(() => pixiv.LoginAsync("AAA", "AAA"));
+            booru.Auth = new BooruAuth("AAA", "AAA");
+
+            if (!booru.HasFavoriteAPI)
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(() => booru.AddFavoriteAsync(invalidPostId));
             else
-            {
-                booru.Auth = new BooruAuth("AAA", "AAA");
-                if (!booru.HasFavoriteAPI)
-                    await Assert.ThrowsAsync<Search.FeatureUnavailable>(() => booru.AddFavoriteAsync(invalidPostId));
-                else
-                    await Assert.ThrowsAsync<Search.AuthentificationInvalid>(() => booru.AddFavoriteAsync(invalidPostId));
-            }
+                await Assert.ThrowsAsync<Search.AuthentificationInvalid>(() => booru.AddFavoriteAsync(invalidPostId));
         }
 
         [SkippableTheory]
@@ -167,11 +167,7 @@ namespace BooruSharp.UnitTests
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(() => booru.AddFavoriteAsync(int.MaxValue));
             else
             {
-                // Pixiv doesn't support authorization using Auth property.
-                if (!(booru is Pixiv))
-                {
-                    General.Authorize(booru);
-                }
+                General.Authorize(booru, booru is Pixiv);
 
                 await Assert.ThrowsAsync<Search.InvalidPostId>(() => booru.AddFavoriteAsync(int.MaxValue));
             }
@@ -190,11 +186,7 @@ namespace BooruSharp.UnitTests
             {
                 var id = (await General.GetRandomPostAsync(booru)).ID;
 
-                // Pixiv doesn't support authorization using Auth property.
-                if (!(booru is Pixiv))
-                {
-                    General.Authorize(booru);
-                }
+                General.Authorize(booru, booru is Pixiv);
 
                 await booru.AddFavoriteAsync(id);
                 await booru.RemoveFavoriteAsync(id);
