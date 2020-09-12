@@ -56,8 +56,11 @@ namespace BooruSharp.Others
         /// <exception cref="HttpRequestException"/>
         public Task LoginAsync(string refreshToken)
         {
-            _sessionInfoTask = Task.Run(() => GetSessionInfoAsync(refreshToken));
-            return _sessionInfoTask;
+            lock (_sessionInfoLock)
+            {
+                _sessionInfoTask = Task.Run(() => GetSessionInfoAsync(refreshToken));
+                return _sessionInfoTask;
+            }
         }
 
         /// <summary>
@@ -110,13 +113,26 @@ namespace BooruSharp.Others
         // TODO: does this have to be public?
         public async Task CheckUpdateTokenAsync()
         {
-            if (_sessionInfoTask == null)
+            // Create a local copy here in case session info somehow becomes
+            // null after the null check but before awaiting the task.
+            Task<SessionInfo> localCopy;
+            lock (_sessionInfoLock)
+            {
+                localCopy = _sessionInfoTask;
+            }
+
+            if (localCopy == null)
                 throw new AuthentificationRequired();
 
-            var sessionInfo = await _sessionInfoTask;
+            var sessionInfo = await localCopy;
 
             if (DateTime.Now > sessionInfo.ExpirationDate)
-                _sessionInfoTask = Task.Run(() => GetSessionInfoAsync(sessionInfo.RefreshToken));
+            {
+                lock (_sessionInfoLock)
+                {
+                    _sessionInfoTask = Task.Run(() => GetSessionInfoAsync(sessionInfo.RefreshToken));
+                }
+            }
         }
 
         /// <inheritdoc/>
@@ -350,7 +366,13 @@ namespace BooruSharp.Others
         // first before calling this method.
         private async Task AddAuthorizationHeaderAsync(HttpRequestMessage request)
         {
-            var sessionInfo = await _sessionInfoTask;
+            Task<SessionInfo> localCopy;
+            lock (_sessionInfoLock)
+            {
+                localCopy = _sessionInfoTask;
+            }
+
+            var sessionInfo = await localCopy;
             request.Headers.Add("Authorization", "Bearer " + sessionInfo.AccessToken);
         }
 
@@ -407,17 +429,20 @@ namespace BooruSharp.Others
             get => base.Auth;
             set
             {
-                if (value != null)
+                lock (_sessionInfoLock)
                 {
-                    // Don't start a new task if the new user ID and password are the same.
-                    if (!value.Equals(Auth))
+                    if (value != null)
                     {
-                        _sessionInfoTask = Task.Run(() => GetSessionInfoAsync(value.UserId, value.PasswordHash));
+                        // Don't start a new task if the new user ID and password are the same.
+                        if (!value.Equals(Auth))
+                        {
+                            _sessionInfoTask = Task.Run(() => GetSessionInfoAsync(value.UserId, value.PasswordHash));
+                        }
                     }
-                }
-                else
-                {
-                    _sessionInfoTask = null;
+                    else
+                    {
+                        _sessionInfoTask = null;
+                    }
                 }
 
                 base.Auth = value;
@@ -425,6 +450,7 @@ namespace BooruSharp.Others
         }
 
         private Task<SessionInfo> _sessionInfoTask;
+        private readonly object _sessionInfoLock = new object();
 
         // https://github.com/tobiichiamane/pixivcs/blob/master/PixivBaseAPI.cs#L61-L63
         private readonly string _clientID = "MOBrBDS8blbauoSck0ZfDbtuzpyT";
