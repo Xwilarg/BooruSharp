@@ -132,5 +132,18 @@ namespace BooruSharp.UnitTests
                 return await booru.GetRandomPostAsync("スク水"); // Pixiv doesn't handle random search with no tag
             return await booru.GetRandomPostAsync();
         }
+
+        public static void Authorize(ABooru booru)
+        {
+            string booruName = booru.GetType().Name.ToUpperInvariant();
+            string userID = Environment.GetEnvironmentVariable(booruName + "_USER_ID");
+            string passwordHash = Environment.GetEnvironmentVariable(booruName + "_PASSWORD_HASH");
+
+            Skip.If(
+                userID == null || passwordHash == null,
+                $"{booruName}_* environment variables aren't set.");
+
+            booru.Auth = new BooruAuth(userID, passwordHash);
+        }
     }
 }
