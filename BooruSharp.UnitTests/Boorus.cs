@@ -1,26 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using BooruSharp.Booru;
 using BooruSharp.Others;
 using Xunit;
 
 namespace BooruSharp.UnitTests
 {
-    // TODO: make async methods into regular methods.
-    // Pixiv now uses internal Task to achieve thread safety and
-    // we don't need to wait until LoginAsync completes.
     internal static class Boorus
     {
-        private static readonly Dictionary<Type, Task<ABooru>> _boorus = new Dictionary<Type, Task<ABooru>>();
+        private static readonly Dictionary<Type, ABooru> _boorus = new Dictionary<Type, ABooru>();
 
-        public static Task<ABooru> GetAsync(Type type)
+        public static ABooru Get(Type type)
         {
             lock (_boorus)
             {
                 if (!_boorus.TryGetValue(type, out var booruTask))
                 {
-                    booruTask = Task.Run(() => CreateBooruAsync(type));
+                    booruTask = CreateBooru(type);
                     _boorus[type] = booruTask;
                 }
 
@@ -28,12 +24,12 @@ namespace BooruSharp.UnitTests
             }
         }
 
-        public static Task<ABooru> GetAsync<T>() where T : ABooru
+        public static ABooru Get<T>() where T : ABooru
         {
-            return GetAsync(typeof(T));
+            return Get(typeof(T));
         }
 
-        private static Task<ABooru> CreateBooruAsync(Type type)
+        private static ABooru CreateBooru(Type type)
         {
             var booru = (ABooru)Activator.CreateInstance(type);
 
@@ -47,7 +43,7 @@ namespace BooruSharp.UnitTests
                 pixiv.Auth = new BooruAuth(userID, password);
             }
 
-            return Task.FromResult(booru);
+            return booru;
         }
     }
 }

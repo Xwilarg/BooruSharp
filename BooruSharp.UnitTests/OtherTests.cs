@@ -13,7 +13,7 @@ namespace BooruSharp.UnitTests
         {
             Assert.Equal(
                 Search.Tag.TagType.Character,
-                (await (await Boorus.GetAsync<Gelbooru>()).GetTagAsync("cirno")).Type);
+                (await Boorus.Get<Gelbooru>().GetTagAsync("cirno")).Type);
         }
 
         [Fact]
@@ -21,7 +21,7 @@ namespace BooruSharp.UnitTests
         {
             Assert.Equal(
                 Search.Tag.TagType.Copyright,
-                (await (await Boorus.GetAsync<Gelbooru>()).GetTagAsync("kantai_collection")).Type);
+                (await Boorus.Get<Gelbooru>().GetTagAsync("kantai_collection")).Type);
         }
 
         [Fact]
@@ -29,7 +29,7 @@ namespace BooruSharp.UnitTests
         {
             Assert.Equal(
                 Search.Tag.TagType.Artist,
-                (await (await Boorus.GetAsync<Gelbooru>()).GetTagAsync("mtu_(orewamuzituda)")).Type);
+                (await Boorus.Get<Gelbooru>().GetTagAsync("mtu_(orewamuzituda)")).Type);
         }
 
         [Fact]
@@ -37,7 +37,7 @@ namespace BooruSharp.UnitTests
         {
             Assert.Equal(
                 Search.Tag.TagType.Metadata,
-                (await (await Boorus.GetAsync<Gelbooru>()).GetTagAsync("uncensored")).Type);
+                (await Boorus.Get<Gelbooru>().GetTagAsync("uncensored")).Type);
         }
 
         [Fact]
@@ -45,7 +45,7 @@ namespace BooruSharp.UnitTests
         {
             Assert.Equal(
                 Search.Tag.TagType.Trivia,
-                (await (await Boorus.GetAsync<Gelbooru>()).GetTagAsync("futanari")).Type);
+                (await Boorus.Get<Gelbooru>().GetTagAsync("futanari")).Type);
         }
     }
 }
