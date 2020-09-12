@@ -99,42 +99,6 @@ namespace BooruSharp.Others
             return await response.Content.ReadAsByteArrayAsync();
         }
 
-        /// <summary>
-        /// Checks if the authentication token needs to be updated,
-        /// and updates it if needed.
-        /// </summary>
-        /// <remarks>
-        /// You must login using <see cref="Auth"/> property before calling this method.
-        /// </remarks>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        /// <exception cref="AuthentificationInvalid"/>
-        /// <exception cref="AuthentificationRequired"/>
-        /// <exception cref="HttpRequestException"/>
-        // TODO: does this have to be public?
-        public async Task CheckUpdateTokenAsync()
-        {
-            // Create a local copy here in case session info somehow becomes
-            // null after the null check but before awaiting the task.
-            Task<SessionInfo> localCopy;
-            lock (_sessionInfoLock)
-            {
-                localCopy = _sessionInfoTask;
-            }
-
-            if (localCopy == null)
-                throw new AuthentificationRequired();
-
-            var sessionInfo = await localCopy;
-
-            if (DateTime.Now > sessionInfo.ExpirationDate)
-            {
-                lock (_sessionInfoLock)
-                {
-                    _sessionInfoTask = Task.Run(() => GetSessionInfoAsync(sessionInfo.RefreshToken));
-                }
-            }
-        }
-
         /// <inheritdoc/>
         public override async Task AddFavoriteAsync(int postId)
         {
@@ -249,8 +213,6 @@ namespace BooruSharp.Others
             if (tagsArg.Length == 0)
                 throw new ArgumentException("You must provide at least one tag.", nameof(tagsArg));
 
-            // TODO: does this have to be updated?
-            // Doesn't seem like session info is used in this method.
             await CheckUpdateTokenAsync();
 
             var requestUrl = "https://www.pixiv.net/ajax/search/artworks/" + JoinTagsAndEscapeString(tagsArg);
@@ -292,6 +254,30 @@ namespace BooruSharp.Others
 
             var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
             return ParseSearchResults((JArray)jsonToken["illusts"]);
+        }
+
+        private async Task CheckUpdateTokenAsync()
+        {
+            // Create a local copy here in case session info somehow becomes
+            // null after the null check but before awaiting the task.
+            Task<SessionInfo> localCopy;
+            lock (_sessionInfoLock)
+            {
+                localCopy = _sessionInfoTask;
+            }
+
+            if (localCopy == null)
+                throw new AuthentificationRequired();
+
+            var sessionInfo = await localCopy;
+
+            if (DateTime.Now > sessionInfo.ExpirationDate)
+            {
+                lock (_sessionInfoLock)
+                {
+                    _sessionInfoTask = Task.Run(() => GetSessionInfoAsync(sessionInfo.RefreshToken));
+                }
+            }
         }
 
         private Task<SessionInfo> GetSessionInfoAsync(string refreshToken)
@@ -448,6 +434,18 @@ namespace BooruSharp.Others
                 base.Auth = value;
             }
         }
+
+        /// <summary>
+        /// Gets the access token associated with the current Pixiv session,
+        /// or <see langword="null"/> if session hasn't been started.
+        /// </summary>
+        public string AccessToken => _sessionInfoTask?.Result.AccessToken;
+
+        /// <summary>
+        /// Gets the refresh token associated with the current Pixiv session,
+        /// or <see langword="null"/> if session hasn't been started.
+        /// </summary>
+        public string RefreshToken => _sessionInfoTask?.Result.RefreshToken;
 
         private Task<SessionInfo> _sessionInfoTask;
         private readonly object _sessionInfoLock = new object();
