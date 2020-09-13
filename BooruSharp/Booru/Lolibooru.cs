@@ -18,14 +18,13 @@ namespace BooruSharp.Booru
         /// <inheritdoc/>
         public override bool IsSafe => false;
 
-        private protected override Search.Tag.SearchResult GetTagSearchResult(object json)
+        private protected override Search.Tag.SearchResult GetTagSearchResult(JToken token)
         {
-            var elem = (JObject)json;
             return new Search.Tag.SearchResult(
-                elem["id"].Value<int>(),
-                elem["name"].Value<string>(),
-                (Search.Tag.TagType)elem["tag_type"].Value<int>(),
-                elem["post_count"].Value<int>()
+                token["id"].Value<int>(),
+                token["name"].Value<string>(),
+                (Search.Tag.TagType)token["tag_type"].Value<int>(),
+                token["post_count"].Value<int>()
                 );
         }
     }

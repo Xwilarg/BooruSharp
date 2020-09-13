@@ -24,18 +24,13 @@ namespace BooruSharp.Booru.Template
                   | BooruOptions.NoTagByID | BooruOptions.NoPostByID | BooruOptions.NoPostCount | BooruOptions.NoFavorite)
         { }
 
-        private protected override JToken ParseFirstPostSearchResult(object json)
+        private protected override JToken ParseFirstPostSearchResult(JToken token)
         {
-            JObject jObject = (JObject)json;
-
-            JToken token = jObject["posts"] is JArray posts
-                ? posts.FirstOrDefault()
-                : jObject["post"];
-
-            return token ?? throw new Search.InvalidTags();
+            var post = token["posts"] is JArray posts ? posts.FirstOrDefault() : token["post"];
+            return post ?? throw new Search.InvalidTags();
         }
 
-        private protected override Search.Post.SearchResult GetPostSearchResult(JToken elem)
+        private protected override Search.Post.SearchResult GetPostSearchResult(JToken token)
         {
             // TODO: Check others tags
             string[] categories =
@@ -48,21 +43,21 @@ namespace BooruSharp.Booru.Template
                 "meta",
             };
 
-            var fileToken = elem["file"];
-            var previewToken = elem["preview"];
+            var fileToken = token["file"];
+            var previewToken = token["preview"];
 
             string url = fileToken["url"].Value<string>();
             string previewUrl = previewToken["url"].Value<string>();
-            int id = elem["id"].Value<int>();
+            int id = token["id"].Value<int>();
             string[] tags = categories
-                .SelectMany(category => elem["tags"][category].ToObject<string[]>())
+                .SelectMany(category => token["tags"][category].ToObject<string[]>())
                 .ToArray();
 
             return new Search.Post.SearchResult(
                     url != null ? new Uri(url) : null,
                     previewUrl != null ? new Uri(previewUrl) : null,
                     new Uri(BaseUrl + "posts/" + id),
-                    GetRating(elem["rating"].Value<string>()[0]),
+                    GetRating(token["rating"].Value<string>()[0]),
                     tags,
                     id,
                     fileToken["size"].Value<int>(),
@@ -70,21 +65,19 @@ namespace BooruSharp.Booru.Template
                     fileToken["width"].Value<int>(),
                     previewToken["height"].Value<int>(),
                     previewToken["width"].Value<int>(),
-                    elem["created_at"].Value<DateTime>(),
-                    elem["sources"].FirstOrDefault()?.Value<string>(),
-                    elem["score"]["total"].Value<int>(),
+                    token["created_at"].Value<DateTime>(),
+                    token["sources"].FirstOrDefault()?.Value<string>(),
+                    token["score"]["total"].Value<int>(),
                     fileToken["md5"].Value<string>()
                 );
         }
 
-        private protected override Search.Post.SearchResult[] GetPostsSearchResult(object json)
+        private protected override Search.Post.SearchResult[] GetPostsSearchResult(JToken token)
         {
-            JObject obj = (JObject)json;
-
-            if (obj["posts"] is JArray array)
+            if (token["posts"] is JArray array)
                 return array.Select(GetPostSearchResult).ToArray();
-            else if (obj["post"] is JToken token)
-                return new[] { GetPostSearchResult(token) };
+            else if (token["post"] is JToken post)
+                return new[] { GetPostSearchResult(post) };
             else
                 return Array.Empty<Search.Post.SearchResult>();
         }
@@ -93,14 +86,13 @@ namespace BooruSharp.Booru.Template
 
         // GetWikiSearchResult not available
 
-        private protected override Search.Tag.SearchResult GetTagSearchResult(object json)
+        private protected override Search.Tag.SearchResult GetTagSearchResult(JToken token)
         {
-            var elem = (JObject)json;
             return new Search.Tag.SearchResult(
-                elem["id"].Value<int>(),
-                elem["name"].Value<string>(),
-                (Search.Tag.TagType)elem["category"].Value<int>(),
-                elem["post_count"].Value<int>()
+                token["id"].Value<int>(),
+                token["name"].Value<string>(),
+                (Search.Tag.TagType)token["category"].Value<int>(),
+                token["post_count"].Value<int>()
                 );
         }
 

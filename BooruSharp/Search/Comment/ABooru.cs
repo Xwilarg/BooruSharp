@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace BooruSharp.Booru
 {
@@ -27,7 +28,7 @@ namespace BooruSharp.Booru
             {
                 var xml = await GetXmlAsync(url);
 
-                foreach (var node in xml.LastChild)
+                foreach (XmlNode node in xml.LastChild)
                 {
                     var result = GetCommentSearchResult(node);
 
@@ -39,7 +40,7 @@ namespace BooruSharp.Booru
             {
                 var jsonArray = JsonConvert.DeserializeObject<JArray>(await GetJsonAsync(url));
 
-                foreach (var json in jsonArray)
+                foreach (JToken json in jsonArray)
                 {
                     var result = GetCommentSearchResult(json);
 
@@ -69,7 +70,7 @@ namespace BooruSharp.Booru
                 var xml = await GetXmlAsync(url);
                 var results = new List<Search.Comment.SearchResult>(xml.LastChild.ChildNodes.Count);
 
-                foreach (var node in xml.LastChild)
+                foreach (XmlNode node in xml.LastChild)
                     results.Add(GetCommentSearchResult(node));
 
                 return results.ToArray();

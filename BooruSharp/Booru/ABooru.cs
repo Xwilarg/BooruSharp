@@ -16,30 +16,48 @@ namespace BooruSharp.Booru
     public abstract partial class ABooru
     {
         /// <summary>
-        /// Gets whether this booru is considered safe (that is, all posts on
-        /// this booru have rating of <see cref="Search.Post.Rating.Safe"/>).
+        /// Gets a value indicating whether this booru is considered safe (that is, all
+        /// posts on this booru have rating of <see cref="Search.Post.Rating.Safe"/>).
         /// </summary>
         public abstract bool IsSafe { get; }
 
-        private protected virtual Search.Comment.SearchResult GetCommentSearchResult(object json)
+        private protected virtual Search.Comment.SearchResult GetCommentSearchResult(JToken token)
             => throw new FeatureUnavailable();
 
-        private protected virtual Search.Post.SearchResult GetPostSearchResult(JToken obj)
+        private protected virtual Search.Comment.SearchResult GetCommentSearchResult(XmlNode node)
             => throw new FeatureUnavailable();
 
-        private protected virtual Search.Post.SearchResult[] GetPostsSearchResult(object json)
+        private protected virtual Search.Post.SearchResult GetPostSearchResult(JToken token)
             => throw new FeatureUnavailable();
 
-        private protected virtual JToken ParseFirstPostSearchResult(object json)
+        private protected virtual Search.Post.SearchResult GetPostSearchResult(XmlNode node)
             => throw new FeatureUnavailable();
 
-        private protected virtual Search.Related.SearchResult GetRelatedSearchResult(object json)
+        private protected virtual Search.Post.SearchResult[] GetPostsSearchResult(JToken token)
             => throw new FeatureUnavailable();
 
-        private protected virtual Search.Tag.SearchResult GetTagSearchResult(object json)
+        private protected virtual Search.Post.SearchResult[] GetPostsSearchResult(XmlNode node)
             => throw new FeatureUnavailable();
 
-        private protected virtual Search.Wiki.SearchResult GetWikiSearchResult(object json)
+        private protected virtual Search.Related.SearchResult GetRelatedSearchResult(JToken token)
+            => throw new FeatureUnavailable();
+
+        private protected virtual Search.Related.SearchResult GetRelatedSearchResult(XmlNode node)
+            => throw new FeatureUnavailable();
+
+        private protected virtual Search.Tag.SearchResult GetTagSearchResult(JToken token)
+            => throw new FeatureUnavailable();
+
+        private protected virtual Search.Tag.SearchResult GetTagSearchResult(XmlNode node)
+            => throw new FeatureUnavailable();
+
+        private protected virtual Search.Wiki.SearchResult GetWikiSearchResult(JToken token)
+            => throw new FeatureUnavailable();
+
+        private protected virtual Search.Wiki.SearchResult GetWikiSearchResult(XmlNode node)
+            => throw new FeatureUnavailable();
+
+        private protected virtual JToken ParseFirstPostSearchResult(JToken token)
             => throw new FeatureUnavailable();
 
         /// <summary>

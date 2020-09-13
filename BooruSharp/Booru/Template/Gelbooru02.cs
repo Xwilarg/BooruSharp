@@ -28,69 +28,67 @@ namespace BooruSharp.Booru.Template
             _url = domain;
         }
 
-        private protected override JToken ParseFirstPostSearchResult(object json)
+        private protected override JToken ParseFirstPostSearchResult(JToken token)
         {
-            JArray array = json as JArray;
+            JArray array = token as JArray;
             return array?.FirstOrDefault() ?? throw new Search.InvalidTags();
         }
 
-        private protected override Search.Post.SearchResult GetPostSearchResult(JToken elem)
+        private protected override Search.Post.SearchResult GetPostSearchResult(JToken token)
         {
             string baseUrl = BaseUrl.Scheme + "://" + _url;
-            string directory = elem["directory"].Value<string>();
-            string image = elem["image"].Value<string>();
-            int id = elem["id"].Value<int>();
+            string directory = token["directory"].Value<string>();
+            string image = token["image"].Value<string>();
+            int id = token["id"].Value<int>();
 
             return new Search.Post.SearchResult(
                 new Uri(baseUrl + "//images/" + directory + "/" + image),
                 new Uri(baseUrl + "//thumbnails/" + directory + "/thumbnails_" + image),
                 new Uri(BaseUrl + "index.php?page=post&s=view&id=" + id),
-                GetRating(elem["rating"].Value<string>()[0]),
-                elem["tags"].Value<string>().Split(' '),
+                GetRating(token["rating"].Value<string>()[0]),
+                token["tags"].Value<string>().Split(' '),
                 id,
                 null,
-                elem["height"].Value<int>(),
-                elem["width"].Value<int>(),
+                token["height"].Value<int>(),
+                token["width"].Value<int>(),
                 null,
                 null,
                 null,
                 null,
-                elem["score"].Value<int?>(),
+                token["score"].Value<int?>(),
                 null
                 );
         }
 
-        private protected override Search.Post.SearchResult[] GetPostsSearchResult(object json)
+        private protected override Search.Post.SearchResult[] GetPostsSearchResult(JToken token)
         {
-            return json is JArray array 
+            return token is JArray array 
                 ? array.Select(GetPostSearchResult).ToArray()
                 : Array.Empty<Search.Post.SearchResult>();
         }
 
-        private protected override Search.Comment.SearchResult GetCommentSearchResult(object json)
+        private protected override Search.Comment.SearchResult GetCommentSearchResult(XmlNode node)
         {
-            var elem = (XmlNode)json;
-            XmlNode creatorId = elem.Attributes.GetNamedItem("creator_id");
+            XmlNode creatorId = node.Attributes.GetNamedItem("creator_id");
             return new Search.Comment.SearchResult(
-                int.Parse(elem.Attributes.GetNamedItem("id").Value),
-                int.Parse(elem.Attributes.GetNamedItem("post_id").Value),
+                int.Parse(node.Attributes.GetNamedItem("id").Value),
+                int.Parse(node.Attributes.GetNamedItem("post_id").Value),
                 creatorId.InnerText.Length > 0 ? int.Parse(creatorId.Value) : (int?)null,
-                DateTime.ParseExact(elem.Attributes.GetNamedItem("created_at").Value, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
-                elem.Attributes.GetNamedItem("creator").Value,
-                elem.Attributes.GetNamedItem("body").Value
+                DateTime.ParseExact(node.Attributes.GetNamedItem("created_at").Value, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
+                node.Attributes.GetNamedItem("creator").Value,
+                node.Attributes.GetNamedItem("body").Value
                 );
         }
 
         // GetWikiSearchResult not available
 
-        private protected override Search.Tag.SearchResult GetTagSearchResult(object json)
+        private protected override Search.Tag.SearchResult GetTagSearchResult(XmlNode node)
         {
-            var elem = (XmlNode)json;
             return new Search.Tag.SearchResult(
-                int.Parse(elem.Attributes.GetNamedItem("id").Value),
-                elem.Attributes.GetNamedItem("name").Value,
-                (Search.Tag.TagType)int.Parse(elem.Attributes.GetNamedItem("type").Value),
-                int.Parse(elem.Attributes.GetNamedItem("count").Value)
+                int.Parse(node.Attributes.GetNamedItem("id").Value),
+                node.Attributes.GetNamedItem("name").Value,
+                (Search.Tag.TagType)int.Parse(node.Attributes.GetNamedItem("type").Value),
+                int.Parse(node.Attributes.GetNamedItem("count").Value)
                 );
         }
 

@@ -24,81 +24,78 @@ namespace BooruSharp.Booru.Template
                   | BooruOptions.NoFavorite)
         { }
 
-        private protected override JToken ParseFirstPostSearchResult(object json)
+        private protected override JToken ParseFirstPostSearchResult(JToken token)
         {
-            JArray array = json as JArray;
+            JArray array = token as JArray;
             return array?.FirstOrDefault() ?? throw new Search.InvalidTags();
         }
 
-        private protected override Search.Post.SearchResult GetPostSearchResult(JToken elem)
+        private protected override Search.Post.SearchResult GetPostSearchResult(JToken token)
         {
-            int id = elem["id"].Value<int>();
+            int id = token["id"].Value<int>();
 
             return new Search.Post.SearchResult(
-                new Uri(elem["file_url"].Value<string>()),
-                new Uri(elem["preview_url"].Value<string>()),
+                new Uri(token["file_url"].Value<string>()),
+                new Uri(token["preview_url"].Value<string>()),
                 new Uri(BaseUrl + "post/show/" + id),
-                GetRating(elem["rating"].Value<string>()[0]),
-                elem["tags"].Value<string>().Split(' '),
+                GetRating(token["rating"].Value<string>()[0]),
+                token["tags"].Value<string>().Split(' '),
                 id,
-                elem["file_size"].Value<int>(),
-                elem["height"].Value<int>(),
-                elem["width"].Value<int>(),
-                elem["preview_height"].Value<int>(),
-                elem["preview_width"].Value<int>(),
-                _unixTime.AddSeconds(elem["created_at"].Value<int>()),
-                elem["source"].Value<string>(),
-                elem["score"].Value<int>(),
-                elem["md5"].Value<string>()
+                token["file_size"].Value<int>(),
+                token["height"].Value<int>(),
+                token["width"].Value<int>(),
+                token["preview_height"].Value<int>(),
+                token["preview_width"].Value<int>(),
+                _unixTime.AddSeconds(token["created_at"].Value<int>()),
+                token["source"].Value<string>(),
+                token["score"].Value<int>(),
+                token["md5"].Value<string>()
                 );
         }
 
-        private protected override Search.Post.SearchResult[] GetPostsSearchResult(object json)
+        private protected override Search.Post.SearchResult[] GetPostsSearchResult(JToken token)
         {
-            return json is JArray array
+            return token is JArray array
                 ? array.Select(GetPostSearchResult).ToArray()
                 : Array.Empty<Search.Post.SearchResult>();
         }
 
-        private protected override Search.Comment.SearchResult GetCommentSearchResult(object json)
+        private protected override Search.Comment.SearchResult GetCommentSearchResult(JToken token)
         {
-            var elem = (JObject)json;
             return new Search.Comment.SearchResult(
-                elem["id"].Value<int>(),
-                elem["post_id"].Value<int>(),
-                elem["creator_id"].Value<int?>(),
-                elem["created_at"].Value<DateTime>(),
-                elem["creator"].Value<string>(),
-                elem["body"].Value<string>()
+                token["id"].Value<int>(),
+                token["post_id"].Value<int>(),
+                token["creator_id"].Value<int?>(),
+                token["created_at"].Value<DateTime>(),
+                token["creator"].Value<string>(),
+                token["body"].Value<string>()
                 );
         }
 
-        private protected override Search.Wiki.SearchResult GetWikiSearchResult(object json)
+        private protected override Search.Wiki.SearchResult GetWikiSearchResult(JToken token)
         {
-            var elem = (JObject)json;
             return new Search.Wiki.SearchResult(
-                elem["id"].Value<int>(),
-                elem["title"].Value<string>(),
-                elem["created_at"].Value<DateTime>(),
-                elem["updated_at"].Value<DateTime>(),
-                elem["body"].Value<string>()
+                token["id"].Value<int>(),
+                token["title"].Value<string>(),
+                token["created_at"].Value<DateTime>(),
+                token["updated_at"].Value<DateTime>(),
+                token["body"].Value<string>()
                 );
         }
 
-        private protected override Search.Tag.SearchResult GetTagSearchResult(object json)
+        private protected override Search.Tag.SearchResult GetTagSearchResult(JToken token)
         {
-            var elem = (JObject)json;
             return new Search.Tag.SearchResult(
-                elem["id"].Value<int>(),
-                elem["name"].Value<string>(),
-                (Search.Tag.TagType)elem["type"].Value<int>(),
-                elem["count"].Value<int>()
+                token["id"].Value<int>(),
+                token["name"].Value<string>(),
+                (Search.Tag.TagType)token["type"].Value<int>(),
+                token["count"].Value<int>()
                 );
         }
 
-        private protected override Search.Related.SearchResult GetRelatedSearchResult(object json)
+        private protected override Search.Related.SearchResult GetRelatedSearchResult(JToken token)
         {
-            var elem = (JArray)json;
+            var elem = (JArray)token;
             return new Search.Related.SearchResult(
                 elem[0].Value<string>(),
                 elem[1].Value<int>()

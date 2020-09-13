@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace BooruSharp.Booru
 {
@@ -75,7 +76,7 @@ namespace BooruSharp.Booru
                 // Can't use LINQ with XmlNodes so let's use list here.
                 var results = new List<Search.Tag.SearchResult>(xml.LastChild.ChildNodes.Count);
 
-                foreach (var node in xml.LastChild)
+                foreach (XmlNode node in xml.LastChild)
                 {
                     results.Add(GetTagSearchResult(node));
                 }
@@ -115,7 +116,9 @@ namespace BooruSharp.Booru
 
             foreach (object item in enumerable)
             {
-                var result = GetTagSearchResult(item);
+                var result = TagsUseXml
+                    ? GetTagSearchResult((XmlNode)item)
+                    : GetTagSearchResult((JToken)item);
 
                 if ((name == null && id == result.ID) || (name != null && name == result.Name))
                     return result;
