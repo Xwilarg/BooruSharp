@@ -38,7 +38,7 @@ namespace BooruSharp.Booru
             }
             else
             {
-                var jsonArray = JsonConvert.DeserializeObject<JArray>(await GetJsonAsync(url));
+                var jsonArray = await GetJsonAsync<JArray>(url);
 
                 foreach (JToken json in jsonArray)
                 {
@@ -77,7 +77,7 @@ namespace BooruSharp.Booru
             }
             else
             {
-                var jsonArray = JsonConvert.DeserializeObject<JArray>(await GetJsonAsync(url));
+                var jsonArray = await GetJsonAsync<JArray>(url);
                 return jsonArray.Select(GetCommentSearchResult).ToArray();
             }
         }

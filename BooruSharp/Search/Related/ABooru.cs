@@ -26,8 +26,8 @@ namespace BooruSharp.Booru
 
             bool isDanbooruFormat = _format == UrlFormat.Danbooru;
 
-            var content = JsonConvert.DeserializeObject<JObject>(
-                await GetJsonAsync(CreateUrl(_relatedUrl, (isDanbooruFormat ? "query" : "tags") + "=" + tag)));
+            var content = await GetJsonAsync<JObject>(
+                CreateUrl(_relatedUrl, (isDanbooruFormat ? "query" : "tags") + "=" + tag));
 
             var jsonArray = (JArray)(isDanbooruFormat
                 ? content["tags"]

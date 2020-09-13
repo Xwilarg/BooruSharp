@@ -36,10 +36,10 @@ namespace BooruSharp.Booru.Template
                 throw new ArgumentNullException(nameof(md5));
 
             // Create a URL that will redirect us to Gelbooru post URL containing post ID.
-            string url = $"{BaseUrl}index.php?page=post&s=list&md5={md5}";
+            var url = $"{BaseUrl}index.php?page=post&s=list&md5={md5}";
 
-            using (HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Head, url))
-            using (HttpResponseMessage response = await HttpClient.SendAsync(message))
+            using (var message = new HttpRequestMessage(HttpMethod.Head, url))
+            using (var response = await GetResponseAsync(message))
             {
                 response.EnsureSuccessStatusCode();
 

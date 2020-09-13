@@ -167,7 +167,7 @@ namespace BooruSharp.Booru
         /// <exception cref="System.Net.Http.HttpRequestException"/>
         public virtual async Task<Search.Post.SearchResult[]> GetLastPostsAsync(params string[] tagsArg)
         {
-            return GetPostsSearchResult(JsonConvert.DeserializeObject<JToken>(await GetJsonAsync(CreateUrl(_imageUrl, TagsToString(tagsArg)))));
+            return GetPostsSearchResult(await GetJsonAsync<JToken>(CreateUrl(_imageUrl, TagsToString(tagsArg))));
         }
 
 
@@ -187,7 +187,7 @@ namespace BooruSharp.Booru
 
         private async Task<Search.Post.SearchResult> GetSearchResultFromUrlAsync(string url)
         {
-            return GetPostSearchResult(ParseFirstPostSearchResult(JsonConvert.DeserializeObject<JToken>(await GetJsonAsync(url))));
+            return GetPostSearchResult(ParseFirstPostSearchResult(await GetJsonAsync<JToken>(url)));
         }
 
         private Task<Search.Post.SearchResult> GetSearchResultFromUrlAsync(Uri url)
@@ -197,7 +197,7 @@ namespace BooruSharp.Booru
 
         private async Task<Search.Post.SearchResult[]> GetSearchResultsFromUrlAsync(string url)
         {
-            return GetPostsSearchResult(JsonConvert.DeserializeObject<JToken>(await GetJsonAsync(url)));
+            return GetPostsSearchResult(await GetJsonAsync<JToken>(url));
         }
 
         private Task<Search.Post.SearchResult[]> GetSearchResultsFromUrlAsync(Uri url)

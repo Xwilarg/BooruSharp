@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace BooruSharp.Booru
 {
@@ -17,6 +19,18 @@ namespace BooruSharp.Booru
 
         /// <inheritdoc/>
         public override bool IsSafe => false;
+
+        /// <inheritdoc/>
+        public async override Task CheckAvailabilityAsync()
+        {
+            // It seems this booru doesn't comprehend HEAD requests to its API.
+            var request = new HttpRequestMessage(HttpMethod.Get, "https://lolibooru.moe/post/index.xml");
+
+            using (var response = await GetResponseAsync(request))
+            {
+                response.EnsureSuccessStatusCode();
+            }
+        }
 
         private protected override Search.Tag.SearchResult GetTagSearchResult(JToken token)
         {

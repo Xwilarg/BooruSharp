@@ -1,4 +1,5 @@
 ﻿using BooruSharp.Search;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
@@ -142,15 +143,6 @@ namespace BooruSharp.Booru
         protected bool SearchIncreasedPostLimit => _options.HasFlag(BooruOptions.LimitOf20000);
 
         /// <summary>
-        /// Checks for the booru availability.
-        /// Throws <see cref="HttpRequestException"/> if service isn't available.
-        /// </summary>
-        public async Task CheckAvailabilityAsync()
-        {
-            await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Head, _imageUrl));
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="ABooru"/> class.
         /// </summary>
         /// <param name="domain">
@@ -195,6 +187,23 @@ namespace BooruSharp.Booru
                 _commentUrl = CreateQueryString(format, "comment");
         }
 
+        /// <summary>
+        /// Checks for the booru availability.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="Task"/> object that, when awaited, will throw an
+        /// <see cref="HttpRequestException"/> if service isn't available.
+        /// </returns>
+        public virtual async Task CheckAvailabilityAsync()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Head, _imageUrlXml ?? _imageUrl);
+
+            using (var response = await GetResponseAsync(request))
+            {
+                response.EnsureSuccessStatusCode();
+            }
+        }
+
         private protected Uri CreateQueryString(UrlFormat format, string query, string squery = "index")
         {
             string queryString;
@@ -226,30 +235,30 @@ namespace BooruSharp.Booru
 
         // TODO: Handle limitrate
 
-        private async Task<string> GetJsonAsync(string url)
+        private async Task<T> GetJsonAsync<T>(string url)
         {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            HttpResponseMessage msg = await HttpClient.GetAsync(url);
-
-            if (msg.StatusCode == HttpStatusCode.Forbidden)
-                throw new AuthentificationRequired();
-
-            msg.EnsureSuccessStatusCode();
-
-            return await msg.Content.ReadAsStringAsync();
+            using (var response = await GetResponseAsync(url))
+            {
+                var jsonString = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<T>(jsonString);
+            }
         }
 
-        private Task<string> GetJsonAsync(Uri url)
+        private Task<T> GetJsonAsync<T>(Uri url)
         {
-            return GetJsonAsync(url.AbsoluteUri);
+            return GetJsonAsync<T>(url.AbsoluteUri);
         }
 
         private async Task<XmlDocument> GetXmlAsync(string url)
         {
-            var xmlDoc = new XmlDocument();
-            var xmlString = await GetJsonAsync(url);
-            xmlDoc.LoadXml(XmlEntity.ReplaceAll(xmlString));
-            return xmlDoc;
+            using (var response = await GetResponseAsync(url))
+            {
+                var xmlDoc = new XmlDocument();
+                var xmlString = await response.Content.ReadAsStringAsync();
+                xmlDoc.LoadXml(XmlEntity.ReplaceAll(xmlString));
+
+                return xmlDoc;
+            }
         }
 
         private Task<XmlDocument> GetXmlAsync(Uri url)
@@ -257,11 +266,38 @@ namespace BooruSharp.Booru
             return GetXmlAsync(url.AbsoluteUri);
         }
 
+        private protected async Task<HttpResponseMessage> GetResponseAsync(string url)
+        {
+            var response = await HttpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+
+            if (response.StatusCode == HttpStatusCode.Forbidden)
+                throw new AuthentificationRequired();
+
+            response.EnsureSuccessStatusCode();
+
+            return response;
+        }
+
+        private protected Task<HttpResponseMessage> GetResponseAsync(Uri url)
+        {
+            return GetResponseAsync(url.AbsoluteUri);
+        }
+
+        private protected Task<HttpResponseMessage> GetResponseAsync(HttpRequestMessage requestMessage)
+        {
+            return HttpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
+        }
+
         private async Task<string> GetRandomIdAsync(string tags)
         {
-            HttpResponseMessage msg = await HttpClient.GetAsync(BaseUrl + "index.php?page=post&s=random&tags=" + tags);
-            msg.EnsureSuccessStatusCode();
-            return HttpUtility.ParseQueryString(msg.RequestMessage.RequestUri.Query).Get("id");
+            var url = BaseUrl + "index.php?page=post&s=random&tags=" + tags;
+
+            using (var response = await GetResponseAsync(url))
+            {
+                response.EnsureSuccessStatusCode();
+
+                return HttpUtility.ParseQueryString(response.RequestMessage.RequestUri.Query).Get("id");
+            }
         }
 
         private Uri CreateUrl(Uri url, params string[] args)

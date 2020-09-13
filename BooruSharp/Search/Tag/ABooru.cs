@@ -85,7 +85,7 @@ namespace BooruSharp.Booru
             }
             else
             {
-                var jsonArray = JsonConvert.DeserializeObject<JArray>(await GetJsonAsync(url));
+                var jsonArray = await GetJsonAsync<JArray>(url);
                 return jsonArray.Select(GetTagSearchResult).ToArray();
             }
         }
@@ -100,7 +100,7 @@ namespace BooruSharp.Booru
 
             if (_format == UrlFormat.PostIndexJson)
                 urlTags.Add("limit=0");
-            
+
             var url = CreateUrl(_tagUrl, urlTags.ToArray());
             IEnumerable enumerable;
 
@@ -111,7 +111,7 @@ namespace BooruSharp.Booru
             }
             else
             {
-                enumerable = JsonConvert.DeserializeObject<JArray>(await GetJsonAsync(url));
+                enumerable = await GetJsonAsync<JArray>(url);
             }
 
             foreach (object item in enumerable)

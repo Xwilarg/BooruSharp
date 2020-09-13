@@ -37,6 +37,17 @@ namespace BooruSharp.Others
         /// <inheritdoc/>
         public override bool IsSafe => false;
 
+        /// <inheritdoc/>
+        public async override Task CheckAvailabilityAsync()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Head, "https://www.pixiv.net/ajax/search/artworks/スク水");
+
+            using (var response = await GetResponseAsync(request))
+            {
+                response.EnsureSuccessStatusCode();
+            }
+        }
+
         /// <summary>
         /// Sends a login API request using specified user name and password.
         /// </summary>
@@ -119,11 +130,12 @@ namespace BooruSharp.Others
             var request = new HttpRequestMessage(HttpMethod.Get, result.FileUrl);
             request.Headers.Add("Referer", result.PostUrl.AbsoluteUri);
 
-            var response = await GetResponseAsync(request);
+            using (var response = await GetResponseAsync(request))
+            {
+                response.EnsureSuccessStatusCode();
 
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadAsByteArrayAsync();
+                return await response.Content.ReadAsByteArrayAsync();
+            }
         }
 
         /// <summary>
@@ -137,11 +149,12 @@ namespace BooruSharp.Others
             var request = new HttpRequestMessage(HttpMethod.Get, result.PreviewUrl);
             request.Headers.Add("Referer", result.PostUrl.AbsoluteUri);
 
-            var response = await GetResponseAsync(request);
+            using (var response = await GetResponseAsync(request))
+            {
+                response.EnsureSuccessStatusCode();
 
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadAsByteArrayAsync();
+                return await response.Content.ReadAsByteArrayAsync();
+            }
         }
 
         /// <summary>
@@ -169,12 +182,13 @@ namespace BooruSharp.Others
                     { "restrict", "public" }
                 });
 
-            var response = await GetResponseAsync(request);
+            using (var response = await GetResponseAsync(request))
+            {
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                    throw new InvalidPostId();
 
-            if (response.StatusCode == HttpStatusCode.NotFound)
-                throw new InvalidPostId();
-
-            response.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCode();
+            }
         }
 
         /// <summary>
@@ -192,7 +206,7 @@ namespace BooruSharp.Others
         public override async Task RemoveFavoriteAsync(int postId)
         {
             await CheckUpdateTokenAsync();
-            
+
             var request = new HttpRequestMessage(HttpMethod.Post, BaseUrl + "v1/illust/bookmark/delete");
             AddAuthorizationHeader(request);
             request.Content = new FormUrlEncodedContent(
@@ -201,12 +215,13 @@ namespace BooruSharp.Others
                     { "illust_id", postId.ToString() }
                 });
 
-            var response = await GetResponseAsync(request);
+            using (var response = await GetResponseAsync(request))
+            {
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                    throw new InvalidPostId("There is no post with this ID in your bookmarks");
 
-            if (response.StatusCode == HttpStatusCode.NotFound)
-                throw new InvalidPostId("There is no post with this ID in your bookmarks");
-
-            response.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCode();
+            }
         }
 
         /// <inheritdoc/>
@@ -224,15 +239,16 @@ namespace BooruSharp.Others
             var request = new HttpRequestMessage(HttpMethod.Get, BaseUrl + "v1/illust/detail?illust_id=" + id);
             AddAuthorizationHeader(request);
 
-            var response = await GetResponseAsync(request);
+            using (var response = await GetResponseAsync(request))
+            {
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                    throw new InvalidPostId();
 
-            if (response.StatusCode == HttpStatusCode.NotFound)
-                throw new InvalidPostId();
+                response.EnsureSuccessStatusCode();
 
-            response.EnsureSuccessStatusCode();
-
-            var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
-            return ParseSearchResult(jsonToken["illust"]);
+                var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
+                return ParseSearchResult(jsonToken["illust"]);
+            }
         }
 
         /// <inheritdoc/>
@@ -257,16 +273,17 @@ namespace BooruSharp.Others
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
             AddAuthorizationHeader(request);
 
-            var response = await GetResponseAsync(request);
+            using (var response = await GetResponseAsync(request))
+            {
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                    throw new InvalidTags();
 
-            if (response.StatusCode == HttpStatusCode.NotFound)
-                throw new InvalidTags();
+                response.EnsureSuccessStatusCode();
 
-            response.EnsureSuccessStatusCode();
-
-            var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
-            var jsonArray = (JArray)jsonToken["illusts"];
-            return ParseSearchResult(jsonArray[0]);
+                var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
+                var jsonArray = (JArray)jsonToken["illusts"];
+                return ParseSearchResult(jsonArray[0]);
+            }
         }
 
         /// <inheritdoc/>
@@ -279,12 +296,13 @@ namespace BooruSharp.Others
             var requestUrl = "https://www.pixiv.net/ajax/search/artworks/" + JoinTagsAndEscapeString(tagsArg);
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
-            var response = await GetResponseAsync(request);
+            using (var response = await GetResponseAsync(request))
+            {
+                response.EnsureSuccessStatusCode();
 
-            response.EnsureSuccessStatusCode();
-
-            var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
-            return jsonToken["body"]["illustManga"]["total"].Value<int>();
+                var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
+                return jsonToken["body"]["illustManga"]["total"].Value<int>();
+            }
         }
 
         /// <inheritdoc/>
@@ -308,15 +326,16 @@ namespace BooruSharp.Others
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
             AddAuthorizationHeader(request);
 
-            var response = await GetResponseAsync(request);
+            using (var response = await GetResponseAsync(request))
+            {
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                    throw new InvalidTags();
 
-            if (response.StatusCode == HttpStatusCode.NotFound)
-                throw new InvalidTags();
+                response.EnsureSuccessStatusCode();
 
-            response.EnsureSuccessStatusCode();
-
-            var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
-            return ParseSearchResults((JArray)jsonToken["illusts"]);
+                var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
+                return ParseSearchResults((JArray)jsonToken["illusts"]);
+            }
         }
 
         /// <summary>
@@ -355,11 +374,6 @@ namespace BooruSharp.Others
                 await LoginAsync(refreshToken);
         }
 
-        private Task<HttpResponseMessage> GetResponseAsync(HttpRequestMessage requestMessage)
-        {
-            return HttpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
-        }
-
         private async Task SendLoginRequestAsync(HttpRequestMessage requestMessage)
         {
             AddUserAgentHeader(requestMessage);
@@ -368,15 +382,18 @@ namespace BooruSharp.Others
             {
                 await _loginSemaphore.WaitAsync();
 
-                var response = await GetResponseAsync(requestMessage);
+                JToken responseToken;
 
-                if (response.StatusCode == HttpStatusCode.BadRequest)
-                    throw new AuthentificationInvalid();
+                using (var response = await GetResponseAsync(requestMessage))
+                {
+                    if (response.StatusCode == HttpStatusCode.BadRequest)
+                        throw new AuthentificationInvalid();
 
-                response.EnsureSuccessStatusCode();
+                    response.EnsureSuccessStatusCode();
 
-                var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
-                var responseToken = jsonToken["response"];
+                    var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
+                    responseToken = jsonToken["response"];
+                }
 
                 AccessToken = responseToken["access_token"].Value<string>();
                 RefreshToken = responseToken["refresh_token"].Value<string>();
