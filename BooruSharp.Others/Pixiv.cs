@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BooruSharp.Others
@@ -18,7 +19,7 @@ namespace BooruSharp.Others
     /// Pixiv.
     /// <para>https://www.pixiv.net/</para>
     /// </summary>
-    public class Pixiv : ABooru
+    public class Pixiv : ABooru, IDisposable
     {
         private const string _appVersion = "5.0.212";
 
@@ -33,28 +34,30 @@ namespace BooruSharp.Others
             AccessToken = null;
         }
 
+        /// <inheritdoc/>
+        public override bool IsSafe => false;
+
         /// <summary>
         /// Sends a login API request using specified user name and password.
         /// </summary>
         /// <param name="username">Pixiv user name.</param>
         /// <param name="password">Pixiv user password.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ArgumentException"/>
         /// <exception cref="AuthentificationInvalid"/>
         /// <exception cref="HttpRequestException"/>
-        public async Task LoginAsync(string username, string password)
+        public Task LoginAsync(string username, string password)
         {
-            if (username == null)
-                throw new ArgumentNullException(nameof(username));
+            if (string.IsNullOrWhiteSpace(username))
+                throw new ArgumentException($"'{nameof(username)}' cannot be null or whitespace", nameof(username));
 
-            if (password == null)
-                throw new ArgumentNullException(nameof(password));
+            if (string.IsNullOrWhiteSpace(password))
+                throw new ArgumentException($"'{nameof(password)}' cannot be null or whitespace", nameof(password));
 
             var request = new HttpRequestMessage(HttpMethod.Post, "https://oauth.secure.pixiv.net/auth/token");
 
             string time = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss+00:00");
             request.Headers.Add("X-Client-Time", time);
-            AddUserAgentHeader(request);
 
             using (var md5 = MD5.Create())
             {
@@ -75,31 +78,34 @@ namespace BooruSharp.Others
                     { "password", password }
                 });
 
-            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-
-            if (response.StatusCode == HttpStatusCode.BadRequest)
-                throw new AuthentificationInvalid();
-
-            response.EnsureSuccessStatusCode();
-
-            var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
-            var responseToken = jsonToken["response"];
-
-            AccessToken = responseToken["access_token"].Value<string>();
-            RefreshToken = responseToken["refresh_token"].Value<string>();
-            _refreshTime = DateTime.Now.AddSeconds(responseToken["expires_in"].Value<int>());
+            return SendLoginRequestAsync(request);
         }
 
         /// <summary>
         /// Sends a login API request using specified refresh token.
         /// </summary>
+        /// <param name="refreshToken">Refresh token for your current Pixiv session.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="ArgumentException"/>
         /// <exception cref="AuthentificationInvalid"/>
         /// <exception cref="HttpRequestException"/>
-        public async Task LoginAsync(string refreshToken)
+        public Task LoginAsync(string refreshToken)
         {
-            RefreshToken = refreshToken;
-            await UpdateTokenAsync();
+            if (string.IsNullOrWhiteSpace(refreshToken))
+                throw new ArgumentException($"'{nameof(refreshToken)}' cannot be null or whitespace", nameof(refreshToken));
+
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://oauth.secure.pixiv.net/auth/token");
+            request.Content = new FormUrlEncodedContent(
+                new Dictionary<string, string>
+                {
+                    { "get_secure_url", "1" },
+                    { "client_id", _clientID },
+                    { "client_secret", _clientSecret},
+                    { "grant_type", "refresh_token" },
+                    { "refresh_token", refreshToken }
+                });
+
+            return SendLoginRequestAsync(request);
         }
 
         /// <summary>
@@ -113,7 +119,7 @@ namespace BooruSharp.Others
             var request = new HttpRequestMessage(HttpMethod.Get, result.FileUrl);
             request.Headers.Add("Referer", result.PostUrl.AbsoluteUri);
 
-            var response = await HttpClient.SendAsync(request);
+            var response = await GetResponseAsync(request);
 
             response.EnsureSuccessStatusCode();
 
@@ -131,7 +137,7 @@ namespace BooruSharp.Others
             var request = new HttpRequestMessage(HttpMethod.Get, result.PreviewUrl);
             request.Headers.Add("Referer", result.PostUrl.AbsoluteUri);
 
-            var response = await HttpClient.SendAsync(request);
+            var response = await GetResponseAsync(request);
 
             response.EnsureSuccessStatusCode();
 
@@ -139,52 +145,12 @@ namespace BooruSharp.Others
         }
 
         /// <summary>
-        /// Checks if the <see cref="AccessToken"/> needs to be updated,
-        /// and updates it if needed.
-        /// </summary>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        /// <exception cref="AuthentificationInvalid"/>
-        /// <exception cref="HttpRequestException"/>
-        public async Task CheckUpdateTokenAsync()
-        {
-            if (DateTime.Now > _refreshTime)
-                await UpdateTokenAsync();
-        }
-
-        private async Task UpdateTokenAsync()
-        {
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://oauth.secure.pixiv.net/auth/token");
-            request.Content = new FormUrlEncodedContent(
-                new Dictionary<string, string>
-                {
-                    { "get_secure_url", "1" },
-                    { "client_id", _clientID },
-                    { "client_secret", _clientSecret},
-                    { "grant_type", "refresh_token" },
-                    { "refresh_token", RefreshToken }
-                });
-            AddUserAgentHeader(request);
-
-            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-
-            if (response.StatusCode == HttpStatusCode.BadRequest)
-                throw new AuthentificationInvalid();
-
-            response.EnsureSuccessStatusCode();
-
-            var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
-            var responseToken = jsonToken["response"];
-
-            AccessToken = responseToken["access_token"].Value<string>();
-            _refreshTime = DateTime.Now.AddSeconds(responseToken["expires_in"].Value<int>());
-        }
-
-        /// <inheritdoc/>
-        public override bool IsSafe => false;
-
-        /// <summary>
         /// Adds a post with the specified ID to favorites.
         /// </summary>
+        /// <remarks>
+        /// You must login once using <see cref="LoginAsync(string)"/> or
+        /// <see cref="LoginAsync(string, string)"/> before calling this method.
+        /// </remarks>
         /// <param name="postId">The ID of the post to add to favorites.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
         /// <exception cref="AuthentificationRequired"/>
@@ -192,8 +158,7 @@ namespace BooruSharp.Others
         /// <exception cref="InvalidPostId"/>
         public override async Task AddFavoriteAsync(int postId)
         {
-            if (AccessToken == null)
-                throw new AuthentificationRequired();
+            await CheckUpdateTokenAsync();
 
             var request = new HttpRequestMessage(HttpMethod.Post, BaseUrl + "v2/illust/bookmark/add");
             AddAuthorizationHeader(request);
@@ -204,7 +169,7 @@ namespace BooruSharp.Others
                     { "restrict", "public" }
                 });
 
-            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            var response = await GetResponseAsync(request);
 
             if (response.StatusCode == HttpStatusCode.NotFound)
                 throw new InvalidPostId();
@@ -215,6 +180,10 @@ namespace BooruSharp.Others
         /// <summary>
         /// Removes a post with the specified ID from favorites.
         /// </summary>
+        /// <remarks>
+        /// You must login once using <see cref="LoginAsync(string)"/> or
+        /// <see cref="LoginAsync(string, string)"/> before calling this method.
+        /// </remarks>
         /// <param name="postId">The ID of the post to remove from favorites.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
         /// <exception cref="AuthentificationRequired"/>
@@ -222,9 +191,8 @@ namespace BooruSharp.Others
         /// <exception cref="InvalidPostId"/>
         public override async Task RemoveFavoriteAsync(int postId)
         {
-            if (AccessToken == null)
-                throw new AuthentificationRequired();
-
+            await CheckUpdateTokenAsync();
+            
             var request = new HttpRequestMessage(HttpMethod.Post, BaseUrl + "v1/illust/bookmark/delete");
             AddAuthorizationHeader(request);
             request.Content = new FormUrlEncodedContent(
@@ -233,7 +201,7 @@ namespace BooruSharp.Others
                     { "illust_id", postId.ToString() }
                 });
 
-            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            var response = await GetResponseAsync(request);
 
             if (response.StatusCode == HttpStatusCode.NotFound)
                 throw new InvalidPostId("There is no post with this ID in your bookmarks");
@@ -242,20 +210,24 @@ namespace BooruSharp.Others
         }
 
         /// <inheritdoc/>
+        /// <remarks>
+        /// You must login once using <see cref="LoginAsync(string)"/> or
+        /// <see cref="LoginAsync(string, string)"/> before calling this method.
+        /// </remarks>
+        /// <exception cref="AuthentificationInvalid"/>
+        /// <exception cref="AuthentificationRequired"/>
+        /// <exception cref="InvalidPostId"/>
         public override async Task<SearchResult> GetPostByIdAsync(int id)
         {
-            if (AccessToken == null)
-                throw new AuthentificationRequired();
-
             await CheckUpdateTokenAsync();
 
             var request = new HttpRequestMessage(HttpMethod.Get, BaseUrl + "v1/illust/detail?illust_id=" + id);
             AddAuthorizationHeader(request);
 
-            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            var response = await GetResponseAsync(request);
 
             if (response.StatusCode == HttpStatusCode.NotFound)
-                throw new InvalidTags();
+                throw new InvalidPostId();
 
             response.EnsureSuccessStatusCode();
 
@@ -264,10 +236,17 @@ namespace BooruSharp.Others
         }
 
         /// <inheritdoc/>
+        /// <remarks>
+        /// You must login once using <see cref="LoginAsync(string)"/> or
+        /// <see cref="LoginAsync(string, string)"/> before calling this method.
+        /// </remarks>
+        /// <exception cref="AuthentificationInvalid"/>
+        /// <exception cref="AuthentificationRequired"/>
         /// <exception cref="InvalidTags"/>
         public override async Task<SearchResult> GetRandomPostAsync(params string[] tagsArg)
         {
-            // GetPostCountAsync already check for UpdateToken and if parameters are valid
+            await CheckUpdateTokenAsync();
+
             int max = Math.Min(await GetPostCountAsync(tagsArg), 5000);
 
             if (max == 0)
@@ -275,11 +254,10 @@ namespace BooruSharp.Others
 
             int id = Random.Next(1, max + 1);
             var requestUrl = BaseUrl + "v1/search/illust?word=" + JoinTagsAndEscapeString(tagsArg) + "&offset=" + id;
-
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
             AddAuthorizationHeader(request);
 
-            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            var response = await GetResponseAsync(request);
 
             if (response.StatusCode == HttpStatusCode.NotFound)
                 throw new InvalidTags();
@@ -293,22 +271,15 @@ namespace BooruSharp.Others
 
         /// <inheritdoc/>
         /// <exception cref="ArgumentException"/>
-        /// <exception cref="AuthentificationRequired"/>
         public override async Task<int> GetPostCountAsync(params string[] tagsArg)
         {
-            if (AccessToken == null)
-                throw new AuthentificationRequired();
-
             if (tagsArg.Length == 0)
                 throw new ArgumentException("You must provide at least one tag.", nameof(tagsArg));
 
-            await CheckUpdateTokenAsync();
-
             var requestUrl = "https://www.pixiv.net/ajax/search/artworks/" + JoinTagsAndEscapeString(tagsArg);
-
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
 
-            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            var response = await GetResponseAsync(request);
 
             response.EnsureSuccessStatusCode();
 
@@ -317,14 +288,16 @@ namespace BooruSharp.Others
         }
 
         /// <inheritdoc/>
+        /// <remarks>
+        /// You must login once using <see cref="LoginAsync(string)"/> or
+        /// <see cref="LoginAsync(string, string)"/> before calling this method.
+        /// </remarks>
         /// <exception cref="ArgumentException"/>
+        /// <exception cref="AuthentificationInvalid"/>
         /// <exception cref="AuthentificationRequired"/>
         /// <exception cref="InvalidTags"/>
         public override async Task<SearchResult[]> GetLastPostsAsync(params string[] tagsArg)
         {
-            if (AccessToken == null)
-                throw new AuthentificationRequired();
-
             if (tagsArg.Length == 0)
                 throw new ArgumentException("You must provide at least one tag.", nameof(tagsArg));
 
@@ -335,7 +308,7 @@ namespace BooruSharp.Others
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
             AddAuthorizationHeader(request);
 
-            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            var response = await GetResponseAsync(request);
 
             if (response.StatusCode == HttpStatusCode.NotFound)
                 throw new InvalidTags();
@@ -344,6 +317,76 @@ namespace BooruSharp.Others
 
             var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
             return ParseSearchResults((JArray)jsonToken["illusts"]);
+        }
+
+        /// <summary>
+        /// Releases all resources used by the current instance of the <see cref="Pixiv"/> class.
+        /// </summary>
+        public void Dispose()
+        {
+            _loginSemaphore.Dispose();
+        }
+
+        // Make sure to call and await CheckUpdateTokenAsync
+        // first before calling this method.
+        private void AddAuthorizationHeader(HttpRequestMessage request)
+        {
+            _loginSemaphore.Wait();
+            request.Headers.Add("Authorization", "Bearer " + AccessToken);
+            _loginSemaphore.Release();
+        }
+
+        private static void AddUserAgentHeader(HttpRequestMessage request)
+        {
+            // <https://github.com/akameco/pixiv-app-api/pull/42/commits/9a16f5f80e483a3518b58d4e519a7cc09e51309f#diff-a2a171449d862fe29692ce031981047d7ab755ae7f84c707aef80701b3ea0c80>
+            request.Headers.Add("User-Agent", $"PixivAndroidApp/{_appVersion} (Android 6.0; PixivBot)");
+        }
+
+        private async Task CheckUpdateTokenAsync()
+        {
+            await _loginSemaphore.WaitAsync();
+            var refreshToken = RefreshToken;
+            _loginSemaphore.Release();
+
+            if (refreshToken == null)
+                throw new AuthentificationRequired();
+
+            if (DateTime.Now > _refreshTime)
+                await LoginAsync(refreshToken);
+        }
+
+        private Task<HttpResponseMessage> GetResponseAsync(HttpRequestMessage requestMessage)
+        {
+            return HttpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
+        }
+
+        private async Task SendLoginRequestAsync(HttpRequestMessage requestMessage)
+        {
+            AddUserAgentHeader(requestMessage);
+
+            try
+            {
+                await _loginSemaphore.WaitAsync();
+
+                var response = await GetResponseAsync(requestMessage);
+
+                if (response.StatusCode == HttpStatusCode.BadRequest)
+                    throw new AuthentificationInvalid();
+
+                response.EnsureSuccessStatusCode();
+
+                var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
+                var responseToken = jsonToken["response"];
+
+                AccessToken = responseToken["access_token"].Value<string>();
+                RefreshToken = responseToken["refresh_token"].Value<string>();
+                _refreshTime = DateTime.Now.AddSeconds(responseToken["expires_in"].Value<int>());
+            }
+            finally
+            {
+                // Make sure semaphore is released in case exception is thrown.
+                _loginSemaphore.Release();
+            }
         }
 
         private static string JoinTagsAndEscapeString(string[] tags)
@@ -393,17 +436,6 @@ namespace BooruSharp.Others
                 null);
         }
 
-        private void AddAuthorizationHeader(HttpRequestMessage request)
-        {
-            request.Headers.Add("Authorization", "Bearer " + AccessToken);
-        }
-
-        private static void AddUserAgentHeader(HttpRequestMessage request)
-        {
-            // <https://github.com/akameco/pixiv-app-api/pull/42/commits/9a16f5f80e483a3518b58d4e519a7cc09e51309f#diff-a2a171449d862fe29692ce031981047d7ab755ae7f84c707aef80701b3ea0c80>
-            request.Headers.Add("User-Agent", $"PixivAndroidApp/{_appVersion} (Android 6.0; PixivBot)");
-        }
-
         /// <summary>
         /// Gets the access token associated with the current Pixiv session.
         /// </summary>
@@ -415,6 +447,7 @@ namespace BooruSharp.Others
         public string RefreshToken { get; private set; }
 
         private DateTime _refreshTime;
+        private readonly SemaphoreSlim _loginSemaphore = new SemaphoreSlim(1);
 
         // https://github.com/tobiichiamane/pixivcs/blob/master/PixivBaseAPI.cs#L61-L63
         private readonly string _clientID = "MOBrBDS8blbauoSck0ZfDbtuzpyT";
