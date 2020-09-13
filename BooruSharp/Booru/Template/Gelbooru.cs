@@ -66,12 +66,12 @@ namespace BooruSharp.Booru.Template
             const string gelbooruTimeFormat = "ddd MMM dd HH:mm:ss zzz yyyy";
 
             string directory = elem["directory"].Value<string>();
-            string image = elem["image"].Value<string>();
+            string hash = elem["hash"].Value<string>();
             int id = elem["id"].Value<int>();
 
             return new Search.Post.SearchResult(
                 new Uri(elem["file_url"].Value<string>()),
-                new Uri("https://gelbooru.com/thumbnails/" + directory + "/thumbnail_" + image),
+                new Uri("https://gelbooru.com/thumbnails/" + directory + "/thumbnail_" + hash + ".jpg"),
                 new Uri(BaseUrl + "index.php?page=post&s=view&id=" + id),
                 GetRating(elem["rating"].Value<string>()[0]),
                 elem["tags"].Value<string>().Split(' '),
@@ -84,7 +84,7 @@ namespace BooruSharp.Booru.Template
                 DateTime.ParseExact(elem["created_at"].Value<string>(), gelbooruTimeFormat, CultureInfo.InvariantCulture),
                 elem["source"].Value<string>(),
                 elem["score"].Value<int>(),
-                elem["hash"].Value<string>()
+                hash
                 );
         }
 
