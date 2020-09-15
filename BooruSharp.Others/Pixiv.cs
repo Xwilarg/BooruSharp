@@ -246,7 +246,7 @@ namespace BooruSharp.Others
 
                 response.EnsureSuccessStatusCode();
 
-                var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
+                var jsonToken = await GetJsonAsync<JToken>(response.Content);
                 return ParseSearchResult(jsonToken["illust"]);
             }
         }
@@ -280,7 +280,7 @@ namespace BooruSharp.Others
 
                 response.EnsureSuccessStatusCode();
 
-                var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
+                var jsonToken = await GetJsonAsync<JToken>(response.Content);
                 var jsonArray = (JArray)jsonToken["illusts"];
                 return ParseSearchResult(jsonArray[0]);
             }
@@ -300,7 +300,7 @@ namespace BooruSharp.Others
             {
                 response.EnsureSuccessStatusCode();
 
-                var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
+                var jsonToken = await GetJsonAsync<JToken>(response.Content);
                 return jsonToken["body"]["illustManga"]["total"].Value<int>();
             }
         }
@@ -333,7 +333,7 @@ namespace BooruSharp.Others
 
                 response.EnsureSuccessStatusCode();
 
-                var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
+                var jsonToken = await GetJsonAsync<JToken>(response.Content);
                 return ParseSearchResults((JArray)jsonToken["illusts"]);
             }
         }
@@ -412,7 +412,7 @@ namespace BooruSharp.Others
 
                     response.EnsureSuccessStatusCode();
 
-                    var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
+                    var jsonToken = await GetJsonAsync<JToken>(response.Content);
                     responseToken = jsonToken["response"];
                 }
 

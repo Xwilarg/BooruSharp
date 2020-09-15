@@ -233,14 +233,20 @@ namespace BooruSharp.Booru
             return new Uri(BaseUrl + queryString);
         }
 
+        private protected async Task<T> GetJsonAsync<T>(HttpContent httpContent)
+        {
+            var jsonString = await httpContent.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(jsonString);
+        }
+
         // TODO: Handle limitrate
 
         private async Task<T> GetJsonAsync<T>(string url)
         {
             using (var response = await GetResponseAsync(url))
             {
-                var jsonString = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<T>(jsonString);
+                // Must be awaited otherwise we'll get ObjectDisposed exception.
+                return await GetJsonAsync<T>(response.Content);
             }
         }
 
