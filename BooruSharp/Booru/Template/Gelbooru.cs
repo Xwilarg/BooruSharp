@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using BooruSharp.Utils;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -73,7 +74,7 @@ namespace BooruSharp.Booru.Template
                 new Uri(token["file_url"].Value<string>()),
                 new Uri("https://gelbooru.com/thumbnails/" + directory + "/thumbnail_" + hash + ".jpg"),
                 new Uri(BaseUrl + "index.php?page=post&s=view&id=" + id),
-                GetRating(token["rating"].Value<string>()[0]),
+                RatingUtils.Parse(token["rating"].Value<string>()),
                 token["tags"].Value<string>().Split(' '),
                 id,
                 null,
@@ -115,7 +116,7 @@ namespace BooruSharp.Booru.Template
             return new Search.Tag.SearchResult(
                 token["id"].Value<int>(),
                 token["tag"].Value<string>(),
-                StringToTagType(token["type"].Value<string>()),
+                TagUtils.Parse(token["type"].Value<string>()),
                 token["count"].Value<int>()
                 );
         }

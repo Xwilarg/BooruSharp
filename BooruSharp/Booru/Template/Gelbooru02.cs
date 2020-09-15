@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using BooruSharp.Utils;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -45,7 +46,7 @@ namespace BooruSharp.Booru.Template
                 new Uri(baseUrl + "//images/" + directory + "/" + image),
                 new Uri(baseUrl + "//thumbnails/" + directory + "/thumbnails_" + image),
                 new Uri(BaseUrl + "index.php?page=post&s=view&id=" + id),
-                GetRating(token["rating"].Value<string>()[0]),
+                RatingUtils.Parse(token["rating"].Value<string>()),
                 token["tags"].Value<string>().Split(' '),
                 id,
                 null,

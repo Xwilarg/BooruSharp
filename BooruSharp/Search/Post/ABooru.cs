@@ -206,19 +206,5 @@ namespace BooruSharp.Booru
         {
             return GetSearchResultsFromUrlAsync(url.AbsoluteUri);
         }
-
-        /// <summary>
-        /// Converts a letter to its maching <see cref="Search.Post.Rating"/>.
-        /// </summary>
-        protected Search.Post.Rating GetRating(char c)
-        {
-            switch (c)
-            {
-                case 's': case 'S': return Search.Post.Rating.Safe;
-                case 'q': case 'Q': return Search.Post.Rating.Questionable;
-                case 'e': case 'E': return Search.Post.Rating.Explicit;
-                default: throw new ArgumentException($"Invalid rating '{c}'.", nameof(c));
-            }
-        }
     }
 }

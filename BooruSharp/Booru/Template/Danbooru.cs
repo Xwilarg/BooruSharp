@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using BooruSharp.Utils;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 
@@ -41,7 +42,7 @@ namespace BooruSharp.Booru.Template
                 url != null ? new Uri(url.Value<string>()) : null,
                 previewUrl != null ? new Uri(previewUrl.Value<string>()) : null,
                 id.HasValue ? new Uri(BaseUrl + "posts/" + id.Value) : null,
-                GetRating(token["rating"].Value<string>()[0]),
+                RatingUtils.Parse(token["rating"].Value<string>()),
                 token["tag_string"].Value<string>().Split(' '),
                 id ?? 0,
                 token["file_size"].Value<int>(),

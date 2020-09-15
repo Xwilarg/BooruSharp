@@ -126,19 +126,5 @@ namespace BooruSharp.Booru
 
             throw new Search.InvalidTags();
         }
-
-        private protected Search.Tag.TagType StringToTagType(string value)
-        {
-            StringComparer comparer = StringComparer.OrdinalIgnoreCase;
-
-            if (comparer.Equals(value, "tag"))
-                return Search.Tag.TagType.Trivia; // BooruSharp rename the tag "Tag" by "Trivia" for more clarity
-
-            foreach (Search.Tag.TagType type in Enum.GetValues(typeof(Search.Tag.TagType)))
-                if (comparer.Equals(value, type.ToString()))
-                    return type;
-
-            throw new ArgumentException($"Invalid tag '{value}'.", nameof(value));
-        }
     }
 }
