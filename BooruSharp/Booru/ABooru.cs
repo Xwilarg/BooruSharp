@@ -356,7 +356,7 @@ namespace BooruSharp.Booru
 
                 // Add our User-Agent if client's User-Agent header is empty.
                 if (_client != null && !_client.DefaultRequestHeaders.Contains("User-Agent"))
-                    _client.DefaultRequestHeaders.Add("User-Agent", _userAgentHeaderValue);
+                    _client.DefaultRequestHeaders.Add("User-Agent", TextUtils.GetUserAgent());
             }
         }
 
@@ -375,12 +375,11 @@ namespace BooruSharp.Booru
         // All options are stored in a bit field and can be retrieved using related methods/properties.
         private readonly BooruOptions _options;
         private readonly UrlFormat _format; // URL format
-        private const string _userAgentHeaderValue = "Mozilla/5.0 BooruSharp";
         private protected readonly DateTime _unixTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private static readonly Lazy<HttpClient> _lazyClient = new Lazy<HttpClient>(() =>
         {
             HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Add("User-Agent", _userAgentHeaderValue);
+            client.DefaultRequestHeaders.Add("User-Agent", TextUtils.GetUserAgent());
             return client;
         });
     }

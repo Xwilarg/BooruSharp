@@ -1,4 +1,5 @@
 ﻿using BooruSharp.Search;
+using BooruSharp.Utils;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -84,7 +85,7 @@ namespace BooruSharp.Booru
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUrl);
             request.Headers["Cookie"] = "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash;
-            request.UserAgent = _userAgentHeaderValue;
+            request.UserAgent = TextUtils.GetUserAgent();
             request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
             return request;

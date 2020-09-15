@@ -1,5 +1,6 @@
 ﻿using BooruSharp.Booru;
 using BooruSharp.Others;
+using BooruSharp.Utils;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -336,16 +337,31 @@ namespace BooruSharp.UnitTests
             }
         }
 
-        [Fact]
-        public async Task SetHttpClientAsync()
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task SetHttpClientAsync(bool useCustomUserAgent)
         {
             var booru = new Gelbooru();
-            HttpClient hc = new HttpClient();
-            hc.DefaultRequestHeaders.Add("User-Agent", "BooruSharp.Unit-Tests");
-            booru.HttpClient = hc;
+            var client = new HttpClient();
+
+            string userAgent;
+
+            if (useCustomUserAgent)
+            {
+                userAgent = TextUtils.GetUserAgent("UnitTests");
+                client.DefaultRequestHeaders.Add("User-Agent", userAgent);
+            }
+            else
+            {
+                userAgent = TextUtils.GetUserAgent();
+            }
+
+            booru.HttpClient = client;
             await General.CheckGetRandomAsync(booru, "kantai_collection");
-            Assert.Single(hc.DefaultRequestHeaders.GetValues("User-Agent"));
-            Assert.Contains("BooruSharp.Unit-Tests", hc.DefaultRequestHeaders.GetValues("User-Agent"));
+
+            Assert.Single(client.DefaultRequestHeaders.GetValues("User-Agent"));
+            Assert.Contains(userAgent, client.DefaultRequestHeaders.GetValues("User-Agent"));
         }
 
         [SkippableTheory]
