@@ -262,7 +262,7 @@ namespace BooruSharp.Booru
             {
                 var xmlDoc = new XmlDocument();
                 var xmlString = await response.Content.ReadAsStringAsync();
-                xmlDoc.LoadXml(XmlEntity.ReplaceAll(xmlString));
+                xmlDoc.LoadXml(XmlUtils.ReplaceHtmlEntities(xmlString));
 
                 return xmlDoc;
             }

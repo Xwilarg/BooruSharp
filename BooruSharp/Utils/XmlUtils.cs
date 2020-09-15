@@ -2,9 +2,9 @@
 using System.Collections.ObjectModel;
 using System.Text;
 
-namespace BooruSharp
+namespace BooruSharp.Utils
 {
-    internal static class XmlEntity
+    internal static class XmlUtils
     {
         private static readonly ReadOnlyDictionary<string, string> _xmlEntities =
            new ReadOnlyDictionary<string, string>(new Dictionary<string, string>
@@ -79,7 +79,7 @@ namespace BooruSharp
                ["&yacute;"] = "\x00FD",
            });
 
-        public static string ReplaceAll(string originalXml)
+        public static string ReplaceHtmlEntities(string originalXml)
         {
             var builder = new StringBuilder(originalXml);
 
