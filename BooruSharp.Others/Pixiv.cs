@@ -20,7 +20,7 @@ namespace BooruSharp.Others
     /// Pixiv.
     /// <para>https://www.pixiv.net/</para>
     /// </summary>
-    public class Pixiv : ABooru, IDisposable
+    public class Pixiv : ABooru
     {
         private const string _appVersion = "5.0.212";
 
@@ -342,35 +342,6 @@ namespace BooruSharp.Others
             }
         }
 
-        /// <summary>
-        /// Releases all resources used by the current instance of the <see cref="Pixiv"/> class.
-        /// </summary>
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Releases all resources used by the current instance of the <see cref="Pixiv"/> class
-        /// and optionally releases the managed resources.
-        /// </summary>
-        /// <param name="disposing"><see langword="true"/> to release both managed and unmanaged resources;
-        /// <see langword="false"/> to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposedValue)
-            {
-                if (disposing)
-                {
-                    _loginSemaphore.Dispose();
-                }
-
-                _disposedValue = true;
-            }
-        }
-
         // Make sure to call and await CheckUpdateTokenAsync
         // first before calling this method.
         private void AddAuthorizationHeader(HttpRequestMessage request)
@@ -483,7 +454,6 @@ namespace BooruSharp.Others
         public string RefreshToken { get; private set; }
 
         private DateTime _refreshTime;
-        private bool _disposedValue;
         private readonly SemaphoreSlim _loginSemaphore = new SemaphoreSlim(1);
 
         // https://github.com/tobiichiamane/pixivcs/blob/master/PixivBaseAPI.cs#L61-L63
