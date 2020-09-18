@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -116,7 +115,7 @@ namespace BooruSharp.Booru
 
                 if (SearchIncreasedPostLimit && max > _increasedPostLimitCount)
                     max = _increasedPostLimitCount;
-                
+
                 return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, tagString, "pid=" + Random.Next(0, max)));
             }
 

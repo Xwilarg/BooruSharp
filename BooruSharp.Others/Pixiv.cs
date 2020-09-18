@@ -2,7 +2,6 @@
 using BooruSharp.Search;
 using BooruSharp.Search.Post;
 using BooruSharp.Utils;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
