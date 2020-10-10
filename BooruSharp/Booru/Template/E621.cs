@@ -55,8 +55,8 @@ namespace BooruSharp.Booru.Template
                 .ToArray();
 
             return new Search.Post.SearchResult(
-                    url != null ? new Uri(url) : null,
-                    previewUrl != null ? new Uri(previewUrl) : null,
+                    url is null ? null : new Uri(url),
+                    previewUrl is null ? null : new Uri(previewUrl),
                     new Uri(BaseUrl + "posts/" + id),
                     RatingUtils.Parse(token["rating"].Value<string>()),
                     tags,

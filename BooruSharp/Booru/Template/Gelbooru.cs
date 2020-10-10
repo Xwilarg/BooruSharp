@@ -33,7 +33,7 @@ namespace BooruSharp.Booru.Template
         /// <inheritdoc/>
         public async override Task<Search.Post.SearchResult> GetPostByMd5Async(string md5)
         {
-            if (md5 == null)
+            if (md5 is null)
                 throw new ArgumentNullException(nameof(md5));
 
             // Create a URL that will redirect us to Gelbooru post URL containing post ID.

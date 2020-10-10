@@ -320,7 +320,7 @@ namespace BooruSharp.Booru
 
         private string TagsToString(string[] tags)
         {
-            return tags != null ? $"tags={TextUtils.JoinAndEscape(tags)}" : "";
+            return tags is null ? "" : $"tags={TextUtils.JoinAndEscape(tags)}";
         }
 
         private string SearchArg(string value)
@@ -354,7 +354,7 @@ namespace BooruSharp.Booru
                 _client = value;
 
                 // Add our User-Agent if client's User-Agent header is empty.
-                if (_client != null && !_client.DefaultRequestHeaders.Contains("User-Agent"))
+                if (!(_client is null) && !_client.DefaultRequestHeaders.Contains("User-Agent"))
                     _client.DefaultRequestHeaders.Add("User-Agent", TextUtils.GetUserAgent());
             }
         }

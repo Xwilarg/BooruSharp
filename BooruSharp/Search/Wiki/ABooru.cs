@@ -20,7 +20,7 @@ namespace BooruSharp.Booru
             if (!HasWikiAPI)
                 throw new Search.FeatureUnavailable();
 
-            if (query == null)
+            if (query is null)
                 throw new ArgumentNullException(nameof(query));
 
             var array = await GetJsonAsync<JArray>(

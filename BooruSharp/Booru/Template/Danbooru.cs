@@ -39,8 +39,8 @@ namespace BooruSharp.Booru.Template
             var md5 = token["md5"];
 
             return new Search.Post.SearchResult(
-                url != null ? new Uri(url.Value<string>()) : null,
-                previewUrl != null ? new Uri(previewUrl.Value<string>()) : null,
+                url is null ? null : new Uri(url.Value<string>()),
+                previewUrl is null ? null : new Uri(previewUrl.Value<string>()),
                 id.HasValue ? new Uri(BaseUrl + "posts/" + id.Value) : null,
                 RatingUtils.Parse(token["rating"].Value<string>()),
                 token["tag_string"].Value<string>().Split(' '),

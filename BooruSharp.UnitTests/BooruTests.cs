@@ -117,9 +117,9 @@ namespace BooruSharp.UnitTests
         public void IsBooruAuthSet()
         {
             var b = new Gelbooru();
-            Assert.True(b.Auth == null);
+            Assert.True(b.Auth is null);
             b.Auth = new BooruAuth("AAA", "AAA");
-            Assert.False(b.Auth == null);
+            Assert.False(b.Auth is null);
         }
 
         [Theory]
@@ -215,7 +215,7 @@ namespace BooruSharp.UnitTests
                 do
                 {
                     result1 = await General.GetRandomPostAsync(booru);
-                } while (result1.MD5 == null);
+                } while (result1.MD5 is null);
                 var result2 = await booru.GetPostByMd5Async(result1.MD5);
                 Assert.Equal(result1.ID, result2.ID);
             }
@@ -729,8 +729,10 @@ namespace BooruSharp.UnitTests
             for (int i = 0; i < 10; i++)
             {
                 var image = await b.GetRandomPostAsync(explicitTag);
-                if (isSafe && image.FileUrl != null)
+
+                if (isSafe && !(image.FileUrl is null))
                     Assert.NotEqual(Search.Post.Rating.Explicit, image.Rating);
+
                 if (image.Rating == Search.Post.Rating.Explicit)
                     foundExplicit = true;
             }

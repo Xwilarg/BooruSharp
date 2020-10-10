@@ -24,7 +24,7 @@ namespace BooruSharp.Booru
             if (!HasTagByIdAPI)
                 throw new Search.FeatureUnavailable();
 
-            if (name == null)
+            if (name is null)
                 throw new ArgumentNullException(nameof(name));
 
             return await SearchTagAsync(name, null);
@@ -59,7 +59,7 @@ namespace BooruSharp.Booru
             if (!HasTagByIdAPI)
                 throw new Search.FeatureUnavailable();
 
-            if (name == null)
+            if (name is null)
                 throw new ArgumentNullException(nameof(name));
 
             var urlTags = new List<string> { SearchArg("name") + name };
@@ -93,7 +93,7 @@ namespace BooruSharp.Booru
         {
             var urlTags = new List<string>();
 
-            urlTags.Add(name == null
+            urlTags.Add(name is null
                 ? SearchArg("id") + id
                 : SearchArg("name") + name);
 
@@ -119,7 +119,7 @@ namespace BooruSharp.Booru
                     ? GetTagSearchResult((XmlNode)item)
                     : GetTagSearchResult((JToken)item);
 
-                if ((name == null && id == result.ID) || (name != null && name == result.Name))
+                if ((name is null && id == result.ID) || (!(name is null) && name == result.Name))
                     return result;
             }
 

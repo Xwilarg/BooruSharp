@@ -41,7 +41,7 @@ namespace BooruSharp.UnitTests
                 string userID = Environment.GetEnvironmentVariable("PIXIV_USER_ID");
                 string password = Environment.GetEnvironmentVariable("PIXIV_PASSWORD");
 
-                Skip.If(userID == null || password == null, "Pixiv user ID and/or password aren't set.");
+                Skip.If(userID is null || password is null, "Pixiv user ID and/or password aren't set.");
 
                 await pixiv.LoginAsync(userID, password);
             }

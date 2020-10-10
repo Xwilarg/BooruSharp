@@ -362,7 +362,7 @@ namespace BooruSharp.Others
             var refreshToken = RefreshToken;
             _loginSemaphore.Release();
 
-            if (refreshToken == null)
+            if (refreshToken is null)
                 throw new AuthentificationRequired();
 
             if (DateTime.Now > _refreshTime)

@@ -32,17 +32,17 @@ namespace BooruSharp.UnitTests
 
         public static async Task CheckResultAsync(Search.Post.SearchResult result, string inputTag)
         {
-            if (result.FileUrl != null)
+            if (!(result.FileUrl is null))
             {
                 string resFile = await CheckUrlAsync(result.FileUrl);
                 string resPreview = await CheckUrlAsync(result.PreviewUrl);
                 string resPost = await CheckUrlAsync(result.PostUrl);
-                Assert.True(resPost == null, resPost);
-                Assert.True(resFile == null, resFile);
-                Assert.True(resPreview == null, resPreview);
+                Assert.True(resPost is null, resPost);
+                Assert.True(resFile is null, resFile);
+                Assert.True(resPreview is null, resPreview);
                 Assert.NotEqual(0, result.Height);
                 Assert.NotEqual(0, result.Width);
-                if (result.PreviewHeight != null)
+                if (!(result.PreviewHeight is null))
                 {
                     Assert.NotEqual(0, result.PreviewHeight);
                     Assert.NotEqual(0, result.PreviewWidth);
@@ -140,7 +140,7 @@ namespace BooruSharp.UnitTests
             string passwordHash = Environment.GetEnvironmentVariable(booruName + "_PASSWORD_HASH");
 
             Skip.If(
-                userID == null || passwordHash == null,
+                userID is null || passwordHash is null,
                 $"{booruName}_* environment variables aren't set.");
 
             booru.Auth = new BooruAuth(userID, passwordHash);

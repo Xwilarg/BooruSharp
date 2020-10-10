@@ -28,7 +28,7 @@ namespace BooruSharp.Booru
             if (!HasFavoriteAPI)
                 throw new FeatureUnavailable();
 
-            if (Auth == null)
+            if (Auth is null)
                 throw new AuthentificationRequired();
 
             HttpWebRequest request = CreateAuthRequest(BaseUrl + "public/addfav.php?id=" + postId);
@@ -60,7 +60,7 @@ namespace BooruSharp.Booru
             if (!HasFavoriteAPI)
                 throw new FeatureUnavailable();
 
-            if (Auth == null)
+            if (Auth is null)
                 throw new AuthentificationRequired();
 
             HttpWebRequest request = CreateAuthRequest(BaseUrl + "index.php?page=favorites&s=delete&id=" + postId);

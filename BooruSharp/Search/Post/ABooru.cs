@@ -25,7 +25,7 @@ namespace BooruSharp.Booru
             if (!HasPostByMd5API)
                 throw new Search.FeatureUnavailable();
 
-            if (md5 == null)
+            if (md5 is null)
                 throw new ArgumentNullException(nameof(md5));
 
             return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, "md5=" + md5));
@@ -62,9 +62,9 @@ namespace BooruSharp.Booru
             if (!HasPostCountAPI)
                 throw new Search.FeatureUnavailable();
 
-            string[] tags = tagsArg != null
-                ? tagsArg.Where(tag => !string.IsNullOrWhiteSpace(tag)).ToArray()
-                : Array.Empty<string>();
+            string[] tags = tagsArg is null
+                ? Array.Empty<string>()
+                : tagsArg.Where(tag => !string.IsNullOrWhiteSpace(tag)).ToArray();
 
             if (NoMoreThanTwoTags && tags.Length > _limitedTagsSearchCount)
                 throw new Search.TooManyTags();
@@ -84,9 +84,9 @@ namespace BooruSharp.Booru
         /// <exception cref="Search.TooManyTags"/>
         public virtual async Task<Search.Post.SearchResult> GetRandomPostAsync(params string[] tagsArg)
         {
-            string[] tags = tagsArg != null
-                ? tagsArg.Where(tag => !string.IsNullOrWhiteSpace(tag)).ToArray()
-                : Array.Empty<string>();
+            string[] tags = tagsArg is null
+                ? Array.Empty<string>()
+                : tagsArg.Where(tag => !string.IsNullOrWhiteSpace(tag)).ToArray();
 
             if (NoMoreThanTwoTags && tags.Length > _limitedTagsSearchCount)
                 throw new Search.TooManyTags();
@@ -140,9 +140,9 @@ namespace BooruSharp.Booru
             if (!HasMultipleRandomAPI)
                 throw new Search.FeatureUnavailable();
 
-            string[] tags = tagsArg != null
-                ? tagsArg.Where(tag => !string.IsNullOrWhiteSpace(tag)).ToArray()
-                : Array.Empty<string>();
+            string[] tags = tagsArg is null
+                ? Array.Empty<string>()
+                : tagsArg.Where(tag => !string.IsNullOrWhiteSpace(tag)).ToArray();
 
             if (NoMoreThanTwoTags && tags.Length > _limitedTagsSearchCount)
                 throw new Search.TooManyTags();

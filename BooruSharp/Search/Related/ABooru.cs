@@ -20,7 +20,7 @@ namespace BooruSharp.Booru
             if (!HasRelatedAPI)
                 throw new Search.FeatureUnavailable();
 
-            if (tag == null)
+            if (tag is null)
                 throw new ArgumentNullException(nameof(tag));
 
             bool isDanbooruFormat = _format == UrlFormat.Danbooru;

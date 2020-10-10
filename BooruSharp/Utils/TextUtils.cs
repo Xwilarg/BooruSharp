@@ -11,10 +11,10 @@ namespace BooruSharp.Utils
         public static string JoinAndEscape(
             IEnumerable<string> stringsToJoin, string separator = " ", bool forceLowerCase = true)
         {
-            if (separator == null)
+            if (separator is null)
                 throw new ArgumentNullException(nameof(separator));
 
-            if (stringsToJoin != null && stringsToJoin.Any())
+            if (!(stringsToJoin is null) && stringsToJoin.Any())
             {
                 var joined = string.Join(separator, stringsToJoin);
                 var escaped = Uri.EscapeDataString(
