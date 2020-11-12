@@ -251,6 +251,20 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
+        [MemberData(nameof(BooruParams))]
+        public async Task GetLastPostsWithLimitAsync(Type t)
+        {
+            var booru = await Boorus.GetAsync(t);
+            if (booru.NoEmptyPostSearch)
+                await Assert.ThrowsAsync<ArgumentException>(() => booru.GetLastPostsAsync());
+            else
+            {
+                var results = await booru.GetLastPostsAsync(200);
+                Assert.Equal(200, results.Length);
+            }
+        }
+
+        [SkippableTheory]
         [MemberData(nameof(BooruPostCountParams))]
         public async Task GetLastPostsWithTagsAsync(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "swimsuit")
         {
