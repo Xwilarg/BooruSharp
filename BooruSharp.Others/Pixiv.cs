@@ -20,6 +20,8 @@ namespace BooruSharp.Others
     /// </summary>
     public class Pixiv : ABooru
     {
+        private const string _appVersion = "5.0.212";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Pixiv"/> class.
         /// </summary>
@@ -52,6 +54,7 @@ namespace BooruSharp.Others
 
             string time = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss+00:00");
             request.Headers.Add("X-Client-Time", time);
+            AddUserAgentHeader(request);
 
             using (var md5 = MD5.Create())
             {
@@ -160,6 +163,7 @@ namespace BooruSharp.Others
                     { "grant_type", "refresh_token" },
                     { "refresh_token", RefreshToken }
                 });
+            AddUserAgentHeader(request);
 
             var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
 
@@ -392,6 +396,12 @@ namespace BooruSharp.Others
         private void AddAuthorizationHeader(HttpRequestMessage request)
         {
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
+        }
+
+        private static void AddUserAgentHeader(HttpRequestMessage request)
+        {
+            // <https://github.com/akameco/pixiv-app-api/pull/42/commits/9a16f5f80e483a3518b58d4e519a7cc09e51309f#diff-a2a171449d862fe29692ce031981047d7ab755ae7f84c707aef80701b3ea0c80>
+            request.Headers.Add("User-Agent", $"PixivAndroidApp/{_appVersion} (Android 6.0; PixivBot)");
         }
 
         /// <summary>
