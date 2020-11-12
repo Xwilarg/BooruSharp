@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.4.0-beta</Version>
+    <Version>2.0.0-beta</Version>
     <Authors>Xwilarg</Authors>
     <Company>Xwilarg</Company>
     <Description>Extension of BooruSharp to handle non-booru websites and handle them like the others</Description>
