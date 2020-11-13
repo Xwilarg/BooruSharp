@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -68,25 +67,9 @@ namespace BooruSharp.Booru
                 urlTags.Add("limit=0");
 
             var url = CreateUrl(_tagUrl, urlTags.ToArray());
+            var results = await GetTagSearchResultsAsync(url);
 
-            if (TagsUseXml)
-            {
-                var xml = await GetXmlAsync(url);
-                // Can't use LINQ with XmlNodes so let's use list here.
-                var results = new List<Search.Tag.SearchResult>(xml.LastChild.ChildNodes.Count);
-
-                foreach (XmlNode node in xml.LastChild)
-                {
-                    results.Add(GetTagSearchResult(node));
-                }
-
-                return results.ToArray();
-            }
-            else
-            {
-                var jsonArray = await GetJsonAsync<JArray>(url);
-                return jsonArray.Select(GetTagSearchResult).ToArray();
-            }
+            return results.ToArray();
         }
 
         private async Task<Search.Tag.SearchResult> SearchTagAsync(string name, int? id)
@@ -101,29 +84,30 @@ namespace BooruSharp.Booru
                 urlTags.Add("limit=0");
 
             var url = CreateUrl(_tagUrl, urlTags.ToArray());
-            IEnumerable enumerable;
+            var results = await GetTagSearchResultsAsync(url);
 
+            try
+            {
+                return results.First(result => (name is null && id == result.ID) || (!(name is null) && name == result.Name));
+            }
+            catch (InvalidOperationException)
+            {
+                throw new Search.InvalidTags();
+            }
+        }
+
+        private async Task<IEnumerable<Search.Tag.SearchResult>> GetTagSearchResultsAsync(Uri url)
+        {
             if (TagsUseXml)
             {
                 var xml = await GetXmlAsync(url);
-                enumerable = xml.LastChild;
+                return xml.LastChild.OfType<XmlNode>().Select(GetTagSearchResult);
             }
             else
             {
-                enumerable = await GetJsonAsync<JArray>(url);
+                var jsonArray = await GetJsonAsync<JArray>(url);
+                return jsonArray.Select(GetTagSearchResult);
             }
-
-            foreach (object item in enumerable)
-            {
-                var result = TagsUseXml
-                    ? GetTagSearchResult((XmlNode)item)
-                    : GetTagSearchResult((JToken)item);
-
-                if ((name is null && id == result.ID) || (!(name is null) && name == result.Name))
-                    return result;
-            }
-
-            throw new Search.InvalidTags();
         }
     }
 }

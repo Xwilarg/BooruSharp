@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,34 +22,9 @@ namespace BooruSharp.Booru
                 throw new Search.FeatureUnavailable();
 
             var url = CreateUrl(_commentUrl, SearchArg("post_id") + postId);
-            var results = new List<Search.Comment.SearchResult>();
+            var results = await GetCommentSearchResultsAsync(url);
 
-            if (CommentsUseXml)
-            {
-                var xml = await GetXmlAsync(url);
-
-                foreach (XmlNode node in xml.LastChild)
-                {
-                    var result = GetCommentSearchResult(node);
-
-                    if (result.PostID == postId)
-                        results.Add(result);
-                }
-            }
-            else
-            {
-                var jsonArray = await GetJsonAsync<JArray>(url);
-
-                foreach (JToken json in jsonArray)
-                {
-                    var result = GetCommentSearchResult(json);
-
-                    if (result.PostID == postId)
-                        results.Add(result);
-                }
-            }
-
-            return results.ToArray();
+            return results.Where(result => result.PostID == postId).ToArray();
         }
 
         /// <summary>
@@ -63,21 +39,22 @@ namespace BooruSharp.Booru
                 throw new Search.FeatureUnavailable();
 
             var url = CreateUrl(_commentUrl);
+            var results = await GetCommentSearchResultsAsync(url);
 
+            return results.ToArray();
+        }
+
+        private async Task<IEnumerable<Search.Comment.SearchResult>> GetCommentSearchResultsAsync(Uri url)
+        {
             if (CommentsUseXml)
             {
                 var xml = await GetXmlAsync(url);
-                var results = new List<Search.Comment.SearchResult>(xml.LastChild.ChildNodes.Count);
-
-                foreach (XmlNode node in xml.LastChild)
-                    results.Add(GetCommentSearchResult(node));
-
-                return results.ToArray();
+                return xml.LastChild.OfType<XmlNode>().Select(GetCommentSearchResult);
             }
             else
             {
                 var jsonArray = await GetJsonAsync<JArray>(url);
-                return jsonArray.Select(GetCommentSearchResult).ToArray();
+                return jsonArray.Select(GetCommentSearchResult);
             }
         }
     }
