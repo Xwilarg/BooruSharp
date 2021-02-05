@@ -21,7 +21,7 @@ namespace BooruSharp.Booru.Template
         /// </param>
         protected E621(string domain, BooruOptions options = BooruOptions.None)
             : base(domain, UrlFormat.Danbooru, options | BooruOptions.NoWiki | BooruOptions.NoRelated | BooruOptions.NoComment 
-                  | BooruOptions.NoTagByID | BooruOptions.NoPostByID | BooruOptions.NoPostCount | BooruOptions.NoFavorite)
+                  | BooruOptions.NoTagByID | BooruOptions.NoPostCount | BooruOptions.NoFavorite)
         { }
 
         private protected override JToken ParseFirstPostSearchResult(object json)
