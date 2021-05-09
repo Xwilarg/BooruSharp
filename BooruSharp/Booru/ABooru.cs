@@ -231,7 +231,6 @@ namespace BooruSharp.Booru
         {
             var xmlDoc = new XmlDocument();
             var xmlString = await GetJsonAsync(url);
-            Console.WriteLine(xmlString);
             // https://www.key-shortcut.com/en/all-html-entities/all-entities/
             xmlDoc.LoadXml(Regex.Replace(xmlString, "&([a-zA-Z]+);", HttpUtility.HtmlDecode("$1")));
             return xmlDoc;
