@@ -18,7 +18,7 @@ namespace BooruSharp.UnitTests
             new object[] { typeof(DanbooruDonmai) },
             new object[] { typeof(E621) },
             new object[] { typeof(E926) },
-            new object[] { typeof(Furrybooru) },
+            //new object[] { typeof(Furrybooru) },
             new object[] { typeof(Gelbooru) },
             new object[] { typeof(Konachan) },
             new object[] { typeof(Lolibooru) },
@@ -38,7 +38,7 @@ namespace BooruSharp.UnitTests
             new object[] { typeof(DanbooruDonmai) },
             new object[] { typeof(E621), "kantai_collection", "swimwear" },
             new object[] { typeof(E926), "kantai_collection", "swimwear" },
-            new object[] { typeof(Furrybooru), "kantai_collection" },
+            //new object[] { typeof(Furrybooru), "kantai_collection" },
             new object[] { typeof(Gelbooru) },
             new object[] { typeof(Konachan), "hibiki_(kancolle)" },
             new object[] { typeof(Lolibooru) },
@@ -58,7 +58,7 @@ namespace BooruSharp.UnitTests
             new object[] { typeof(DanbooruDonmai) },
             new object[] { typeof(E621) },
             new object[] { typeof(E926) },
-            new object[] { typeof(Furrybooru) },
+            //new object[] { typeof(Furrybooru) },
             new object[] { typeof(Gelbooru) },
             new object[] { typeof(Konachan) },
             new object[] { typeof(Lolibooru) },
@@ -78,7 +78,7 @@ namespace BooruSharp.UnitTests
             new object[] { typeof(DanbooruDonmai) },
             new object[] { typeof(E621), "kantai_collection" },
             new object[] { typeof(E926), "kantai_collection" },
-            new object[] { typeof(Furrybooru), "kantai_collection" },
+            //new object[] { typeof(Furrybooru), "kantai_collection" },
             new object[] { typeof(Gelbooru) },
             new object[] { typeof(Konachan), "hibiki_(kancolle)" },
             new object[] { typeof(Lolibooru) },
@@ -98,7 +98,7 @@ namespace BooruSharp.UnitTests
             new object[] { typeof(DanbooruDonmai), true },
             new object[] { typeof(E621), false, "sea", "loli", "swimwear" },
             new object[] { typeof(E926), false, "sea", "breasts", "swimwear" },
-            new object[] { typeof(Furrybooru), false, "water" },
+            //new object[] { typeof(Furrybooru), false, "water" },
             new object[] { typeof(Gelbooru), false },
             new object[] { typeof(Konachan), false, "water" },
             new object[] { typeof(Lolibooru), false },
@@ -454,7 +454,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
         [InlineData(typeof(E926))]
-        [InlineData(typeof(Furrybooru))]
+        //[InlineData(typeof(Furrybooru))]
         [InlineData(typeof(Gelbooru))]
         [InlineData(typeof(Konachan))]
         [InlineData(typeof(Lolibooru))]
@@ -491,7 +491,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(DanbooruDonmai), "hibi", true)]
         [InlineData(typeof(E621), "hibiki", true)]
         [InlineData(typeof(E926), "hibiki", true)]
-        [InlineData(typeof(Furrybooru), "hibiki", true)]
+        //[InlineData(typeof(Furrybooru), "hibiki", true)]
         [InlineData(typeof(Gelbooru), "hibiki", true)]
         [InlineData(typeof(Konachan), "hibiki", false)]
         [InlineData(typeof(Lolibooru), "hibiki", false)]
@@ -519,7 +519,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(DanbooruDonmai), "hibiki_(kantai_collection)", 1240738)]
         [InlineData(typeof(E621), "kantai_collection", 267881)]
         [InlineData(typeof(E926), "kantai_collection", 1329650)]
-        [InlineData(typeof(Furrybooru), "kantai_collection", 151628)]
+        //[InlineData(typeof(Furrybooru), "kantai_collection", 151628)]
         [InlineData(typeof(Gelbooru), "hibiki_(kantai_collection)", 463392)]
         [InlineData(typeof(Konachan), "hibiki_(kancolle)", 75885)]
         [InlineData(typeof(Lolibooru), "hibiki_(kantai_collection)", 2939)]
@@ -556,7 +556,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(DanbooruDonmai), "futanari", 3589)]
         [InlineData(typeof(E621), "futanari", 123)]
         [InlineData(typeof(E926), "futanari", 123)]
-        [InlineData(typeof(Furrybooru), "futanari", -1)]
+        //[InlineData(typeof(Furrybooru), "futanari", -1)]
         [InlineData(typeof(Gelbooru), "futanari", -1)]
         [InlineData(typeof(Konachan), "futanari", 757)]
         [InlineData(typeof(Lolibooru), "futanari", 158)]
@@ -597,7 +597,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(DanbooruDonmai), "kantai_collection", "serafuku")]
         [InlineData(typeof(E621), "sky", "cloud")]
         [InlineData(typeof(E926), "sky", "cloud")]
-        [InlineData(typeof(Furrybooru), "sky", "cloud")]
+        //[InlineData(typeof(Furrybooru), "sky", "cloud")]
         [InlineData(typeof(Gelbooru), "sky", "cloud")]
         [InlineData(typeof(Konachan), "sky", "clouds")]
         [InlineData(typeof(Lolibooru), "sky", "cloud")]
@@ -638,7 +638,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(DanbooruDonmai), 3193008)]
         [InlineData(typeof(E621), 59432)]
         [InlineData(typeof(E926), 541858)]
-        [InlineData(typeof(Furrybooru), 1282210)]
+        //[InlineData(typeof(Furrybooru), 1282210)]
         [InlineData(typeof(Gelbooru), 3988284)]
         [InlineData(typeof(Konachan), 142938)]
         [InlineData(typeof(Lolibooru), 134097)]
@@ -693,7 +693,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(DanbooruDonmai))]
         [InlineData(typeof(E621))]
         [InlineData(typeof(E926), "breast")]
-        [InlineData(typeof(Furrybooru))]
+        //[InlineData(typeof(Furrybooru))]
         [InlineData(typeof(Gelbooru))]
         [InlineData(typeof(Konachan))]
         [InlineData(typeof(Lolibooru))]

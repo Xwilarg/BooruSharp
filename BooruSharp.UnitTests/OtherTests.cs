@@ -37,7 +37,7 @@ namespace BooruSharp.UnitTests
         {
             Assert.Equal(
                 Search.Tag.TagType.Metadata,
-                (await (await Boorus.GetAsync<Gelbooru>()).GetTagAsync("uncensored")).Type);
+                (await (await Boorus.GetAsync<Gelbooru>()).GetTagAsync("highres")).Type);
         }
 
         [Fact]

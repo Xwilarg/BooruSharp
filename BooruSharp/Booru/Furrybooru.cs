@@ -1,5 +1,6 @@
 ﻿namespace BooruSharp.Booru
 {
+    /*
     /// <summary>
     /// FurryBooru.
     /// <para>https://furry.booru.org/</para>
@@ -15,5 +16,5 @@
 
         /// <inheritdoc/>
         public override bool IsSafe => false;
-    }
+    }*/
 }
