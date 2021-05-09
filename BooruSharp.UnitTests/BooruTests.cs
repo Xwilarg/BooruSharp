@@ -35,11 +35,11 @@ namespace BooruSharp.UnitTests
         public static IEnumerable<object[]> BooruPostCountParams { get; } = new object[][]
         {
             new object[] { typeof(Atfbooru) },
-            new object[] { typeof(DanbooruDonmai) },
+            new object[] { typeof(DanbooruDonmai), "hibiki_(kancolle)" },
             new object[] { typeof(E621), "kantai_collection", "swimwear" },
             new object[] { typeof(E926), "kantai_collection", "swimwear" },
             //new object[] { typeof(Furrybooru), "kantai_collection" },
-            new object[] { typeof(Gelbooru) },
+            new object[] { typeof(Gelbooru), "hibiki_(kancolle)" },
             new object[] { typeof(Konachan), "hibiki_(kancolle)" },
             new object[] { typeof(Lolibooru) },
             new object[] { typeof(Realbooru), "swimsuit", "asian" },
@@ -75,11 +75,11 @@ namespace BooruSharp.UnitTests
         public static IEnumerable<object[]> BooruRandomTwoTagsParams { get; } = new object[][]
         {
             new object[] { typeof(Atfbooru) },
-            new object[] { typeof(DanbooruDonmai) },
+            new object[] { typeof(DanbooruDonmai), "hibiki_(kancolle)" },
             new object[] { typeof(E621), "kantai_collection" },
             new object[] { typeof(E926), "kantai_collection" },
             //new object[] { typeof(Furrybooru), "kantai_collection" },
-            new object[] { typeof(Gelbooru) },
+            new object[] { typeof(Gelbooru), "hibiki_(kancolle)" },
             new object[] { typeof(Konachan), "hibiki_(kancolle)" },
             new object[] { typeof(Lolibooru) },
             new object[] { typeof(Realbooru), "school_swimsuit", "small_breasts" },
@@ -121,7 +121,7 @@ namespace BooruSharp.UnitTests
             Assert.False(b.Auth == null);
         }
 
-        [Theory]
+        [SkippableTheory]
         [MemberData(nameof(BooruParams))]
         public async Task UnsetFavoriteErrorAsync(Type t)
         {
@@ -516,7 +516,7 @@ namespace BooruSharp.UnitTests
 
         [SkippableTheory]
         [InlineData(typeof(Atfbooru), "hibiki_(kantai_collection)", 2033)]
-        [InlineData(typeof(DanbooruDonmai), "hibiki_(kantai_collection)", 1240738)]
+        [InlineData(typeof(DanbooruDonmai), "hibiki_(kancolle)", 1275718)]
         [InlineData(typeof(E621), "kantai_collection", 267881)]
         [InlineData(typeof(E926), "kantai_collection", 1329650)]
         //[InlineData(typeof(Furrybooru), "kantai_collection", 151628)]
