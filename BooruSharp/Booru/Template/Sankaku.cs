@@ -42,10 +42,11 @@ namespace BooruSharp.Booru.Template
 
             string[] tags = (from tag in (JArray)elem["tags"]
                              select tag["name"].Value<string>()).ToArray();
-
+            var url = elem["file_url"].Value<string>();
+            var previewUrl = elem["preview_url"].Value<string>();
             return new Search.Post.SearchResult(
-                new Uri(elem["file_url"].Value<string>()),
-                new Uri(elem["preview_url"].Value<string>()),
+                url == null ? null : new Uri(url),
+                previewUrl == null ? null : new Uri(previewUrl),
                 postUriBuilder.Uri,
                 GetRating(elem["rating"].Value<string>()[0]),
                 tags,
@@ -53,8 +54,8 @@ namespace BooruSharp.Booru.Template
                 elem["file_size"].Value<int>(),
                 elem["height"].Value<int>(),
                 elem["width"].Value<int>(),
-                elem["preview_height"].Value<int>(),
-                elem["preview_width"].Value<int>(),
+                elem["preview_height"].Value<int?>(),
+                elem["preview_width"].Value<int?>(),
                 _unixTime.AddSeconds(elem["created_at"]["s"].Value<int>()),
                 elem["source"].Value<string>(),
                 elem["total_score"].Value<int>(),
