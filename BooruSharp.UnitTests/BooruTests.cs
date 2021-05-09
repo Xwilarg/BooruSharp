@@ -259,8 +259,8 @@ namespace BooruSharp.UnitTests
                 await Assert.ThrowsAsync<ArgumentException>(() => booru.GetLastPostsAsync());
             else
             {
-                var results = await booru.GetLastPostsAsync(200);
-                Assert.Equal(200, results.Length);
+                var results = await booru.GetLastPostsAsync(100);
+                Assert.Equal(100, results.Length);
             }
         }
 

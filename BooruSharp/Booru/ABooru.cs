@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
@@ -230,7 +231,9 @@ namespace BooruSharp.Booru
         {
             var xmlDoc = new XmlDocument();
             var xmlString = await GetJsonAsync(url);
-            xmlDoc.LoadXml(XmlEntity.ReplaceAll(xmlString));
+            Console.WriteLine(xmlString);
+            // https://www.key-shortcut.com/en/all-html-entities/all-entities/
+            xmlDoc.LoadXml(Regex.Replace(xmlString, "&([a-zA-Z]+);", HttpUtility.HtmlDecode("$1")));
             return xmlDoc;
         }
 
