@@ -111,7 +111,6 @@ namespace BooruSharp.UnitTests
                 Assert.NotEqual(0, res.AuthorID);
                 Assert.NotEqual(0, res.CommentID);
                 Assert.NotEqual(0, res.PostID);
-                Assert.NotEmpty(res.Body);
             }
             Assert.NotEmpty(result);
         }

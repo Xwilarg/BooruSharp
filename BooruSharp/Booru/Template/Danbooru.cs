@@ -75,10 +75,10 @@ namespace BooruSharp.Booru.Template
             return new Search.Comment.SearchResult(
                 elem["id"].Value<int>(),
                 elem["post_id"].Value<int>(),
-                elem["creator_id"].Value<int?>(),
+                elem["creator_id"]?.Value<int?>(),
                 elem["created_at"].Value<DateTime>(),
                 elem["creator_name"]?.Value<string>(),
-                elem["body"].Value<string>()
+                elem["body"]?.Value<string>()
                 );
         }
 
