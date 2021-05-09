@@ -133,6 +133,12 @@ Console.WriteLine(String.Join(Environment.NewLine,
            .Select(delegate (BooruSharp.Search.Tag.SearchResult res) { return (res.name); })));
 ```
 
+## Authentification
+Pixiv authentification is rather straightforward but for the others boorus you'll need your user id and your password hash\
+To get it, I advise you to go on an image, open the developer panel (F12) and go in "Network"\
+Then press the button to add the image to your favorite and look at the "Cookies" section of the last request
+![Authentification](Preview/Auth.png)
+
 ## Want to contribute
 Feel free to open a [pull request](https://github.com/Xwilarg/BooruSharp/pulls).
 
