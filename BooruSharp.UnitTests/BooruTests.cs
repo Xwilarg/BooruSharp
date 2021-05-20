@@ -144,6 +144,8 @@ namespace BooruSharp.UnitTests
 
             var booru = (ABooru)Activator.CreateInstance(t);
             booru.Auth = new BooruAuth("AAA", "AAA");
+            if (booru is Pixiv pixiv)
+                await Assert.ThrowsAsync<Search.AuthentificationRequired>(() => pixiv.AddFavoriteAsync(invalidPostId));
             if (!booru.HasFavoriteAPI)
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(() => booru.AddFavoriteAsync(invalidPostId));
             else
