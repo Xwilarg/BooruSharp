@@ -41,16 +41,37 @@ namespace BooruSharp.Others
         /// <inheritdoc/>
         /// <exception cref="ArgumentException"/>
         /// <exception cref="InvalidTags"/>
+        public override async Task<SearchResult[]> GetLastPostsAsync(int limit, params string[] tagsArg)
+        {
+            if (tagsArg.Length > 0)
+                throw new ArgumentException("Can't use limit parameter with tags", nameof(tagsArg));
+            if (limit != 24 && limit != 48 && limit != 72)
+                throw new ArgumentException("limit parameter must be 24, 48 or 72", nameof(tagsArg));
+            return await GetLastPostsInternal(limit, tagsArg);
+        }
+
+        /// <inheritdoc/>
+        /// <exception cref="ArgumentException"/>
+        /// <exception cref="InvalidTags"/>
         public override async Task<SearchResult[]> GetLastPostsAsync(params string[] tagsArg)
+        {
+            return await GetLastPostsInternal(48, tagsArg);
+        }
+
+        private async Task<SearchResult[]> GetLastPostsInternal(int limit, string[] tagsArg)
         {
             string endpoint = tagsArg.Length > 0 ? "search" : "browse";
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.furaffinity.net/" + endpoint);
+            MultipartFormDataContent formData = new MultipartFormDataContent();
             if (tagsArg.Length > 0)
             {
-                MultipartFormDataContent formData = new MultipartFormDataContent();
                 formData.Add(new StringContent("@keywords+" + string.Join("+", tagsArg)), "q");
-                request.Content = formData;
             }
+            else
+            {
+                formData.Add(new StringContent("perpage"), limit.ToString());
+            }
+            request.Content = formData;
             if (_cookieA != null)
             {
                 request.Content = new FormUrlEncodedContent(
