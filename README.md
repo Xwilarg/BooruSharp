@@ -34,6 +34,7 @@ BooruSharp currently handle the following websites:
  
 BooruSharp.Others allow to handle more websites that aren't booru:
  - pixiv.net
+ - www.furaffinity.net
 
 ## Documentation
 Documentation for version > 2.0.0 isn't available for now\
@@ -59,6 +60,7 @@ If you have any question, feel free to [contact me](#need-more-help)
 | Xbooru		| ❌ | ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ✔️ |
 | Yandere		| ✔️ | ❌ | ❌ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ❌ |
 | Pixiv		        | ❌ | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ |
+| Furaffinity   | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 ## Examples
 
@@ -142,6 +144,10 @@ Then press the button to add the image to your favorite and look at the "Cookies
 ### Pixiv
 For Pixiv authentification, please use LoginAsync with a refresh token\
 To get your refresh token, you can follow this tutorial: https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362
+
+### Furaffinity
+For Furaffinity, you need to call LoginAsync
+To have your cookieA and cookieB values, do the same as Booru but get the "a" and "b" values in the "Cookie" section instead
 
 ## Want to contribute
 Feel free to open a [pull request](https://github.com/Xwilarg/BooruSharp/pulls).

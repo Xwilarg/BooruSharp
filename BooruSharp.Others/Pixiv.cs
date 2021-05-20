@@ -324,6 +324,13 @@ namespace BooruSharp.Others
         /// <exception cref="ArgumentException"/>
         /// <exception cref="AuthentificationRequired"/>
         /// <exception cref="InvalidTags"/>
+        public override async Task<SearchResult[]> GetLastPostsAsync(int limit, params string[] tagsArg)
+            => (await GetLastPostsAsync(tagsArg)).Take(limit).ToArray();
+
+        /// <inheritdoc/>
+        /// <exception cref="ArgumentException"/>
+        /// <exception cref="AuthentificationRequired"/>
+        /// <exception cref="InvalidTags"/>
         public override async Task<SearchResult[]> GetLastPostsAsync(params string[] tagsArg)
         {
             if (AccessToken == null)
