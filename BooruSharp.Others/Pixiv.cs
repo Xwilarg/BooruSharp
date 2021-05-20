@@ -42,7 +42,7 @@ namespace BooruSharp.Others
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="AuthentificationInvalid"/>
         /// <exception cref="HttpRequestException"/>
-        [Obsolete("Login with username/password does no longer works, consider using LoginWithTokenAsync instead", error: true)]
+        [Obsolete("Login with username/password no longer works, consider using LoginAsync with refresh token instead", error: true)]
         public async Task LoginAsync(string username, string password)
         {
             if (username == null)
