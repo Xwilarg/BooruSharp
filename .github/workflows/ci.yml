@@ -2,9 +2,9 @@ name: .NET Core
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, develop ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, develop ]
 
 jobs:
   build:
@@ -45,8 +45,8 @@ jobs:
         XBOORU_PASSWORD_HASH: ${{ secrets.XBOORU_PASSWORD_HASH }}
         YANDERE_USER_ID: ${{ secrets.YANDERE_USER_ID }}
         YANDERE_PASSWORD_HASH: ${{ secrets.YANDERE_PASSWORD_HASH }}
-        PIXIV_USER_ID: ${{ secrets.PIXIV_USER_ID }}
-        PIXIV_PASSWORD: ${{ secrets.PIXIV_PASSWORD }}
+        PIXIV_USER_ID: ${{ secrets.PIXIV_ACCESS_TOKEN }}
+        PIXIV_PASSWORD: ${{ secrets.PIXIV_REFRESH_TOKEN }}
       run: dotnet test --no-restore --verbosity normal --collect:"XPlat Code Coverage"
     - name: Copy coverage
       run: sh copy_coverage.sh

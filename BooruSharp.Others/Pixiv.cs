@@ -42,6 +42,7 @@ namespace BooruSharp.Others
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="AuthentificationInvalid"/>
         /// <exception cref="HttpRequestException"/>
+        [Obsolete("Login with username/password does no longer works, consider using LoginWithTokenAsync instead", error: true)]
         public async Task LoginAsync(string username, string password)
         {
             if (username == null)
@@ -88,6 +89,19 @@ namespace BooruSharp.Others
             AccessToken = responseToken["access_token"].Value<string>();
             RefreshToken = responseToken["refresh_token"].Value<string>();
             _refreshTime = DateTime.Now.AddSeconds(responseToken["expires_in"].Value<int>());
+        }
+
+        /// <summary>
+        /// Set your access and refresh token
+        /// </summary>
+        /// <remarks>
+        /// You can get your tokens this way: https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362
+        /// </remarks>
+        public void LoginWithTokens(string accessToken, string refreshToken)
+        {
+            AccessToken = accessToken;
+            RefreshToken = refreshToken;
+            _refreshTime = DateTime.Now.AddSeconds(3600); // Default refresh time
         }
 
         /// <summary>
