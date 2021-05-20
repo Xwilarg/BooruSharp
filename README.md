@@ -85,7 +85,7 @@ var result = await booru.GetRandomPostAsync("シンボリルドルフ(ウマ娘)
 ### Random image (Furaffinity)
 ```Cs
 var booru = new BooruSharp.Others.Furaffinity();
-await booru.LoginAsync("[refreshToken]"); // See https://github.com/Xwilarg/BooruSharp/#furaffinity
+await booru.LoginAsync("[cookie a]", "[cookie b]"); // See https://github.com/Xwilarg/BooruSharp/#furaffinity
 var result = await booru.GetRandomPostAsync("Dragon");
 ```
 
