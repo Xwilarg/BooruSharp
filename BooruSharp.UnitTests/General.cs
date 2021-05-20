@@ -9,7 +9,7 @@ namespace BooruSharp.UnitTests
 {
     public static class General
     {
-        private const int _randomPostIterationCount = 5;
+        private const int _randomPostIterationCount = 10;
         private const int _randomPostCount = 5;
         private const Search.Tag.TagType _unknownTagType = (Search.Tag.TagType)2;
 
