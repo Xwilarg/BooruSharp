@@ -64,73 +64,87 @@ If you have any question, feel free to [contact me](#need-more-help)
 
 ## Examples
 
-Random image:
+### Random image
 ```Cs
-BooruSharp.Booru.Gelbooru booru = new BooruSharp.Booru.Gelbooru();
-BooruSharp.Search.Post.SearchResult result = await booru.GetRandomPostAsync("hibiki_(kantai_collection)", "school_swimsuit");
+var booru = new BooruSharp.Booru.Gelbooru();
+var result = await booru.GetRandomPostAsync("hibiki_(kantai_collection)", "school_swimsuit");
 
-Console.WriteLine("Image preview URL: " + result.previewUrl.AbsoluteUri + Environment.NewLine +
-                  "Image URL: " + result.fileUrl.AbsoluteUri + Environment.NewLine +
-                  "Image is safe: " + (result.rating == BooruSharp.Search.Post.Rating.Safe) + Environment.NewLine +
-                  "Tags on the image: " + String.Join(", ", result.tags));
+Console.WriteLine("Image preview URL: " + result.PreviewUrl.AbsoluteUri + Environment.NewLine +
+                  "Image URL: " + result.FileUrl.AbsoluteUri + Environment.NewLine +
+                  "Image is safe: " + (result.Rating == BooruSharp.Search.Post.Rating.Safe) + Environment.NewLine +
+                  "Tags on the image: " + String.Join(", ", result.Tags));
 ```
 
-Get many random images at once:
+### Random image (Pixiv)
 ```Cs
-BooruSharp.Booru.SankakuComplex booru = new BooruSharp.Booru.SankakuComplex();
-BooruSharp.Search.Post.SearchResult[] result = await booru.GetRandomPostsAsync(10, "ifrit_(arknights)", "silence_(arknights)");
-
-Console.WriteLine(string.Join(Environment.NewLine, result.Select(x => "Random Image: " + x.fileUrl)));
+var booru = new BooruSharp.Others.Pixiv();
+await booru.LoginAsync("[refreshToken]"); // See https://github.com/Xwilarg/BooruSharp/#pixiv
+var result = await booru.GetRandomPostAsync("シンボリルドルフ(ウマ娘)");
 ```
 
-Get tag:
+### Random image (Furaffinity)
 ```Cs
-BooruSharp.Booru.Safebooru booru = new BooruSharp.Booru.Safebooru();
-BooruSharp.Search.Tag.SearchResult result = await booru.GetTagAsync("cirno");
-
-Console.WriteLine("Tag type: " + result.type + Environment.NewLine +
-                  "ID: " + result.id);
+var booru = new BooruSharp.Others.Furaffinity();
+await booru.LoginAsync("[refreshToken]"); // See https://github.com/Xwilarg/BooruSharp/#furaffinity
+var result = await booru.GetRandomPostAsync("Dragon");
 ```
 
-Get Wiki entry:
+### Many random images at once
 ```Cs
-BooruSharp.Booru.Konachan booru = new BooruSharp.Booru.Konachan();
-BooruSharp.Search.Wiki.SearchResult result = await booru.GetWikiAsync("loli");
+var booru = new BooruSharp.Booru.SankakuComplex();
+var results = await booru.GetRandomPostsAsync(10, "ifrit_(arknights)", "silence_(arknights)");
 
-Console.WriteLine("Description: " + result.body + Environment.NewLine +
-                  "ID: " + result.id + Environment.NewLine +
-                  "Created at: " + result.creation.ToString("dd/MM/yy HH:mm:ss") + Environment.NewLine +
-                  "Last update at: " + result.lastUpdate.ToString("dd/MM/yy HH:mm:ss"));
+Console.WriteLine(string.Join(Environment.NewLine, results.Select(x => "Random Image: " + x.FileUrl)));
 ```
-Get related tags:
+
+### Get tag
 ```Cs
-BooruSharp.Booru.Yandere booru = new BooruSharp.Booru.Yandere();
-BooruSharp.Search.Related.SearchResult[] results = await booru.GetRelatedAsync("see_through");
+var booru = new BooruSharp.Booru.Safebooru();
+var result = await booru.GetTagAsync("cirno");
+
+Console.WriteLine("Tag type: " + result.Type + Environment.NewLine +
+                  "ID: " + result.ID);
+```
+
+### Get Wiki entry
+```Cs
+var booru = new BooruSharp.Booru.Konachan();
+var result = await booru.GetWikiAsync("loli");
+
+Console.WriteLine("Description: " + result.Body + Environment.NewLine +
+                  "ID: " + result.ID + Environment.NewLine +
+                  "Created at: " + result.Creation.ToString("dd/MM/yy HH:mm:ss") + Environment.NewLine +
+                  "Last update at: " + result.LastUpdate.ToString("dd/MM/yy HH:mm:ss"));
+```
+### Get related tags
+```Cs
+var booru = new BooruSharp.Booru.Yandere();
+var results = await booru.GetRelatedAsync("see_through");
 
 Console.WriteLine(String.Join(Environment.NewLine,
-    results.Select(delegate (BooruSharp.Search.Related.SearchResult res) { return ("Name: " + res.name +" (" + res.count + ")"); })));
+    results.Select(delegate (BooruSharp.Search.Related.SearchResult res) { return ("Name: " + res.Name +" (" + res.Count + ")"); })));
 ```
-Get comments:
+### Get comments
 ```Cs
-BooruSharp.Booru.Lolibooru booru = new BooruSharp.Booru.Lolibooru();
-BooruSharp.Search.Comment.SearchResult[] results = await booru.GetCommentAsync(134097);
+var booru = new BooruSharp.Booru.Lolibooru();
+var results = await booru.GetCommentAsync(134097);
 
 Console.WriteLine(String.Join(Environment.NewLine,
-    results.Select(delegate (BooruSharp.Search.Comment.SearchResult res) { return ("Author: " + res.authorName + ", the " + res.creation.ToString("dd/MM/yy HH:mm:ss") + " - " + res.body); })));
+    results.Select(delegate (BooruSharp.Search.Comment.SearchResult res) { return ("Author: " + res.AuthorName + ", the " + res.Creation.ToString("dd/MM/yy HH:mm:ss") + " - " + res.Body); })));
 ```
-Add to favorite:
+### Add to favorite
 ```Cs
-BooruSharp.Booru.Safebooru booru = new BooruSharp.Booru.Safebooru();
-booru.SetBooruAuth(new BooruSharp.Booru.BooruAuth("yourUserId", "yourPasswordHash")); // See https://github.com/Xwilarg/BooruSharp/#authentification
+var booru = new BooruSharp.Booru.Safebooru();
+booru.SetBooruAuth(new BooruSharp.Booru.BooruAuth("yourUserId", "yourPasswordHash")); // See https://github.com/Xwilarg/BooruSharp/#booru
 await booru.AddFavoriteAsync(1759793);
 ```
-Get all character tags containing a string:
+### Get all character tags containing a string
 ```Cs
-BooruSharp.Booru.Yandere yandere = new BooruSharp.Booru.Yandere();
-BooruSharp.Search.Tag.SearchResult[] results = await yandere.GetTagsAsync("tsukiko");
+var yandere = new BooruSharp.Booru.Yandere();
+var results = await yandere.GetTagsAsync("tsukiko");
 Console.WriteLine(String.Join(Environment.NewLine,
-	results.Where(delegate (BooruSharp.Search.Tag.SearchResult res) { return (res.type == BooruSharp.Search.Tag.TagType.Character); })
-           .Select(delegate (BooruSharp.Search.Tag.SearchResult res) { return (res.name); })));
+	results.Where(delegate (BooruSharp.Search.Tag.SearchResult res) { return (res.Type == BooruSharp.Search.Tag.TagType.Character); })
+           .Select(delegate (BooruSharp.Search.Tag.SearchResult res) { return (res.Name); })));
 ```
 
 ## Authentification
