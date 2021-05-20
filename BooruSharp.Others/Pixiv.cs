@@ -92,24 +92,14 @@ namespace BooruSharp.Others
         }
 
         /// <summary>
-        /// Set your access and refresh token
-        /// </summary>
-        /// <remarks>
-        /// You can get your tokens this way: https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362
-        /// </remarks>
-        public void LoginWithTokens(string accessToken, string refreshToken)
-        {
-            AccessToken = accessToken;
-            RefreshToken = refreshToken;
-            _refreshTime = DateTime.Now.AddSeconds(3600); // Default refresh time
-        }
-
-        /// <summary>
         /// Sends a login API request using specified refresh token.
         /// </summary>
         /// <returns>The task object representing the asynchronous operation.</returns>
         /// <exception cref="AuthentificationInvalid"/>
         /// <exception cref="HttpRequestException"/>
+        /// <remarks>
+        /// You can get your tokens this way: https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362
+        /// </remarks>
         public async Task LoginAsync(string refreshToken)
         {
             RefreshToken = refreshToken;
