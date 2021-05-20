@@ -119,7 +119,7 @@ Console.WriteLine(String.Join(Environment.NewLine,
 Add to favorite:
 ```Cs
 BooruSharp.Booru.Safebooru booru = new BooruSharp.Booru.Safebooru();
-booru.SetBooruAuth(new BooruSharp.Booru.BooruAuth("yourUserId", "yourPasswordHash")); // See https://boorusharp.zirk.eu/#authentification
+booru.SetBooruAuth(new BooruSharp.Booru.BooruAuth("yourUserId", "yourPasswordHash")); // See https://github.com/Xwilarg/BooruSharp/#authentification
 await booru.AddFavoriteAsync(1759793);
 ```
 Get all character tags containing a string:
