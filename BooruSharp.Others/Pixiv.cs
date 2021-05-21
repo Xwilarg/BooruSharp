@@ -42,6 +42,7 @@ namespace BooruSharp.Others
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="AuthentificationInvalid"/>
         /// <exception cref="HttpRequestException"/>
+        [Obsolete("Login with username/password no longer works, consider using LoginAsync with refresh token instead", error: true)]
         public async Task LoginAsync(string username, string password)
         {
             if (username == null)
@@ -96,6 +97,9 @@ namespace BooruSharp.Others
         /// <returns>The task object representing the asynchronous operation.</returns>
         /// <exception cref="AuthentificationInvalid"/>
         /// <exception cref="HttpRequestException"/>
+        /// <remarks>
+        /// You can get your tokens this way: https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362
+        /// </remarks>
         public async Task LoginAsync(string refreshToken)
         {
             RefreshToken = refreshToken;

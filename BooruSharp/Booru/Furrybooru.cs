@@ -1,10 +1,12 @@
-﻿namespace BooruSharp.Booru
+﻿using System;
+
+namespace BooruSharp.Booru
 {
-    /*
     /// <summary>
     /// FurryBooru.
     /// <para>https://furry.booru.org/</para>
     /// </summary>
+    [Obsolete("Furrybooru does no longer works, please consider using E621/E926 instead", error: true)]
     public sealed class Furrybooru : Template.Gelbooru02
     {
         /// <summary>
@@ -16,5 +18,5 @@
 
         /// <inheritdoc/>
         public override bool IsSafe => false;
-    }*/
+    }
 }

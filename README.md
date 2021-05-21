@@ -119,7 +119,7 @@ Console.WriteLine(String.Join(Environment.NewLine,
 Add to favorite:
 ```Cs
 BooruSharp.Booru.Safebooru booru = new BooruSharp.Booru.Safebooru();
-booru.SetBooruAuth(new BooruSharp.Booru.BooruAuth("yourUserId", "yourPasswordHash")); // See https://boorusharp.zirk.eu/#authentification
+booru.SetBooruAuth(new BooruSharp.Booru.BooruAuth("yourUserId", "yourPasswordHash")); // See https://github.com/Xwilarg/BooruSharp/#authentification
 await booru.AddFavoriteAsync(1759793);
 ```
 Get all character tags containing a string:
@@ -132,10 +132,16 @@ Console.WriteLine(String.Join(Environment.NewLine,
 ```
 
 ## Authentification
-Pixiv authentification is rather straightforward but for the others boorus you'll need your user id and your password hash\
+
+### Booru
+For booru authentification, you'll need your user id and your password hash\
 To get it, I advise you to go on an image, open the developer panel (F12) and go in "Network"\
 Then press the button to add the image to your favorite and look at the "Cookies" section of the last request
 ![Authentification](Preview/Auth.png)
+
+### Pixiv
+For Pixiv authentification, please use LoginAsync with a refresh token\
+To get your refresh token, you can follow this tutorial: https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362
 
 ## Want to contribute
 Feel free to open a [pull request](https://github.com/Xwilarg/BooruSharp/pulls).

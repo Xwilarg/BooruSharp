@@ -38,12 +38,11 @@ namespace BooruSharp.UnitTests
 
             if (booru is Pixiv pixiv)
             {
-                string userID = Environment.GetEnvironmentVariable("PIXIV_USER_ID");
-                string password = Environment.GetEnvironmentVariable("PIXIV_PASSWORD");
+                string refresh = Environment.GetEnvironmentVariable("PIXIV_REFRESH_TOKEN");
 
-                Skip.If(userID == null || password == null, "Pixiv user ID and/or password aren't set.");
+                Skip.If(refresh == null, "Pixiv tokens aren't set.");
 
-                await pixiv.LoginAsync(userID, password);
+                await pixiv.LoginAsync(refresh);
             }
 
             return booru;

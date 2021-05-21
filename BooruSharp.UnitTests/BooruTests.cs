@@ -143,16 +143,13 @@ namespace BooruSharp.UnitTests
             const int invalidPostId = 800;
 
             var booru = (ABooru)Activator.CreateInstance(t);
+            booru.Auth = new BooruAuth("AAA", "AAA");
             if (booru is Pixiv pixiv)
-                await Assert.ThrowsAsync<Search.AuthentificationInvalid>(() => pixiv.LoginAsync("AAA", "AAA"));
+                await Assert.ThrowsAsync<Search.AuthentificationRequired>(() => pixiv.AddFavoriteAsync(invalidPostId));
+            else if (!booru.HasFavoriteAPI)
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(() => booru.AddFavoriteAsync(invalidPostId));
             else
-            {
-                booru.Auth = new BooruAuth("AAA", "AAA");
-                if (!booru.HasFavoriteAPI)
-                    await Assert.ThrowsAsync<Search.FeatureUnavailable>(() => booru.AddFavoriteAsync(invalidPostId));
-                else
-                    await Assert.ThrowsAsync<Search.AuthentificationInvalid>(() => booru.AddFavoriteAsync(invalidPostId));
-            }
+                await Assert.ThrowsAsync<Search.AuthentificationInvalid>(() => booru.AddFavoriteAsync(invalidPostId));
         }
 
         [SkippableTheory]
