@@ -62,6 +62,18 @@ If you have any question, feel free to [contact me](#need-more-help)
 | Pixiv		        | ❌ | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ |
 | Furaffinity   | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
+### Additional notes on Pixiv
+Pixiv also have 2 methods to download an image (ImageToByteArrayAsync) or a preview (PreviewToByteArrayAsync), it'll give you a byte array given a SearchResult
+
+Please make note that you also need to provide at least one tag for he following methods:
+- GetLastPostsAsync
+- GetPostCountAsync
+- GetRandomPostAsync
+
+### Additional notes on Furaffinity
+For GetLastPostsAsync, you can either give a limit or tags, but not both\
+GetRandomPostAsync can't be used with tags
+
 ## Examples
 
 ### Random image

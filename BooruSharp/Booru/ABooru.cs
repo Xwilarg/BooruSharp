@@ -322,7 +322,7 @@ namespace BooruSharp.Booru
         private protected readonly DateTime _unixTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private static readonly Lazy<HttpClient> _lazyClient = new Lazy<HttpClient>(() =>
         {
-            HttpClient client = new HttpClient();
+            HttpClient client = new HttpClient(new HttpClientHandler { UseCookies = false });
             client.DefaultRequestHeaders.Add("User-Agent", _userAgentHeaderValue);
             return client;
         });

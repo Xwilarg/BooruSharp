@@ -32,10 +32,62 @@ namespace BooruSharp.Others
         /// <summary>
         /// Login
         /// </summary>
-        public void LoginAsync(string cookieA, string cookieB)
+        public void Login(string cookieA, string cookieB)
         {
             _cookieA = cookieA;
             _cookieB = cookieB;
+        }
+
+        /// <inheritdoc/>
+        /// <exception cref="ArgumentException"/>
+        public override async Task<SearchResult> GetRandomPostAsync(params string[] tagsArg)
+        {
+            if (_cookieA == null)
+                throw new AuthentificationRequired();
+
+            if (tagsArg.Length > 0)
+                throw new ArgumentException("GetRandomPostAsync can't be used with tags", nameof(tagsArg));
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://www.furaffinity.net/browse");
+            request.Headers.Add("Cookie", "a=" + _cookieA + ";b=" + _cookieB);
+            var req = await HttpClient.SendAsync(request);
+            string html = await req.Content.ReadAsStringAsync();
+
+            var match = Regex.Match(html, _postRegex);
+            var maxId = match.Groups[2].Value;
+
+            var id = Random.Next(1, int.Parse(maxId) + 1);
+
+            var postUrl = new Uri("https://www.furaffinity.net/view/" + id);
+            request = new HttpRequestMessage(HttpMethod.Post, postUrl);
+            request.Headers.Add("Cookie", "a=" + _cookieA + ";b=" + _cookieB);
+
+            req = await HttpClient.SendAsync(request);
+            html = await req.Content.ReadAsStringAsync();
+
+            if (html.Contains("System Error"))
+                throw new InvalidPostId("No post was found");
+
+            var rating = Regex.Match(html, "rating-box inline ([^\"]+)").Groups[1].Value;
+            var size = Regex.Match(html, "Size<\\/strong> <span>([0-9]+) x ([0-9]+)px");
+            var file = Regex.Match(html, "<div class=\"download[^\"]*\"><a href=\"([^\"]+)\">");
+            var result = new SearchResult(
+                file.Success ? new Uri("https:" + file.Groups[1].Value) : null,
+                null,
+                postUrl,
+                rating == "adult" ? Rating.Explicit : rating == "mature" ? Rating.Questionable : rating == "general" ? Rating.Safe : throw new NullReferenceException("Invalid rating " + rating),
+                Regex.Matches(html, "<span class=\"tags\"><a[^>]+>([^<]+)").Cast<Match>().Select(x => x.Groups[1].Value).ToArray(),
+                id,
+                null,
+                int.Parse(size.Groups[2].Value),
+                int.Parse(size.Groups[1].Value),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+                );
+            return result;
         }
 
         /// <inheritdoc/>
@@ -74,20 +126,16 @@ namespace BooruSharp.Others
             request.Content = formData;
             if (_cookieA != null)
             {
-                request.Content = new FormUrlEncodedContent(
-                    new Dictionary<string, string>
-                    {
-                        { "Cookie", "a=" + _cookieA + ";b=" + _cookieB }
-                    });
+                request.Headers.Add("Cookie", "a=" + _cookieA + "; b=" + _cookieB);
             }
             var req = await HttpClient.SendAsync(request);
             string html = await req.Content.ReadAsStringAsync();
             List<SearchResult> res = new List<SearchResult>();
 
-            var matches = Regex.Matches(html,
-                "<figure id=\"sid-[0-9]+\" class=\"([^\"]+)\"><b><u><a href=\"\\/view\\/([0-9]+)\\/\"><img alt=\"\" src=\"([^\"]+)\"  data-width=\"([0-9.]+)\" data-height=\"([0-9.]+)\"");
+            var matches = Regex.Matches(html, _postRegex);
             foreach (var match in matches.Cast<Match>())
             {
+                Console.WriteLine(match.Groups[1].Value);
                 var id = match.Groups[2].Value;
                 res.Add(
                     new SearchResult(
@@ -113,5 +161,6 @@ namespace BooruSharp.Others
         }
 
         private string _cookieA, _cookieB;
+        private readonly string _postRegex = "<figure id=\"sid-[0-9]+\" class=\"([^\"]+)\"><b><u><a href=\"\\/view\\/([0-9]+)\\/\"><img alt=\"\" src=\"([^\"]+)\"  data-width=\"([0-9.]+)\" data-height=\"([0-9.]+)\"";
     }
 }
