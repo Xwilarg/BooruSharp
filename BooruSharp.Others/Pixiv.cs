@@ -256,7 +256,8 @@ namespace BooruSharp.Others
             if (AccessToken == null)
                 throw new AuthentificationRequired();
 
-            var request = new HttpRequestMessage(HttpMethod.Get, BaseUrl + "v1/user/bookmarks/illust?filter=for_ios&restrict=public&user_id=" + userId);
+            var request = new HttpRequestMessage(HttpMethod.Get, BaseUrl +
+                "v1/user/bookmarks/illust?filter=for_ios&restrict=public&user_id=" + userId);
             AddAuthorizationHeader(request);
 
             var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);

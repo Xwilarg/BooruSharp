@@ -122,7 +122,7 @@ namespace BooruSharp.UnitTests
         }
 
         [Fact]
-        public async Task GetPixivBookmarks()
+        public async Task GetPixivBookmarksAsync()
         {
             var booru = (Pixiv)await Boorus.GetAsync(typeof(Pixiv));
 
@@ -137,7 +137,7 @@ namespace BooruSharp.UnitTests
         }
 
         [Fact]
-        public async Task GetPixivBookmarksInvalidId()
+        public async Task GetPixivBookmarksInvalidIdAsync()
         {
             var booru = (Pixiv)await Boorus.GetAsync(typeof(Pixiv));
 
