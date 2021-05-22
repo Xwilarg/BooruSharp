@@ -245,6 +245,29 @@ namespace BooruSharp.Others
             response.EnsureSuccessStatusCode();
         }
 
+        /// <summary>
+        /// Get your bookmarks
+        /// </summary>
+        /// <param name="userId">ID of the user you want to get the public bookmarks</param>
+        /// <exception cref="AuthentificationRequired"/>
+        /// <exception cref="HttpRequestException"/>
+        public async Task<SearchResult[]> GetFavoritesAsync(int userId)
+        {
+            if (AccessToken == null)
+                throw new AuthentificationRequired();
+
+            var request = new HttpRequestMessage(HttpMethod.Get, BaseUrl +
+                "v1/user/bookmarks/illust?filter=for_ios&restrict=public&user_id=" + userId);
+            AddAuthorizationHeader(request);
+
+            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+
+            response.EnsureSuccessStatusCode();
+
+            var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
+            return ParseSearchResults((JArray)jsonToken["illusts"]);
+        }
+
         /// <inheritdoc/>
         public override async Task<SearchResult> GetPostByIdAsync(int id)
         {

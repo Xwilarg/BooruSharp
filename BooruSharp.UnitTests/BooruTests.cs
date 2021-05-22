@@ -121,6 +121,31 @@ namespace BooruSharp.UnitTests
             Assert.False(b.Auth == null);
         }
 
+        [Fact]
+        public async Task GetPixivBookmarksAsync()
+        {
+            var booru = (Pixiv)await Boorus.GetAsync(typeof(Pixiv));
+
+            var result = await booru.GetFavoritesAsync(56850985);
+
+            Assert.NotEmpty(result);
+
+            foreach (var r in result)
+            {
+                Assert.NotNull(r.FileUrl);
+            }
+        }
+
+        [Fact]
+        public async Task GetPixivBookmarksInvalidIdAsync()
+        {
+            var booru = (Pixiv)await Boorus.GetAsync(typeof(Pixiv));
+
+            var result = await booru.GetFavoritesAsync(111);
+
+            Assert.Empty(result);
+        }
+
         [SkippableTheory]
         [MemberData(nameof(BooruParams))]
         public async Task UnsetFavoriteErrorAsync(Type t)
