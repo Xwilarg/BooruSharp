@@ -180,6 +180,10 @@ namespace BooruSharp.Others
             var responseToken = jsonToken["response"];
 
             AccessToken = responseToken["access_token"].Value<string>();
+
+            if (string.IsNullOrWhiteSpace(AccessToken))
+                throw new AuthentificationInvalid();
+
             _refreshTime = DateTime.Now.AddSeconds(responseToken["expires_in"].Value<int>());
         }
 
@@ -379,6 +383,74 @@ namespace BooruSharp.Others
             return Uri.EscapeDataString(joined);
         }
 
+        public Task<SearchResult[]> GetRankingAsync()
+        {
+            return GetRankingAsync(RankingMode.Daily, 0, null);
+        }
+
+        public Task<SearchResult[]> GetRankingAsync(RankingMode mode)
+        {
+            return GetRankingAsync(mode, 0, null);
+        }
+
+        public async Task<SearchResult[]> GetRankingAsync(RankingMode mode, int offset, DateTime? date)
+        {
+            if (string.IsNullOrWhiteSpace(AccessToken))
+                throw new AuthentificationRequired();
+
+            await CheckUpdateTokenAsync();
+
+            string url = _baseUrl + "/v1/illust/ranking?mode=" + _rankingModeValues[mode];
+            if (offset != 0)
+                url += "&offset=" + offset;
+            if (date.HasValue)
+                url += "&date=" + date.Value.ToString("yyyy-MM-dd");
+
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            request.Headers.Add("Authorization", "Bearer " + AccessToken);
+
+            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            
+            response.EnsureSuccessStatusCode();
+            
+            var jsonToken = JsonConvert.DeserializeObject<JToken>(await response.Content.ReadAsStringAsync());
+            return ParseSearchResults((JArray)jsonToken["illusts"]);
+        }
+
+        public enum RankingMode
+        {
+            Daily,
+            Weekly,
+            Monthly,
+            PopularAmongMaleUsers,
+            PopularAmongFemaleUsers,
+            Original,
+            MangaRookie,
+            MangaDaily,
+            DailyR18,
+            WeeklyR18,
+            PopularAmongMaleUsersR18,
+            PopularAmongFemaleUsersR18,
+            WeeklyR18G
+        }
+
+        private static Dictionary<RankingMode, string> _rankingModeValues = new Dictionary<RankingMode, string>
+        {
+            { RankingMode.Daily, "day" },
+            { RankingMode.Weekly, "week" },
+            { RankingMode.Monthly, "month" },
+            { RankingMode.PopularAmongMaleUsers, "day_male" },
+            { RankingMode.PopularAmongFemaleUsers, "day_female" },
+            { RankingMode.Original, "week_original" },
+            { RankingMode.MangaRookie, "week_rookie" },
+            { RankingMode.MangaDaily, "day_manga" },
+            { RankingMode.DailyR18, "day_r18" },
+            { RankingMode.WeeklyR18, "week_r18" },
+            { RankingMode.PopularAmongMaleUsersR18, "day_male_r18" },
+            { RankingMode.PopularAmongFemaleUsersR18, "day_female_r18" },
+            { RankingMode.WeeklyR18G, "week_r18g" }
+        };
+
         private SearchResult[] ParseSearchResults(JArray array)
         {
             return array.Select(ParseSearchResult).ToArray();
@@ -388,10 +460,16 @@ namespace BooruSharp.Others
         {
             var tags = post["tags"].Select(x => x["name"].Value<string>()).ToList();
 
-            bool isNsfw = tags.Contains("R-18");
-            if (isNsfw)
+            var isNsfw = false;
+            if (tags.Contains("R-18"))
             {
                 tags.Remove("R-18");
+                isNsfw = true;
+            }
+            if (tags.Contains("R-18G"))
+            {
+                tags.Remove("R-18G");
+                isNsfw = true;
             }
 
             var originalImageUrlToken =
