@@ -331,6 +331,22 @@ namespace BooruSharp.UnitTests
             await General.CheckGetRandomAsync(await Boorus.GetAsync(t), tag);
         }
 
+        [SkippableFact]
+        public async Task GetRandomsWith5TagsSankakuAsync()
+        {
+            var booru = new SankakuComplex();
+            General.Authorize(booru);
+            await General.CheckGetRandomAsync(booru, "touhou_project", "cirno", "horns", "clownpiece", "blush");
+        }
+
+        [SkippableFact]
+        public async Task GetRandomWith5TagsSankakuAsync()
+        {
+            var booru = new SankakuComplex();
+            General.Authorize(booru);
+            await General.CheckGetRandomAsync(booru, "touhou_project", "cirno", "horns", "clownpiece", "blush");
+        }
+
         [SkippableTheory]
         [MemberData(nameof(BooruRandomPostsParams))]
         public async Task GetRandomsAsync(Type t, string tag = "school_swimsuit")

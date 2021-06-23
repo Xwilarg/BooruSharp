@@ -11,8 +11,6 @@ namespace BooruSharp.UnitTests
     {
         private static readonly Dictionary<Type, Task<ABooru>> _boorus = new Dictionary<Type, Task<ABooru>>();
 
-
-
         public static Task<ABooru> GetAsync(Type type)
         {
             lock (_boorus)

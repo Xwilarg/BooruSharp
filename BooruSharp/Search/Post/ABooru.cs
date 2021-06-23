@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using BooruSharp.Search;
+using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -117,11 +118,20 @@ namespace BooruSharp.Booru
 
                 return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, tagString, "pid=" + Random.Next(0, max)));
             }
-
-            return NoMoreThanTwoTags
+            if (NoMoreThanTwoTags)
+            {
                 // +order:random count as a tag so we use random=true instead to save one
-                ? await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, tagString, "random=true"))
-                : await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, tagString) + "+order:random");
+                return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, tagString, "random=true"));
+            }
+            if (_format == UrlFormat.Sankaku && tagsArg.Length > 4)
+            {
+                if (Auth == null)
+                {
+                    throw new AuthentificationRequired("Authentification is required for Sankaku search with more than 4 tags");
+                }
+                return await GetSearchResultFromUrlWithAuthAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, tagString) + "+order:random");
+            }
+            return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, tagString) + "+order:random");
         }
 
         /// <summary>
@@ -150,11 +160,18 @@ namespace BooruSharp.Booru
 
             if (_format == UrlFormat.IndexPhp)
                 return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, tagString) + "+sort:random");
-            else if (NoMoreThanTwoTags)
+            if (NoMoreThanTwoTags)
                 // +order:random count as a tag so we use random=true instead to save one
                 return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, tagString, "random=true"));
-            else
-                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, tagString) + "+order:random");
+            if (_format == UrlFormat.Sankaku && tagsArg.Length > 4)
+            {
+                if (Auth == null)
+                {
+                    throw new AuthentificationRequired("Authentification is required for Sankaku search with more than 4 tags");
+                }
+                return await GetSearchResultsFromUrlWithAuthAsync(CreateUrl(_imageUrl, "limit=" + limit, tagString) + "+order:random");
+            }
+            return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, tagString) + "+order:random");
         }
 
         /// <summary>
@@ -194,9 +211,19 @@ namespace BooruSharp.Booru
             return GetSearchResultFromUrlAsync(url.AbsoluteUri);
         }
 
+        private async Task<Search.Post.SearchResult> GetSearchResultFromUrlWithAuthAsync(string url)
+        {
+            return GetPostSearchResult(ParseFirstPostSearchResult(JsonConvert.DeserializeObject(await GetAuthResponseAndReadToEndAsync(CreateAuthRequest(url)))));
+        }
+
         private async Task<Search.Post.SearchResult[]> GetSearchResultsFromUrlAsync(string url)
         {
             return GetPostsSearchResult(JsonConvert.DeserializeObject(await GetJsonAsync(url)));
+        }
+
+        private async Task<Search.Post.SearchResult[]> GetSearchResultsFromUrlWithAuthAsync(string url)
+        {
+            return GetPostsSearchResult(JsonConvert.DeserializeObject(await GetAuthResponseAndReadToEndAsync(CreateAuthRequest(url))));
         }
 
         private Task<Search.Post.SearchResult[]> GetSearchResultsFromUrlAsync(Uri url)

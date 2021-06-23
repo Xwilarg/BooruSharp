@@ -30,7 +30,7 @@ namespace BooruSharp.UnitTests
             }
         }
 
-        public static async Task CheckResultAsync(Search.Post.SearchResult result, string inputTag)
+        public static async Task CheckResultAsync(Search.Post.SearchResult result, string[] inputTag)
         {
             if (result.FileUrl != null)
             {
@@ -49,13 +49,16 @@ namespace BooruSharp.UnitTests
                 }
             }
             Assert.InRange(result.Rating, Search.Post.Rating.Safe, Search.Post.Rating.Explicit);
-            Assert.Contains(result.Tags, t => t.Contains(inputTag));
+            foreach (var t in inputTag)
+            {
+                Assert.Contains(result.Tags, t => t.Contains(t));
+            }
             Assert.NotEqual(0, result.ID);
             if (result.Size.HasValue)
                 Assert.NotEqual(0, result.Size.Value);
         }
 
-        public static async Task CheckGetRandomAsync(ABooru booru, string s1)
+        public static async Task CheckGetRandomAsync(ABooru booru, params string[] s1)
         {
             Search.Post.SearchResult result = await booru.GetRandomPostAsync(s1);
             Search.Post.SearchResult result2;
@@ -69,7 +72,7 @@ namespace BooruSharp.UnitTests
             await CheckResultAsync(result, s1);
         }
 
-        public static async Task CheckGetRandomsAsync(ABooru booru, string s1)
+        public static async Task CheckGetRandomsAsync(ABooru booru, params string[] s1)
         {
             Search.Post.SearchResult[] result = await booru.GetRandomPostsAsync(_randomPostCount, s1);
             Assert.NotEmpty(result);

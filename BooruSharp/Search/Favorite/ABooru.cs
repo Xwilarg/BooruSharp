@@ -1,5 +1,4 @@
 ﻿using BooruSharp.Search;
-using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -68,26 +67,6 @@ namespace BooruSharp.Booru
             // If the HTML contains the word "Login" we were probably sent back to the authentification form
             if (response.Contains("Login")) 
                 throw new AuthentificationInvalid();
-        }
-
-        private static async Task<string> GetAuthResponseAndReadToEndAsync(HttpWebRequest request)
-        {
-            using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
-            using (Stream stream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                return await reader.ReadToEndAsync();
-            }
-        }
-
-        private HttpWebRequest CreateAuthRequest(string requestUrl)
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUrl);
-            request.Headers["Cookie"] = "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash;
-            request.UserAgent = _userAgentHeaderValue;
-            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-
-            return request;
         }
     }
 }
