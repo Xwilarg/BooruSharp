@@ -30,8 +30,7 @@ namespace BooruSharp.Booru
             if (Auth == null)
                 throw new AuthentificationRequired();
 
-            HttpWebRequest request = CreateAuthRequest(BaseUrl + "public/addfav.php?id=" + postId);
-            string response = await GetAuthResponseAndReadToEndAsync(request);
+            string response = await GetJsonAsync(BaseUrl + "public/addfav.php?id=" + postId);
 
             if (response.Length == 0)
                 throw new InvalidPostId();
@@ -62,8 +61,7 @@ namespace BooruSharp.Booru
             if (Auth == null)
                 throw new AuthentificationRequired();
 
-            HttpWebRequest request = CreateAuthRequest(BaseUrl + "index.php?page=favorites&s=delete&id=" + postId);
-            string response = await GetAuthResponseAndReadToEndAsync(request);
+            string response = await GetJsonAsync(BaseUrl + "index.php?page=favorites&s=delete&id=" + postId);
 
             // If the HTML contains the word "Login" we were probably sent back to the authentification form
             if (response.Contains("Login")) 
@@ -78,16 +76,6 @@ namespace BooruSharp.Booru
             {
                 return await reader.ReadToEndAsync();
             }
-        }
-
-        private HttpWebRequest CreateAuthRequest(string requestUrl)
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUrl);
-            request.Headers["Cookie"] = "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash;
-            request.UserAgent = _userAgentHeaderValue;
-            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-
-            return request;
         }
     }
 }
