@@ -212,7 +212,13 @@ namespace BooruSharp.Booru
         private async Task<string> GetJsonAsync(string url)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            HttpResponseMessage msg = await HttpClient.GetAsync(url);
+
+            var message = new HttpRequestMessage(HttpMethod.Get, url);
+            if (Auth != null)
+            {
+                message.Headers.Add("Cookie", "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash);
+            }
+            var msg = await HttpClient.SendAsync(message);
 
             if (msg.StatusCode == HttpStatusCode.Forbidden)
                 throw new AuthentificationRequired();
@@ -277,7 +283,7 @@ namespace BooruSharp.Booru
         /// <summary>
         /// Gets or sets authentication credentials.
         /// </summary>
-        public BooruAuth Auth { set; get; } // Authentification
+        public BooruAuth Auth { set; get; }
 
         /// <summary>
         /// Sets the <see cref="System.Net.Http.HttpClient"/> instance that will be used
@@ -322,7 +328,11 @@ namespace BooruSharp.Booru
         private protected readonly DateTime _unixTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private static readonly Lazy<HttpClient> _lazyClient = new Lazy<HttpClient>(() =>
         {
-            HttpClient client = new HttpClient();
+            var handler = new HttpClientHandler
+            {
+                UseCookies = false
+            };
+            var client = new HttpClient(handler);
             client.DefaultRequestHeaders.Add("User-Agent", _userAgentHeaderValue);
             return client;
         });
