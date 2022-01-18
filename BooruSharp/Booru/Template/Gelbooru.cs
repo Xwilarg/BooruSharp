@@ -1,5 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using BooruSharp.Search.Tag;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
@@ -111,17 +114,22 @@ namespace BooruSharp.Booru.Template
 
         // GetWikiSearchResult not available
 
-        private protected override Search.Tag.SearchResult GetTagSearchResult(object json)
+        private protected override SearchResult GetTagSearchResult(object json)
         {
             var elem = (JObject)json;
-            return new Search.Tag.SearchResult(
+            return new SearchResult(
                 elem["id"].Value<int>(),
-                elem["tag"].Value<string>(),
-                StringToTagType(elem["type"].Value<string>()),
+                elem["name"].Value<string>(),
+                (TagType)elem["type"].Value<int>(),
                 elem["count"].Value<int>()
                 );
         }
 
         // GetRelatedSearchResult not available
+
+        private protected override async Task<IEnumerable> GetTagEnumerableSearchResultAsync(Uri url)
+        {
+            return (JArray)JsonConvert.DeserializeObject<JObject>(await GetJsonAsync(url))["tag"];
+        }
     }
 }

@@ -101,17 +101,7 @@ namespace BooruSharp.Booru
                 urlTags.Add("limit=0");
             
             var url = CreateUrl(_tagUrl, urlTags.ToArray());
-            IEnumerable enumerable;
-
-            if (TagsUseXml)
-            {
-                var xml = await GetXmlAsync(url);
-                enumerable = xml.LastChild;
-            }
-            else
-            {
-                enumerable = JsonConvert.DeserializeObject<JArray>(await GetJsonAsync(url));
-            }
+            IEnumerable enumerable = await GetTagEnumerableSearchResultAsync(url);
 
             foreach (object item in enumerable)
             {

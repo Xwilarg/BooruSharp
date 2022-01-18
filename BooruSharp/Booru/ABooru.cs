@@ -1,6 +1,8 @@
 ﻿using BooruSharp.Search;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -42,6 +44,19 @@ namespace BooruSharp.Booru
 
         private protected virtual Search.Wiki.SearchResult GetWikiSearchResult(object json)
             => throw new FeatureUnavailable();
+
+        private protected virtual async Task<IEnumerable> GetTagEnumerableSearchResultAsync(Uri url)
+        {
+            if (TagsUseXml)
+            {
+                var xml = await GetXmlAsync(url);
+                return xml.LastChild;
+            }
+            else
+            {
+                return JsonConvert.DeserializeObject<JArray>(await GetJsonAsync(url));
+            }
+        }
 
         /// <summary>
         /// Gets whether it is possible to search for related tags on this booru.
@@ -209,7 +224,7 @@ namespace BooruSharp.Booru
 
         // TODO: Handle limitrate
 
-        private async Task<string> GetJsonAsync(string url)
+        private protected async Task<string> GetJsonAsync(string url)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
@@ -228,7 +243,7 @@ namespace BooruSharp.Booru
             return await msg.Content.ReadAsStringAsync();
         }
 
-        private Task<string> GetJsonAsync(Uri url)
+        private protected Task<string> GetJsonAsync(Uri url)
         {
             return GetJsonAsync(url.AbsoluteUri);
         }

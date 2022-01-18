@@ -7,7 +7,7 @@ namespace BooruSharp.UnitTests
     // TODO: Find a way to check if commands are available on website or not
 
     public class OtherTests
-    {
+    {// TODO: Need to test these with others boorus
         [Fact]
         public async Task GelbooruTagCharacterAsync()
         {

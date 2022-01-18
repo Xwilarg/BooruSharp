@@ -656,7 +656,7 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru), 257639)]
+        [InlineData(typeof(Atfbooru), 366473)]
         [InlineData(typeof(DanbooruDonmai), 3193008)]
         [InlineData(typeof(E621), 59432)]
         [InlineData(typeof(E926), 541858)]
