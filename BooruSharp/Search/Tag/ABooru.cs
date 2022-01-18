@@ -74,7 +74,7 @@ namespace BooruSharp.Booru
             if (TagsUseXml)
             {
                 // Can't use LINQ with XmlNodes so let's use list here.
-                var results = new List<Search.Tag.SearchResult>(((XmlDocument)enumerable).ChildNodes.Count);
+                var results = new List<Search.Tag.SearchResult>(((XmlElement)enumerable).ChildNodes.Count);
 
                 foreach (var node in enumerable)
                 {
