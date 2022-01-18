@@ -57,7 +57,7 @@ namespace BooruSharp.Booru.Template
 
         private protected override JToken ParseFirstPostSearchResult(object json)
         {
-            JArray array = json as JArray;
+            JArray array = ((JToken)json)["post"] as JArray;
             return array?.FirstOrDefault() ?? throw new Search.InvalidTags();
         }
 
@@ -66,7 +66,7 @@ namespace BooruSharp.Booru.Template
             const string gelbooruTimeFormat = "ddd MMM dd HH:mm:ss zzz yyyy";
 
             string directory = elem["directory"].Value<string>();
-            string hash = elem["hash"].Value<string>();
+            string hash = elem["md5"].Value<string>();
             int id = elem["id"].Value<int>();
 
             return new Search.Post.SearchResult(
@@ -90,7 +90,7 @@ namespace BooruSharp.Booru.Template
 
         private protected override Search.Post.SearchResult[] GetPostsSearchResult(object json)
         {
-            return json is JArray array
+            return ((JToken)json)["post"] is JArray array
                 ? array.Select(GetPostSearchResult).ToArray()
                 : Array.Empty<Search.Post.SearchResult>();
         }

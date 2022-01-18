@@ -306,6 +306,8 @@ namespace BooruSharp.Booru
                 // Add our User-Agent if client's User-Agent header is empty.
                 if (_client != null && !_client.DefaultRequestHeaders.Contains("User-Agent"))
                     _client.DefaultRequestHeaders.Add("User-Agent", _userAgentHeaderValue);
+
+                // TODO: Need to setup HttpClientHandler but I don't know how
             }
         }
 
@@ -330,7 +332,8 @@ namespace BooruSharp.Booru
         {
             var handler = new HttpClientHandler
             {
-                UseCookies = false
+                UseCookies = false,
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
             };
             var client = new HttpClient(handler);
             client.DefaultRequestHeaders.Add("User-Agent", _userAgentHeaderValue);

@@ -121,7 +121,7 @@ namespace BooruSharp.UnitTests
             Assert.False(b.Auth == null);
         }
 
-        [Fact]
+        [SkippableFact]
         public async Task GetPixivBookmarksAsync()
         {
             var booru = (Pixiv)await Boorus.GetAsync(typeof(Pixiv));
@@ -136,7 +136,7 @@ namespace BooruSharp.UnitTests
             }
         }
 
-        [Fact]
+        [SkippableFact]
         public async Task GetPixivBookmarksInvalidIdAsync()
         {
             var booru = (Pixiv)await Boorus.GetAsync(typeof(Pixiv));
