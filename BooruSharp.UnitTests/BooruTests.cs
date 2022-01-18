@@ -375,9 +375,16 @@ namespace BooruSharp.UnitTests
         public async Task GetRandom2TagsAsync(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "school_swimsuit")
         {
             var booru = await Boorus.GetAsync(t);
-            var result = await booru.GetRandomPostAsync(tag, tag2);
-            Assert.Contains(result.Tags, t => t.Contains(tag));
-            Assert.Contains(result.Tags, t => t.Contains(tag2));
+            if (t.IsAssignableFrom(typeof(DanbooruDonmai)))
+            {
+                await Assert.ThrowsAsync<Search.TooManyTags>(() => booru.GetRandomPostAsync(tag, tag2));
+            }
+            else
+            {
+                var result = await booru.GetRandomPostAsync(tag, tag2);
+                Assert.Contains(result.Tags, t => t.Contains(tag));
+                Assert.Contains(result.Tags, t => t.Contains(tag2));
+            }
         }
 
         [SkippableTheory]
@@ -387,6 +394,10 @@ namespace BooruSharp.UnitTests
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasMultipleRandomAPI)
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(() => booru.GetRandomPostsAsync(_randomPostCount, tag, tag2));
+            else if (t.IsAssignableFrom(typeof(DanbooruDonmai)))
+            {
+                await Assert.ThrowsAsync<Search.TooManyTags>(() => booru.GetRandomPostsAsync(_randomPostCount, tag, tag2));
+            }
             else
             {
                 var result = await booru.GetRandomPostsAsync(_randomPostCount, tag, tag2);

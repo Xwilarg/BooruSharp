@@ -238,6 +238,9 @@ namespace BooruSharp.Booru
             if (msg.StatusCode == HttpStatusCode.Forbidden)
                 throw new AuthentificationRequired();
 
+            if (msg.StatusCode == (HttpStatusCode)422)
+                throw new TooManyTags();
+
             msg.EnsureSuccessStatusCode();
 
             return await msg.Content.ReadAsStringAsync();
