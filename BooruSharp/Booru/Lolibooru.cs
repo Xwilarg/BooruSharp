@@ -12,7 +12,7 @@ namespace BooruSharp.Booru
         /// Initializes a new instance of the <see cref="Lolibooru"/> class.
         /// </summary>
         public Lolibooru()
-            : base("lolibooru.moe")
+            : base("lolibooru.moe", BooruOptions.NoTagByID) // Tag search now returns 500 error
         { }
 
         /// <inheritdoc/>

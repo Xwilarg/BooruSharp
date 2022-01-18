@@ -479,7 +479,7 @@ namespace BooruSharp.UnitTests
         //[InlineData(typeof(Furrybooru))]
         [InlineData(typeof(Gelbooru))]
         [InlineData(typeof(Konachan))]
-        //[InlineData(typeof(Lolibooru))] 500 error
+        [InlineData(typeof(Lolibooru))]
         [InlineData(typeof(Realbooru))]
         [InlineData(typeof(Rule34))]
         [InlineData(typeof(Safebooru))]
@@ -501,7 +501,6 @@ namespace BooruSharp.UnitTests
         [MemberData(nameof(BooruParams))]
         public async Task CheckTagFailAsync(Type t)
         {
-            Skip.If(t.IsAssignableFrom(typeof(Lolibooru)), "Lolibooru returns 500 on tag search");
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasTagByIdAPI)
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(() => booru.GetTagAsync("someRandomTag"));
@@ -528,7 +527,6 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Pixiv), "艦隊こ", false)]
         public async Task CheckTagsAsync(Type t, string tag, bool onlyOnce)
         {
-            Skip.If(t.IsAssignableFrom(typeof(Lolibooru)), "Lolibooru returns 500 on tag search");
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasTagByIdAPI)
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(() => booru.GetTagsAsync(tag));
