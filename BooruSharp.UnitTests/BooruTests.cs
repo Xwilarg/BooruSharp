@@ -121,7 +121,7 @@ namespace BooruSharp.UnitTests
             Assert.False(b.Auth == null);
         }
 
-        [Fact]
+        [SkippableFact]
         public async Task GetPixivBookmarksAsync()
         {
             var booru = (Pixiv)await Boorus.GetAsync(typeof(Pixiv));
@@ -136,7 +136,7 @@ namespace BooruSharp.UnitTests
             }
         }
 
-        [Fact]
+        [SkippableFact]
         public async Task GetPixivBookmarksInvalidIdAsync()
         {
             var booru = (Pixiv)await Boorus.GetAsync(typeof(Pixiv));
@@ -375,9 +375,16 @@ namespace BooruSharp.UnitTests
         public async Task GetRandom2TagsAsync(Type t, string tag = "hibiki_(kantai_collection)", string tag2 = "school_swimsuit")
         {
             var booru = await Boorus.GetAsync(t);
-            var result = await booru.GetRandomPostAsync(tag, tag2);
-            Assert.Contains(result.Tags, t => t.Contains(tag));
-            Assert.Contains(result.Tags, t => t.Contains(tag2));
+            if (t.IsAssignableFrom(typeof(DanbooruDonmai)))
+            {
+                await Assert.ThrowsAsync<Search.TooManyTags>(() => booru.GetRandomPostAsync(tag, tag2));
+            }
+            else
+            {
+                var result = await booru.GetRandomPostAsync(tag, tag2);
+                Assert.Contains(result.Tags, t => t.Contains(tag));
+                Assert.Contains(result.Tags, t => t.Contains(tag2));
+            }
         }
 
         [SkippableTheory]
@@ -387,6 +394,10 @@ namespace BooruSharp.UnitTests
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasMultipleRandomAPI)
                 await Assert.ThrowsAsync<Search.FeatureUnavailable>(() => booru.GetRandomPostsAsync(_randomPostCount, tag, tag2));
+            else if (t.IsAssignableFrom(typeof(DanbooruDonmai)))
+            {
+                await Assert.ThrowsAsync<Search.TooManyTags>(() => booru.GetRandomPostsAsync(_randomPostCount, tag, tag2));
+            }
             else
             {
                 var result = await booru.GetRandomPostsAsync(_randomPostCount, tag, tag2);
@@ -529,7 +540,7 @@ namespace BooruSharp.UnitTests
         {
             var booru = await Boorus.GetAsync(t);
             if (!booru.HasTagByIdAPI)
-                await Assert.ThrowsAsync<Search.FeatureUnavailable>(() => booru.GetTagAsync(tag));
+                await Assert.ThrowsAsync<Search.FeatureUnavailable>(() => booru.GetTagsAsync(tag));
             else if (onlyOnce)
                 Assert.NotEmpty(await booru.GetTagsAsync(tag));
             else
@@ -656,7 +667,7 @@ namespace BooruSharp.UnitTests
         }
 
         [SkippableTheory]
-        [InlineData(typeof(Atfbooru), 257639)]
+        [InlineData(typeof(Atfbooru), 366473)]
         [InlineData(typeof(DanbooruDonmai), 3193008)]
         [InlineData(typeof(E621), 59432)]
         [InlineData(typeof(E926), 541858)]

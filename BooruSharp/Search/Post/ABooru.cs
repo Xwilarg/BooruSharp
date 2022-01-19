@@ -43,9 +43,9 @@ namespace BooruSharp.Booru
             if (!HasPostByIdAPI)
                 throw new Search.FeatureUnavailable();
 
-            return _format == UrlFormat.Danbooru
-                ? await GetSearchResultFromUrlAsync(BaseUrl + "posts/" + id + ".json")
-                : await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, "id=" + id));
+            if (_format == UrlFormat.Danbooru) return await GetSearchResultFromUrlAsync(BaseUrl + "posts/" + id + ".json");
+            if (_format == UrlFormat.PostIndexJson) return await GetSearchResultFromUrlAsync(_imageUrl + "?tags=id:" + id);
+            return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, "id=" + id));
         }
 
         /// <summary>

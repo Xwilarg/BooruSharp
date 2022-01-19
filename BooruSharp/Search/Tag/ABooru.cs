@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace BooruSharp.Booru
 {
@@ -69,13 +70,13 @@ namespace BooruSharp.Booru
 
             var url = CreateUrl(_tagUrl, urlTags.ToArray());
 
+            var enumerable = await GetTagEnumerableSearchResultAsync(url);
             if (TagsUseXml)
             {
-                var xml = await GetXmlAsync(url);
                 // Can't use LINQ with XmlNodes so let's use list here.
-                var results = new List<Search.Tag.SearchResult>(xml.LastChild.ChildNodes.Count);
+                var results = new List<Search.Tag.SearchResult>(((XmlElement)enumerable).ChildNodes.Count);
 
-                foreach (var node in xml.LastChild)
+                foreach (var node in enumerable)
                 {
                     results.Add(GetTagSearchResult(node));
                 }
@@ -84,8 +85,7 @@ namespace BooruSharp.Booru
             }
             else
             {
-                var jsonArray = JsonConvert.DeserializeObject<JArray>(await GetJsonAsync(url));
-                return jsonArray.Select(GetTagSearchResult).ToArray();
+                return ((JArray)enumerable).Select(GetTagSearchResult).ToArray();
             }
         }
 
@@ -101,17 +101,7 @@ namespace BooruSharp.Booru
                 urlTags.Add("limit=0");
             
             var url = CreateUrl(_tagUrl, urlTags.ToArray());
-            IEnumerable enumerable;
-
-            if (TagsUseXml)
-            {
-                var xml = await GetXmlAsync(url);
-                enumerable = xml.LastChild;
-            }
-            else
-            {
-                enumerable = JsonConvert.DeserializeObject<JArray>(await GetJsonAsync(url));
-            }
+            IEnumerable enumerable = await GetTagEnumerableSearchResultAsync(url);
 
             foreach (object item in enumerable)
             {

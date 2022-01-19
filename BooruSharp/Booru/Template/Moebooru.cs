@@ -20,7 +20,7 @@ namespace BooruSharp.Booru.Template
         /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
         /// </param>
         protected Moebooru(string domain, BooruOptions options = BooruOptions.None)
-            : base(domain, UrlFormat.PostIndexJson, options | BooruOptions.NoPostByMD5 | BooruOptions.NoPostByID
+            : base(domain, UrlFormat.PostIndexJson, options | BooruOptions.NoPostByMD5
                   | BooruOptions.NoFavorite)
         { }
 

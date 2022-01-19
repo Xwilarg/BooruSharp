@@ -1,6 +1,8 @@
 ﻿using BooruSharp.Search;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -42,6 +44,19 @@ namespace BooruSharp.Booru
 
         private protected virtual Search.Wiki.SearchResult GetWikiSearchResult(object json)
             => throw new FeatureUnavailable();
+
+        private protected virtual async Task<IEnumerable> GetTagEnumerableSearchResultAsync(Uri url)
+        {
+            if (TagsUseXml)
+            {
+                var xml = await GetXmlAsync(url);
+                return xml.LastChild;
+            }
+            else
+            {
+                return JsonConvert.DeserializeObject<JArray>(await GetJsonAsync(url));
+            }
+        }
 
         /// <summary>
         /// Gets whether it is possible to search for related tags on this booru.
@@ -209,20 +224,29 @@ namespace BooruSharp.Booru
 
         // TODO: Handle limitrate
 
-        private async Task<string> GetJsonAsync(string url)
+        private protected async Task<string> GetJsonAsync(string url)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            HttpResponseMessage msg = await HttpClient.GetAsync(url);
+
+            var message = new HttpRequestMessage(HttpMethod.Get, url);
+            if (Auth != null)
+            {
+                message.Headers.Add("Cookie", "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash);
+            }
+            var msg = await HttpClient.SendAsync(message);
 
             if (msg.StatusCode == HttpStatusCode.Forbidden)
                 throw new AuthentificationRequired();
+
+            if (msg.StatusCode == (HttpStatusCode)422)
+                throw new TooManyTags();
 
             msg.EnsureSuccessStatusCode();
 
             return await msg.Content.ReadAsStringAsync();
         }
 
-        private Task<string> GetJsonAsync(Uri url)
+        private protected Task<string> GetJsonAsync(Uri url)
         {
             return GetJsonAsync(url.AbsoluteUri);
         }
@@ -277,13 +301,14 @@ namespace BooruSharp.Booru
         /// <summary>
         /// Gets or sets authentication credentials.
         /// </summary>
-        public BooruAuth Auth { set; get; } // Authentification
+        public BooruAuth Auth { set; get; }
 
         /// <summary>
         /// Sets the <see cref="System.Net.Http.HttpClient"/> instance that will be used
         /// to make requests. If <see langword="null"/> or left unset, the default
         /// <see cref="System.Net.Http.HttpClient"/> instance will be used.
         /// <para>This property can only be read in <see cref="ABooru"/> subclasses.</para>
+        /// We advice you to disable the cookies and set automatic decompression to GZip and Deflate
         /// </summary>
         public HttpClient HttpClient
         {
@@ -322,7 +347,12 @@ namespace BooruSharp.Booru
         private protected readonly DateTime _unixTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private static readonly Lazy<HttpClient> _lazyClient = new Lazy<HttpClient>(() =>
         {
-            HttpClient client = new HttpClient();
+            var handler = new HttpClientHandler
+            {
+                UseCookies = false,
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+            };
+            var client = new HttpClient(handler);
             client.DefaultRequestHeaders.Add("User-Agent", _userAgentHeaderValue);
             return client;
         });
