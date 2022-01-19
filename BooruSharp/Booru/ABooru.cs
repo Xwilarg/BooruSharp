@@ -308,6 +308,7 @@ namespace BooruSharp.Booru
         /// to make requests. If <see langword="null"/> or left unset, the default
         /// <see cref="System.Net.Http.HttpClient"/> instance will be used.
         /// <para>This property can only be read in <see cref="ABooru"/> subclasses.</para>
+        /// We advice you to disable the cookies and set automatic decompression to GZip and Deflate
         /// </summary>
         public HttpClient HttpClient
         {
@@ -324,8 +325,6 @@ namespace BooruSharp.Booru
                 // Add our User-Agent if client's User-Agent header is empty.
                 if (_client != null && !_client.DefaultRequestHeaders.Contains("User-Agent"))
                     _client.DefaultRequestHeaders.Add("User-Agent", _userAgentHeaderValue);
-
-                // TODO: Need to setup HttpClientHandler but I don't know how
             }
         }
 
