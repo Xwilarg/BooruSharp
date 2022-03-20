@@ -336,7 +336,7 @@ namespace BooruSharp.Booru
         /// <summary>
         /// Gets the base API request URL.
         /// </summary>
-        protected Uri BaseUrl { get; }
+        public Uri BaseUrl { get; }
 
         private HttpClient _client;
         private readonly Uri _imageUrlXml, _imageUrl, _tagUrl, _wikiUrl, _relatedUrl, _commentUrl; // URLs for differents endpoints
