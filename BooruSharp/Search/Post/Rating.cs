@@ -8,13 +8,14 @@
     public enum Rating
     {
         /// <summary>
-        /// Indicated that post contains G-rated, completely safe for work content.
+        /// Indicates that post contains G-rated, completely safe for work content.
         /// </summary>
         General,
         /// <summary>
         /// Indicates that post contains something not completely safe for work, or not completely safe to view in front of others.
+        /// This is called 'Sensitive' in the new booru version
         /// </summary>
-        Sensitive,
+        Safe,
         /// <summary>
         /// Indicates that post may contain some non-explicit nudity or sexual content, but isn't quite pornographic.
         /// </summary>

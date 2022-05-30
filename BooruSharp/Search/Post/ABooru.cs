@@ -205,14 +205,15 @@ namespace BooruSharp.Booru
         }
 
         /// <summary>
-        /// Converts a letter to its maching <see cref="Search.Post.Rating"/>.
+        /// Converts a letter to its matching <see cref="Search.Post.Rating"/>.
         /// </summary>
         protected Search.Post.Rating GetRating(char c)
         {
-            switch (char.ToLower(c))
+            c = char.ToLower(c);
+            switch (c)
             {
                 case 'g': return Search.Post.Rating.General;
-                case 's': return Search.Post.Rating.Sensitive;
+                case 's': return Search.Post.Rating.Safe;
                 case 'q': return Search.Post.Rating.Questionable;
                 case 'e': return Search.Post.Rating.Explicit;
                 default: throw new ArgumentException($"Invalid rating '{c}'.", nameof(c));
