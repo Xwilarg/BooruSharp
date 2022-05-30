@@ -9,6 +9,7 @@
     {
         /// <summary>
         /// Indicates that post contains G-rated, completely safe for work content.
+        /// As this rating is new it may not be implemented in every booru site.
         /// </summary>
         General,
         /// <summary>
