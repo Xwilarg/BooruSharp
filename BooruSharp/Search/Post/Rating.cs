@@ -8,10 +8,13 @@
     public enum Rating
     {
         /// <summary>
-        /// Indicates that post cannot be considered either questionable or explicit.
-        /// Note that safe does not mean safe for work and may still include "sexy" content.
+        /// Indicated that post contains G-rated, completely safe for work content.
         /// </summary>
-        Safe,
+        General,
+        /// <summary>
+        /// Indicates that post contains something not completely safe for work, or not completely safe to view in front of others.
+        /// </summary>
+        Sensitive,
         /// <summary>
         /// Indicates that post may contain some non-explicit nudity or sexual content, but isn't quite pornographic.
         /// </summary>
