@@ -9,8 +9,10 @@
     {
         /// <summary>
         /// Indicates that post contains G-rated, completely safe for work content.
-        /// As this rating is new it may not be implemented in every booru site.
         /// </summary>
+        /// <remarks>
+        /// As this rating is new it may not be implemented in every booru site.
+        /// </remarks>
         General,
         /// <summary>
         /// Indicates that post contains something not completely safe for work, or not completely safe to view in front of others.
