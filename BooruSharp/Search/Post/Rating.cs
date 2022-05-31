@@ -8,8 +8,13 @@
     public enum Rating
     {
         /// <summary>
-        /// Indicates that post cannot be considered either questionable or explicit.
-        /// Note that safe does not mean safe for work and may still include "sexy" content.
+        /// Indicates that post contains G-rated, completely safe for work content.
+        /// As this rating is new it may not be implemented in every booru site.
+        /// </summary>
+        General,
+        /// <summary>
+        /// Indicates that post contains something not completely safe for work, or not completely safe to view in front of others.
+        /// This is called 'Sensitive' in the new booru version
         /// </summary>
         Safe,
         /// <summary>
