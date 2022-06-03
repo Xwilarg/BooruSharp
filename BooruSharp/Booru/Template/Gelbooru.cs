@@ -78,7 +78,7 @@ namespace BooruSharp.Booru.Template
                 new Uri("https://gelbooru.com/thumbnails/" + directory + "/thumbnail_" + hash + ".jpg"),
                 new Uri(BaseUrl + "index.php?page=post&s=view&id=" + id),
                 GetRating(elem["rating"].Value<string>()[0]),
-                elem["tags"].Value<string>().Split(' '),
+                elem["tags"].Value<string>().Split(' ').Select(HttpUtility.HtmlDecode).ToArray(),
                 id,
                 null,
                 elem["height"].Value<int>(),
@@ -120,7 +120,7 @@ namespace BooruSharp.Booru.Template
             var elem = (JObject)json;
             return new SearchResult(
                 elem["id"].Value<int>(),
-                elem["name"].Value<string>(),
+                HttpUtility.HtmlDecode(elem["name"].Value<string>()),
                 (TagType)elem["type"].Value<int>(),
                 elem["count"].Value<int>()
                 );

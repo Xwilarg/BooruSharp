@@ -489,6 +489,7 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(E926))]
         //[InlineData(typeof(Furrybooru))]
         [InlineData(typeof(Gelbooru))]
+        [InlineData(typeof(Gelbooru), "'o'ne")]
         [InlineData(typeof(Konachan))]
         [InlineData(typeof(Lolibooru))]
         [InlineData(typeof(Realbooru))]
