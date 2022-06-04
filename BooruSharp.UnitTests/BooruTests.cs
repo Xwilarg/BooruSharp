@@ -297,8 +297,8 @@ namespace BooruSharp.UnitTests
             Assert.NotEqual(results[0].ID, results[1].ID);
             foreach (var elem in results)
             {
-                Assert.Contains(elem.Tags, t => t.Contains(tag));
-                Assert.Contains(elem.Tags, t => t.Contains(tag2));
+                Assert.Contains(elem.Tags, x => x.Contains(tag));
+                Assert.Contains(elem.Tags, x => x.Contains(tag2));
             }
         }
 
@@ -354,7 +354,7 @@ namespace BooruSharp.UnitTests
                 var result = await booru.GetRandomPostsAsync(int.MaxValue, tag);
                 Assert.NotEmpty(result);
                 foreach (var r in result)
-                    Assert.Contains(r.Tags, t => t.Contains(tag));
+                    Assert.Contains(r.Tags, x => x.Contains(tag));
             }
         }
 
@@ -382,8 +382,8 @@ namespace BooruSharp.UnitTests
             else
             {
                 var result = await booru.GetRandomPostAsync(tag, tag2);
-                Assert.Contains(result.Tags, t => t.Contains(tag));
-                Assert.Contains(result.Tags, t => t.Contains(tag2));
+                Assert.Contains(result.Tags, x => x.Contains(tag));
+                Assert.Contains(result.Tags, x => x.Contains(tag2));
             }
         }
 
@@ -404,8 +404,8 @@ namespace BooruSharp.UnitTests
                 Assert.NotEmpty(result);
                 foreach (var r in result)
                 {
-                    Assert.Contains(r.Tags, t => t.Contains(tag));
-                    Assert.Contains(r.Tags, t => t.Contains(tag2));
+                    Assert.Contains(r.Tags, x => x.Contains(tag));
+                    Assert.Contains(r.Tags, x => x.Contains(tag2));
                 }
             }
         }
