@@ -39,13 +39,15 @@ namespace BooruSharp.Booru.Template
             string baseUrl = BaseUrl.Scheme + "://" + _url;
             string directory = elem["directory"].Value<string>();
             string image = elem["image"].Value<string>();
+            string hash = elem["hash"].Value<string>();
             int id = elem["id"].Value<int>();
+            var hasSample = elem["sample"].Value<bool>();
 
             return new Search.Post.SearchResult(
                 new Uri(baseUrl + "//images/" + directory + "/" + image),
                 new Uri(baseUrl + "//thumbnails/" + directory + "/thumbnails_" + image),
                 new Uri(BaseUrl + "index.php?page=post&s=view&id=" + id),
-                null,
+                hasSample ? new Uri(baseUrl + "//samples/" + directory + "/sample_" + hash + ".jpg") : null,
                 GetRating(elem["rating"].Value<string>()[0]),
                 elem["tags"].Value<string>().Split(' '),
                 null,
