@@ -40,7 +40,7 @@ namespace BooruSharp.Search.Post
             SampleUri = sampleUri;
             Rating = rating;
             Tags = new ReadOnlyCollection<string>(tags);
-            DetailedTags = detailedTags != null ? new ReadOnlyCollection<Tag.SearchResult>(detailedTags) : null;
+            DetailedTags = detailedTags != null ? new ReadOnlyCollection<Tag.SearchResult>(detailedTags) : new ReadOnlyCollection<Tag.SearchResult>(Array.Empty<Tag.SearchResult>());
             ID = id;
             Size = size;
             Height = height;
@@ -79,10 +79,13 @@ namespace BooruSharp.Search.Post
         public Rating Rating { get; }
 
         /// <summary>
-        /// Gets the read-only collection containing all the tags associated with the file.
+        /// Gets a read-only collection containing all the tags associated with the file.
         /// </summary>
         public ReadOnlyCollection<string> Tags { get; }
         
+        /// <summary>
+        /// Gets a read-only collection containing all the tags associated with the file with additional detail.
+        /// </summary>
         public ReadOnlyCollection<Tag.SearchResult> DetailedTags { get; }
 
         /// <summary>
