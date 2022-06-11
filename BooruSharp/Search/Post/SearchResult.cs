@@ -15,8 +15,10 @@ namespace BooruSharp.Search.Post
         /// <param name="fileUrl">The URI of the file.</param>
         /// <param name="previewUrl">The URI of the preview image.</param>
         /// <param name="postUrl">The URI of the post.</param>
+        /// <param name="sampleUri">The URI of the sample image.</param>
         /// <param name="rating">The post's rating.</param>
         /// <param name="tags">The array containing all the tags associated with the file.</param>
+        /// <param name="detailedTags">Array containing detailed information on tags associated with the file.</param>
         /// <param name="id">The ID of the post.</param>
         /// <param name="size">The size of the file, in bytes.</param>
         /// <param name="height">The height of the image, in pixels.</param>
@@ -28,15 +30,17 @@ namespace BooruSharp.Search.Post
         /// <param name="score">The score of the post.</param>
         /// <param name="md5">The MD5 hash of the file.</param>
         public SearchResult(
-            Uri fileUrl, Uri previewUrl, Uri postUrl, Rating rating, IList<string> tags,
-            int id, int? size, int height, int width, int? previewHeight, int? previewWidth,
+            Uri fileUrl, Uri previewUrl, Uri postUrl, Uri sampleUri, Rating rating, IList<string> tags,
+            IList<Tag.SearchResult> detailedTags, int id, int? size, int height, int width, int? previewHeight, int? previewWidth,
             DateTime? creation, string source, int? score, string md5)
         {
             FileUrl = fileUrl;
             PreviewUrl = previewUrl;
             PostUrl = postUrl;
+            SampleUri = sampleUri;
             Rating = rating;
             Tags = new ReadOnlyCollection<string>(tags);
+            DetailedTags = detailedTags != null ? new ReadOnlyCollection<Tag.SearchResult>(detailedTags) : null;
             ID = id;
             Size = size;
             Height = height;
@@ -65,6 +69,11 @@ namespace BooruSharp.Search.Post
         public Uri PostUrl { get; }
 
         /// <summary>
+        /// Gets the URI of the sample image.
+        /// </summary>
+        public Uri SampleUri { get; }
+
+        /// <summary>
         /// Gets the post's rating.
         /// </summary>
         public Rating Rating { get; }
@@ -73,6 +82,8 @@ namespace BooruSharp.Search.Post
         /// Gets the read-only collection containing all the tags associated with the file.
         /// </summary>
         public ReadOnlyCollection<string> Tags { get; }
+        
+        public ReadOnlyCollection<Tag.SearchResult> DetailedTags { get; }
 
         /// <summary>
         /// Gets the ID of the post.

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BooruSharp.Booru.Template
@@ -37,15 +38,41 @@ namespace BooruSharp.Booru.Template
         {
             var url = elem["file_url"];
             var previewUrl = elem["preview_file_url"];
+            var sampleUrl = elem["large_file_url"];
             var id = elem["id"]?.Value<int>();
             var md5 = elem["md5"];
 
+            var detailedtags = new List<Search.Tag.SearchResult>();
+            GetTags("tag_string_general", Search.Tag.TagType.Trivia);
+            GetTags("tag_string_character", Search.Tag.TagType.Character);
+            GetTags("tag_string_copyright", Search.Tag.TagType.Copyright);
+            GetTags("tag_string_meta", Search.Tag.TagType.Metadata);
+            GetTags("tag_string_artist", Search.Tag.TagType.Artist);
+            
+            void GetTags(string objectName, Search.Tag.TagType tagType)
+            {
+                var obj = elem[objectName];
+                if(obj == null)
+                    return;
+                
+                foreach(var x in obj.Value<string>().Split())
+                {
+                    detailedtags.Add(new Search.Tag.SearchResult(
+                        -1,
+                        x,
+                        tagType,
+                        -1));
+                }
+            }
+            
             return new Search.Post.SearchResult(
                     url != null ? new Uri(url.Value<string>()) : null,
                     previewUrl != null ? new Uri(previewUrl.Value<string>()) : null,
                     id.HasValue ? new Uri(BaseUrl + "posts/" + id.Value) : null,
+                    sampleUrl != null ? new Uri(sampleUrl.Value<string>()) : null,
                     GetRating(elem["rating"].Value<string>()[0]),
                     elem["tag_string"].Value<string>().Split(' '),
+                    detailedtags,
                     id ?? 0,
                     elem["file_size"].Value<int>(),
                     elem["image_height"].Value<int>(),
