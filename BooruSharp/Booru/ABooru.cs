@@ -117,27 +117,27 @@ namespace BooruSharp.Booru
         /// <summary>
         /// Gets a value indicating whether http:// scheme is used instead of https://.
         /// </summary>
-        protected bool UsesHttp => _options.HasFlag(BooruOptions.UseHttp);
+        public bool UsesHttp => _options.HasFlag(BooruOptions.UseHttp);
 
         /// <summary>
         /// Gets a value indicating whether tags API uses XML instead of JSON.
         /// </summary>
-        protected bool TagsUseXml => _options.HasFlag(BooruOptions.TagApiXml);
+        public bool TagsUseXml => _options.HasFlag(BooruOptions.TagApiXml);
 
         /// <summary>
         /// Gets a value indicating whether comments API uses XML instead of JSON.
         /// </summary>
-        protected bool CommentsUseXml => _options.HasFlag(BooruOptions.CommentApiXml);
+        public bool CommentsUseXml => _options.HasFlag(BooruOptions.CommentApiXml);
 
         /// <summary>
         /// Gets a value indicating whether searching by more than two tags at once is not allowed.
         /// </summary>
-        protected bool NoMoreThanTwoTags => _options.HasFlag(BooruOptions.NoMoreThan2Tags);
+        public bool NoMoreThanTwoTags => _options.HasFlag(BooruOptions.NoMoreThan2Tags);
 
         /// <summary>
         /// Gets a value indicating whether the max limit of posts per search is increased (used by Gelbooru).
         /// </summary>
-        protected bool SearchIncreasedPostLimit => _options.HasFlag(BooruOptions.LimitOf20000);
+        public bool SearchIncreasedPostLimit => _options.HasFlag(BooruOptions.LimitOf20000);
 
         /// <summary>
         /// Checks for the booru availability.
