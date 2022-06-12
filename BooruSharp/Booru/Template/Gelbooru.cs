@@ -69,16 +69,17 @@ namespace BooruSharp.Booru.Template
         {
             const string gelbooruTimeFormat = "ddd MMM dd HH:mm:ss zzz yyyy";
 
-            string directory = elem["directory"].Value<string>();
-            string hash = elem["md5"].Value<string>();
             int id = elem["id"].Value<int>();
+            var sampleUrl = elem["sample_url"].Value<string>();
 
             return new Search.Post.SearchResult(
                 new Uri(elem["file_url"].Value<string>()),
-                new Uri("https://gelbooru.com/thumbnails/" + directory + "/thumbnail_" + hash + ".jpg"),
+                new Uri(elem["preview_url"].Value<string>()),
                 new Uri(BaseUrl + "index.php?page=post&s=view&id=" + id),
+                string.IsNullOrWhiteSpace(sampleUrl) ? null : new Uri(sampleUrl),
                 GetRating(elem["rating"].Value<string>()[0]),
-                elem["tags"].Value<string>().Split(' '),
+                elem["tags"].Value<string>().Split(' ').Select(HttpUtility.HtmlDecode).ToArray(),
+                null,
                 id,
                 null,
                 elem["height"].Value<int>(),
@@ -88,7 +89,7 @@ namespace BooruSharp.Booru.Template
                 DateTime.ParseExact(elem["created_at"].Value<string>(), gelbooruTimeFormat, CultureInfo.InvariantCulture),
                 elem["source"].Value<string>(),
                 elem["score"].Value<int>(),
-                hash
+                elem["md5"].Value<string>()
                 );
         }
 
@@ -120,7 +121,7 @@ namespace BooruSharp.Booru.Template
             var elem = (JObject)json;
             return new SearchResult(
                 elem["id"].Value<int>(),
-                elem["name"].Value<string>(),
+                HttpUtility.HtmlDecode(elem["name"].Value<string>()),
                 (TagType)elem["type"].Value<int>(),
                 elem["count"].Value<int>()
                 );

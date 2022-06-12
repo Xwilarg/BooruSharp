@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BooruSharp.Booru.Template
@@ -37,33 +38,35 @@ namespace BooruSharp.Booru.Template
 
         private protected override Search.Post.SearchResult GetPostSearchResult(JToken elem)
         {
-            // TODO: Check others tags
-            string[] categories =
+            var detailedTags = new List<Search.Tag.SearchResult>();
+            var tags = new List<string>();
+            foreach(var cat in elem["tags"].OfType<JProperty>())
             {
-                "general",
-                "species",
-                "character",
-                "copyright",
-                "artist",
-                "meta",
-            };
+                foreach(var tag in cat.Value.ToObject<string[]>())
+                {
+                    tags.Add(tag);
+                    detailedTags.Add(new Search.Tag.SearchResult(-1, tag, GetTagType(cat.Name), -1));
+                }
+            }
 
             var fileToken = elem["file"];
             var previewToken = elem["preview"];
+            var sampleToken = elem["sample"];
 
             string url = fileToken["url"].Value<string>();
             string previewUrl = previewToken["url"].Value<string>();
+            string sampleUrl = sampleToken["has"].Value<bool>() ? sampleToken["url"].Value<string>() : null;
+            
             int id = elem["id"].Value<int>();
-            string[] tags = categories
-                .SelectMany(category => elem["tags"][category].ToObject<string[]>())
-                .ToArray();
 
             return new Search.Post.SearchResult(
                     url != null ? new Uri(url) : null,
                     previewUrl != null ? new Uri(previewUrl) : null,
                     new Uri(BaseUrl + "posts/" + id),
+                    sampleUrl != null ? new Uri(sampleUrl) : null,
                     GetRating(elem["rating"].Value<string>()[0]),
                     tags,
+                    detailedTags,
                     id,
                     fileToken["size"].Value<int>(),
                     fileToken["height"].Value<int>(),
@@ -75,6 +78,18 @@ namespace BooruSharp.Booru.Template
                     elem["score"]["total"].Value<int>(),
                     fileToken["md5"].Value<string>()
                 );
+        }
+        
+        private Search.Tag.TagType GetTagType(string typeName)
+        {
+            switch(typeName)
+            {
+                case "character": return Search.Tag.TagType.Character;
+                case "copyright": return Search.Tag.TagType.Copyright;
+                case "artist": return Search.Tag.TagType.Artist;
+                case "meta": return Search.Tag.TagType.Metadata;
+                default: return Search.Tag.TagType.Trivia;
+            }
         }
 
         private protected override Search.Post.SearchResult[] GetPostsSearchResult(object json)

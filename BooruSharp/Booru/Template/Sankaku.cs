@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BooruSharp.Booru.Template
@@ -40,16 +41,33 @@ namespace BooruSharp.Booru.Template
                 Path = $"/post/show/{id}",
             };
 
-            string[] tags = (from tag in (JArray)elem["tags"]
-                             select tag["name"].Value<string>()).ToArray();
+            var detailedTags = new List<Search.Tag.SearchResult>();
+            var tags = new List<string>();
+            foreach(var tag in (JArray)elem["tags"])
+            {
+                var name = tag["name"].Value<string>();
+                tags.Add(name);
+                
+                detailedTags.Add(new Search.Tag.SearchResult(
+                    tag["id"].Value<int>(),
+                    name,
+                    GetTagType(tag["type"].Value<int>()),
+                    tag["post_count"].Value<int>()
+                    ));
+            }
+
             var url = elem["file_url"].Value<string>();
             var previewUrl = elem["preview_url"].Value<string>();
+            var sampleUrl = elem["sample_url"].Value<string>();
+            
             return new Search.Post.SearchResult(
                 url == null ? null : new Uri(url),
                 previewUrl == null ? null : new Uri(previewUrl),
                 postUriBuilder.Uri,
+                sampleUrl != null && sampleUrl.Contains("/preview/") ? new Uri(sampleUrl) : null,
                 GetRating(elem["rating"].Value<string>()[0]),
                 tags,
+                detailedTags,
                 id,
                 elem["file_size"].Value<int>(),
                 elem["height"].Value<int>(),
@@ -61,6 +79,18 @@ namespace BooruSharp.Booru.Template
                 elem["total_score"].Value<int>(),
                 elem["md5"].Value<string>()
                 );
+        }
+
+        private Search.Tag.TagType GetTagType(int type)
+        {
+            switch(type)
+            {
+                case 1: return Search.Tag.TagType.Artist;
+                case 3: return Search.Tag.TagType.Copyright;
+                case 4: return Search.Tag.TagType.Character;
+                case 8: return Search.Tag.TagType.Metadata;
+                default: return Search.Tag.TagType.Trivia;
+            }
         }
 
         private protected override Search.Post.SearchResult[] GetPostsSearchResult(object json)

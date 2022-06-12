@@ -115,6 +115,11 @@ namespace BooruSharp.Booru
         public bool NoEmptyPostSearch => _options.HasFlag(BooruOptions.NoEmptyPostSearch);
 
         /// <summary>
+        /// Gets a value indicating whether searching by more than two tags at once is not allowed.
+        /// </summary>
+        public bool NoMoreThanTwoTags => _options.HasFlag(BooruOptions.NoMoreThan2Tags);
+
+        /// <summary>
         /// Gets a value indicating whether http:// scheme is used instead of https://.
         /// </summary>
         protected bool UsesHttp => _options.HasFlag(BooruOptions.UseHttp);
@@ -128,11 +133,6 @@ namespace BooruSharp.Booru
         /// Gets a value indicating whether comments API uses XML instead of JSON.
         /// </summary>
         protected bool CommentsUseXml => _options.HasFlag(BooruOptions.CommentApiXml);
-
-        /// <summary>
-        /// Gets a value indicating whether searching by more than two tags at once is not allowed.
-        /// </summary>
-        protected bool NoMoreThanTwoTags => _options.HasFlag(BooruOptions.NoMoreThan2Tags);
 
         /// <summary>
         /// Gets a value indicating whether the max limit of posts per search is increased (used by Gelbooru).
