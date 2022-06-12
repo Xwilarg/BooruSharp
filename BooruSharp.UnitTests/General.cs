@@ -47,9 +47,16 @@ namespace BooruSharp.UnitTests
                     Assert.NotEqual(0, result.PreviewHeight);
                     Assert.NotEqual(0, result.PreviewWidth);
                 }
+                if(result.SampleUri != null)
+                {
+                    string resSample = await CheckUrlAsync(result.SampleUri);
+                    Assert.True(resSample == null, resSample);
+                }
             }
             Assert.InRange(result.Rating, Search.Post.Rating.Safe, Search.Post.Rating.Explicit);
             Assert.Contains(result.Tags, t => t.Contains(inputTag));
+            if(result.DetailedTags != null)
+                Assert.Contains(result.DetailedTags, t => t.Name.Contains(inputTag));
             Assert.NotEqual(0, result.ID);
             if (result.Size.HasValue)
                 Assert.NotEqual(0, result.Size.Value);
