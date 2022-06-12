@@ -13,12 +13,12 @@ namespace BooruSharp.Search.Post
         /// Initializes a <see cref="SearchResult"/> struct.
         /// </summary>
         /// <param name="fileUrl">The URI of the file.</param>
-        /// <param name="previewUrl">The URI of the preview image.</param>
+        /// <param name="previewUrl">The URI of the image thumbnail.</param>
         /// <param name="postUrl">The URI of the post.</param>
-        /// <param name="sampleUri">The URI of the sample image.</param>
+        /// <param name="sampleUri">The URI of the sample image. A sample is a lighter version of the main file.</param>
         /// <param name="rating">The post's rating.</param>
-        /// <param name="tags">The array containing all the tags associated with the file.</param>
-        /// <param name="detailedTags">Array containing detailed information on tags associated with the file.</param>
+        /// <param name="tags">An array containing all the tags associated with the file.</param>
+        /// <param name="detailedTags">An array containing detailed information on tags associated with the file.</param>
         /// <param name="id">The ID of the post.</param>
         /// <param name="size">The size of the file, in bytes.</param>
         /// <param name="height">The height of the image, in pixels.</param>
@@ -69,7 +69,7 @@ namespace BooruSharp.Search.Post
         public Uri PostUrl { get; }
 
         /// <summary>
-        /// Gets the URI of the sample image.
+        /// Gets the URI of the sample image. A sample is a lighter version of the main file.
         /// </summary>
         public Uri SampleUri { get; }
 
