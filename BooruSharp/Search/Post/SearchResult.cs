@@ -40,7 +40,7 @@ namespace BooruSharp.Search.Post
             SampleUri = sampleUri;
             Rating = rating;
             Tags = new ReadOnlyCollection<string>(tags);
-            DetailedTags = detailedTags != null ? new ReadOnlyCollection<Tag.SearchResult>(detailedTags) : new ReadOnlyCollection<Tag.SearchResult>(Array.Empty<Tag.SearchResult>());
+            DetailedTags = detailedTags != null ? new ReadOnlyCollection<Tag.SearchResult>(detailedTags) : null;
             ID = id;
             Size = size;
             Height = height;
