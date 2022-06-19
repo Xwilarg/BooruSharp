@@ -6,9 +6,21 @@
     public enum TagType
     {
         /// <summary>
+        /// Indicates the species tag (Not available in all boorus).
+        /// </summary>
+        Species = -3,
+        /// <summary>
+        /// Indicates the invalid tag (Not available in all boorus).
+        /// </summary>
+        Invalid,
+        /// <summary>
+        /// Indicates the lore tag (Not available in all boorus).
+        /// </summary>
+        Lore,
+        /// <summary>
         /// Indicates the common tag.
         /// </summary>
-        Trivia,
+        Trivia = 0,
         /// <summary>
         /// Indicates the artist tag.
         /// </summary>

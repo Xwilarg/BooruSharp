@@ -85,11 +85,12 @@ namespace BooruSharp.Booru.Template
         {
             switch(type)
             {
+                case 0: return Search.Tag.TagType.Trivia;
                 case 1: return Search.Tag.TagType.Artist;
                 case 3: return Search.Tag.TagType.Copyright;
                 case 4: return Search.Tag.TagType.Character;
                 case 8: return Search.Tag.TagType.Metadata;
-                default: return Search.Tag.TagType.Trivia;
+                default: return (Search.Tag.TagType)6;
             }
         }
 

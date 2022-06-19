@@ -84,11 +84,15 @@ namespace BooruSharp.Booru.Template
         {
             switch(typeName)
             {
+                case "species": return Search.Tag.TagType.Species;
+                case "invalid": return Search.Tag.TagType.Invalid;
+                case "lore": return Search.Tag.TagType.Lore;
+                case "general": return Search.Tag.TagType.Trivia;
                 case "character": return Search.Tag.TagType.Character;
                 case "copyright": return Search.Tag.TagType.Copyright;
                 case "artist": return Search.Tag.TagType.Artist;
                 case "meta": return Search.Tag.TagType.Metadata;
-                default: return Search.Tag.TagType.Trivia;
+                default: return (Search.Tag.TagType)6;
             }
         }
 
