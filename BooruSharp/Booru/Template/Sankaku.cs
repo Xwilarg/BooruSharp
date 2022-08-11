@@ -116,7 +116,7 @@ namespace BooruSharp.Booru.Template
                 elem["id"].Value<int>(),
                 elem["post_id"].Value<int>(),
                 authorToken["id"].Value<int?>(),
-                _unixTime.AddSeconds(elem["created_at"]["s"].Value<int>()),
+                elem["created_at"].Value<DateTime>(),
                 authorToken["name"].Value<string>(),
                 elem["body"].Value<string>()
                 );
