@@ -148,6 +148,9 @@ namespace BooruSharp.Booru
             await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Head, _imageUrl));
         }
 
+        protected virtual void AddAuth(HttpRequestMessage message)
+        { }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ABooru"/> class.
         /// </summary>
@@ -231,7 +234,7 @@ namespace BooruSharp.Booru
             var message = new HttpRequestMessage(HttpMethod.Get, url);
             if (Auth != null)
             {
-                message.Headers.Add("Cookie", "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash);
+                AddAuth(message);
             }
             var msg = await HttpClient.SendAsync(message);
 

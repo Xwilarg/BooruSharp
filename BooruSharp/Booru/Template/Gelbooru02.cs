@@ -2,6 +2,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using System.Xml;
 
 namespace BooruSharp.Booru.Template
@@ -26,6 +27,11 @@ namespace BooruSharp.Booru.Template
                   | BooruOptions.CommentApiXml | BooruOptions.TagApiXml | BooruOptions.NoMultipleRandom)
         {
             _url = domain;
+        }
+
+        protected override void AddAuth(HttpRequestMessage message)
+        {
+            message.Headers.Add("Cookie", "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash);
         }
 
         private protected override JToken ParseFirstPostSearchResult(object json)

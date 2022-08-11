@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 
 namespace BooruSharp.Booru.Template
 {
@@ -24,6 +25,11 @@ namespace BooruSharp.Booru.Template
             : base(domain, UrlFormat.Sankaku, options | BooruOptions.NoRelated | BooruOptions.NoPostByMD5 | BooruOptions.NoPostByID
                   | BooruOptions.NoPostCount | BooruOptions.NoFavorite | BooruOptions.NoTagByID)
         { }
+
+        protected override void AddAuth(HttpRequestMessage message) // TODO: Doesn't work rn
+        {
+            message.Headers.Add("Cookie", "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash);
+        }
 
         private protected override JToken ParseFirstPostSearchResult(object json)
         {

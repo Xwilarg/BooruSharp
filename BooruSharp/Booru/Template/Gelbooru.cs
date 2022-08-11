@@ -33,6 +33,11 @@ namespace BooruSharp.Booru.Template
                   | BooruOptions.CommentApiXml)
         { }
 
+        protected override void AddAuth(HttpRequestMessage message)
+        {
+            message.Headers.Add("Cookie", "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash);
+        }
+
         /// <inheritdoc/>
         public async override Task<Search.Post.SearchResult> GetPostByMd5Async(string md5)
         {

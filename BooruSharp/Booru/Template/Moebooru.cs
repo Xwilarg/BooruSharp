@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
+using System.Net.Http;
 
 namespace BooruSharp.Booru.Template
 {
@@ -23,6 +24,11 @@ namespace BooruSharp.Booru.Template
             : base(domain, UrlFormat.PostIndexJson, options | BooruOptions.NoPostByMD5
                   | BooruOptions.NoFavorite)
         { }
+
+        protected override void AddAuth(HttpRequestMessage message)
+        {
+            message.Headers.Add("Cookie", "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash);
+        }
 
         private protected override JToken ParseFirstPostSearchResult(object json)
         {

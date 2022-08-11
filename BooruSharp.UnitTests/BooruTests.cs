@@ -146,6 +146,18 @@ namespace BooruSharp.UnitTests
             Assert.Empty(result);
         }
 
+        [Fact]
+        public async Task E621PostWithAuth()
+        {
+            var booru = await Boorus.GetAsync<E621>();
+            General.Authorize(booru);
+
+            Skip.If(booru is Xbooru, "Xbooru allows adding a post with invalid ID.");
+
+            var res = await booru.GetRandomPostAsync("cub", "pussy");
+            Assert.True(res.FileUrl != null);
+        }
+
         [SkippableTheory]
         [MemberData(nameof(BooruParams))]
         public async Task UnsetFavoriteErrorAsync(Type t)
