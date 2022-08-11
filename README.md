@@ -147,8 +147,13 @@ Console.WriteLine(String.Join(Environment.NewLine,
 ```
 
 ## Authentification
+Authentification is done by creating a new instance of BooruAuth is specifying it to your Booru instance
 
-### Booru
+### E621 / E926
+userId is your username \
+passwordHash is your api key, to get it go to your account page and then in "Manage API Access"
+
+### Others booru
 For booru authentification, you'll need your user id and your password hash\
 To get it, I advise you to go on an image, open the developer panel (F12) and go in "Network"\
 Then press the button to add the image to your favorite and look at the "Cookies" section of the last request
