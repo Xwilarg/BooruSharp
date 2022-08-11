@@ -171,7 +171,7 @@ namespace BooruSharp.Booru
             bool useHttp = UsesHttp; // Cache returned value for faster access.
             BaseUrl = new Uri("http" + (useHttp ? "" : "s") + "://" + domain, UriKind.Absolute);
             _format = format;
-            _imageUrl = CreateQueryString(format, "post");
+            _imageUrl = CreateQueryString(format, format == UrlFormat.Philomena ? "q" : "post");
 
             if (_format == UrlFormat.IndexPhp)
                 _imageUrlXml = new Uri(_imageUrl.AbsoluteUri.Replace("json=1", "json=0"));
@@ -216,6 +216,10 @@ namespace BooruSharp.Booru
 
                 case UrlFormat.Sankaku:
                     queryString = query == "wiki" ? query : query + "s";
+                    break;
+
+                case UrlFormat.Philomena:
+                    queryString = $"api/v1/json/search/{query}";
                     break;
 
                 default:

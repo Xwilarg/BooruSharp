@@ -22,6 +22,7 @@ namespace BooruSharp.UnitTests
             new object[] { typeof(Gelbooru) },
             new object[] { typeof(Konachan) },
             new object[] { typeof(Lolibooru) },
+            new object[] { typeof(Ponybooru) },
             new object[] { typeof(Realbooru) },
             new object[] { typeof(Rule34) },
             new object[] { typeof(Safebooru) },
