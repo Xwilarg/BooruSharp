@@ -21,7 +21,7 @@ namespace BooruSharp.Booru.Template
         /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
         /// </param>
         protected Philomena(string domain, BooruOptions options = BooruOptions.None)
-            : base(domain, UrlFormat.Philomena, options | BooruOptions.NoPostCount | BooruOptions.NoFavorite | BooruOptions.NoPostByMD5)
+            : base(domain, UrlFormat.Philomena, options | BooruOptions.NoFavorite | BooruOptions.NoPostByMD5)
         { }
 
         protected override void AddAuth(HttpRequestMessage message)
@@ -48,7 +48,7 @@ namespace BooruSharp.Booru.Template
             Search.Post.Rating rating;
             if (tags.Contains("explicit")) rating = Search.Post.Rating.Explicit;
             else if (tags.Contains("questionable")) rating = Search.Post.Rating.Questionable;
-            else if (tags.Contains("sensitive")) rating = Search.Post.Rating.Safe;
+            else if (tags.Contains("suggestive")) rating = Search.Post.Rating.Safe;
             else if (tags.Contains("safe")) rating = Search.Post.Rating.General;
             else throw new ArgumentException("No image rating found", nameof(elem));
 
