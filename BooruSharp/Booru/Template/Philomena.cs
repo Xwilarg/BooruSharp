@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
+using System.Net.Http;
 
 namespace BooruSharp.Booru.Template
 {
@@ -20,8 +21,13 @@ namespace BooruSharp.Booru.Template
         /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
         /// </param>
         protected Philomena(string domain, BooruOptions options = BooruOptions.None)
-            : base(domain, UrlFormat.Philomena, options | BooruOptions.NoPostCount | BooruOptions.NoFavorite)
+            : base(domain, UrlFormat.Philomena, options | BooruOptions.NoPostCount | BooruOptions.NoFavorite | BooruOptions.NoPostByMD5)
         { }
+
+        protected override void AddAuth(HttpRequestMessage message)
+        {
+            message.RequestUri = new Uri($"{message.RequestUri.AbsoluteUri}&key={Auth.PasswordHash}");
+        }
 
         private protected override JToken ParseFirstPostSearchResult(object json)
         {

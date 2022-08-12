@@ -48,7 +48,7 @@ If you have any question, feel free to [contact me](#need-more-help)
 | ---                   | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Atfbooru		| ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ❌ | ❌ |
 | Danbooru Donmai	| ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ❌ | ❌ |
-| Derpibooru	| ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ❌ |
+| Derpibooru	| ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ❌ |
 | E621			| ✔️ | ✔️ | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | E926			| ✔️ | ✔️ | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Gelbooru		| ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ✔️ |
@@ -155,6 +155,10 @@ Authentification is done by creating a new instance of BooruAuth is specifying i
 ### E621 / E926
 userId is your username \
 passwordHash is your api key, to get it go to your account page and then in "Manage API Access"
+
+### Derpibooru / Poniboory
+userId need to be an empty string \
+passwordHash is your api key, go on the website at the top left hover your profile icon, go in "Account", you'll see your API key there
 
 ### Others booru
 For booru authentification, you'll need your user id and your password hash\
