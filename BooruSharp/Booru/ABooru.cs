@@ -293,9 +293,10 @@ namespace BooruSharp.Booru
 
         private string TagsToString(string[] tags)
         {
-            if (tags == null)
+            if (tags == null || !tags.Any())
             {
-                return string.Empty;
+                // Philomena doesn't support search with no tag so we search for all posts with ID > 0
+                return _format == UrlFormat.Philomena ? "q=id.gte:0" : string.Empty;
             }
             return (_format == UrlFormat.Philomena ? "q=" : "tags=")
                 + string.Join(_format == UrlFormat.Philomena ? "," : "+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant();
