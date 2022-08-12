@@ -50,7 +50,7 @@ namespace BooruSharp.Booru.Template
             else if (tags.Contains("questionable")) rating = Search.Post.Rating.Questionable;
             else if (tags.Contains("suggestive")) rating = Search.Post.Rating.Safe;
             else if (tags.Contains("safe")) rating = Search.Post.Rating.General;
-            else throw new ArgumentException("No image rating found", nameof(elem));
+            else rating = (Search.Post.Rating)(-1); // Some images doesn't have a rating
 
             var id = elem["id"].Value<int>();
 

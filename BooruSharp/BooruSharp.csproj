@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.5.1-beta</Version>
+    <Version>3.5.2-beta</Version>
     <Authors>Xwilarg</Authors>
     <Company />
     <Description>BooruSharp is a C# library to browse Booru websites (Gelbooru, Konachan, etc...) easily</Description>
