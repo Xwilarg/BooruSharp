@@ -298,7 +298,7 @@ namespace BooruSharp.Booru
                 return string.Empty;
             }
             return (_format == UrlFormat.Philomena ? "q=" : "tags=")
-                + string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant();
+                + string.Join(_format == UrlFormat.Philomena ? "," : "+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant();
         }
 
         private string SearchArg(string value)
