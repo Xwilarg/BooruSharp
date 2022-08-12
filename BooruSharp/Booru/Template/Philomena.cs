@@ -20,30 +20,32 @@ namespace BooruSharp.Booru.Template
         /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
         /// </param>
         protected Philomena(string domain, BooruOptions options = BooruOptions.None)
-            : base(domain, UrlFormat.Philomena, options | BooruOptions.NoPostCount)
+            : base(domain, UrlFormat.Philomena, options | BooruOptions.NoPostCount | BooruOptions.NoFavorite)
         { }
 
         private protected override JToken ParseFirstPostSearchResult(object json)
         {
-            JArray array = json as JArray;
-            return array?.FirstOrDefault() ?? throw new Search.InvalidTags();
+            var token = (JToken)json;
+            return ((JArray)token["images"])?.FirstOrDefault() ?? throw new Search.InvalidTags();
         }
 
         private protected override Search.Post.SearchResult GetPostSearchResult(JToken elem)
         {
-            var tags = elem["tags"].Value<string[]>();
+            var tags = elem["tags"].ToObject<string[]>();
             Search.Post.Rating rating;
             if (tags.Contains("explicit")) rating = Search.Post.Rating.Explicit;
-            else if (tags.Contains("questionnable")) rating = Search.Post.Rating.Questionable;
+            else if (tags.Contains("questionable")) rating = Search.Post.Rating.Questionable;
             else if (tags.Contains("sensitive")) rating = Search.Post.Rating.Safe;
             else if (tags.Contains("safe")) rating = Search.Post.Rating.General;
             else throw new ArgumentException("No image rating found", nameof(elem));
 
+            var sourceUrl = elem["source_url"].Value<string>();
+
             return new Search.Post.SearchResult(
-                new Uri(elem["representation"]["full"].Value<string>()),
+                new Uri(elem["representations"]["full"].Value<string>()),
                 null,
-                new Uri(elem["source_url"].Value<string>()),
-                new Uri(elem["representation"]["thumb"].Value<string>()),
+                sourceUrl == null ? null : new Uri(sourceUrl),
+                new Uri(elem["representations"]["thumb"].Value<string>()),
                 rating,
                 tags,
                 null,

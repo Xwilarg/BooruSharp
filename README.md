@@ -19,11 +19,13 @@ Install-Package BooruSharp.Others
 BooruSharp currently handle the following websites:
  - booru.allthefallen.moe
  - danbooru.donmai.us
+ - derpibooru.org
  - e621.net
  - e926.net
  - gelbooru.com
  - konachan.com
  - lolibooru.moe
+ - ponybooru.org
  - realbooru.com
  - rule34.xxx
  - safebooru.org
@@ -46,6 +48,7 @@ If you have any question, feel free to [contact me](#need-more-help)
 | ---                   | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Atfbooru		| ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ❌ | ❌ |
 | Danbooru Donmai	| ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ❌ | ❌ |
+| Derpibooru	| ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ❌ |
 | E621			| ✔️ | ✔️ | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | E926			| ✔️ | ✔️ | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Gelbooru		| ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ✔️ |

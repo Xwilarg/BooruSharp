@@ -168,10 +168,12 @@ namespace BooruSharp.Booru
             HttpClient = null;
             _options = options;
 
+            _queryOptionLimitOfOne = format == UrlFormat.Philomena ? "per_page=1" : "limit=1";
+
             bool useHttp = UsesHttp; // Cache returned value for faster access.
             BaseUrl = new Uri("http" + (useHttp ? "" : "s") + "://" + domain, UriKind.Absolute);
             _format = format;
-            _imageUrl = CreateQueryString(format, format == UrlFormat.Philomena ? "q" : "post");
+            _imageUrl = CreateQueryString(format, format == UrlFormat.Philomena ? string.Empty : "post");
 
             if (_format == UrlFormat.IndexPhp)
                 _imageUrlXml = new Uri(_imageUrl.AbsoluteUri.Replace("json=1", "json=0"));
@@ -293,9 +295,12 @@ namespace BooruSharp.Booru
 
         private string TagsToString(string[] tags)
         {
-            return tags != null
-                ? "tags=" + string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant()
-                : "";
+            if (tags == null)
+            {
+                return string.Empty;
+            }
+            return (_format == UrlFormat.Philomena ? "q=" : "tags=")
+                + string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant();
         }
 
         private string SearchArg(string value)
@@ -351,6 +356,7 @@ namespace BooruSharp.Booru
         private readonly BooruOptions _options;
         private readonly UrlFormat _format; // URL format
         private const string _userAgentHeaderValue = "Mozilla/5.0 BooruSharp";
+        private readonly string _queryOptionLimitOfOne;
         private protected readonly DateTime _unixTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private static readonly Lazy<HttpClient> _lazyClient = new Lazy<HttpClient>(() =>
         {

@@ -10,7 +10,6 @@ namespace BooruSharp.Booru
     {
         private const int _limitedTagsSearchCount = 2;
         private const int _increasedPostLimitCount = 20001;
-        private const string _queryOptionLimitOfOne = "limit=1";
 
         /// <summary>
         /// Searches for a post using its MD5 hash.
@@ -116,6 +115,10 @@ namespace BooruSharp.Booru
                     max = _increasedPostLimitCount;
 
                 return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, tagString, "pid=" + Random.Next(0, max)));
+            }
+            if (_format == UrlFormat.Philomena)
+            {
+                return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, tagString, "sf=random"));
             }
 
             return NoMoreThanTwoTags
