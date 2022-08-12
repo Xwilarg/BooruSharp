@@ -52,17 +52,17 @@ namespace BooruSharp.Booru.Template
             else if (tags.Contains("safe")) rating = Search.Post.Rating.General;
             else throw new ArgumentException("No image rating found", nameof(elem));
 
-            var sourceUrl = elem["source_url"].Value<string>();
+            var id = elem["id"].Value<int>();
 
             return new Search.Post.SearchResult(
                 new Uri(elem["representations"]["full"].Value<string>()),
                 null,
-                sourceUrl == null ? null : new Uri(sourceUrl),
+                new Uri($"{BaseUrl}/images/{id}"),
                 new Uri(elem["representations"]["thumb"].Value<string>()),
                 rating,
                 tags,
                 null,
-                elem["id"].Value<int>(),
+                id,
                 elem["size"].Value<int>(),
                 elem["height"].Value<int>(),
                 elem["width"].Value<int>(),
