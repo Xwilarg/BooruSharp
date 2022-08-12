@@ -18,6 +18,7 @@ namespace BooruSharp.UnitTests
             new object[] { typeof(DanbooruDonmai) },
             new object[] { typeof(E621) },
             new object[] { typeof(E926) },
+            new object[] { typeof(Derpibooru) },
             //new object[] { typeof(Furrybooru) },
             new object[] { typeof(Gelbooru) },
             new object[] { typeof(Konachan) },

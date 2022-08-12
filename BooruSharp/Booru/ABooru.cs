@@ -168,8 +168,6 @@ namespace BooruSharp.Booru
             HttpClient = null;
             _options = options;
 
-            _queryOptionLimitOfOne = format == UrlFormat.Philomena ? "per_page=1" : "limit=1";
-
             bool useHttp = UsesHttp; // Cache returned value for faster access.
             BaseUrl = new Uri("http" + (useHttp ? "" : "s") + "://" + domain, UriKind.Absolute);
             _format = format;
@@ -356,7 +354,6 @@ namespace BooruSharp.Booru
         private readonly BooruOptions _options;
         private readonly UrlFormat _format; // URL format
         private const string _userAgentHeaderValue = "Mozilla/5.0 BooruSharp";
-        private readonly string _queryOptionLimitOfOne;
         private protected readonly DateTime _unixTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private static readonly Lazy<HttpClient> _lazyClient = new Lazy<HttpClient>(() =>
         {

@@ -35,6 +35,13 @@ namespace BooruSharp.Booru.Template
             return ((JArray)token["images"])?.FirstOrDefault() ?? throw new Search.InvalidTags();
         }
 
+
+        private protected override Search.Post.SearchResult[] GetPostsSearchResult(object json)
+        {
+            var token = ((JToken)json)["images"];
+            return ((JArray)token).Select(GetPostSearchResult).ToArray();
+        }
+
         private protected override Search.Post.SearchResult GetPostSearchResult(JToken elem)
         {
             var tags = elem["tags"].ToObject<string[]>();
