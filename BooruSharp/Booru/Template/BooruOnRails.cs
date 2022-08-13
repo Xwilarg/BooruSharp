@@ -6,9 +6,9 @@ using System.Net.Http;
 namespace BooruSharp.Booru.Template
 {
     /// <summary>
-    /// Template booru based on Philomena https://github.com/ZizzyDizzyMC/philomena . This class is <see langword="abstract"/>.
+    /// Template booru based on Booru-on-rails https://github.com/derpibooru/booru-on-rails . This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract class Philomena : ABooru
+    public abstract class BooruOnRails : ABooru
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Philomena"/> template class.
@@ -20,8 +20,8 @@ namespace BooruSharp.Booru.Template
         /// <param name="options">
         /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
         /// </param>
-        protected Philomena(string domain, BooruOptions options = BooruOptions.None)
-            : base(domain, UrlFormat.Philomena, options | BooruOptions.NoFavorite | BooruOptions.NoPostByMD5)
+        protected BooruOnRails(string domain, BooruOptions options = BooruOptions.None)
+            : base(domain, UrlFormat.BooruOnRails, options | BooruOptions.NoFavorite | BooruOptions.NoPostByMD5)
         { }
 
         protected override void AddAuth(HttpRequestMessage message)
@@ -32,13 +32,13 @@ namespace BooruSharp.Booru.Template
         private protected override JToken ParseFirstPostSearchResult(object json)
         {
             var token = (JToken)json;
-            return ((JArray)token["images"])?.FirstOrDefault() ?? throw new Search.InvalidTags();
+            return ((JArray)token["posts"])?.FirstOrDefault() ?? throw new Search.InvalidTags();
         }
 
 
         private protected override Search.Post.SearchResult[] GetPostsSearchResult(object json)
         {
-            var token = ((JToken)json)["images"];
+            var token = ((JToken)json)["posts"];
             return ((JArray)token).Select(GetPostSearchResult).ToArray();
         }
 

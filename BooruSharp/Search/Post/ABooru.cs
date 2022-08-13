@@ -13,7 +13,7 @@ namespace BooruSharp.Booru
         private const int _increasedPostLimitCount = 20001;
 
         private string GetLimit(int quantity)
-            => (_format == UrlFormat.PhilomenaV1 || _format == UrlFormat.PhilomenaV3 ? "per_page=" : "limit=") + quantity;
+            => (_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails ? "per_page=" : "limit=") + quantity;
 
         /// <summary>
         /// Searches for a post using its MD5 hash.
@@ -72,16 +72,16 @@ namespace BooruSharp.Booru
             if (NoMoreThanTwoTags && tags.Length > _limitedTagsSearchCount)
                 throw new Search.TooManyTags();
 
-            var url = CreateUrl(_imageUrlXml, GetLimit(1), TagsToString(tags));
-
-            if (_format == UrlFormat.PhilomenaV1 || _format == UrlFormat.PhilomenaV3)
+            if (_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails)
             {
+                var url = CreateUrl(_imageUrl, GetLimit(1), TagsToString(tags));
                 var json = await GetJsonAsync(url);
                 var token = (JToken)JsonConvert.DeserializeObject(json);
                 return token["total"].Value<int>();
             }
             else
             {
+                var url = CreateUrl(_imageUrlXml, GetLimit(1), TagsToString(tags));
                 XmlDocument xml = await GetXmlAsync(url);
                 return int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
             }
@@ -131,7 +131,7 @@ namespace BooruSharp.Booru
 
                 return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, GetLimit(1), tagString, "pid=" + Random.Next(0, max)));
             }
-            if (_format == UrlFormat.PhilomenaV1 || _format == UrlFormat.PhilomenaV3)
+            if (_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails)
             {
                 return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, GetLimit(1), tagString, "sf=random"));
             }
@@ -168,7 +168,7 @@ namespace BooruSharp.Booru
 
             if (_format == UrlFormat.IndexPhp)
                 return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, GetLimit(limit), tagString) + "+sort:random");
-            if (_format == UrlFormat.PhilomenaV1 || _format == UrlFormat.PhilomenaV3)
+            if (_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails)
                 return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, GetLimit(limit), tagString, "sf=random"));
             else if (NoMoreThanTwoTags)
                 // +order:random count as a tag so we use random=true instead to save one

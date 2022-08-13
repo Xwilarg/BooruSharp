@@ -2,7 +2,7 @@
 
 namespace BooruSharp.Booru
 {
-    public class Twibooru : PhilomenaV3
+    public class Twibooru : BooruOnRails
     {
         public Twibooru() : base("twibooru.org")
         { }

@@ -171,7 +171,7 @@ namespace BooruSharp.Booru
             bool useHttp = UsesHttp; // Cache returned value for faster access.
             BaseUrl = new Uri("http" + (useHttp ? "" : "s") + "://" + domain, UriKind.Absolute);
             _format = format;
-            _imageUrl = CreateQueryString(format, format == UrlFormat.PhilomenaV1 ? string.Empty : "post");
+            _imageUrl = CreateQueryString(format, format == UrlFormat.Philomena ? string.Empty : "post");
 
             if (_format == UrlFormat.IndexPhp)
                 _imageUrlXml = new Uri(_imageUrl.AbsoluteUri.Replace("json=1", "json=0"));
@@ -218,11 +218,11 @@ namespace BooruSharp.Booru
                     queryString = query == "wiki" ? query : query + "s";
                     break;
 
-                case UrlFormat.PhilomenaV1:
+                case UrlFormat.Philomena:
                     queryString = $"api/v1/json/search/{query}";
                     break;
 
-                case UrlFormat.PhilomenaV3:
+                case UrlFormat.BooruOnRails:
                     queryString = $"api/v3/search/{query}s";
                     break;
 
@@ -300,10 +300,10 @@ namespace BooruSharp.Booru
             if (tags == null || !tags.Any())
             {
                 // Philomena doesn't support search with no tag so we search for all posts with ID > 0
-                return _format == UrlFormat.PhilomenaV1 || _format == UrlFormat.PhilomenaV3 ? "q=id.gte:0" : string.Empty;
+                return _format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails ? "q=id.gte:0" : string.Empty;
             }
-            return (_format == UrlFormat.PhilomenaV1 || _format == UrlFormat.PhilomenaV3 ? "q=" : "tags=")
-                + string.Join(_format == UrlFormat.PhilomenaV1 || _format == UrlFormat.PhilomenaV3 ? "," : "+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant();
+            return (_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails ? "q=" : "tags=")
+                + string.Join(_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails ? "," : "+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant();
         }
 
         private string SearchArg(string value)

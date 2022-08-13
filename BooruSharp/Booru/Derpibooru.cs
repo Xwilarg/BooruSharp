@@ -2,7 +2,7 @@
 
 namespace BooruSharp.Booru
 {
-    public class Derpibooru : PhilomenaV1
+    public class Derpibooru : Philomena
     {
         public Derpibooru() : base("derpibooru.org")
         { }

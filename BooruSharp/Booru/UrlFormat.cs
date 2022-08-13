@@ -15,7 +15,7 @@
         /// </summary>
         PostIndexJson,
         /// <summary>
-        /// Indicates that the API uses <c>/index.php?page=dapi&amp;s=post&amp;q=index&amp;json=1</c> query scheme.
+        /// Indicates that the API uses <c>/index.php?page=dapi&s=post&q=index&json=1</c> query scheme.
         /// </summary>
         IndexPhp,
         /// <summary>
@@ -29,10 +29,10 @@
         /// <summary>
         /// Indicate that the API uses <c>/api/v1/json/search/images</c> query scheme
         /// </summary>
-        PhilomenaV1,
+        Philomena,
         /// <summary>
         /// Indicate that the API uses <c>/api/v3/search/posts</c> query scheme
         /// </summary>
-        PhilomenaV3
+        BooruOnRails
     }
 }
