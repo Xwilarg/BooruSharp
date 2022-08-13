@@ -29,6 +29,10 @@
         /// <summary>
         /// Indicate that the API uses <c>/api/v1/json/search/images</c> query scheme
         /// </summary>
-        Philomena
+        PhilomenaV1,
+        /// <summary>
+        /// Indicate that the API uses <c>/api/v3/search/posts</c> query scheme
+        /// </summary>
+        PhilomenaV3
     }
 }

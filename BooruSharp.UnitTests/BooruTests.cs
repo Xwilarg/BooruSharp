@@ -29,6 +29,7 @@ namespace BooruSharp.UnitTests
             new object[] { typeof(Safebooru) },
             new object[] { typeof(Sakugabooru) },
             new object[] { typeof(SankakuComplex) },
+            new object[] { typeof(Twibooru) },
             new object[] { typeof(Xbooru) },
             new object[] { typeof(Yandere) },
             new object[] { typeof(Pixiv) },

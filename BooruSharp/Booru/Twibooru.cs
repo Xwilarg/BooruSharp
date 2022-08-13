@@ -2,9 +2,9 @@
 
 namespace BooruSharp.Booru
 {
-    public class Ponybooru : PhilomenaV1
+    public class Twibooru : PhilomenaV3
     {
-        public Ponybooru() : base("ponybooru.org")
+        public Twibooru() : base("twibooru.org")
         { }
 
         public override bool IsSafe => false;

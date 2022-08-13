@@ -20,9 +20,11 @@ namespace BooruSharp.Booru.Template
         /// <param name="options">
         /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
         /// </param>
-        protected Philomena(string domain, BooruOptions options = BooruOptions.None)
-            : base(domain, UrlFormat.Philomena, options | BooruOptions.NoFavorite | BooruOptions.NoPostByMD5)
+        protected Philomena(string domain, UrlFormat format, BooruOptions options = BooruOptions.None)
+            : base(domain, format, options | BooruOptions.NoFavorite | BooruOptions.NoPostByMD5)
         { }
+
+        public abstract string PostsKeyName { get; }
 
         protected override void AddAuth(HttpRequestMessage message)
         {
@@ -32,13 +34,13 @@ namespace BooruSharp.Booru.Template
         private protected override JToken ParseFirstPostSearchResult(object json)
         {
             var token = (JToken)json;
-            return ((JArray)token["images"])?.FirstOrDefault() ?? throw new Search.InvalidTags();
+            return ((JArray)token[PostsKeyName])?.FirstOrDefault() ?? throw new Search.InvalidTags();
         }
 
 
         private protected override Search.Post.SearchResult[] GetPostsSearchResult(object json)
         {
-            var token = ((JToken)json)["images"];
+            var token = ((JToken)json)[PostsKeyName];
             return ((JArray)token).Select(GetPostSearchResult).ToArray();
         }
 

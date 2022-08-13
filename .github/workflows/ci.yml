@@ -27,6 +27,8 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       env:
+        TWIBOORU_USER_ID: ""
+        TWIBOORU_PASSWORD_HASH: ${{ secrets.DERPIBOORU_PASSWORD_HASH }}
         DERPIBOORU_USER_ID: ""
         DERPIBOORU_PASSWORD_HASH: ${{ secrets.DERPIBOORU_PASSWORD_HASH }}
         PONYBOORU_USER_ID: ""

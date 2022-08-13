@@ -31,6 +31,7 @@ BooruSharp currently handle the following websites:
  - safebooru.org
  - sakugabooru.com
  - beta.sankakucomplex.com
+ - twibooru.org
  - xbooru.com
  - yande.re
  
@@ -66,7 +67,7 @@ If you have any question, feel free to [contact me](#need-more-help)
 ### Additional notes on Pixiv
 Pixiv also have 2 methods to download an image (ImageToByteArrayAsync) or a preview (PreviewToByteArrayAsync), it'll give you a byte array given a SearchResult
 
-Please make note that you also need to provide at least one tag for he following methods:
+Please make note that you also need to provide at least one tag for the following methods:
 - GetLastPostsAsync
 - GetPostCountAsync
 - GetRandomPostAsync

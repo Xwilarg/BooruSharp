@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace BooruSharp.Booru
         private const int _increasedPostLimitCount = 20001;
 
         private string GetLimit(int quantity)
-            => (_format == UrlFormat.Philomena ? "per_page=" : "limit=") + quantity;
+            => (_format == UrlFormat.PhilomenaV1 || _format == UrlFormat.PhilomenaV3 ? "per_page=" : "limit=") + quantity;
 
         /// <summary>
         /// Searches for a post using its MD5 hash.
@@ -71,8 +72,19 @@ namespace BooruSharp.Booru
             if (NoMoreThanTwoTags && tags.Length > _limitedTagsSearchCount)
                 throw new Search.TooManyTags();
 
-            XmlDocument xml = await GetXmlAsync(CreateUrl(_imageUrlXml, GetLimit(1), TagsToString(tags)));
-            return int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
+            var url = CreateUrl(_imageUrlXml, GetLimit(1), TagsToString(tags));
+
+            if (_format == UrlFormat.PhilomenaV1 || _format == UrlFormat.PhilomenaV3)
+            {
+                var json = await GetJsonAsync(url);
+                var token = (JToken)JsonConvert.DeserializeObject(json);
+                return token["total"].Value<int>();
+            }
+            else
+            {
+                XmlDocument xml = await GetXmlAsync(url);
+                return int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
+            }
         }
 
         /// <summary>
@@ -119,7 +131,7 @@ namespace BooruSharp.Booru
 
                 return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, GetLimit(1), tagString, "pid=" + Random.Next(0, max)));
             }
-            if (_format == UrlFormat.Philomena)
+            if (_format == UrlFormat.PhilomenaV1 || _format == UrlFormat.PhilomenaV3)
             {
                 return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, GetLimit(1), tagString, "sf=random"));
             }
@@ -156,7 +168,7 @@ namespace BooruSharp.Booru
 
             if (_format == UrlFormat.IndexPhp)
                 return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, GetLimit(limit), tagString) + "+sort:random");
-            if (_format == UrlFormat.Philomena)
+            if (_format == UrlFormat.PhilomenaV1 || _format == UrlFormat.PhilomenaV3)
                 return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, GetLimit(limit), tagString, "sf=random"));
             else if (NoMoreThanTwoTags)
                 // +order:random count as a tag so we use random=true instead to save one
