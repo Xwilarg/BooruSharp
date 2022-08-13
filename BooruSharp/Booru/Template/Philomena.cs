@@ -32,9 +32,12 @@ namespace BooruSharp.Booru.Template
         private protected override JToken ParseFirstPostSearchResult(object json)
         {
             var token = (JToken)json;
-            return ((JArray)token["images"])?.FirstOrDefault() ?? throw new Search.InvalidTags();
+            if (token["images"] is JArray arr)
+            {
+                return arr?.FirstOrDefault() ?? throw new Search.InvalidTags();
+            }
+            return token["image"];
         }
-
 
         private protected override Search.Post.SearchResult[] GetPostsSearchResult(object json)
         {
