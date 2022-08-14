@@ -65,7 +65,7 @@ namespace BooruSharp.Booru.Template
             return new Search.Post.SearchResult(
                 new Uri(elem["representations"]["full"].Value<string>()),
                 null,
-                new Uri($"{BaseUrl}/images/{id}"),
+                new Uri($"{BaseUrl}images/{id}"),
                 new Uri(elem["representations"]["thumb"].Value<string>()),
                 rating,
                 tags,
