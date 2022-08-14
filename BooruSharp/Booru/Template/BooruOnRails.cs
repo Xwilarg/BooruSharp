@@ -24,7 +24,8 @@ namespace BooruSharp.Booru.Template
         /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
         /// </param>
         protected BooruOnRails(string domain, BooruOptions options = BooruOptions.None)
-            : base(domain, UrlFormat.BooruOnRails, options | BooruOptions.NoFavorite | BooruOptions.NoPostByMD5 | BooruOptions.NoPostByID)
+            : base(domain, UrlFormat.BooruOnRails, options | BooruOptions.NoFavorite | BooruOptions.NoPostByMD5 | BooruOptions.NoPostByID
+                  | BooruOptions.NoLastComments | BooruOptions.NoWiki | BooruOptions.NoRelated)
         { }
 
         /// <inheritdoc/>
