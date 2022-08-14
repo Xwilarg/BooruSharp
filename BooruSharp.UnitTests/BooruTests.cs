@@ -39,17 +39,20 @@ namespace BooruSharp.UnitTests
         {
             new object[] { typeof(Atfbooru) },
             new object[] { typeof(DanbooruDonmai), "hibiki_(kancolle)" },
+            new object[] { typeof(Derpibooru), "swimsuit", "hat" },
             new object[] { typeof(E621), "kantai_collection", "swimwear" },
             new object[] { typeof(E926), "kantai_collection", "swimwear" },
             //new object[] { typeof(Furrybooru), "kantai_collection" },
             new object[] { typeof(Gelbooru), "hibiki_(kancolle)" },
             new object[] { typeof(Konachan), "hibiki_(kancolle)" },
             new object[] { typeof(Lolibooru) },
+            new object[] { typeof(Ponybooru), "swimsuit", "hat" },
             new object[] { typeof(Realbooru), "swimsuit", "asian" },
             new object[] { typeof(Rule34) },
             new object[] { typeof(Safebooru) },
             new object[] { typeof(Sakugabooru), "kantai_collection", "explosions" },
             new object[] { typeof(SankakuComplex) },
+            new object[] { typeof(Twibooru), "swimsuit", "hat" },
             new object[] { typeof(Xbooru), "kantai_collection" },
             new object[] { typeof(Yandere), "kantai_collection", "swimsuits" },
             new object[] { typeof(Pixiv), "響(艦隊これくしょん)", "水着艦娘" },
@@ -59,17 +62,20 @@ namespace BooruSharp.UnitTests
         {
             new object[] { typeof(Atfbooru) },
             new object[] { typeof(DanbooruDonmai) },
+            new object[] { typeof(Derpibooru), "swimsuit" },
             new object[] { typeof(E621) },
             new object[] { typeof(E926) },
             //new object[] { typeof(Furrybooru) },
             new object[] { typeof(Gelbooru) },
             new object[] { typeof(Konachan) },
             new object[] { typeof(Lolibooru) },
+            new object[] { typeof(Ponybooru), "swimsuit" },
             new object[] { typeof(Realbooru), "small_breasts" },
             new object[] { typeof(Rule34) },
             new object[] { typeof(Safebooru) },
             new object[] { typeof(Sakugabooru), "kantai_collection" },
             new object[] { typeof(SankakuComplex), "small_breasts" },
+            new object[] { typeof(Twibooru), "swimsuit" },
             new object[] { typeof(Xbooru) },
             new object[] { typeof(Yandere) },
             new object[] { typeof(Pixiv), "スク水" },
@@ -79,17 +85,20 @@ namespace BooruSharp.UnitTests
         {
             new object[] { typeof(Atfbooru) },
             new object[] { typeof(DanbooruDonmai), "hibiki_(kancolle)" },
+            new object[] { typeof(Derpibooru), "swimsuit", "hat" },
             new object[] { typeof(E621), "kantai_collection" },
             new object[] { typeof(E926), "kantai_collection" },
             //new object[] { typeof(Furrybooru), "kantai_collection" },
             new object[] { typeof(Gelbooru), "hibiki_(kancolle)" },
             new object[] { typeof(Konachan), "hibiki_(kancolle)" },
             new object[] { typeof(Lolibooru) },
+            new object[] { typeof(Ponybooru), "swimsuit", "hat" },
             new object[] { typeof(Realbooru), "school_swimsuit", "small_breasts" },
             new object[] { typeof(Rule34) },
             new object[] { typeof(Safebooru) },
             new object[] { typeof(Sakugabooru), "kantai_collection", "explosions" },
             new object[] { typeof(SankakuComplex), "hibiki_(kantai_collection)", "old_school_swimsuit" },
+            new object[] { typeof(Twibooru), "swimsuit", "hat" },
             new object[] { typeof(Xbooru), "kantai_collection" },
             new object[] { typeof(Yandere), "kantai_collection" },
             new object[] { typeof(Pixiv), "響(艦隊これくしょん)", "スク水" },
@@ -99,17 +108,20 @@ namespace BooruSharp.UnitTests
         {
             new object[] { typeof(Atfbooru), false },
             new object[] { typeof(DanbooruDonmai), true },
+            new object[] { typeof(Derpibooru), "swimsuit", "hat", "necklace" },
             new object[] { typeof(E621), false, "sea", "loli", "swimwear" },
             new object[] { typeof(E926), false, "sea", "breasts", "swimwear" },
             //new object[] { typeof(Furrybooru), false, "water" },
             new object[] { typeof(Gelbooru), false },
             new object[] { typeof(Konachan), false, "water" },
             new object[] { typeof(Lolibooru), false },
+            new object[] { typeof(Ponybooru), "swimsuit", "hat", "necklace" },
             new object[] { typeof(Realbooru), false, "water" },
             new object[] { typeof(Rule34), false },
             new object[] { typeof(Safebooru), false },
             new object[] { typeof(Sakugabooru), false, "kantai_collection", "explosions", "fire" },
             new object[] { typeof(SankakuComplex), false, "ocean", "loli", "swimsuit" },
+            new object[] { typeof(Twibooru), "swimsuit", "hat", "necklace" },
             new object[] { typeof(Xbooru), false, "ocean", "small_breasts" },
             new object[] { typeof(Yandere), false, "see_through", "loli", "swimsuits" },
             new object[] { typeof(Pixiv), false, "東方", "貧乳", "水着" },
@@ -515,6 +527,9 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv), "パンスト")]
+        [InlineData(typeof(Derpibooru))]
+        [InlineData(typeof(Ponybooru))]
+        [InlineData(typeof(Twibooru))]
         public async Task CheckTagAsync(Type t, string tag = "pantyhose")
         {
             var booru = await Boorus.GetAsync(t);
@@ -552,6 +567,9 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru), "hibiki", true)]
         [InlineData(typeof(Yandere), "hibiki", false)]
         [InlineData(typeof(Pixiv), "艦隊こ", false)]
+        [InlineData(typeof(Derpibooru), "swi", false)]
+        [InlineData(typeof(Ponybooru), "swi", false)]
+        [InlineData(typeof(Twibooru), "swi", false)]
         public async Task CheckTagsAsync(Type t, string tag, bool onlyOnce)
         {
             var booru = await Boorus.GetAsync(t);
@@ -580,6 +598,9 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru), "hibiki_(kantai_collection)", 151883)]
         [InlineData(typeof(Yandere), "hibiki_(kancolle)", 98153)]
         [InlineData(typeof(Pixiv), "響(艦隊これくしょん)", -1)]
+        [InlineData(typeof(Derpibooru), "swimsuit", 43858)]
+        [InlineData(typeof(Ponybooru), "swimsuit", 1299)]
+        [InlineData(typeof(Twibooru), "swimsuit", 2998)]
         public async Task TagIdAsync(Type t, string tag, int tagId)
         {
             var booru = await Boorus.GetAsync(t);
@@ -617,6 +638,9 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru), "futanari", -1)]
         [InlineData(typeof(Yandere), "futanari", 167)]
         [InlineData(typeof(Pixiv), "ふたなり", -1)]
+        [InlineData(typeof(Derpibooru), "swimsuit", -1)]
+        [InlineData(typeof(Ponybooru), "swimsuit", -1)]
+        [InlineData(typeof(Twibooru), "swimsuit", -1)]
         public async Task CheckWikiAsync(Type t, string tag, int? id)
         {
             var booru = await Boorus.GetAsync(t);
@@ -658,6 +682,9 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru), "sky", "clouds")]
         [InlineData(typeof(Yandere), "landscape", "wallpaper")]
         [InlineData(typeof(Pixiv), "空", "雲")]
+        [InlineData(typeof(Derpibooru), "swimsuit", "")]
+        [InlineData(typeof(Ponybooru), "swimsuit", "")]
+        [InlineData(typeof(Twibooru), "swimsuit", "")]
         public async Task CheckRelatedAsync(Type t, string tag, string related)
         {
             var booru = await Boorus.GetAsync(t);
@@ -699,6 +726,9 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru), 740157)]
         [InlineData(typeof(Yandere), 619494)]
         [InlineData(typeof(Pixiv), -1)]
+        [InlineData(typeof(Derpibooru), 1)]
+        [InlineData(typeof(Ponybooru), 1)]
+        [InlineData(typeof(Twibooru), 1)]
         public async Task CheckCommentAsync(Type t, int id)
         {
             var booru = await Boorus.GetAsync(t);
@@ -754,6 +784,9 @@ namespace BooruSharp.UnitTests
         [InlineData(typeof(Xbooru))]
         [InlineData(typeof(Yandere))]
         [InlineData(typeof(Pixiv), "おまんこ")]
+        [InlineData(typeof(Derpibooru))]
+        [InlineData(typeof(Ponybooru))]
+        [InlineData(typeof(Twibooru))]
         public async Task CheckIsSafeAsync(Type t, string explicitTag = "pussy")
         {
             ABooru b = await Boorus.GetAsync(t);
