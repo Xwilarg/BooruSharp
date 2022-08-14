@@ -26,6 +26,7 @@ namespace BooruSharp.Booru.Template
                   | BooruOptions.NoPostCount | BooruOptions.NoFavorite | BooruOptions.NoTagByID)
         { }
 
+        /// <inheritdoc/>
         protected override void AddAuth(HttpRequestMessage message) // TODO: Doesn't work rn
         {
             message.Headers.Add("Cookie", "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash);

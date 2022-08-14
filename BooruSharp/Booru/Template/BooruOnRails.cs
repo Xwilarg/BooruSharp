@@ -27,6 +27,7 @@ namespace BooruSharp.Booru.Template
             : base(domain, UrlFormat.BooruOnRails, options | BooruOptions.NoFavorite | BooruOptions.NoPostByMD5 | BooruOptions.NoPostByID)
         { }
 
+        /// <inheritdoc/>
         protected override void AddAuth(HttpRequestMessage message)
         {
             message.RequestUri = new Uri($"{message.RequestUri.AbsoluteUri}&key={Auth.PasswordHash}");
@@ -94,6 +95,19 @@ namespace BooruSharp.Booru.Template
                 token["name"].Value<string>(),
                 GetTagType(token["category"].Value<string>()),
                 token["posts"].Value<int>()
+                );
+        }
+
+        private protected override Search.Comment.SearchResult GetCommentSearchResult(object json)
+        {
+            var token = (JToken)json;
+            return new Search.Comment.SearchResult(
+                token["id"].Value<int>(),
+                0,
+                null,
+                token["created_at"].Value<DateTime>(),
+                null,
+                token["body"].Value<string>()
                 );
         }
 

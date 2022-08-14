@@ -27,6 +27,7 @@ namespace BooruSharp.Booru.Template
             : base(domain, UrlFormat.Philomena, options | BooruOptions.NoFavorite | BooruOptions.NoPostByMD5 | BooruOptions.NoPostByID)
         { }
 
+        /// <inheritdoc/>
         protected override void AddAuth(HttpRequestMessage message)
         {
             message.RequestUri = new Uri($"{message.RequestUri.AbsoluteUri}&key={Auth.PasswordHash}");
@@ -94,6 +95,19 @@ namespace BooruSharp.Booru.Template
                 token["name"].Value<string>(),
                 GetTagType(token["category"].Value<string>()),
                 token["images"].Value<int>()
+                );
+        }
+
+        private protected override Search.Comment.SearchResult GetCommentSearchResult(object json)
+        {
+            var token = (JToken)json;
+            return new Search.Comment.SearchResult(
+                token["id"].Value<int>(),
+                token["image_id"].Value<int>(),
+                token["user_id"].Value<int?>(),
+                token["created_at"].Value<DateTime>(),
+                token["author"].Value<string>(),
+                token["body"].Value<string>()
                 );
         }
 

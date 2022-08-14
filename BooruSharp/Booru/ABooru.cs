@@ -148,6 +148,10 @@ namespace BooruSharp.Booru
             await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Head, _imageUrl));
         }
 
+        /// <summary>
+        /// Add booru authentification to current request
+        /// </summary>
+        /// <param name="message">The request that is going to be sent</param>
         protected virtual void AddAuth(HttpRequestMessage message)
         { }
 

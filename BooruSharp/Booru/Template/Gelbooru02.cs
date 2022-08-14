@@ -29,6 +29,7 @@ namespace BooruSharp.Booru.Template
             _url = domain;
         }
 
+        /// <inheritdoc/>
         protected override void AddAuth(HttpRequestMessage message)
         {
             message.Headers.Add("Cookie", "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash);
