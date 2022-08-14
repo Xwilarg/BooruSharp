@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace BooruSharp.Booru.Template
 {
@@ -76,6 +78,34 @@ namespace BooruSharp.Booru.Template
                 elem["score"].Value<int?>(),
                 elem["sha512_hash"].Value<string>()
                 );
+        }
+
+        private protected override async Task<IEnumerable> GetTagEnumerableSearchResultAsync(Uri url)
+        {
+            return new JArray(((JToken)await GetJsonAsync(url))["tag"]);
+        }
+
+        private protected override Search.Tag.SearchResult GetTagSearchResult(object json)
+        {
+            var token = ((JToken)json)["tag"];
+            return new Search.Tag.SearchResult(
+                token["id"].Value<int>(),
+                token["name"].Value<string>(),
+                GetTagType(token["category"].Value<string>()),
+                token["images"].Value<int>()
+                );
+        }
+
+        private Search.Tag.TagType GetTagType(string typeName)
+        {
+            switch (typeName) // TODO: https://ponybooru.org/tags
+            {
+                case "rating": return Search.Tag.TagType.Rating;
+                case "species": return Search.Tag.TagType.Species;
+                case null: return Search.Tag.TagType.Trivia;
+                case "character": return Search.Tag.TagType.Character;
+                default: return (Search.Tag.TagType)6;
+            }
         }
     }
 }

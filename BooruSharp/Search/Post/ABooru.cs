@@ -48,7 +48,7 @@ namespace BooruSharp.Booru
 
             if (_format == UrlFormat.Danbooru) return await GetSearchResultFromUrlAsync(BaseUrl + "posts/" + id + ".json");
             if (_format == UrlFormat.Philomena) return await GetSearchResultFromUrlAsync($"{BaseUrl}api/v1/json/images/{id}");
-            if (_format == UrlFormat.BooruOnRails) return await GetSearchResultFromUrlAsync($"{BaseUrl}api/v1/json/posts/{id}");
+            if (_format == UrlFormat.BooruOnRails) return await GetSearchResultFromUrlAsync($"{BaseUrl}api/v3/posts/{id}");
             if (_format == UrlFormat.PostIndexJson) return await GetSearchResultFromUrlAsync(_imageUrl + "?tags=id:" + id);
             return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, GetLimit(1), "id=" + id));
         }

@@ -6,9 +6,13 @@
     public enum TagType
     {
         /// <summary>
+        /// Indicate a rating, only for Derpibooru, Ponybooru and Twibooru
+        /// </summary>
+        Rating = -4,
+        /// <summary>
         /// Indicates the species tag (Not available in all boorus).
         /// </summary>
-        Species = -3,
+        Species,
         /// <summary>
         /// Indicates the invalid tag (Not available in all boorus).
         /// </summary>
