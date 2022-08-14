@@ -35,6 +35,8 @@ jobs:
         PONYBOORU_PASSWORD_HASH: ${{ secrets.PONYBOORU_PASSWORD_HASH }}
         E621_USER_ID: ${{ secrets.E621_USER_ID }}
         E621_PASSWORD_HASH: ${{ secrets.E621_PASSWORD_HASH }}
+        E621_USER_ID: ${{ secrets.E926_USER_ID }}
+        E621_PASSWORD_HASH: ${{ secrets.E926_PASSWORD_HASH }}
         GELBOORU_USER_ID: ${{ secrets.GELBOORU_USER_ID }}
         GELBOORU_PASSWORD_HASH: ${{ secrets.GELBOORU_PASSWORD_HASH }}
         FURRYBOORU_USER_ID: ${{ secrets.FURRYBOORU_USER_ID }}
