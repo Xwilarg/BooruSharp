@@ -219,7 +219,7 @@ namespace BooruSharp.Booru
                     break;
 
                 case UrlFormat.Philomena:
-                    queryString = $"api/v1/json/search/{query}";
+                    queryString = $"api/v1/json/search/{query}{(string.IsNullOrEmpty(query) ? string.Empty : "s")}";
                     break;
 
                 case UrlFormat.BooruOnRails:

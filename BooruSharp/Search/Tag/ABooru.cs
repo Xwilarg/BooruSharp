@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -63,7 +62,7 @@ namespace BooruSharp.Booru
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
 
-            var urlTags = new List<string> { SearchArg("name") + name };
+            var urlTags = new List<string> { SearchArg(_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails ? "q" : "name") + name };
 
             if (_format == UrlFormat.PostIndexJson)
                 urlTags.Add("limit=0");
@@ -93,9 +92,21 @@ namespace BooruSharp.Booru
         {
             var urlTags = new List<string>();
 
-            urlTags.Add(name == null
-                ? SearchArg("id") + id
-                : SearchArg("name") + name);
+            if (name == null)
+            {
+                urlTags.Add(SearchArg("id") + id);
+            }
+            else
+            {
+                if (_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails)
+                {
+
+                }
+                else
+                {
+                    urlTags.Add(SearchArg("name") + name);
+                }
+            }
 
             if (_format == UrlFormat.PostIndexJson)
                 urlTags.Add("limit=0");

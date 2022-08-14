@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Linq;
@@ -82,12 +83,12 @@ namespace BooruSharp.Booru.Template
 
         private protected override async Task<IEnumerable> GetTagEnumerableSearchResultAsync(Uri url)
         {
-            return new JArray(((JToken)await GetJsonAsync(url))["tag"]);
+            return (JArray)JsonConvert.DeserializeObject<JToken>(await GetJsonAsync(url))["tags"];
         }
 
         private protected override Search.Tag.SearchResult GetTagSearchResult(object json)
         {
-            var token = ((JToken)json)["tag"];
+            var token = (JToken)json;
             return new Search.Tag.SearchResult(
                 token["id"].Value<int>(),
                 token["name"].Value<string>(),
