@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,35 +21,57 @@ namespace BooruSharp.Booru
             if (!HasCommentAPI)
                 throw new Search.FeatureUnavailable();
 
-            var url = CreateUrl(_commentUrl, SearchArg("post_id") + postId);
-            var results = new List<Search.Comment.SearchResult>();
-
-            if (CommentsUseXml)
+            if (_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails)
             {
-                var xml = await GetXmlAsync(url);
-
-                foreach (var node in xml.LastChild)
+                Uri url;
+                if (_format == UrlFormat.Philomena)
                 {
-                    var result = GetCommentSearchResult(node);
-
-                    if (result.PostID == postId)
-                        results.Add(result);
+                    url = CreateUrl(_commentUrl, SearchArg("q") + ":" + postId);
+                    return ((JArray)JsonConvert.DeserializeObject<JToken>(await GetJsonAsync(url))["comments"]).Select(GetCommentSearchResult).ToArray();
+                }
+                else
+                {
+                    url = new Uri($"{BaseUrl}api/v3/posts/{postId}/comments");
+                    // Booru on rails doesn't return post id in JSON response
+                    return ((JArray)JsonConvert.DeserializeObject<JToken>(await GetJsonAsync(url))["comments"]).Select(GetCommentSearchResult).Select(x =>
+                    {
+                        return new Search.Comment.SearchResult(x.CommentID, postId, x.AuthorID, x.Creation, x.AuthorName, x.Body);
+                    }).ToArray();
                 }
             }
             else
             {
-                var jsonArray = JsonConvert.DeserializeObject<JArray>(await GetJsonAsync(url));
+                var url = CreateUrl(_commentUrl, SearchArg("post_id") + postId);
 
-                foreach (var json in jsonArray)
+                var results = new List<Search.Comment.SearchResult>();
+
+                if (CommentsUseXml)
                 {
-                    var result = GetCommentSearchResult(json);
+                    var xml = await GetXmlAsync(url);
 
-                    if (result.PostID == postId)
-                        results.Add(result);
+                    foreach (var node in xml.LastChild)
+                    {
+                        var result = GetCommentSearchResult(node);
+
+                        if (result.PostID == postId)
+                            results.Add(result);
+                    }
                 }
-            }
+                else
+                {
+                    var jsonArray = JsonConvert.DeserializeObject<JArray>(await GetJsonAsync(url));
 
-            return results.ToArray();
+                    foreach (var json in jsonArray)
+                    {
+                        var result = GetCommentSearchResult(json);
+
+                        if (result.PostID == postId)
+                            results.Add(result);
+                    }
+                }
+
+                return results.ToArray();
+            }
         }
 
         /// <summary>

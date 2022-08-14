@@ -148,6 +148,10 @@ namespace BooruSharp.Booru
             await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Head, _imageUrl));
         }
 
+        /// <summary>
+        /// Add booru authentification to current request
+        /// </summary>
+        /// <param name="message">The request that is going to be sent</param>
         protected virtual void AddAuth(HttpRequestMessage message)
         { }
 
@@ -171,7 +175,7 @@ namespace BooruSharp.Booru
             bool useHttp = UsesHttp; // Cache returned value for faster access.
             BaseUrl = new Uri("http" + (useHttp ? "" : "s") + "://" + domain, UriKind.Absolute);
             _format = format;
-            _imageUrl = CreateQueryString(format, "post");
+            _imageUrl = CreateQueryString(format, format == UrlFormat.Philomena ? string.Empty : "post");
 
             if (_format == UrlFormat.IndexPhp)
                 _imageUrlXml = new Uri(_imageUrl.AbsoluteUri.Replace("json=1", "json=0"));
@@ -216,6 +220,14 @@ namespace BooruSharp.Booru
 
                 case UrlFormat.Sankaku:
                     queryString = query == "wiki" ? query : query + "s";
+                    break;
+
+                case UrlFormat.Philomena:
+                    queryString = $"api/v1/json/search/{query}{(string.IsNullOrEmpty(query) ? string.Empty : "s")}";
+                    break;
+
+                case UrlFormat.BooruOnRails:
+                    queryString = $"api/v3/search/{query}s";
                     break;
 
                 default:
@@ -289,9 +301,13 @@ namespace BooruSharp.Booru
 
         private string TagsToString(string[] tags)
         {
-            return tags != null
-                ? "tags=" + string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant()
-                : "";
+            if (tags == null || !tags.Any())
+            {
+                // Philomena doesn't support search with no tag so we search for all posts with ID > 0
+                return _format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails ? "q=id.gte:0" : string.Empty;
+            }
+            return (_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails ? "q=" : "tags=")
+                + string.Join(_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails ? "," : "+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant();
         }
 
         private string SearchArg(string value)

@@ -63,7 +63,7 @@ namespace BooruSharp.Booru
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
 
-            var urlTags = new List<string> { SearchArg("name") + name };
+            var urlTags = new List<string> { SearchArg(_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails ? "q" : "name") + name };
 
             if (_format == UrlFormat.PostIndexJson)
                 urlTags.Add("limit=0");
@@ -91,24 +91,37 @@ namespace BooruSharp.Booru
 
         private async Task<Search.Tag.SearchResult> SearchTagAsync(string name, int? id)
         {
-            var urlTags = new List<string>();
-
-            urlTags.Add(name == null
-                ? SearchArg("id") + id
-                : SearchArg("name") + name);
-
-            if (_format == UrlFormat.PostIndexJson)
-                urlTags.Add("limit=0");
-            
-            var url = CreateUrl(_tagUrl, urlTags.ToArray());
-            IEnumerable enumerable = await GetTagEnumerableSearchResultAsync(url);
-
-            foreach (object item in enumerable)
+            if (_format == UrlFormat.Philomena)
             {
-                var result = GetTagSearchResult(item);
+                var tagToken = JsonConvert.DeserializeObject<JToken>(await GetJsonAsync($"{BaseUrl}api/v1/json/tags/{name}"))["tag"];
+                return GetTagSearchResult(tagToken);
+            }
+            else
+            {
+                var urlTags = new List<string>();
 
-                if ((name == null && id == result.ID) || (name != null && name == result.Name))
-                    return result;
+                if (name == null)
+                {
+                    urlTags.Add(SearchArg("id") + id);
+                }
+                else
+                {
+                    urlTags.Add(SearchArg(_format == UrlFormat.BooruOnRails ? "q" : "name") + name);
+                }
+
+                if (_format == UrlFormat.PostIndexJson)
+                    urlTags.Add("limit=0");
+
+                var url = CreateUrl(_tagUrl, urlTags.ToArray());
+                IEnumerable enumerable = await GetTagEnumerableSearchResultAsync(url);
+
+                foreach (object item in enumerable)
+                {
+                    var result = GetTagSearchResult(item);
+
+                    if ((name == null && id == result.ID) || (name != null && name == result.Name))
+                        return result;
+                }
             }
 
             throw new Search.InvalidTags();

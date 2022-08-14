@@ -25,6 +25,14 @@
         /// <summary>
         /// Indicates that the API uses <c>/posts</c> query scheme.
         /// </summary>
-        Sankaku
+        Sankaku,
+        /// <summary>
+        /// Indicate that the API uses <c>/api/v1/json/search/images</c> query scheme
+        /// </summary>
+        Philomena,
+        /// <summary>
+        /// Indicate that the API uses <c>/api/v3/search/posts</c> query scheme
+        /// </summary>
+        BooruOnRails
     }
 }

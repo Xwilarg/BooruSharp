@@ -19,16 +19,19 @@ Install-Package BooruSharp.Others
 BooruSharp currently handle the following websites:
  - booru.allthefallen.moe
  - danbooru.donmai.us
+ - derpibooru.org
  - e621.net
  - e926.net
  - gelbooru.com
  - konachan.com
  - lolibooru.moe
+ - ponybooru.org
  - realbooru.com
  - rule34.xxx
  - safebooru.org
  - sakugabooru.com
  - beta.sankakucomplex.com
+ - twibooru.org
  - xbooru.com
  - yande.re
  
@@ -43,27 +46,30 @@ If you have any question, feel free to [contact me](#need-more-help)
 ## Features availability
 
 | Booru | Multiple Random Images | Post by ID | Post by MD5 | Tag by ID | Comment API | Last Comments API | Wiki API | Related Tag API | Post Count API | Favorite API |
-| ---                   | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| ---           | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Atfbooru		| ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ❌ | ❌ |
 | Danbooru Donmai	| ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ❌ | ❌ |
+| Derpibooru	| ✔️ | ✔️ | ❌ | ❌ | ✔️ | ❌ | ❌ | ❌ | ✔️ | ❌ |
 | E621			| ✔️ | ✔️ | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | E926			| ✔️ | ✔️ | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Gelbooru		| ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ✔️ |
 | Konachan		| ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ |
 | Lolibooru		| ✔️ | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ |
+| Ponybooru 	| ✔️ | ✔️ | ❌ | ❌ | ✔️ | ❌ | ❌ | ❌ | ✔️ | ❌ |
 | Realbooru		| ❌ | ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ✔️ |
 | Rule 34		| ❌ | ✔️ | ❌ | ✔️ | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ |
 | Safebooru		| ❌ | ✔️ | ❌ | ✔️ | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ |
 | Sakugabooru		| ✔️ | ❌ | ❌ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ❌ |
 | Sankaku Complex	| ✔️ | ❌ | ❌ | ❌ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ❌ |
+| Twibooru	    | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ❌ | ❌ | ❌ | ✔️ | ❌ |
 | Xbooru		| ❌ | ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ✔️ |
 | Yandere		| ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ❌ |
-| Pixiv		        | ❌ | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ |
+| Pixiv		    | ❌ | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ |
 
 ### Additional notes on Pixiv
 Pixiv also have 2 methods to download an image (ImageToByteArrayAsync) or a preview (PreviewToByteArrayAsync), it'll give you a byte array given a SearchResult
 
-Please make note that you also need to provide at least one tag for he following methods:
+Please make note that you also need to provide at least one tag for the following methods:
 - GetLastPostsAsync
 - GetPostCountAsync
 - GetRandomPostAsync
@@ -152,6 +158,10 @@ Authentification is done by creating a new instance of BooruAuth is specifying i
 ### E621 / E926
 userId is your username \
 passwordHash is your api key, to get it go to your account page and then in "Manage API Access"
+
+### Derpibooru / Poniboory / Twibooru
+userId need to be an empty string \
+passwordHash is your api key, go on the website at the top left hover your profile icon, go in "Account", you'll see your API key there
 
 ### Others booru
 For booru authentification, you'll need your user id and your password hash\

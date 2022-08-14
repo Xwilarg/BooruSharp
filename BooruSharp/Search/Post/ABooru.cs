@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,7 +11,9 @@ namespace BooruSharp.Booru
     {
         private const int _limitedTagsSearchCount = 2;
         private const int _increasedPostLimitCount = 20001;
-        private const string _queryOptionLimitOfOne = "limit=1";
+
+        private string GetLimit(int quantity)
+            => (_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails ? "per_page=" : "limit=") + quantity;
 
         /// <summary>
         /// Searches for a post using its MD5 hash.
@@ -28,7 +31,7 @@ namespace BooruSharp.Booru
             if (md5 == null)
                 throw new ArgumentNullException(nameof(md5));
 
-            return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, "md5=" + md5));
+            return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, GetLimit(1), "md5=" + md5));
         }
 
         /// <summary>
@@ -44,8 +47,10 @@ namespace BooruSharp.Booru
                 throw new Search.FeatureUnavailable();
 
             if (_format == UrlFormat.Danbooru) return await GetSearchResultFromUrlAsync(BaseUrl + "posts/" + id + ".json");
+            if (_format == UrlFormat.Philomena) return await GetSearchResultFromUrlAsync($"{BaseUrl}api/v1/json/images/{id}");
+            if (_format == UrlFormat.BooruOnRails) return await GetSearchResultFromUrlAsync($"{BaseUrl}api/v3/posts/{id}");
             if (_format == UrlFormat.PostIndexJson) return await GetSearchResultFromUrlAsync(_imageUrl + "?tags=id:" + id);
-            return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, "id=" + id));
+            return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, GetLimit(1), "id=" + id));
         }
 
         /// <summary>
@@ -69,8 +74,19 @@ namespace BooruSharp.Booru
             if (NoMoreThanTwoTags && tags.Length > _limitedTagsSearchCount)
                 throw new Search.TooManyTags();
 
-            XmlDocument xml = await GetXmlAsync(CreateUrl(_imageUrlXml, _queryOptionLimitOfOne, TagsToString(tags)));
-            return int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
+            if (_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails)
+            {
+                var url = CreateUrl(_imageUrl, GetLimit(1), TagsToString(tags));
+                var json = await GetJsonAsync(url);
+                var token = (JToken)JsonConvert.DeserializeObject(json);
+                return token["total"].Value<int>();
+            }
+            else
+            {
+                var url = CreateUrl(_imageUrlXml, GetLimit(1), TagsToString(tags));
+                XmlDocument xml = await GetXmlAsync(url);
+                return int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
+            }
         }
 
         /// <summary>
@@ -95,17 +111,17 @@ namespace BooruSharp.Booru
             if (_format == UrlFormat.IndexPhp)
             {
                 if (this is Template.Gelbooru)
-                    return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, tagString) + "+sort:random");
+                    return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, GetLimit(1), tagString) + "+sort:random");
 
                 if (tags.Length == 0)
                 {
                     // We need to request /index.php?page=post&s=random and get the id given by the redirect
                     string id = await GetRandomIdAsync(tagString);
-                    return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, "id=" + id));
+                    return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, GetLimit(1), "id=" + id));
                 }
 
                 // The previous option doesn't work if there are tags so we contact the XML endpoint to get post count
-                Uri url = CreateUrl(_imageUrlXml, _queryOptionLimitOfOne, tagString);
+                Uri url = CreateUrl(_imageUrlXml, GetLimit(1), tagString);
                 XmlDocument xml = await GetXmlAsync(url);
                 int max = int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
 
@@ -115,13 +131,17 @@ namespace BooruSharp.Booru
                 if (SearchIncreasedPostLimit && max > _increasedPostLimitCount)
                     max = _increasedPostLimitCount;
 
-                return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, tagString, "pid=" + Random.Next(0, max)));
+                return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, GetLimit(1), tagString, "pid=" + Random.Next(0, max)));
+            }
+            if (_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails)
+            {
+                return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, GetLimit(1), tagString, "sf=random"));
             }
 
             return NoMoreThanTwoTags
                 // +order:random count as a tag so we use random=true instead to save one
-                ? await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, tagString, "random=true"))
-                : await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, _queryOptionLimitOfOne, tagString) + "+order:random");
+                ? await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, GetLimit(1), tagString, "random=true"))
+                : await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, GetLimit(1), tagString) + "+order:random");
         }
 
         /// <summary>
@@ -149,12 +169,14 @@ namespace BooruSharp.Booru
             string tagString = TagsToString(tags);
 
             if (_format == UrlFormat.IndexPhp)
-                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, tagString) + "+sort:random");
+                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, GetLimit(limit), tagString) + "+sort:random");
+            if (_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails)
+                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, GetLimit(limit), tagString, "sf=random"));
             else if (NoMoreThanTwoTags)
                 // +order:random count as a tag so we use random=true instead to save one
-                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, tagString, "random=true"));
+                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, GetLimit(limit), tagString, "random=true"));
             else
-                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, "limit=" + limit, tagString) + "+order:random");
+                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, GetLimit(limit), tagString) + "+order:random");
         }
 
         /// <summary>

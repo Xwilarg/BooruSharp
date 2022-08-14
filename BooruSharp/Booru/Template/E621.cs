@@ -27,6 +27,7 @@ namespace BooruSharp.Booru.Template
                   | BooruOptions.NoTagByID | BooruOptions.NoPostCount | BooruOptions.NoFavorite)
         { }
 
+        /// <inheritdoc/>
         protected override void AddAuth(HttpRequestMessage message)
         {
             string encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(Auth.UserId + ":" + Auth.PasswordHash));
