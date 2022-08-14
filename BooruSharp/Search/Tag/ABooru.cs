@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -90,36 +91,37 @@ namespace BooruSharp.Booru
 
         private async Task<Search.Tag.SearchResult> SearchTagAsync(string name, int? id)
         {
-            var urlTags = new List<string>();
-
-            if (name == null)
+            if (_format == UrlFormat.Philomena)
             {
-                urlTags.Add(SearchArg("id") + id);
+                var tagToken = JsonConvert.DeserializeObject<JToken>(await GetJsonAsync($"{BaseUrl}api/v1/json/tags/{name}"))["tag"];
+                return GetTagSearchResult(tagToken);
             }
             else
             {
-                if (_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails)
-                {
+                var urlTags = new List<string>();
 
+                if (name == null)
+                {
+                    urlTags.Add(SearchArg("id") + id);
                 }
                 else
                 {
-                    urlTags.Add(SearchArg("name") + name);
+                    urlTags.Add(SearchArg(_format == UrlFormat.BooruOnRails ? "q" : "name") + name);
                 }
-            }
 
-            if (_format == UrlFormat.PostIndexJson)
-                urlTags.Add("limit=0");
-            
-            var url = CreateUrl(_tagUrl, urlTags.ToArray());
-            IEnumerable enumerable = await GetTagEnumerableSearchResultAsync(url);
+                if (_format == UrlFormat.PostIndexJson)
+                    urlTags.Add("limit=0");
 
-            foreach (object item in enumerable)
-            {
-                var result = GetTagSearchResult(item);
+                var url = CreateUrl(_tagUrl, urlTags.ToArray());
+                IEnumerable enumerable = await GetTagEnumerableSearchResultAsync(url);
 
-                if ((name == null && id == result.ID) || (name != null && name == result.Name))
-                    return result;
+                foreach (object item in enumerable)
+                {
+                    var result = GetTagSearchResult(item);
+
+                    if ((name == null && id == result.ID) || (name != null && name == result.Name))
+                        return result;
+                }
             }
 
             throw new Search.InvalidTags();
