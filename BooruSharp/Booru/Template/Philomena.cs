@@ -5,6 +5,7 @@ using System.Collections;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace BooruSharp.Booru.Template
 {
@@ -31,7 +32,11 @@ namespace BooruSharp.Booru.Template
         /// <inheritdoc/>
         protected override void AddAuth(HttpRequestMessage message)
         {
-            message.RequestUri = new Uri($"{message.RequestUri.AbsoluteUri}&key={Auth.PasswordHash}");
+            var uriBuilder = new UriBuilder(message.RequestUri.AbsoluteUri);
+            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+            query["key"] = Auth.PasswordHash;
+            uriBuilder.Query = query.ToString();
+            message.RequestUri = new Uri(uriBuilder.ToString());
         }
 
         private protected override JToken ParseFirstPostSearchResult(object json)
