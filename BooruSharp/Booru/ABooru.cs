@@ -152,7 +152,7 @@ namespace BooruSharp.Booru
         /// Add booru authentification to current request
         /// </summary>
         /// <param name="message">The request that is going to be sent</param>
-        protected virtual void AddAuth(HttpRequestMessage message)
+        protected virtual void PreRequest(HttpRequestMessage message)
         { }
 
         /// <summary>
@@ -244,10 +244,7 @@ namespace BooruSharp.Booru
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
             var message = new HttpRequestMessage(HttpMethod.Get, url);
-            if (Auth != null)
-            {
-                AddAuth(message);
-            }
+            PreRequest(message);
             var msg = await HttpClient.SendAsync(message);
 
             if (msg.StatusCode == HttpStatusCode.Forbidden)

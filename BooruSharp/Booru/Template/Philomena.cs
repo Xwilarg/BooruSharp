@@ -29,12 +29,21 @@ namespace BooruSharp.Booru.Template
                   | BooruOptions.NoLastComments | BooruOptions.NoWiki | BooruOptions.NoRelated)
         { }
 
+        /// <summary>
+        /// ID used to set filter and have access to as many posts as possible
+        /// </summary>
+        protected abstract int FilterID { get; }
+
         /// <inheritdoc/>
-        protected override void AddAuth(HttpRequestMessage message)
+        protected override void PreRequest(HttpRequestMessage message)
         {
             var uriBuilder = new UriBuilder(message.RequestUri.AbsoluteUri);
             var query = HttpUtility.ParseQueryString(uriBuilder.Query);
-            query["key"] = Auth.PasswordHash;
+            query["filter_id"] = $"{FilterID}";
+            if (Auth != null)
+            {
+                query["key"] = Auth.PasswordHash;
+            }
             uriBuilder.Query = query.ToString();
             message.RequestUri = new Uri(uriBuilder.ToString());
         }

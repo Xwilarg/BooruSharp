@@ -16,5 +16,8 @@ namespace BooruSharp.Booru
 
         /// <inheritdoc/>
         public override bool IsSafe => false;
+
+        /// <inheritdoc/>
+        protected override int FilterID => 2;
     }
 }

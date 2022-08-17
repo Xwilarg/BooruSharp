@@ -28,10 +28,13 @@ namespace BooruSharp.Booru.Template
         { }
 
         /// <inheritdoc/>
-        protected override void AddAuth(HttpRequestMessage message)
+        protected override void PreRequest(HttpRequestMessage message)
         {
-            string encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(Auth.UserId + ":" + Auth.PasswordHash));
-            message.Headers.Add("Authorization", $"Basic {encoded}");
+            if (Auth != null)
+            {
+                string encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(Auth.UserId + ":" + Auth.PasswordHash));
+                message.Headers.Add("Authorization", $"Basic {encoded}");
+            }
         }
 
         private protected override JToken ParseFirstPostSearchResult(object json)

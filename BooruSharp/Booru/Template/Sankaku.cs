@@ -27,9 +27,12 @@ namespace BooruSharp.Booru.Template
         { }
 
         /// <inheritdoc/>
-        protected override void AddAuth(HttpRequestMessage message) // TODO: Doesn't work rn
+        protected override void PreRequest(HttpRequestMessage message) // TODO: Doesn't work rn
         {
-            message.Headers.Add("Cookie", "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash);
+            if (Auth != null)
+            {
+                message.Headers.Add("Cookie", "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash);
+            }
         }
 
         private protected override JToken ParseFirstPostSearchResult(object json)
