@@ -25,6 +25,13 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --configuration Release --no-restore
+    - name: Generate documentation
+      run: docfx ./Documentation/docfx.json
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Documentation
+        path: ./Documentation/_site
+        retention-days: 2
     - name: Test
       env:
         TWIBOORU_USER_ID: ""
