@@ -91,6 +91,7 @@ Console.WriteLine("Image preview URL: " + result.PreviewUrl.AbsoluteUri + Enviro
 var booru = new BooruSharp.Others.Pixiv();
 await booru.LoginAsync("[refreshToken]"); // See https://github.com/Xwilarg/BooruSharp/#pixiv
 var result = await booru.GetRandomPostAsync("シンボリルドルフ(ウマ娘)");
+File.WriteAllBytes($"output{Path.GetExtension(result.FileUrl.AbsolutePath)}", await b.ImageToByteArrayAsync(result)); // Save the image in a file
 ```
 
 ### Many random images at once
