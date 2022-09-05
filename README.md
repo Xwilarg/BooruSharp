@@ -39,8 +39,7 @@ BooruSharp.Others allow to handle more websites that aren't booru:
  - pixiv.net
 
 ## Documentation
-Documentation for version > 2.0.0 isn't available for now\
-Please either refer to the examples below or use the XML documentation in the code\
+You can either use the [documentation](https://boorusharp.zirk.eu/doc/index.html) or check the [examples below](#examples) \
 If you have any question, feel free to [contact me](#need-more-help)
 
 ## Features availability
