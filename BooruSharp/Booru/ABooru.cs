@@ -301,7 +301,7 @@ namespace BooruSharp.Booru
             if (tags == null || !tags.Any())
             {
                 // Philomena doesn't support search with no tag so we search for all posts with ID > 0
-                return _format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails ? "q=id.gte:0" : string.Empty;
+                return _format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails ? "q=id.gte:0" : "tags=";
             }
             return (_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails ? "q=" : "tags=")
                 + string.Join(_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails ? "," : "+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant();
