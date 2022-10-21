@@ -26,7 +26,7 @@ namespace BooruSharp.Booru.Template
         /// </param>
         protected Philomena(string domain, BooruOptions options = BooruOptions.None)
             : base(domain, UrlFormat.Philomena, options | BooruOptions.NoFavorite | BooruOptions.NoPostByMD5 | BooruOptions.NoPostByID
-                  | BooruOptions.NoLastComments | BooruOptions.NoWiki | BooruOptions.NoRelated)
+                  | BooruOptions.NoLastComments | BooruOptions.NoWiki | BooruOptions.NoRelated | BooruOptions.NoAutocomplete)
         { }
 
         /// <summary>

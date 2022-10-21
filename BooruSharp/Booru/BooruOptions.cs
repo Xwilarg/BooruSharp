@@ -78,5 +78,10 @@ namespace BooruSharp.Booru
         /// Indicates that search parameter must be provided in order for post search functions to work.
         /// </summary>
         NoEmptyPostSearch = 1 << 15,
+
+        /// <summary>
+        /// Indicates that the search autocomplete API is not avaliable.
+        /// </summary>
+        NoAutocomplete = 1 << 16,
     }
 }

@@ -110,6 +110,11 @@ namespace BooruSharp.Booru
         public bool HasFavoriteAPI => !_options.HasFlag(BooruOptions.NoFavorite);
 
         /// <summary>
+        /// Gets whether it is possible to autocomplete searches in this booru.
+        /// </summary>
+        public bool HasAutocompleteAPI => !_options.HasFlag(BooruOptions.NoAutocomplete);
+
+        /// <summary>
         /// Gets whether this booru can't call post functions without search arguments.
         /// </summary>
         public bool NoEmptyPostSearch => _options.HasFlag(BooruOptions.NoEmptyPostSearch);
