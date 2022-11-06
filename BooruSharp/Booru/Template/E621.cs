@@ -136,5 +136,21 @@ namespace BooruSharp.Booru.Template
         }
 
         // GetRelatedSearchResult not available // TODO: Available with credentials?
+
+        private protected override Search.Autocomplete.SearchResult[] GetAutocompleteResultAsync(object json)
+        {
+            var elem = (JArray)json;
+            var autoCompleteResults = new List<Search.Autocomplete.SearchResult>();
+            foreach (var item in elem.Children())
+            {
+                int id = item["id"].Value<int>();
+                string name = item["name"].Value<string>();
+                int count = item["post_count"].Value<int>();
+                int type = item["category"].Value<int>();
+                string antecedent_name = item["antecedent_name"].Value<string>();
+                autoCompleteResults.Add(new Search.Autocomplete.SearchResult(id, name, name, null, count, antecedent_name));
+            }
+            return autoCompleteResults.ToArray();
+        }
     }
 }

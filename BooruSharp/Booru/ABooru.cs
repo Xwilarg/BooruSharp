@@ -45,6 +45,8 @@ namespace BooruSharp.Booru
         private protected virtual Search.Wiki.SearchResult GetWikiSearchResult(object json)
             => throw new FeatureUnavailable();
 
+        private protected virtual Search.Autocomplete.SearchResult[] GetAutocompleteResultAsync(object json)
+            => throw new FeatureUnavailable();
         private protected virtual async Task<IEnumerable> GetTagEnumerableSearchResultAsync(Uri url)
         {
             if (TagsUseXml)
@@ -203,6 +205,23 @@ namespace BooruSharp.Booru
 
             if (HasCommentAPI)
                 _commentUrl = CreateQueryString(format, "comment");
+
+            if (HasAutocompleteAPI)
+                _autocompleteUrl = format == UrlFormat.IndexPhp
+                    ? new Uri(BaseUrl + "autocomplete.php")
+                    : CreateQueryString(format, "autocomplete");
+            switch (_format)
+            {
+                case UrlFormat.IndexPhp:
+                    _autocompleteUrl = new Uri(BaseUrl + "autocomplete.php");
+                    break;
+                case UrlFormat.Danbooru:
+                    _autocompleteUrl = new Uri(BaseUrl + "tags/" + "autocomplete.json");
+                    break;
+                default:
+                    _autocompleteUrl = CreateQueryString(_format, "autocomplete"); //this isn't supposed to work.
+                    break;
+            }
         }
 
         private protected Uri CreateQueryString(UrlFormat format, string query, string squery = "index")
@@ -360,7 +379,7 @@ namespace BooruSharp.Booru
         public Uri BaseUrl { get; }
 
         private HttpClient _client;
-        private readonly Uri _imageUrlXml, _imageUrl, _tagUrl, _wikiUrl, _relatedUrl, _commentUrl; // URLs for differents endpoints
+        private readonly Uri _imageUrlXml, _imageUrl, _tagUrl, _wikiUrl, _relatedUrl, _commentUrl, _autocompleteUrl; // URLs for differents endpoints
         // All options are stored in a bit field and can be retrieved using related methods/properties.
         private readonly BooruOptions _options;
         private readonly UrlFormat _format; // URL format

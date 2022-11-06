@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
@@ -145,6 +146,39 @@ namespace BooruSharp.Booru.Template
                 return (JArray)token;
             }
             throw new InvalidTags();
+        }
+
+        /// <summary>
+        /// Gets a result of autocomplete options from a tag slice
+        /// <para>(GelBooru variant)</para>
+        /// </summary>
+        /// <param name="query">The tag slice to autocomplete</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="System.Net.Http.HttpRequestException"/>
+        public override async Task<Search.Autocomplete.SearchResult[]> AutocompleteAsync(string query) //I commited to adding GelBooru one way or another, so here we are.
+        {
+            //No need to check for autocomplete API because this is an override.
+
+            Uri url = new Uri(BaseUrl + $"index.php?page=autocomplete2&term={query}&type=tag_query&limit=10");
+
+            var array = JsonConvert.DeserializeObject<JArray>(await GetJsonAsync(url));
+
+            return GetAutocompleteResultAsync(array);
+        }
+
+        private protected override Search.Autocomplete.SearchResult[] GetAutocompleteResultAsync(object json)
+        {
+            var elem = (JArray)json;
+            var autoCompleteResults = new List<Search.Autocomplete.SearchResult>();
+            foreach (var item in elem.Children())
+            {
+                string label = item["label"].Value<string>();
+                string name = item["value"].Value<string>();
+                int count = item["post_count"].Value<int>();
+                var type = item["category"].Value<string>();
+                autoCompleteResults.Add(new Search.Autocomplete.SearchResult(null, name, label, null, count, null));
+            }
+            return autoCompleteResults.ToArray();
         }
     }
 }

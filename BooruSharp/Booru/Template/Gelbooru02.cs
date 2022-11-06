@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
@@ -109,6 +111,20 @@ namespace BooruSharp.Booru.Template
         }
 
         // GetRelatedSearchResult not available
+
+        private protected override Search.Autocomplete.SearchResult[] GetAutocompleteResultAsync(object json)
+        {
+            var elem = (JArray)json;
+            var autoCompleteResults = new List<Search.Autocomplete.SearchResult>();
+            foreach (var item in elem.Children())
+            {
+                string label = item["label"].Value<string>();
+                string name = item["value"].Value<string>();
+                int count = Convert.ToInt32(Regex.Match(label, @"\(([^()]*)\)$").Groups[1].Value); //this should always work
+                autoCompleteResults.Add(new Search.Autocomplete.SearchResult(null, name, label, null, count, null));
+            }
+            return autoCompleteResults.ToArray();
+        }
 
         private readonly string _url;
     }
