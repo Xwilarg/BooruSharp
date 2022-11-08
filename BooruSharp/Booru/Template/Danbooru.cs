@@ -23,7 +23,7 @@ namespace BooruSharp.Booru.Template
         /// </param>
         protected Danbooru(string domain, BooruOptions options = BooruOptions.None)
             : base(domain, UrlFormat.Danbooru, options | BooruOptions.NoLastComments | BooruOptions.NoPostCount
-                  | BooruOptions.NoFavorite)
+                  | BooruOptions.NoFavorite | BooruOptions.NoAutocomplete)
         { }
 
         /// <inheritdoc/>

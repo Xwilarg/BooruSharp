@@ -26,7 +26,7 @@ namespace BooruSharp.Booru.Template
         /// </param>
         protected BooruOnRails(string domain, BooruOptions options = BooruOptions.None)
             : base(domain, UrlFormat.BooruOnRails, options | BooruOptions.NoFavorite | BooruOptions.NoPostByMD5 | BooruOptions.NoPostByID
-                  | BooruOptions.NoLastComments | BooruOptions.NoWiki | BooruOptions.NoRelated)
+                  | BooruOptions.NoLastComments | BooruOptions.NoWiki | BooruOptions.NoRelated | BooruOptions.NoAutocomplete)
         { }
 
         /// <summary>
