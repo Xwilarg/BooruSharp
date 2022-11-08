@@ -175,10 +175,22 @@ namespace BooruSharp.Booru.Template
                 string label = item["label"].Value<string>();
                 string name = item["value"].Value<string>();
                 int count = item["post_count"].Value<int>();
-                var type = item["category"].Value<string>();
-                autoCompleteResults.Add(new Search.Autocomplete.SearchResult(null, name, label, null, count, null));
+                var type = GetTagType(item["category"].Value<string>());
+                autoCompleteResults.Add(new Search.Autocomplete.SearchResult(null, name, label, type, count, null));
             }
             return autoCompleteResults.ToArray();
+        }
+        private Search.Tag.TagType GetTagType(string typeName)
+        {
+            switch (typeName)
+            {
+                case "tag": return Search.Tag.TagType.Trivia;
+                case "character": return Search.Tag.TagType.Character;
+                case "copyright": return Search.Tag.TagType.Copyright;
+                case "artist": return Search.Tag.TagType.Artist;
+                case "metadata": return Search.Tag.TagType.Metadata;
+                default: return (Search.Tag.TagType)6; //i won't question...
+            }
         }
     }
 }
