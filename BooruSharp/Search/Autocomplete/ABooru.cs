@@ -19,6 +19,8 @@ namespace BooruSharp.Booru
             if (!HasAutocompleteAPI)
                 throw new Search.FeatureUnavailable();
 
+            if (query.Length < 3)
+                throw new ArgumentException("Autocomplete query must be longer than 3 characters");
 
             Uri url = _format == UrlFormat.Danbooru
                 ? CreateUrl(_autocompleteUrl, SearchArg("name_matches") + query)
