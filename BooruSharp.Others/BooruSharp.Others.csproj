@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>2.2.1</Version>
+    <Version>3.0.0</Version>
     <Authors>Xwilarg</Authors>
     <Company>Xwilarg</Company>
     <Description>Extension of BooruSharp to handle non-booru websites and handle them like the others</Description>
@@ -23,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <ProjectReference Include="..\BooruSharp\BooruSharp.csproj" />
   </ItemGroup>
 

@@ -1,6 +1,4 @@
 ﻿using BooruSharp.Search;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Linq;
@@ -24,25 +22,22 @@ namespace BooruSharp.Booru
         /// </summary>
         public abstract bool IsSafe { get; }
 
-        private protected virtual Search.Comment.SearchResult GetCommentSearchResult(object json)
+        private protected virtual Search.Comment.SearchResult GetCommentSearchResult(T parsingData)
             => throw new FeatureUnavailable();
 
-        private protected virtual Search.Post.SearchResult GetPostSearchResult(JToken obj)
+        private protected virtual Search.Post.SearchResult GetPostSearchResult(T parsingData)
             => throw new FeatureUnavailable();
 
-        private protected virtual Search.Post.SearchResult[] GetPostsSearchResult(object json)
+        private protected virtual Search.Post.SearchResult[] GetPostsSearchResult(T parsingData)
             => throw new FeatureUnavailable();
 
-        private protected virtual JToken ParseFirstPostSearchResult(object json)
+        private protected virtual Search.Related.SearchResult GetRelatedSearchResult(T parsingData)
             => throw new FeatureUnavailable();
 
-        private protected virtual Search.Related.SearchResult GetRelatedSearchResult(object json)
+        private protected virtual Search.Tag.SearchResult GetTagSearchResult(T parsingData)
             => throw new FeatureUnavailable();
 
-        private protected virtual Search.Tag.SearchResult GetTagSearchResult(object json)
-            => throw new FeatureUnavailable();
-
-        private protected virtual Search.Wiki.SearchResult GetWikiSearchResult(object json)
+        private protected virtual Search.Wiki.SearchResult GetWikiSearchResult(T parsingData)
             => throw new FeatureUnavailable();
 
         private protected virtual async Task<IEnumerable> GetTagEnumerableSearchResultAsync(Uri url)
@@ -279,7 +274,7 @@ namespace BooruSharp.Booru
 
         private async Task<string> GetRandomIdAsync(string tags)
         {
-            HttpResponseMessage msg = await HttpClient.GetAsync(BaseUrl + "index.php?page=post&s=random&tags=" + tags);
+            HttpResponseMessage msg = await HttpClient.GetAsync(BaseUrl + "index.php?page=post&s=random&" + tags);
             msg.EnsureSuccessStatusCode();
             return HttpUtility.ParseQueryString(msg.RequestMessage.RequestUri.Query).Get("id");
         }
