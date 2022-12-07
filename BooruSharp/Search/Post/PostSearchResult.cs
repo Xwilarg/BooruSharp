@@ -33,7 +33,7 @@ namespace BooruSharp.Search.Post
         public PostSearchResult(
             Uri fileUrl, Uri previewUrl, Uri postUrl, Uri sampleUri, Rating rating, IEnumerable<string> tags,
             IEnumerable<TagSearchResult> detailedTags, int id, int? size, int height, int width, int? previewHeight, int? previewWidth,
-            DateTime? creation, string source, int? score, string md5)
+            DateTime? creation, string source, int? score, string hash)
         {
             FileUrl = fileUrl;
             PreviewUrl = previewUrl;
@@ -51,7 +51,7 @@ namespace BooruSharp.Search.Post
             Creation = creation;
             Source = source;
             Score = score;
-            MD5 = md5;
+            Hash = hash;
         }
 
         /// <summary>
@@ -140,9 +140,8 @@ namespace BooruSharp.Search.Post
         public int? Score { get; }
 
         /// <summary>
-        /// Gets the MD5 hash of the file, represented as
-        /// a sequence of 32 hexadecimal lowercase digits.
+        /// Gets the hash of the file
         /// </summary>
-        public string MD5 { get; }
+        public string Hash { get; }
     }
 }

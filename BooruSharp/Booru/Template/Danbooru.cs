@@ -53,50 +53,50 @@ namespace BooruSharp.Booru.Template
         private protected override PostSearchResult GetPostSearchResult(SearchResult parsingData)
         {
             return new PostSearchResult(
-                fileUrl: parsingData.file_url != null ? new Uri(parsingData.file_url) : null,
-                previewUrl: parsingData.preview_file_url != null ? new Uri(parsingData.preview_file_url) : null,
-                postUrl: parsingData.id != null ? new Uri(BaseUrl + "posts/" + parsingData.id) : null,
-                sampleUri: parsingData.large_file_url != null ? new Uri(parsingData.large_file_url) : null,
-                rating: GetRating(parsingData.rating[0]),
-                tags: parsingData.tag_string.Split(),
-                detailedTags: parsingData.tag_string_general.Split().Select(x => new TagSearchResult(-1, x, TagType.Trivia, -1))
-                    .Concat(parsingData.tag_string_character.Split().Select(x => new TagSearchResult(-1, x, TagType.Character, -1)))
-                    .Concat(parsingData.tag_string_copyright.Split().Select(x => new TagSearchResult(-1, x, TagType.Copyright, -1)))
-                    .Concat(parsingData.tag_string_artist.Split().Select(x => new TagSearchResult(-1, x, TagType.Artist, -1)))
-                    .Concat(parsingData.tag_string_meta.Split().Select(x => new TagSearchResult(-1, x, TagType.Metadata, -1))),
-                id: parsingData.id ?? 0,
-                size: parsingData.file_size,
-                height: parsingData.image_height,
-                width: parsingData.image_width,
+                fileUrl: parsingData.FileUrl != null ? new Uri(parsingData.FileUrl) : null,
+                previewUrl: parsingData.PreviewFileUrl != null ? new Uri(parsingData.PreviewFileUrl) : null,
+                postUrl: parsingData.Id != null ? new Uri(BaseUrl + "posts/" + parsingData.Id) : null,
+                sampleUri: parsingData.LargeFileUrl != null ? new Uri(parsingData.LargeFileUrl) : null,
+                rating: GetRating(parsingData.Rating[0]),
+                tags: parsingData.TagString.Split(),
+                detailedTags: parsingData.TagStringGeneral.Split().Select(x => new TagSearchResult(-1, x, TagType.Trivia, -1))
+                    .Concat(parsingData.TagStringCharacter.Split().Select(x => new TagSearchResult(-1, x, TagType.Character, -1)))
+                    .Concat(parsingData.TagStringCopyright.Split().Select(x => new TagSearchResult(-1, x, TagType.Copyright, -1)))
+                    .Concat(parsingData.TagStringArtist.Split().Select(x => new TagSearchResult(-1, x, TagType.Artist, -1)))
+                    .Concat(parsingData.TagStringMeta.Split().Select(x => new TagSearchResult(-1, x, TagType.Metadata, -1))),
+                id: parsingData.Id ?? 0,
+                size: parsingData.FileSize,
+                height: parsingData.ImageHeight,
+                width: parsingData.ImageWidth,
                 previewHeight: null,
                 previewWidth: null,
-                creation: parsingData.create_at,
-                source: parsingData.source,
-                score: parsingData.score,
-                md5: parsingData.md5
+                creation: parsingData.CreatedAt,
+                source: parsingData.Source,
+                score: parsingData.Score,
+                hash: parsingData.Md5
             );
         }
 
         public class SearchResult
         {
-            public string file_url;
-            public string preview_file_url;
-            public string large_file_url;
-            public int? id;
-            public string md5;
-            public string rating;
-            public string tag_string;
-            public string tag_string_general;
-            public string tag_string_character;
-            public string tag_string_copyright;
-            public string tag_string_artist;
-            public string tag_string_meta;
-            public int file_size;
-            public int image_height;
-            public int image_width;
-            public DateTime create_at;
-            public string source;
-            public int score;
+            public string FileUrl { set; get; }
+            public string PreviewFileUrl { set; get; }
+            public string LargeFileUrl { set; get; }
+            public int? Id { set; get; }
+            public string Md5 { set; get; }
+            public string Rating { set; get; }
+            public string TagString { set; get; }
+            public string TagStringGeneral { set; get; }
+            public string TagStringCharacter { set; get; }
+            public string TagStringCopyright { set; get; }
+            public string TagStringArtist { set; get; }
+            public string TagStringMeta { set; get; }
+            public int FileSize { set; get; }
+            public int ImageHeight { set; get; }
+            public int ImageWidth { set; get; }
+            public DateTime CreatedAt { set; get; }
+            public string Source { set; get; }
+            public int Score { set; get; }
         }
 
         /*

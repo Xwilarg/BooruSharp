@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace BooruSharp.Booru
 {
@@ -32,7 +31,10 @@ namespace BooruSharp.Booru
                 : Array.Empty<string>();
 
             var url = await CreateRandomPostUriAsync(tags);
-            return GetPostSearchResult(JsonSerializer.Deserialize<TPost[]>(await GetJsonAsync(url)).FirstOrDefault());
+            return GetPostSearchResult(JsonSerializer.Deserialize<TPost[]>(await GetJsonAsync(url), new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = new SnakeCaseNamingPolicy()
+            }).FirstOrDefault());
         }
         /*
         private const int _limitedTagsSearchCount = 2;
