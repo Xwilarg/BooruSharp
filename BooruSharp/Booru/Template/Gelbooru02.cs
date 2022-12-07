@@ -28,7 +28,7 @@ namespace BooruSharp.Booru.Template
 
         protected override Uri CreateQueryString(string query, string squery = "index")
         {
-            return new($"{BaseUrl}/index.php?page=dapi&s=${query}&q=index&json=1");
+            return new($"{BaseUrl}/index.php?page=dapi&s={query}&q=index&json=1");
         }
 
         protected override async Task<Uri> CreateRandomPostUriAsync(string[] tags)
