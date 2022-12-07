@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using BooruSharp.Search.Post;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace BooruSharp.Booru
@@ -16,5 +17,15 @@ namespace BooruSharp.Booru
         /// Throws <see cref="HttpRequestException"/> if service isn't available.
         /// </summary>
         public Task CheckAvailabilityAsync();
+
+        /// <summary>
+        /// Searches for a random post. If <paramref name="tagsArg"/> array is specified
+        /// and isn't empty, random post containing those tags will be returned.
+        /// </summary>
+        /// <param name="tagsArg">The optional array of tags that must be contained in the post.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="System.Net.Http.HttpRequestException"/>
+        /// <exception cref="Search.TooManyTags"/>
+        public Task<PostSearchResult> GetRandomPostAsync(params string[] tagsArg);
     }
 }

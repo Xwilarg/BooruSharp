@@ -24,21 +24,15 @@ namespace BooruSharp.Booru
             };
         }
 
-        /// <summary>
-        /// Searches for a random post. If <paramref name="tagsArg"/> array is specified
-        /// and isn't empty, random post containing those tags will be returned.
-        /// </summary>
-        /// <param name="tagsArg">The optional array of tags that must be contained in the post.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        /// <exception cref="System.Net.Http.HttpRequestException"/>
-        /// <exception cref="Search.TooManyTags"/>
-        public virtual async Task<PostSearchResult> GetRandomPostAsync(params string[] tagsArg)
+        /// <inheritdoc/>
+        public async Task<PostSearchResult> GetRandomPostAsync(params string[] tagsArg)
         {
             string[] tags = tagsArg != null
                 ? tagsArg.Where(tag => !string.IsNullOrWhiteSpace(tag)).ToArray()
                 : Array.Empty<string>();
 
-            return GetPostSearchResult(JsonSerializer.Deserialize<TPost>(await GetJsonAsync(await CreateRandomPostUriAsync(tags))));
+            var url = await CreateRandomPostUriAsync(tags);
+            return GetPostSearchResult(JsonSerializer.Deserialize<TPost[]>(await GetJsonAsync(url)).FirstOrDefault());
         }
         /*
         private const int _limitedTagsSearchCount = 2;
