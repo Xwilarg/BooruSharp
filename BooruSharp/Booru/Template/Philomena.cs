@@ -1,4 +1,5 @@
 ﻿using BooruSharp.Booru.Parsing;
+using BooruSharp.Search.Post;
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -10,7 +11,7 @@ namespace BooruSharp.Booru.Template
     /// <summary>
     /// Template booru based on Philomena https://github.com/ZizzyDizzyMC/philomena . This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract class Philomena : ABooru<EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing>
+    public abstract class Philomena : ABooru<EmptyParsing, Philomena.SearchResult, EmptyParsing, EmptyParsing, EmptyParsing>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Philomena"/> template class.
@@ -58,6 +59,57 @@ namespace BooruSharp.Booru.Template
             }
             uriBuilder.Query = query.ToString();
             message.RequestUri = new Uri(uriBuilder.ToString());
+        }
+
+        private protected override PostSearchResult GetPostSearchResult(SearchResult parsingData)
+        {
+            return new PostSearchResult(
+                fileUrl: new(parsingData.Representations.Full),
+                previewUrl: null,
+                postUrl: new($"{BaseUrl}images/{parsingData.Id}"),
+                sampleUri: new(parsingData.Representations.Thumb),
+                rating: parsingData.Rating switch
+                {
+                    "safe" => Rating.General,
+                    "suggestive" => Rating.Safe,
+                    "questionable" => Rating.Questionable,
+                    "explicit" => Rating.Explicit,
+                    _ => throw new($"Unknown rating {parsingData.Rating}")
+                },
+                tags: parsingData.Tags,
+                detailedTags: null,
+                id: parsingData.Id,
+                size: parsingData.Size,
+                height: parsingData.Height,
+                width: parsingData.Width,
+                previewHeight: null,
+                previewWidth: null,
+                creation: parsingData.CreatedAt,
+                sources: string.IsNullOrEmpty(parsingData.SourceUrl) ? Array.Empty<string>() : new[] { parsingData.SourceUrl },
+                score: parsingData.Score,
+                hash: parsingData.Sha512Hash
+            );
+        }
+
+        public class SearchResult
+        {
+            public Representations Representations { set; get; }
+            public int Id { set; get; }
+            public string Rating { set; get; }
+            public string[] Tags { set; get; }
+            public int Size { set; get; }
+            public int Width { set; get; }
+            public int Height { set; get; }
+            public DateTime CreatedAt { set; get; }
+            public string SourceUrl { set; get; }
+            public int Score { set; get; }
+            public string Sha512Hash { set; get; }
+        }
+
+        public class Representations
+        {
+            public string Full { set; get; }
+            public string Thumb { set; get; }
         }
 
         /*

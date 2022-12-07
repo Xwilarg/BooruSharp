@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BooruSharp.Booru
+﻿namespace BooruSharp.Booru
 {
     /// <summary>
     /// FurryBooru.

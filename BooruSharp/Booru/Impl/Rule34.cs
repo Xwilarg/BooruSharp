@@ -15,7 +15,7 @@ namespace BooruSharp.Booru
         /// Initializes a new instance of the <see cref="Rule34"/> class.
         /// </summary>
         public Rule34()
-            : base("rule34.xxx") //TODO:, BooruOptions.NoComment
+            : base("api.rule34.xxx") //TODO:, BooruOptions.NoComment
         { }
 
         protected override async Task<Uri> CreateRandomPostUriAsync(string[] tags)

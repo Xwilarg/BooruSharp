@@ -1,15 +1,19 @@
 ﻿using BooruSharp.Booru.Parsing;
+using BooruSharp.Search.Post;
+using BooruSharp.Search.Tag;
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace BooruSharp.Booru.Template
 {
     /// <summary>
     /// Template booru based on Gelbooru. This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract class Gelbooru : ABooru<EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing>
+    public abstract class Gelbooru : ABooru<EmptyParsing, Gelbooru.SearchResult, EmptyParsing, EmptyParsing, EmptyParsing>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Gelbooru"/> template class.
@@ -39,6 +43,45 @@ namespace BooruSharp.Booru.Template
             {
                 message.Headers.Add("Cookie", "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash);
             }
+        }
+
+        private protected override PostSearchResult GetPostSearchResult(SearchResult parsingData)
+        {
+            return new PostSearchResult(
+                fileUrl: new(parsingData.FileUrl),
+                previewUrl: new(parsingData.PreviewUrl),
+                postUrl: new Uri($"{BaseUrl}index.php?page=post&s=view&id={parsingData.Id}"),
+                sampleUri: parsingData.SampleUrl != null ? new Uri(parsingData.SampleUrl) : null,
+                rating: GetRating(parsingData.Rating[0]),
+                tags: parsingData.Tags.Split().Select(HttpUtility.HtmlDecode),
+                detailedTags: null,
+                id: parsingData.Id,
+                size: null,
+                height: parsingData.Height,
+                width: parsingData.Width,
+                previewHeight: null,
+                previewWidth: null,
+                creation: DateTime.ParseExact(parsingData.CreatedAt, "ddd MMM dd HH:mm:ss zzz yyyy", CultureInfo.InvariantCulture),
+                sources: string.IsNullOrEmpty(parsingData.Source) ? Array.Empty<string>() : new[] { parsingData.Source },
+                score: parsingData.Score,
+                hash: parsingData.Md5
+            );
+        }
+
+        public class SearchResult
+        {
+            public string FileUrl;
+            public string PreviewUrl;
+            public string SampleUrl;
+            public int Id;
+            public string Rating;
+            public string Tags;
+            public int Height;
+            public int Width;
+            public string CreatedAt;
+            public string Source;
+            public int Score;
+            public string Md5;
         }
 
         /*

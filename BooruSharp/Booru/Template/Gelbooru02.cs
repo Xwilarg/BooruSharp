@@ -1,4 +1,5 @@
 ﻿using BooruSharp.Booru.Parsing;
+using BooruSharp.Search.Post;
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -12,7 +13,7 @@ namespace BooruSharp.Booru.Template
     /// <summary>
     /// Template booru based on Gelbooru 0.2. This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract class Gelbooru02 : ABooru<EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing>
+    public abstract class Gelbooru02 : ABooru<EmptyParsing, Gelbooru02.SearchResult, EmptyParsing, EmptyParsing, EmptyParsing>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Gelbooru02"/> template class.
@@ -56,6 +57,42 @@ namespace BooruSharp.Booru.Template
             {
                 message.Headers.Add("Cookie", "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash);
             }
+        }
+
+        private protected override PostSearchResult GetPostSearchResult(SearchResult parsingData)
+        {
+            return new PostSearchResult(
+                fileUrl: new($"{BaseUrl}/images/{parsingData.Directory}/{parsingData.Image}"),
+                previewUrl: new($"{BaseUrl}/thumbnails/{parsingData.Directory}/thumbnails_{parsingData.Image}"),
+                postUrl: new($"{BaseUrl}index.php?page=post&s=view&id={parsingData.Id}"),
+                sampleUri: parsingData.Sample ? new($"{BaseUrl}/samples/{parsingData.Directory}/sample_{parsingData.Image}.jpg") : null,
+                rating: GetRating(parsingData.Rating[0]),
+                tags: parsingData.Tags.Split(),
+                detailedTags: null,
+                id: parsingData.Id,
+                size: null,
+                height: parsingData.Height,
+                width: parsingData.Width,
+                previewHeight: null,
+                previewWidth: null,
+                creation: null,
+                sources: null,
+                score: parsingData.Score,
+                hash: null
+            );
+        }
+
+        public class SearchResult
+        {
+            public string Directory;
+            public string Image;
+            public int Id;
+            public bool Sample;
+            public string Rating;
+            public string Tags;
+            public int Height;
+            public int Width;
+            public int Score;
         }
 
         protected async Task<XmlDocument> GetXmlAsync(string url)

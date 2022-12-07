@@ -1,15 +1,19 @@
 ﻿using BooruSharp.Booru.Parsing;
+using BooruSharp.Search.Post;
+using BooruSharp.Search.Tag;
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace BooruSharp.Booru.Template
 {
     /// <summary>
     /// Template booru based on Sankaku. This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract class Sankaku : ABooru<EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing>
+    public abstract class Sankaku : ABooru<EmptyParsing, Sankaku.SearchResult, EmptyParsing, EmptyParsing, EmptyParsing>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Sankaku"/> template class.
@@ -43,6 +47,79 @@ namespace BooruSharp.Booru.Template
             {
                 message.Headers.Add("Cookie", "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash);
             }
+        }
+
+        private protected override PostSearchResult GetPostSearchResult(SearchResult parsingData)
+        {
+            return new PostSearchResult(
+                fileUrl: parsingData.FileUrl != null ? new(parsingData.FileUrl) : null,
+                previewUrl: parsingData.PreviewUrl != null ? new(parsingData.PreviewUrl) : null,
+                postUrl: new UriBuilder(BaseUrl)
+                {
+                    Host = BaseUrl.Host.Replace("capi-v2", "beta"),
+                    Path = $"/post/show/{parsingData.Id}",
+                }.Uri,
+                sampleUri: parsingData.SampleUrl != null && parsingData.SampleUrl.Contains("/preview/") ? new Uri(parsingData.SampleUrl) : null,
+                rating: GetRating(parsingData.Rating[0]),
+                tags: parsingData.Tags.Select(x => x.NameEn),
+                detailedTags: parsingData.Tags.Select(x => new TagSearchResult(x.Id, x.NameEn, GetTagType(x.Type), x.PostCount)),
+                id: parsingData.Id,
+                size: parsingData.FileSize,
+                height: parsingData.Height,
+                width: parsingData.Width,
+                previewHeight: parsingData.PreviewHeight,
+                previewWidth: parsingData.PreviewWidth,
+                creation: _unixTime.AddSeconds(parsingData.CreatedAt.S),
+                sources: string.IsNullOrEmpty(parsingData.Source) ? Array.Empty<string>() : new[] { parsingData.Source },
+                score: parsingData.TotalScore,
+                hash: parsingData.Md5
+            );
+        }
+
+        public class SearchResult
+        {
+            public string FileUrl;
+            public string PreviewUrl;
+            public string SampleUrl;
+            public int Id;
+            public string Rating;
+            public Tag[] Tags;
+            public int FileSize;
+            public int Height;
+            public int Width;
+            public int PreviewHeight;
+            public int PreviewWidth;
+            public CreationInfo CreatedAt;
+            public string Source;
+            public int TotalScore;
+            public string Md5;
+        }
+
+        public class Tag
+        {
+            public int Id;
+            public string NameEn;
+            public int Type;
+            public int PostCount;
+        }
+
+        public class CreationInfo
+        {
+            public int S;
+        }
+
+
+        private static TagType GetTagType(int type)
+        {
+            return type switch
+            {
+                0 => TagType.Trivia,
+                1 => TagType.Artist,
+                3 => TagType.Copyright,
+                4 => TagType.Character,
+                8 => TagType.Metadata,
+                _ => (TagType)6,
+            };
         }
 
         /*
@@ -100,19 +177,6 @@ namespace BooruSharp.Booru.Template
                 elem["total_score"].Value<int>(),
                 elem["md5"].Value<string>()
                 );
-        }
-
-        private Search.Tag.TagType GetTagType(int type)
-        {
-            switch(type)
-            {
-                case 0: return Search.Tag.TagType.Trivia;
-                case 1: return Search.Tag.TagType.Artist;
-                case 3: return Search.Tag.TagType.Copyright;
-                case 4: return Search.Tag.TagType.Character;
-                case 8: return Search.Tag.TagType.Metadata;
-                default: return (Search.Tag.TagType)6;
-            }
         }
 
         private protected override Search.Post.SearchResult[] GetPostsSearchResult(object json)
