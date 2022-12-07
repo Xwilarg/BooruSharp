@@ -58,7 +58,7 @@ namespace BooruSharp.Booru.Template
             }
         }
 
-        private async Task<XmlDocument> GetXmlAsync(string url)
+        protected async Task<XmlDocument> GetXmlAsync(string url)
         {
             var xmlDoc = new XmlDocument();
             var xmlString = await GetJsonAsync(url);
