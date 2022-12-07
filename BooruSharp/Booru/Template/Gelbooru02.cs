@@ -1,8 +1,10 @@
 ﻿using BooruSharp.Booru.Parsing;
 using System;
-using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Web;
 using System.Xml;
 
 namespace BooruSharp.Booru.Template
@@ -19,14 +21,32 @@ namespace BooruSharp.Booru.Template
         /// The fully qualified domain name. Example domain
         /// name should look like <c>www.google.com</c>.
         /// </param>
-        /// <param name="options">
-        /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
-        /// </param>
-        protected Gelbooru02(string domain, BooruOptions options = BooruOptions.None) 
-            : base(domain, UrlFormat.IndexPhp, options | BooruOptions.NoRelated | BooruOptions.NoWiki | BooruOptions.NoPostByMD5
-                  | BooruOptions.CommentApiXml | BooruOptions.TagApiXml | BooruOptions.NoMultipleRandom)
+        protected Gelbooru02(string domain) 
+            : base(domain)
+        { }
+
+        protected override Uri CreateQueryString(string query, string squery = "index")
         {
-            //_url = domain;
+            return new($"{BaseUrl}/index.php?page=dapi&s=${query}&q=index&json=1");
+        }
+
+        protected override async Task<Uri> CreateRandomPostUriAsync(string[] tags)
+        {
+            if (!tags.Any())
+            {
+                // We need to request /index.php?page=post&s=random and get the id given by the redirect
+                HttpResponseMessage msg = await HttpClient.GetAsync($"{BaseUrl}/index.php?page=post&s=random");
+                msg.EnsureSuccessStatusCode();
+                return CreateUrl(_imageUrl, "limit=1", "id=" + HttpUtility.ParseQueryString(msg.RequestMessage.RequestUri.Query).Get("id"));
+            }
+            var url = CreateUrl(new(_imageUrl.AbsoluteUri.Replace("index.json", "index.xml")), "limit=1", string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant());
+            XmlDocument xml = await GetXmlAsync(url.AbsoluteUri);
+            int max = int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
+
+            if (max == 0)
+                throw new Search.InvalidTags();
+
+            return CreateUrl(_imageUrl, "limit=1", string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant(), "pid=" + Random.Next(0, max));
         }
 
         /// <inheritdoc/>
@@ -36,6 +56,15 @@ namespace BooruSharp.Booru.Template
             {
                 message.Headers.Add("Cookie", "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash);
             }
+        }
+
+        private async Task<XmlDocument> GetXmlAsync(string url)
+        {
+            var xmlDoc = new XmlDocument();
+            var xmlString = await GetJsonAsync(url);
+            // https://www.key-shortcut.com/en/all-html-entities/all-entities/
+            xmlDoc.LoadXml(Regex.Replace(xmlString, "&([a-zA-Z]+);", HttpUtility.HtmlDecode("$1")));
+            return xmlDoc;
         }
 
         /*

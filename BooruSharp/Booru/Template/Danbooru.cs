@@ -2,10 +2,9 @@
 using BooruSharp.Search.Post;
 using BooruSharp.Search.Tag;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
+using System.Threading.Tasks;
 
 namespace BooruSharp.Booru.Template
 {
@@ -21,13 +20,26 @@ namespace BooruSharp.Booru.Template
         /// The fully qualified domain name. Example domain
         /// name should look like <c>www.google.com</c>.
         /// </param>
-        /// <param name="options">
-        /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
-        /// </param>
-        protected Danbooru(string domain, BooruOptions options = BooruOptions.None)
-            : base(domain, UrlFormat.Danbooru, options | BooruOptions.NoLastComments | BooruOptions.NoPostCount
-                  | BooruOptions.NoFavorite)
+        protected Danbooru(string domain) : base(domain)
         { }
+
+        protected override Uri CreateQueryString(string query, string squery = "index")
+        {
+            if (query == "tag" && squery == "related")
+            {
+                return new($"{BaseUrl}/related_tag.json");
+            }
+            if (query == "tag" && squery == "wiki")
+            {
+                return new($"{BaseUrl}/wiki_pages.json");
+            }
+            return new($"{BaseUrl}/{query}s.json");
+        }
+
+        protected override Task<Uri> CreateRandomPostUriAsync(string[] tags)
+        {
+            return Task.FromResult(CreateUrl(_imageUrl, "limit=1", "tags=" + string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant(), "random=true"));
+        }
 
         /// <inheritdoc/>
         protected override void PreRequest(HttpRequestMessage message)
@@ -45,7 +57,7 @@ namespace BooruSharp.Booru.Template
                 previewUrl: parsingData.preview_file_url != null ? new Uri(parsingData.preview_file_url) : null,
                 postUrl: parsingData.id != null ? new Uri(BaseUrl + "posts/" + parsingData.id) : null,
                 sampleUri: parsingData.large_file_url != null ? new Uri(parsingData.large_file_url) : null,
-                rating: ABooru.GetRating(parsingData.rating[0]),
+                rating: GetRating(parsingData.rating[0]),
                 tags: parsingData.tag_string.Split(),
                 detailedTags: parsingData.tag_string_general.Split().Select(x => new TagSearchResult(-1, x, TagType.Trivia, -1))
                     .Concat(parsingData.tag_string_character.Split().Select(x => new TagSearchResult(-1, x, TagType.Character, -1)))

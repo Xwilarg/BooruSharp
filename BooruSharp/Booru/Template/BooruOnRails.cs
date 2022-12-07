@@ -1,6 +1,5 @@
 ﻿using BooruSharp.Booru.Parsing;
 using System;
-using System.Collections;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -20,13 +19,23 @@ namespace BooruSharp.Booru.Template
         /// The fully qualified domain name. Example domain
         /// name should look like <c>www.google.com</c>.
         /// </param>
-        /// <param name="options">
-        /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
-        /// </param>
-        protected BooruOnRails(string domain, BooruOptions options = BooruOptions.None)
-            : base(domain, UrlFormat.BooruOnRails, options | BooruOptions.NoFavorite | BooruOptions.NoPostByMD5 | BooruOptions.NoPostByID
-                  | BooruOptions.NoLastComments | BooruOptions.NoWiki | BooruOptions.NoRelated)
+        protected BooruOnRails(string domain)
+            : base(domain)
         { }
+
+        protected override Uri CreateQueryString(string query, string squery = "index")
+        {
+            return new($"{BaseUrl}/api/v3/search/{query}s");
+        }
+
+        protected override Task<Uri> CreateRandomPostUriAsync(string[] tags)
+        {
+            if (!tags.Any())
+            {
+                return Task.FromResult(CreateUrl(_imageUrl, "per_page=1", "q=id.gte:0", "sf=random"));
+            }
+            return Task.FromResult(CreateUrl(_imageUrl, "per_page=1", "q=" + string.Join(",", tags.Select(Uri.EscapeDataString)).ToLowerInvariant(), "sf=random"));
+        }
 
         /// <summary>
         /// ID used to set filter and have access to as many posts as possible

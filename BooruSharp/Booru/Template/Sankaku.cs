@@ -1,8 +1,8 @@
 ﻿using BooruSharp.Booru.Parsing;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace BooruSharp.Booru.Template
 {
@@ -18,13 +18,23 @@ namespace BooruSharp.Booru.Template
         /// The fully qualified domain name. Example domain
         /// name should look like <c>www.google.com</c>.
         /// </param>
-        /// <param name="options">
-        /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
-        /// </param>
-        protected Sankaku(string domain, BooruOptions options = BooruOptions.None)
-            : base(domain, UrlFormat.Sankaku, options | BooruOptions.NoRelated | BooruOptions.NoPostByMD5 | BooruOptions.NoPostByID
-                  | BooruOptions.NoPostCount | BooruOptions.NoFavorite | BooruOptions.NoTagByID)
+        protected Sankaku(string domain)
+            : base(domain)
         { }
+
+        protected override Uri CreateQueryString(string query, string squery = "index")
+        {
+            if (query == "wiki")
+            {
+                return new($"{BaseUrl}/{query}");
+            }
+            return new($"{BaseUrl}/{query}s");
+        }
+
+        protected override Task<Uri> CreateRandomPostUriAsync(string[] tags)
+        {
+            return Task.FromResult(CreateUrl(_imageUrl, "limit=1", string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant() + "+order:random"));
+        }
 
         /// <inheritdoc/>
         protected override void PreRequest(HttpRequestMessage message) // TODO: Doesn't work rn

@@ -1,25 +1,44 @@
-﻿using System;
+﻿using BooruSharp.Search.Post;
+using System;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Xml;
 
 namespace BooruSharp.Booru
 {
-    public abstract partial class ABooru
+    public abstract partial class ABooru<TComment, TPost, TRelated, TTag, TWiki> : IBooru
     {
         /// <summary>
         /// Converts a letter to its matching <see cref="Search.Post.Rating"/>.
         /// </summary>
-        internal static Search.Post.Rating GetRating(char c)
+        private protected static Rating GetRating(char c)
         {
             return char.ToLower(c) switch
             {
-                'g' => Search.Post.Rating.General,
-                's' => Search.Post.Rating.Safe,
-                'q' => Search.Post.Rating.Questionable,
-                'e' => Search.Post.Rating.Explicit,
+                'g' => Rating.General,
+                's' => Rating.Safe,
+                'q' => Rating.Questionable,
+                'e' => Rating.Explicit,
                 _ => throw new ArgumentException($"Invalid rating '{c}'.", nameof(c)),
             };
+        }
+
+        /// <summary>
+        /// Searches for a random post. If <paramref name="tagsArg"/> array is specified
+        /// and isn't empty, random post containing those tags will be returned.
+        /// </summary>
+        /// <param name="tagsArg">The optional array of tags that must be contained in the post.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="System.Net.Http.HttpRequestException"/>
+        /// <exception cref="Search.TooManyTags"/>
+        public virtual async Task<PostSearchResult> GetRandomPostAsync(params string[] tagsArg)
+        {
+            string[] tags = tagsArg != null
+                ? tagsArg.Where(tag => !string.IsNullOrWhiteSpace(tag)).ToArray()
+                : Array.Empty<string>();
+
+            return GetPostSearchResult(JsonSerializer.Deserialize<TPost>(await GetJsonAsync(await CreateRandomPostUriAsync(tags))));
         }
         /*
         private const int _limitedTagsSearchCount = 2;
@@ -100,61 +119,6 @@ namespace BooruSharp.Booru
                 XmlDocument xml = await GetXmlAsync(url);
                 return int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
             }
-        }
-
-        /// <summary>
-        /// Searches for a random post. If <paramref name="tagsArg"/> array is specified
-        /// and isn't empty, random post containing those tags will be returned.
-        /// </summary>
-        /// <param name="tagsArg">The optional array of tags that must be contained in the post.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        /// <exception cref="System.Net.Http.HttpRequestException"/>
-        /// <exception cref="Search.TooManyTags"/>
-        public virtual async Task<Search.Post.SearchResult> GetRandomPostAsync(params string[] tagsArg)
-        {
-            string[] tags = tagsArg != null
-                ? tagsArg.Where(tag => !string.IsNullOrWhiteSpace(tag)).ToArray()
-                : Array.Empty<string>();
-
-            if (NoMoreThanTwoTags && tags.Length > _limitedTagsSearchCount)
-                throw new Search.TooManyTags();
-
-            string tagString = TagsToString(tags);
-
-            if (_format == UrlFormat.IndexPhp)
-            {
-                if (this is Template.Gelbooru)
-                    return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, GetLimit(1), tagString) + "+sort:random");
-
-                if (tags.Length == 0)
-                {
-                    // We need to request /index.php?page=post&s=random and get the id given by the redirect
-                    string id = await GetRandomIdAsync(tagString);
-                    return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, GetLimit(1), "id=" + id));
-                }
-
-                // The previous option doesn't work if there are tags so we contact the XML endpoint to get post count
-                Uri url = CreateUrl(_imageUrlXml, GetLimit(1), tagString);
-                XmlDocument xml = await GetXmlAsync(url);
-                int max = int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
-
-                if (max == 0)
-                    throw new Search.InvalidTags();
-
-                if (SearchIncreasedPostLimit && max > _increasedPostLimitCount)
-                    max = _increasedPostLimitCount;
-
-                return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, GetLimit(1), tagString, "pid=" + Random.Next(0, max)));
-            }
-            if (_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails)
-            {
-                return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, GetLimit(1), tagString, "sf=random"));
-            }
-
-            return NoMoreThanTwoTags
-                // +order:random count as a tag so we use random=true instead to save one
-                ? await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, GetLimit(1), tagString, "random=true"))
-                : await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, GetLimit(1), tagString) + "+order:random");
         }
 
         /// <summary>

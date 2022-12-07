@@ -1,9 +1,9 @@
 ﻿using BooruSharp.Booru.Parsing;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BooruSharp.Booru.Template
 {
@@ -19,13 +19,31 @@ namespace BooruSharp.Booru.Template
         /// The fully qualified domain name. Example domain
         /// name should look like <c>www.google.com</c>.
         /// </param>
-        /// <param name="options">
-        /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
-        /// </param>
-        protected E621(string domain, BooruOptions options = BooruOptions.None)
-            : base(domain, UrlFormat.Danbooru, options | BooruOptions.NoWiki | BooruOptions.NoRelated | BooruOptions.NoComment 
-                  | BooruOptions.NoTagByID | BooruOptions.NoPostCount | BooruOptions.NoFavorite)
+        protected E621(string domain)
+            : base(domain)
         { }
+
+        protected override Uri CreateQueryString(string query, string squery = "index")
+        {
+            if (query == "tag" && squery == "related")
+            {
+                return new($"{BaseUrl}/related_tag.json");
+            }
+            if (query == "tag" && squery == "wiki")
+            {
+                return new($"{BaseUrl}/wiki_pages.json");
+            }
+            return new($"{BaseUrl}/{query}s.json");
+        }
+
+        protected override Task<Uri> CreateRandomPostUriAsync(string[] tags)
+        {
+            if (tags.Length > 2)
+            {
+                throw new Search.TooManyTags();
+            }
+            return Task.FromResult(CreateUrl(_imageUrl, "limit=1", "tags=" + string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant(), "random=true"));
+        }
 
         /// <inheritdoc/>
         protected override void PreRequest(HttpRequestMessage message)
