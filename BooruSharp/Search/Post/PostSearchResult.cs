@@ -11,7 +11,7 @@ namespace BooruSharp.Search.Post
     public record PostSearchResult
     {
         /// <summary>
-        /// Initializes a <see cref="SearchResult"/> struct.
+        /// Initializes a <see cref="PostSearchResult"/> class.
         /// </summary>
         /// <param name="fileUrl">The URI of the file.</param>
         /// <param name="previewUrl">The URI of the image thumbnail.</param>

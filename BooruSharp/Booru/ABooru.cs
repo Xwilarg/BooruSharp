@@ -1,7 +1,6 @@
 ﻿using BooruSharp.Search;
 using BooruSharp.Search.Post;
 using System;
-using System.Collections;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -15,12 +14,9 @@ namespace BooruSharp.Booru
     /// <summary>
     /// Defines basic capabilities of a booru. This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract partial class ABooru<TComment, TPost, TRelated, TTag, TWiki>
+    public abstract partial class ABooru<TComment, TPost, TRelated, TTag, TWiki> : IBooru
     {
-        /// <summary>
-        /// Gets whether this booru is considered safe (that is, all posts on
-        /// this booru have rating of <see cref="Search.Post.Rating.Safe"/>).
-        /// </summary>
+        /// <inheritdoc/>
         public abstract bool IsSafe { get; }
 
         private protected virtual Search.Comment.SearchResult GetCommentSearchResult(TComment parsingData)
@@ -52,65 +48,41 @@ namespace BooruSharp.Booru
             }
         }*/
 
-        /// <summary>
-        /// Gets whether it is possible to search for related tags on this booru.
-        /// </summary>
+        /// <inheritdoc/>
         public bool HasRelatedAPI => !_options.HasFlag(BooruOptions.NoRelated);
 
-        /// <summary>
-        /// Gets whether it is possible to search for wiki entries on this booru.
-        /// </summary>
+        /// <inheritdoc/>
         public bool HasWikiAPI => !_options.HasFlag(BooruOptions.NoWiki);
 
-        /// <summary>
-        /// Gets whether it is possible to search for comments on this booru.
-        /// </summary>
+        /// <inheritdoc/>
         public bool HasCommentAPI => !_options.HasFlag(BooruOptions.NoComment);
 
-        /// <summary>
-        /// Gets whether it is possible to search for tags by their IDs on this booru.
-        /// </summary>
+        /// <inheritdoc/>
         public bool HasTagByIdAPI => !_options.HasFlag(BooruOptions.NoTagByID);
 
-        /// <summary>
-        /// Gets whether it is possible to search for the last comments on this booru.
-        /// </summary>
         // As a failsafe also check for the availability of comment API.
+        /// <inheritdoc/>
         public bool HasSearchLastComment => HasCommentAPI && !_options.HasFlag(BooruOptions.NoLastComments);
 
-        /// <summary>
-        /// Gets whether it is possible to search for posts by their MD5 on this booru.
-        /// </summary>
+        /// <inheritdoc/>
         public bool HasPostByMd5API => !_options.HasFlag(BooruOptions.NoPostByMD5);
 
-        /// <summary>
-        /// Gets whether it is possible to search for posts by their ID on this booru.
-        /// </summary>
+        /// <inheritdoc/>
         public bool HasPostByIdAPI => !_options.HasFlag(BooruOptions.NoPostByID);
 
-        /// <summary>
-        /// Gets whether it is possible to get the total number of posts on this booru.
-        /// </summary>
+        /// <inheritdoc/>
         public bool HasPostCountAPI => !_options.HasFlag(BooruOptions.NoPostCount);
 
-        /// <summary>
-        /// Gets whether it is possible to get multiple random images on this booru.
-        /// </summary>
+        /// <inheritdoc/>
         public bool HasMultipleRandomAPI => !_options.HasFlag(BooruOptions.NoMultipleRandom);
 
-        /// <summary>
-        /// Gets whether this booru supports adding or removing favorite posts.
-        /// </summary>
+        /// <inheritdoc/>
         public bool HasFavoriteAPI => !_options.HasFlag(BooruOptions.NoFavorite);
 
-        /// <summary>
-        /// Gets whether this booru can't call post functions without search arguments.
-        /// </summary>
+        /// <inheritdoc/>
         public bool NoEmptyPostSearch => _options.HasFlag(BooruOptions.NoEmptyPostSearch);
 
-        /// <summary>
-        /// Gets a value indicating whether searching by more than two tags at once is not allowed.
-        /// </summary>
+        /// <inheritdoc/>
         public bool NoMoreThanTwoTags => _options.HasFlag(BooruOptions.NoMoreThan2Tags);
 
         /// <summary>
@@ -133,10 +105,7 @@ namespace BooruSharp.Booru
         /// </summary>
         protected bool SearchIncreasedPostLimit => _options.HasFlag(BooruOptions.LimitOf20000);
 
-        /// <summary>
-        /// Checks for the booru availability.
-        /// Throws <see cref="HttpRequestException"/> if service isn't available.
-        /// </summary>
+        /// <inheritdoc/>
         public async Task CheckAvailabilityAsync()
         {
             await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Head, _imageUrl));

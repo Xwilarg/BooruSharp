@@ -31,9 +31,9 @@ namespace BooruSharp.UnitTests
             //new BooruTestData() { BooruType = typeof(Pixiv) }
         };
 
-        private static readonly Dictionary<Type, Task<ABooru>> _boorus = new Dictionary<Type, Task<ABooru>>();
+        private static readonly Dictionary<Type, Task<IBooru>> _boorus = new();
 
-        public static Task<ABooru> GetAsync(Type type)
+        public static Task<IBooru> GetAsync(Type type)
         {
             lock (_boorus)
             {
@@ -47,9 +47,9 @@ namespace BooruSharp.UnitTests
             }
         }
 
-        private static async Task<ABooru> CreateBooruAsync(Type type)
+        private static async Task<IBooru> CreateBooruAsync(Type type)
         {
-            var booru = (ABooru)Activator.CreateInstance(type);
+            var booru = (IBooru)Activator.CreateInstance(type);
 
             /*if (booru is Pixiv pixiv)
             {

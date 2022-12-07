@@ -10,7 +10,7 @@ namespace BooruSharp.Booru
         /// <summary>
         /// Converts a letter to its matching <see cref="Search.Post.Rating"/>.
         /// </summary>
-        public static Search.Post.Rating GetRating(char c)
+        internal static Search.Post.Rating GetRating(char c)
         {
             return char.ToLower(c) switch
             {
