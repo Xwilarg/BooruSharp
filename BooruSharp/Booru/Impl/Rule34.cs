@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Xml;
 using System;
+using BooruSharp.Search;
 
 namespace BooruSharp.Booru
 {
@@ -18,18 +19,20 @@ namespace BooruSharp.Booru
             : base("api.rule34.xxx") //TODO:, BooruOptions.NoComment
         { }
 
+        public override bool CanSearchWithNoTag => false;
+
         protected override async Task<Uri> CreateRandomPostUriAsync(string[] tags)
         {
             if (!tags.Any())
             {
-                await base.CreateRandomPostUriAsync(tags); // Nothing change here, let's just call the base class
+                throw new FeatureUnavailable("Rule34 doesn't support searchs with no tag");
             }
             var url = CreateUrl(new(_imageUrl.AbsoluteUri.Replace("index.json", "index.xml")), "limit=1", string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant());
             XmlDocument xml = await GetXmlAsync(url.AbsoluteUri);
             int max = int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
 
             if (max == 0)
-                throw new Search.InvalidTags();
+                throw new InvalidTags();
 
             // The limit is in fact 200000 but search with tags make it incredibly hard to know what is really your pid
             if (max > 20001)

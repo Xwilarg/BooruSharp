@@ -6,7 +6,6 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web;
-using static BooruSharp.Booru.Template.E621;
 
 namespace BooruSharp.Booru.Template
 {

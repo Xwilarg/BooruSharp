@@ -6,6 +6,8 @@ namespace BooruSharp.Booru
 {
     public interface IBooru
     {
+        public bool CanSearchWithNoTag { get; }
+
         /// <summary>
         /// Gets whether this booru is considered safe (that is, all posts on
         /// this booru have rating of <see cref="Search.Post.Rating.Safe"/>).

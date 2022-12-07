@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace BooruSharp.Booru.Template
 {
     /// <summary>
-    /// Template booru based on Danbooru. This class is <see langword="abstract"/>.
+    /// Template booru based on Danbooru https://github.com/danbooru/danbooru . This class is <see langword="abstract"/>.
     /// </summary>
     public abstract class Danbooru : ABooru<EmptyParsing, Danbooru.SearchResult, EmptyParsing, EmptyParsing, EmptyParsing>
     {

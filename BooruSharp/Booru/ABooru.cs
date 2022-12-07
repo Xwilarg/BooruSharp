@@ -14,6 +14,8 @@ namespace BooruSharp.Booru
     /// </summary>
     public abstract partial class ABooru<TComment, TPost, TRelated, TTag, TWiki> : IBooru
     {
+        public virtual bool CanSearchWithNoTag => true;
+
         /// <inheritdoc/>
         public abstract bool IsSafe { get; }
 
