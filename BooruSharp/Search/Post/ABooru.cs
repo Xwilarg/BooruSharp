@@ -31,10 +31,7 @@ namespace BooruSharp.Booru
                 : Array.Empty<string>();
 
             var url = await CreateRandomPostUriAsync(tags);
-            return GetPostSearchResult(JsonSerializer.Deserialize<TPost[]>(await GetJsonAsync(url), new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = new SnakeCaseNamingPolicy()
-            }).FirstOrDefault());
+            return await GetPostFromUriAsync(url);
         }
         /*
         private const int _limitedTagsSearchCount = 2;

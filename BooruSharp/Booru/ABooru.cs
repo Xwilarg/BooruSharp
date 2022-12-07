@@ -1,8 +1,10 @@
 ﻿using BooruSharp.Search;
 using BooruSharp.Search.Post;
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace BooruSharp.Booru
@@ -43,9 +45,26 @@ namespace BooruSharp.Booru
         protected virtual void PreRequest(HttpRequestMessage message)
         { }
 
+        /// <summary>
+        /// Create an URL to request the specified API
+        /// </summary>
+        /// <param name="query">Main query</param>
+        /// <param name="squery">Sub query</param>
         protected abstract Uri CreateQueryString(string query, string squery = "index");
 
+        /// <summary>
+        /// Create the Uri to request a post from the API
+        /// </summary>
+        /// <param name="tags">List of tags sent by the user</param>
         protected abstract Task<Uri> CreateRandomPostUriAsync(string[] tags);
+
+        protected virtual async Task<PostSearchResult> GetPostFromUriAsync(Uri url)
+        {
+            return GetPostSearchResult(JsonSerializer.Deserialize<TPost[]>(await GetJsonAsync(url), new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = new SnakeCaseNamingPolicy()
+            }).FirstOrDefault());
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ABooru"/> class.

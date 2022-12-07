@@ -11,9 +11,9 @@ namespace BooruSharp.UnitTests
 
         [Theory]
         [MemberData(nameof(BooruParams))]
-        public async Task GetRandomImageAsync(object data)
+        public async Task GetRandomImageAsync(BooruTestData data)
         {
-            var booru = await Utils.GetAsync(((BooruTestData)data).BooruType);
+            var booru = await Utils.GetAsync(data.BooruType);
             await booru.GetRandomPostAsync();
         }
     }

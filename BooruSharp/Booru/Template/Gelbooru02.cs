@@ -28,7 +28,7 @@ namespace BooruSharp.Booru.Template
 
         protected override Uri CreateQueryString(string query, string squery = "index")
         {
-            return new($"{BaseUrl}/index.php?page=dapi&s={query}&q=index&json=1");
+            return new($"{BaseUrl}index.php?page=dapi&s={query}&q=index&json=1");
         }
 
         protected override async Task<Uri> CreateRandomPostUriAsync(string[] tags)
@@ -36,7 +36,7 @@ namespace BooruSharp.Booru.Template
             if (!tags.Any())
             {
                 // We need to request /index.php?page=post&s=random and get the id given by the redirect
-                HttpResponseMessage msg = await HttpClient.GetAsync($"{BaseUrl}/index.php?page=post&s=random");
+                HttpResponseMessage msg = await HttpClient.GetAsync($"{BaseUrl}index.php?page=post&s=random");
                 msg.EnsureSuccessStatusCode();
                 return CreateUrl(_imageUrl, "limit=1", "id=" + HttpUtility.ParseQueryString(msg.RequestMessage.RequestUri.Query).Get("id"));
             }
@@ -62,10 +62,10 @@ namespace BooruSharp.Booru.Template
         private protected override PostSearchResult GetPostSearchResult(SearchResult parsingData)
         {
             return new PostSearchResult(
-                fileUrl: new($"{BaseUrl}/images/{parsingData.Directory}/{parsingData.Image}"),
-                previewUrl: new($"{BaseUrl}/thumbnails/{parsingData.Directory}/thumbnails_{parsingData.Image}"),
+                fileUrl: new($"{BaseUrl}images/{parsingData.Directory}/{parsingData.Image}"),
+                previewUrl: new($"{BaseUrl}thumbnails/{parsingData.Directory}/thumbnails_{parsingData.Image}"),
                 postUrl: new($"{BaseUrl}index.php?page=post&s=view&id={parsingData.Id}"),
-                sampleUri: parsingData.Sample ? new($"{BaseUrl}/samples/{parsingData.Directory}/sample_{parsingData.Image}.jpg") : null,
+                sampleUri: parsingData.Sample ? new($"{BaseUrl}samples/{parsingData.Directory}/sample_{parsingData.Image}.jpg") : null,
                 rating: GetRating(parsingData.Rating[0]),
                 tags: parsingData.Tags.Split(),
                 detailedTags: null,

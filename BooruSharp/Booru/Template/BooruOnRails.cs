@@ -3,6 +3,7 @@ using BooruSharp.Search.Post;
 using System;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -26,7 +27,7 @@ namespace BooruSharp.Booru.Template
 
         protected override Uri CreateQueryString(string query, string squery = "index")
         {
-            return new($"{BaseUrl}/api/v3/search/{query}s");
+            return new($"{BaseUrl}api/v3/search/{query}s");
         }
 
         protected override Task<Uri> CreateRandomPostUriAsync(string[] tags)
@@ -57,21 +58,28 @@ namespace BooruSharp.Booru.Template
             message.RequestUri = new Uri(uriBuilder.ToString());
         }
 
+        protected override async Task<PostSearchResult> GetPostFromUriAsync(Uri url)
+        {
+            return GetPostSearchResult(JsonSerializer.Deserialize<PostContainer>(await GetJsonAsync(url), new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = new SnakeCaseNamingPolicy()
+            }).Posts.FirstOrDefault());
+        }
+
         private protected override PostSearchResult GetPostSearchResult(SearchResult parsingData)
         {
+            Rating rating;
+            if (parsingData.Tags.Contains("explicit")) rating = Rating.Explicit;
+            else if (parsingData.Tags.Contains("questionable")) rating = Rating.Questionable;
+            else if (parsingData.Tags.Contains("suggestive")) rating = Rating.Safe;
+            else if (parsingData.Tags.Contains("safe")) rating = Rating.General;
+            else rating = (Rating)(-1); // Some images doesn't have a rating
             return new PostSearchResult(
                 fileUrl: new(parsingData.Representations.Full),
                 previewUrl: null,
                 postUrl: new($"{BaseUrl}images/{parsingData.Id}"),
                 sampleUri: new(parsingData.Representations.Thumb),
-                rating: parsingData.Rating switch
-                {
-                    "safe" => Rating.General,
-                    "suggestive" => Rating.Safe,
-                    "questionable" => Rating.Questionable,
-                    "explicit" => Rating.Explicit,
-                    _ => throw new($"Unknown rating {parsingData.Rating}")
-                },
+                rating: rating,
                 tags: parsingData.Tags,
                 detailedTags: null,
                 id: parsingData.Id,
@@ -87,11 +95,15 @@ namespace BooruSharp.Booru.Template
             );
         }
 
+        public class PostContainer
+        {
+            public SearchResult[] Posts { init; get; }
+        }
+
         public class SearchResult
         {
             public Representations Representations { init; get; }
             public int Id { init; get; }
-            public string Rating { init; get; }
             public string[] Tags { init; get; }
             public int Size { init; get; }
             public int Width { init; get; }

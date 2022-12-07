@@ -29,9 +29,9 @@ namespace BooruSharp.Booru.Template
         {
             if (query == "wiki")
             {
-                return new($"{BaseUrl}/{query}");
+                return new($"{BaseUrl}{query}");
             }
-            return new($"{BaseUrl}/{query}s");
+            return new($"{BaseUrl}{query}s");
         }
 
         protected override Task<Uri> CreateRandomPostUriAsync(string[] tags)
