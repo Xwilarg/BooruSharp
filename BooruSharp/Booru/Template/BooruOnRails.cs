@@ -81,7 +81,7 @@ namespace BooruSharp.Booru.Template
                 previewHeight: null,
                 previewWidth: null,
                 creation: parsingData.CreatedAt,
-                source: parsingData.SourceUrl,
+                sources: string.IsNullOrEmpty(parsingData.SourceUrl) ? Array.Empty<string>() : new[] { parsingData.SourceUrl },
                 score: parsingData.Score,
                 hash: parsingData.Sha512Hash
             );

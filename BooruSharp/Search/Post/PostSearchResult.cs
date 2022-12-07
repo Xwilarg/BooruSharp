@@ -27,13 +27,13 @@ namespace BooruSharp.Search.Post
         /// <param name="previewHeight">The height of the preview image, in pixels.</param>
         /// <param name="previewWidth">The width of the preview image, in pixels.</param>
         /// <param name="creation">The creation date of the post.</param>
-        /// <param name="source">The original source of the file.</param>
+        /// <param name="sources">The original source of the file.</param>
         /// <param name="score">The score of the post.</param>
-        /// <param name="md5">The MD5 hash of the file.</param>
+        /// <param name="hash">The MD5 hash of the file.</param>
         public PostSearchResult(
             Uri fileUrl, Uri previewUrl, Uri postUrl, Uri sampleUri, Rating rating, IEnumerable<string> tags,
             IEnumerable<TagSearchResult> detailedTags, int id, int? size, int height, int width, int? previewHeight, int? previewWidth,
-            DateTime? creation, string source, int? score, string hash)
+            DateTime? creation, string[] sources, int? score, string hash)
         {
             FileUrl = fileUrl;
             PreviewUrl = previewUrl;
@@ -49,7 +49,7 @@ namespace BooruSharp.Search.Post
             PreviewHeight = previewHeight;
             PreviewWidth = previewWidth;
             Creation = creation;
-            Source = source;
+            Sources = sources;
             Score = score;
             Hash = hash;
         }
@@ -131,7 +131,7 @@ namespace BooruSharp.Search.Post
         /// <summary>
         /// Gets the original source of the file.
         /// </summary>
-        public string Source { get; }
+        public string[] Sources { get; }
 
         /// <summary>
         /// Gets the score of the post, or

@@ -1,4 +1,6 @@
 ﻿using BooruSharp.Booru.Parsing;
+using BooruSharp.Search.Post;
+using BooruSharp.Search.Tag;
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -10,7 +12,7 @@ namespace BooruSharp.Booru.Template
     /// <summary>
     /// Template booru based on E621. This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract class E621 : ABooru<EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing>
+    public abstract class E621 : ABooru<EmptyParsing, E621.SearchResult, EmptyParsing, EmptyParsing, EmptyParsing>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="E621"/> template class.
@@ -55,6 +57,77 @@ namespace BooruSharp.Booru.Template
             }
         }
 
+        private protected override PostSearchResult GetPostSearchResult(SearchResult parsingData)
+        {
+            return new PostSearchResult(
+                fileUrl: parsingData.Url.Url != null ? new Uri(parsingData.Url.Url) : null,
+                previewUrl: parsingData.Preview.Url != null ? new Uri(parsingData.Preview.Url) : null,
+                postUrl: new Uri($"{BaseUrl}/posts/{parsingData.Id}"),
+                sampleUri: parsingData.Sample.Url != null ? new Uri(parsingData.Sample.Url) : null,
+                rating: GetRating(parsingData.Rating[0]),
+                tags: parsingData.Tags.General
+                    .Concat(parsingData.Tags.Species)
+                    .Concat(parsingData.Tags.Character)
+                    .Concat(parsingData.Tags.Artist)
+                    .Concat(parsingData.Tags.Invalid)
+                    .Concat(parsingData.Tags.Lore)
+                    .Concat(parsingData.Tags.Meta),
+                detailedTags: parsingData.Tags.Species.Select(x => new TagSearchResult(-1, x, TagType.Species, -1))
+                    .Concat(parsingData.Tags.Character.Select(x => new TagSearchResult(-1, x, TagType.Character, -1)))
+                    .Concat(parsingData.Tags.Artist.Select(x => new TagSearchResult(-1, x, TagType.Artist, -1)))
+                    .Concat(parsingData.Tags.Invalid.Select(x => new TagSearchResult(-1, x, TagType.Invalid, -1)))
+                    .Concat(parsingData.Tags.Lore.Select(x => new TagSearchResult(-1, x, TagType.Lore, -1)))
+                    .Concat(parsingData.Tags.Meta.Select(x => new TagSearchResult(-1, x, TagType.Metadata, -1))),
+                id: parsingData.Id,
+                size: parsingData.Url.Size,
+                height: parsingData.Url.Height,
+                width: parsingData.Url.Width,
+                previewHeight: parsingData.Preview.Height,
+                previewWidth: parsingData.Preview.Width,
+                creation: parsingData.CreatedAt,
+                sources: parsingData.Sources ?? Array.Empty<string>(),
+                score: parsingData.Score.Total,
+                hash: parsingData.Url.Md5
+            );
+        }
+
+        public class SearchResult
+        {
+            public ImageData Url;
+            public ImageData Preview;
+            public ImageData Sample;
+            public Tags Tags;
+            public int Id;
+            public string Rating;
+            public DateTime CreatedAt;
+            public string[] Sources;
+            public Score Score;
+        }
+
+        public class ImageData
+        {
+            public string Url { get; set; }
+            public int Width { set; get; }
+            public int Height { set; get; }
+            public int Size { set; get; }
+            public string Md5 { set; get; }
+        }
+
+        public class Tags
+        {
+            public string[] General;
+            public string[] Species;
+            public string[] Character;
+            public string[] Artist;
+            public string[] Invalid;
+            public string[] Lore;
+            public string[] Meta;
+        }
+
+        public class Score
+        {
+            public int Total;
+        }
 
         /*
         private protected override JToken ParseFirstPostSearchResult(object json)
