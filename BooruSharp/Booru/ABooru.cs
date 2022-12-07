@@ -1,4 +1,5 @@
 ﻿using BooruSharp.Search;
+using BooruSharp.Search.Post;
 using System;
 using System.Collections;
 using System.Linq;
@@ -25,13 +26,13 @@ namespace BooruSharp.Booru
         private protected virtual Search.Comment.SearchResult GetCommentSearchResult(TComment parsingData)
             => throw new FeatureUnavailable();
 
-        private protected virtual Search.Post.SearchResult GetPostSearchResult(TPost parsingData)
+        private protected virtual PostSearchResult GetPostSearchResult(TPost parsingData)
             => throw new FeatureUnavailable();
 
         private protected virtual Search.Related.SearchResult GetRelatedSearchResult(TRelated parsingData)
             => throw new FeatureUnavailable();
 
-        private protected virtual Search.Tag.SearchResult GetTagSearchResult(TTag parsingData)
+        private protected virtual Search.Tag.TagSearchResult GetTagSearchResult(TTag parsingData)
             => throw new FeatureUnavailable();
 
         private protected virtual Search.Wiki.SearchResult GetWikiSearchResult(TWiki parsingData)

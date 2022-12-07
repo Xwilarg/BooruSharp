@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BooruSharp.Search.Tag;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -7,7 +8,7 @@ namespace BooruSharp.Search.Post
     /// <summary>
     /// Represents a post API search result.
     /// </summary>
-    public readonly struct SearchResult
+    public record PostSearchResult
     {
         /// <summary>
         /// Initializes a <see cref="SearchResult"/> struct.
@@ -29,9 +30,9 @@ namespace BooruSharp.Search.Post
         /// <param name="source">The original source of the file.</param>
         /// <param name="score">The score of the post.</param>
         /// <param name="md5">The MD5 hash of the file.</param>
-        public SearchResult(
-            Uri fileUrl, Uri previewUrl, Uri postUrl, Uri sampleUri, Rating rating, IList<string> tags,
-            IList<Tag.SearchResult> detailedTags, int id, int? size, int height, int width, int? previewHeight, int? previewWidth,
+        public PostSearchResult(
+            Uri fileUrl, Uri previewUrl, Uri postUrl, Uri sampleUri, Rating rating, IEnumerable<string> tags,
+            IEnumerable<TagSearchResult> detailedTags, int id, int? size, int height, int width, int? previewHeight, int? previewWidth,
             DateTime? creation, string source, int? score, string md5)
         {
             FileUrl = fileUrl;
@@ -39,8 +40,8 @@ namespace BooruSharp.Search.Post
             PostUrl = postUrl;
             SampleUri = sampleUri;
             Rating = rating;
-            Tags = new ReadOnlyCollection<string>(tags);
-            DetailedTags = detailedTags != null ? new ReadOnlyCollection<Tag.SearchResult>(detailedTags) : null;
+            Tags = tags;
+            DetailedTags = detailedTags;
             ID = id;
             Size = size;
             Height = height;
@@ -81,12 +82,12 @@ namespace BooruSharp.Search.Post
         /// <summary>
         /// Gets a read-only collection containing all the tags associated with the file.
         /// </summary>
-        public ReadOnlyCollection<string> Tags { get; }
+        public IEnumerable<string> Tags { get; }
         
         /// <summary>
         /// Gets a read-only collection containing all the tags associated with the file with additional detail.
         /// </summary>
-        public ReadOnlyCollection<Tag.SearchResult> DetailedTags { get; }
+        public IEnumerable<Tag.TagSearchResult> DetailedTags { get; }
 
         /// <summary>
         /// Gets the ID of the post.

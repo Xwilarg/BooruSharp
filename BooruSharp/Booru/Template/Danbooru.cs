@@ -1,15 +1,18 @@
 ﻿using BooruSharp.Booru.Parsing;
+using BooruSharp.Search.Post;
+using BooruSharp.Search.Tag;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 
 namespace BooruSharp.Booru.Template
 {
     /// <summary>
     /// Template booru based on Danbooru. This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract class Danbooru : ABooru<EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing>
+    public abstract class Danbooru : ABooru<EmptyParsing, Danbooru.SearchResult, EmptyParsing, EmptyParsing, EmptyParsing>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Danbooru"/> template class.
@@ -35,24 +38,56 @@ namespace BooruSharp.Booru.Template
             }
         }
 
-        /*
-        private protected override JToken ParseFirstPostSearchResult(object json)
+        private protected override PostSearchResult GetPostSearchResult(SearchResult parsingData)
         {
-            JToken token = json is JArray array
-                ? array.FirstOrDefault()
-                : json as JToken;
-
-            return token ?? throw new Search.InvalidTags();
+            return new PostSearchResult(
+                fileUrl: parsingData.file_url != null ? new Uri(parsingData.file_url) : null,
+                previewUrl: parsingData.preview_file_url != null ? new Uri(parsingData.preview_file_url) : null,
+                postUrl: parsingData.id != null ? new Uri(BaseUrl + "posts/" + parsingData.id) : null,
+                sampleUri: parsingData.large_file_url != null ? new Uri(parsingData.large_file_url) : null,
+                rating: ABooru.GetRating(parsingData.rating[0]),
+                tags: parsingData.tag_string.Split(),
+                detailedTags: parsingData.tag_string_general.Split().Select(x => new TagSearchResult(-1, x, TagType.Trivia, -1))
+                    .Concat(parsingData.tag_string_character.Split().Select(x => new TagSearchResult(-1, x, TagType.Character, -1)))
+                    .Concat(parsingData.tag_string_copyright.Split().Select(x => new TagSearchResult(-1, x, TagType.Copyright, -1)))
+                    .Concat(parsingData.tag_string_artist.Split().Select(x => new TagSearchResult(-1, x, TagType.Artist, -1)))
+                    .Concat(parsingData.tag_string_meta.Split().Select(x => new TagSearchResult(-1, x, TagType.Metadata, -1))),
+                id: parsingData.id ?? 0,
+                size: parsingData.file_size,
+                height: parsingData.image_height,
+                width: parsingData.image_width,
+                previewHeight: null,
+                previewWidth: null,
+                creation: parsingData.create_at,
+                source: parsingData.source,
+                score: parsingData.score,
+                md5: parsingData.md5
+            );
         }
 
-        private protected override Search.Post.SearchResult GetPostSearchResult(JToken elem)
+        public class SearchResult
         {
-            var url = elem["file_url"];
-            var previewUrl = elem["preview_file_url"];
-            var sampleUrl = elem["large_file_url"];
-            var id = elem["id"]?.Value<int>();
-            var md5 = elem["md5"];
+            public string file_url;
+            public string preview_file_url;
+            public string large_file_url;
+            public int? id;
+            public string md5;
+            public string rating;
+            public string tag_string;
+            public string tag_string_general;
+            public string tag_string_character;
+            public string tag_string_copyright;
+            public string tag_string_artist;
+            public string tag_string_meta;
+            public int file_size;
+            public int image_height;
+            public int image_width;
+            public DateTime create_at;
+            public string source;
+            public int score;
+        }
 
+        /*
             var detailedtags = new List<Search.Tag.SearchResult>();
             GetTags("tag_string_general", Search.Tag.TagType.Trivia);
             GetTags("tag_string_character", Search.Tag.TagType.Character);

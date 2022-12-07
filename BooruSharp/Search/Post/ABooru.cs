@@ -7,6 +7,20 @@ namespace BooruSharp.Booru
 {
     public abstract partial class ABooru
     {
+        /// <summary>
+        /// Converts a letter to its matching <see cref="Search.Post.Rating"/>.
+        /// </summary>
+        public static Search.Post.Rating GetRating(char c)
+        {
+            return char.ToLower(c) switch
+            {
+                'g' => Search.Post.Rating.General,
+                's' => Search.Post.Rating.Safe,
+                'q' => Search.Post.Rating.Questionable,
+                'e' => Search.Post.Rating.Explicit,
+                _ => throw new ArgumentException($"Invalid rating '{c}'.", nameof(c)),
+            };
+        }
         /*
         private const int _limitedTagsSearchCount = 2;
         private const int _increasedPostLimitCount = 20001;
@@ -223,22 +237,6 @@ namespace BooruSharp.Booru
         private Task<Search.Post.SearchResult[]> GetSearchResultsFromUrlAsync(Uri url)
         {
             return GetSearchResultsFromUrlAsync(url.AbsoluteUri);
-        }
-
-        /// <summary>
-        /// Converts a letter to its matching <see cref="Search.Post.Rating"/>.
-        /// </summary>
-        protected Search.Post.Rating GetRating(char c)
-        {
-            c = char.ToLower(c);
-            switch (c)
-            {
-                case 'g': return Search.Post.Rating.General;
-                case 's': return Search.Post.Rating.Safe;
-                case 'q': return Search.Post.Rating.Questionable;
-                case 'e': return Search.Post.Rating.Explicit;
-                default: throw new ArgumentException($"Invalid rating '{c}'.", nameof(c));
-            }
         }
         */
     }
