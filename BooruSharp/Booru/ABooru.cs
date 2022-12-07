@@ -12,26 +12,26 @@ namespace BooruSharp.Booru
     /// <summary>
     /// Defines basic capabilities of a booru. This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract partial class ABooru<TComment, TPost, TRelated, TTag, TWiki> : IBooru
+    public abstract partial class ABooru
     {
         public virtual bool CanSearchWithNoTag => true;
 
         /// <inheritdoc/>
         public abstract bool IsSafe { get; }
 
-        private protected virtual Search.Comment.SearchResult GetCommentSearchResult(TComment parsingData)
+        private protected virtual Search.Comment.SearchResult GetCommentSearchResultAsync(Uri uri)
             => throw new FeatureUnavailable();
 
-        private protected virtual PostSearchResult GetPostSearchResult(TPost parsingData)
+        private protected virtual Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
             => throw new FeatureUnavailable();
 
-        private protected virtual Search.Related.SearchResult GetRelatedSearchResult(TRelated parsingData)
+        private protected virtual Search.Related.SearchResult GetRelatedSearchResultAsync(Uri uri)
             => throw new FeatureUnavailable();
 
-        private protected virtual Search.Tag.TagSearchResult GetTagSearchResult(TTag parsingData)
+        private protected virtual Search.Tag.TagSearchResult GetTagSearchResultAsync(Uri uri)
             => throw new FeatureUnavailable();
 
-        private protected virtual Search.Wiki.SearchResult GetWikiSearchResult(TWiki parsingData)
+        private protected virtual Search.Wiki.SearchResult GetWikiSearchResultAsync(Uri uri)
             => throw new FeatureUnavailable();
 
         /// <inheritdoc/>
@@ -60,12 +60,20 @@ namespace BooruSharp.Booru
         /// <param name="tags">List of tags sent by the user</param>
         protected abstract Task<Uri> CreateRandomPostUriAsync(string[] tags);
 
-        protected virtual async Task<PostSearchResult> GetPostFromUriAsync(Uri url)
+        protected virtual async Task<T[]> GetDataArray<T>(Uri url)
         {
-            return GetPostSearchResult(JsonSerializer.Deserialize<TPost[]>(await GetJsonAsync(url), new JsonSerializerOptions
+            return JsonSerializer.Deserialize<T[]>(await GetJsonAsync(url), new JsonSerializerOptions
             {
                 PropertyNamingPolicy = new SnakeCaseNamingPolicy()
-            }).FirstOrDefault());
+            });
+        }
+
+        protected virtual async Task<T> GetDataAsync<T>(Uri url)
+        {
+            return JsonSerializer.Deserialize<T>(await GetJsonAsync(url), new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = new SnakeCaseNamingPolicy()
+            });
         }
 
         /// <summary>

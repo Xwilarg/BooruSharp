@@ -1,5 +1,4 @@
-﻿using BooruSharp.Booru.Parsing;
-using BooruSharp.Search.Post;
+﻿using BooruSharp.Search.Post;
 using BooruSharp.Search.Tag;
 using System;
 using System.Linq;
@@ -12,7 +11,7 @@ namespace BooruSharp.Booru.Template
     /// <summary>
     /// Template booru based on E621. This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract class E621 : ABooru<EmptyParsing, E621.SearchResult, EmptyParsing, EmptyParsing, EmptyParsing>
+    public abstract class E621 : ABooru
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="E621"/> template class.
@@ -57,8 +56,10 @@ namespace BooruSharp.Booru.Template
             }
         }
 
-        private protected override PostSearchResult GetPostSearchResult(SearchResult parsingData)
+        private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
         {
+            var parsingData = (await GetDataAsync<SearchResult>(uri));
+
             return new PostSearchResult(
                 fileUrl: parsingData.Url.Url != null ? new Uri(parsingData.Url.Url) : null,
                 previewUrl: parsingData.Preview.Url != null ? new Uri(parsingData.Preview.Url) : null,

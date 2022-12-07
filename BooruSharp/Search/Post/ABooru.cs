@@ -1,12 +1,11 @@
 ﻿using BooruSharp.Search.Post;
 using System;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace BooruSharp.Booru
 {
-    public abstract partial class ABooru<TComment, TPost, TRelated, TTag, TWiki> : IBooru
+    public abstract partial class ABooru
     {
         /// <summary>
         /// Converts a letter to its matching <see cref="Search.Post.Rating"/>.
@@ -31,7 +30,7 @@ namespace BooruSharp.Booru
                 : Array.Empty<string>();
 
             var url = await CreateRandomPostUriAsync(tags);
-            return await GetPostFromUriAsync(url);
+            return await GetPostSearchResultAsync(url);
         }
         /*
         private const int _limitedTagsSearchCount = 2;

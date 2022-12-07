@@ -1,5 +1,4 @@
-﻿using BooruSharp.Booru.Parsing;
-using BooruSharp.Search.Post;
+﻿using BooruSharp.Search.Post;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -12,7 +11,7 @@ namespace BooruSharp.Booru.Template
     /// <summary>
     /// Template booru based on Gelbooru. This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract class Gelbooru : ABooru<EmptyParsing, Gelbooru.SearchResult, EmptyParsing, EmptyParsing, EmptyParsing>
+    public abstract class Gelbooru : ABooru
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Gelbooru"/> template class.
@@ -44,8 +43,10 @@ namespace BooruSharp.Booru.Template
             }
         }
 
-        private protected override PostSearchResult GetPostSearchResult(SearchResult parsingData)
+        private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
         {
+            var parsingData = (await GetDataAsync<SearchResult>(uri));
+
             return new PostSearchResult(
                 fileUrl: new(parsingData.FileUrl),
                 previewUrl: new(parsingData.PreviewUrl),

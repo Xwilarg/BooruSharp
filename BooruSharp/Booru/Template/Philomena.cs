@@ -1,9 +1,7 @@
-﻿using BooruSharp.Booru.Parsing;
-using BooruSharp.Search.Post;
+﻿using BooruSharp.Search.Post;
 using System;
 using System.Linq;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -12,7 +10,7 @@ namespace BooruSharp.Booru.Template
     /// <summary>
     /// Template booru based on Philomena https://github.com/ZizzyDizzyMC/philomena . This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract class Philomena : ABooru<EmptyParsing, Philomena.SearchResult, EmptyParsing, EmptyParsing, EmptyParsing>
+    public abstract class Philomena : ABooru
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Philomena"/> template class.
@@ -62,16 +60,10 @@ namespace BooruSharp.Booru.Template
             message.RequestUri = new Uri(uriBuilder.ToString());
         }
 
-        protected override async Task<PostSearchResult> GetPostFromUriAsync(Uri url)
+        private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
         {
-            return GetPostSearchResult(JsonSerializer.Deserialize<PostContainer>(await GetJsonAsync(url), new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = new SnakeCaseNamingPolicy()
-            }).Images.FirstOrDefault());
-        }
+            var parsingData = (await GetDataAsync<PostContainer>(uri)).Images[0];
 
-        private protected override PostSearchResult GetPostSearchResult(SearchResult parsingData)
-        {
             Rating rating;
             if (parsingData.Tags.Contains("explicit")) rating = Rating.Explicit;
             else if (parsingData.Tags.Contains("questionable")) rating = Rating.Questionable;

@@ -1,5 +1,4 @@
-﻿using BooruSharp.Booru.Parsing;
-using BooruSharp.Search.Post;
+﻿using BooruSharp.Search.Post;
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -11,7 +10,7 @@ namespace BooruSharp.Booru.Template
     /// <summary>
     /// Template booru based on Moebooru. This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract class Moebooru : ABooru<EmptyParsing, Moebooru.SearchResult, EmptyParsing, EmptyParsing, EmptyParsing>
+    public abstract class Moebooru : ABooru
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Moebooru"/> template class.
@@ -43,8 +42,10 @@ namespace BooruSharp.Booru.Template
             }
         }
 
-        private protected override PostSearchResult GetPostSearchResult(SearchResult parsingData)
+        private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
         {
+            var parsingData = (await GetDataAsync<SearchResult>(uri));
+
             return new PostSearchResult(
                 fileUrl: new(parsingData.FileUrl),
                 previewUrl: new(parsingData.PreviewUrl),
