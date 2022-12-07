@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using BooruSharp.Booru.Parsing;
 using System;
 using System.Collections;
 using System.Linq;
@@ -12,7 +11,7 @@ namespace BooruSharp.Booru.Template
     /// <summary>
     /// Template booru based on Philomena https://github.com/ZizzyDizzyMC/philomena . This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract class Philomena : ABooru
+    public abstract class Philomena : ABooru<EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Philomena"/> template class.
@@ -48,6 +47,7 @@ namespace BooruSharp.Booru.Template
             message.RequestUri = new Uri(uriBuilder.ToString());
         }
 
+        /*
         private protected override JToken ParseFirstPostSearchResult(object json)
         {
             var token = (JToken)json;
@@ -137,5 +137,6 @@ namespace BooruSharp.Booru.Template
                 default: return (Search.Tag.TagType)6;
             }
         }
+        */
     }
 }

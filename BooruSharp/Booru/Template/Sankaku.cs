@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using BooruSharp.Booru.Parsing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace BooruSharp.Booru.Template
     /// <summary>
     /// Template booru based on Sankaku. This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract class Sankaku : ABooru
+    public abstract class Sankaku : ABooru<EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Sankaku"/> template class.
@@ -35,6 +35,7 @@ namespace BooruSharp.Booru.Template
             }
         }
 
+        /*
         private protected override JToken ParseFirstPostSearchResult(object json)
         {
             JArray array = json as JArray;
@@ -150,5 +151,6 @@ namespace BooruSharp.Booru.Template
         }
 
         // GetRelatedSearchResult not available
+        */
     }
 }

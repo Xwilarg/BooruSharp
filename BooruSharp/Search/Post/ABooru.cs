@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
@@ -9,6 +7,7 @@ namespace BooruSharp.Booru
 {
     public abstract partial class ABooru
     {
+        /*
         private const int _limitedTagsSearchCount = 2;
         private const int _increasedPostLimitCount = 20001;
 
@@ -241,5 +240,6 @@ namespace BooruSharp.Booru
                 default: throw new ArgumentException($"Invalid rating '{c}'.", nameof(c));
             }
         }
+        */
     }
 }

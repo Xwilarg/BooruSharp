@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,6 +6,7 @@ namespace BooruSharp.Booru
 {
     public abstract partial class ABooru
     {
+        /*
         /// <summary>
         /// Gets the tags related to the specified <paramref name="tag"/>.
         /// </summary>
@@ -35,5 +34,6 @@ namespace BooruSharp.Booru
 
             return jsonArray.Select(GetRelatedSearchResult).ToArray();
         }
+        */
     }
 }

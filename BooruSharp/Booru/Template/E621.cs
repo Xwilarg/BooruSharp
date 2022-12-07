@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using BooruSharp.Booru.Parsing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace BooruSharp.Booru.Template
     /// <summary>
     /// Template booru based on E621. This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract class E621 : ABooru
+    public abstract class E621 : ABooru<EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="E621"/> template class.
@@ -37,6 +37,8 @@ namespace BooruSharp.Booru.Template
             }
         }
 
+
+        /*
         private protected override JToken ParseFirstPostSearchResult(object json)
         {
             JObject jObject = (JObject)json;
@@ -136,5 +138,6 @@ namespace BooruSharp.Booru.Template
         }
 
         // GetRelatedSearchResult not available // TODO: Available with credentials?
+        */
     }
 }

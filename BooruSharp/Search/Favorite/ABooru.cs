@@ -7,6 +7,7 @@ namespace BooruSharp.Booru
 {
     public abstract partial class ABooru
     {
+        /*
         private const int _invalidAuthErrorCode = 2;
 
         /// <summary>
@@ -77,5 +78,6 @@ namespace BooruSharp.Booru
                 return await reader.ReadToEndAsync();
             }
         }
+        */
     }
 }

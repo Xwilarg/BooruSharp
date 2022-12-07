@@ -1,12 +1,11 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace BooruSharp.Booru
 {
     public abstract partial class ABooru
     {
+        /*
         /// <summary>
         /// Gets the wiki page of a tag.
         /// </summary>
@@ -33,5 +32,6 @@ namespace BooruSharp.Booru
 
             throw new Search.InvalidTags();
         }
+        */
     }
 }

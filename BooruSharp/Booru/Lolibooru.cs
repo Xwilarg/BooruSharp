@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-
-namespace BooruSharp.Booru
+﻿namespace BooruSharp.Booru
 {
     /// <summary>
     /// Lolibooru.
@@ -18,6 +16,8 @@ namespace BooruSharp.Booru
         /// <inheritdoc/>
         public override bool IsSafe => false;
 
+        /*
+
         private protected override Search.Tag.SearchResult GetTagSearchResult(object json)
         {
             var elem = (JObject)json;
@@ -27,6 +27,6 @@ namespace BooruSharp.Booru
                 (Search.Tag.TagType)elem["tag_type"].Value<int>(),
                 elem["post_count"].Value<int>()
                 );
-        }
+        }*/
     }
 }

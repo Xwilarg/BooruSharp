@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using BooruSharp.Booru.Parsing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace BooruSharp.Booru.Template
     /// <summary>
     /// Template booru based on Danbooru. This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract class Danbooru : ABooru
+    public abstract class Danbooru : ABooru<EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Danbooru"/> template class.
@@ -35,6 +35,7 @@ namespace BooruSharp.Booru.Template
             }
         }
 
+        /*
         private protected override JToken ParseFirstPostSearchResult(object json)
         {
             JToken token = json is JArray array
@@ -149,6 +150,6 @@ namespace BooruSharp.Booru.Template
                 elem[0].Value<string>(),
                 elem[1].Value<int>()
                 );
-        }
+        }*/
     }
 }

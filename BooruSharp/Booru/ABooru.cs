@@ -14,7 +14,7 @@ namespace BooruSharp.Booru
     /// <summary>
     /// Defines basic capabilities of a booru. This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract partial class ABooru
+    public abstract partial class ABooru<TComment, TPost, TRelated, TTag, TWiki>
     {
         /// <summary>
         /// Gets whether this booru is considered safe (that is, all posts on
@@ -22,24 +22,22 @@ namespace BooruSharp.Booru
         /// </summary>
         public abstract bool IsSafe { get; }
 
-        private protected virtual Search.Comment.SearchResult GetCommentSearchResult(T parsingData)
+        private protected virtual Search.Comment.SearchResult GetCommentSearchResult(TComment parsingData)
             => throw new FeatureUnavailable();
 
-        private protected virtual Search.Post.SearchResult GetPostSearchResult(T parsingData)
+        private protected virtual Search.Post.SearchResult GetPostSearchResult(TPost parsingData)
             => throw new FeatureUnavailable();
 
-        private protected virtual Search.Post.SearchResult[] GetPostsSearchResult(T parsingData)
+        private protected virtual Search.Related.SearchResult GetRelatedSearchResult(TRelated parsingData)
             => throw new FeatureUnavailable();
 
-        private protected virtual Search.Related.SearchResult GetRelatedSearchResult(T parsingData)
+        private protected virtual Search.Tag.SearchResult GetTagSearchResult(TTag parsingData)
             => throw new FeatureUnavailable();
 
-        private protected virtual Search.Tag.SearchResult GetTagSearchResult(T parsingData)
+        private protected virtual Search.Wiki.SearchResult GetWikiSearchResult(TWiki parsingData)
             => throw new FeatureUnavailable();
 
-        private protected virtual Search.Wiki.SearchResult GetWikiSearchResult(T parsingData)
-            => throw new FeatureUnavailable();
-
+        /*
         private protected virtual async Task<IEnumerable> GetTagEnumerableSearchResultAsync(Uri url)
         {
             if (TagsUseXml)
@@ -51,7 +49,7 @@ namespace BooruSharp.Booru
             {
                 return JsonConvert.DeserializeObject<JArray>(await GetJsonAsync(url));
             }
-        }
+        }*/
 
         /// <summary>
         /// Gets whether it is possible to search for related tags on this booru.

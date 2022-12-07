@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using BooruSharp.Booru.Parsing;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace BooruSharp.Booru.Template
     /// <summary>
     /// Template booru based on Gelbooru 0.2. This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract class Gelbooru02 : ABooru
+    public abstract class Gelbooru02 : ABooru<EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Gelbooru02"/> template class.
@@ -26,7 +26,7 @@ namespace BooruSharp.Booru.Template
             : base(domain, UrlFormat.IndexPhp, options | BooruOptions.NoRelated | BooruOptions.NoWiki | BooruOptions.NoPostByMD5
                   | BooruOptions.CommentApiXml | BooruOptions.TagApiXml | BooruOptions.NoMultipleRandom)
         {
-            _url = domain;
+            //_url = domain;
         }
 
         /// <inheritdoc/>
@@ -37,6 +37,8 @@ namespace BooruSharp.Booru.Template
                 message.Headers.Add("Cookie", "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash);
             }
         }
+
+        /*
 
         private protected override JToken ParseFirstPostSearchResult(object json)
         {
@@ -111,5 +113,6 @@ namespace BooruSharp.Booru.Template
         // GetRelatedSearchResult not available
 
         private readonly string _url;
+        */
     }
 }

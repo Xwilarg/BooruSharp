@@ -1,7 +1,6 @@
-﻿using BooruSharp.Search;
+﻿using BooruSharp.Booru.Parsing;
+using BooruSharp.Search;
 using BooruSharp.Search.Tag;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Globalization;
@@ -16,7 +15,7 @@ namespace BooruSharp.Booru.Template
     /// <summary>
     /// Template booru based on Gelbooru. This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract class Gelbooru : ABooru
+    public abstract class Gelbooru : ABooru<EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing, EmptyParsing>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Gelbooru"/> template class.
@@ -42,6 +41,7 @@ namespace BooruSharp.Booru.Template
             }
         }
 
+        /*
         /// <inheritdoc/>
         public async override Task<Search.Post.SearchResult> GetPostByMd5Async(string md5)
         {
@@ -146,5 +146,6 @@ namespace BooruSharp.Booru.Template
             }
             throw new InvalidTags();
         }
+        */
     }
 }
