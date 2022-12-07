@@ -93,40 +93,40 @@ namespace BooruSharp.Booru.Template
 
         public class SearchResult
         {
-            public ImageData Url;
-            public ImageData Preview;
-            public ImageData Sample;
-            public Tags Tags;
-            public int Id;
-            public string Rating;
-            public DateTime CreatedAt;
-            public string[] Sources;
-            public Score Score;
+            public ImageData Url { init; get; }
+            public ImageData Preview { init; get; }
+            public ImageData Sample { init; get; }
+            public Tags Tags { init; get; }
+            public int Id { init; get; }
+            public string Rating { init; get; }
+            public DateTime CreatedAt { init; get; }
+            public string[] Sources { init; get; }
+            public Score Score { init; get; }
         }
 
         public class ImageData
         {
-            public string Url { get; set; }
-            public int Width { set; get; }
-            public int Height { set; get; }
-            public int Size { set; get; }
-            public string Md5 { set; get; }
+            public string Url { init; get; }
+            public int Width { init; get; }
+            public int Height { init; get; }
+            public int Size { init; get; }
+            public string Md5 { init; get; }
         }
 
         public class Tags
         {
-            public string[] General;
-            public string[] Species;
-            public string[] Character;
-            public string[] Artist;
-            public string[] Invalid;
-            public string[] Lore;
-            public string[] Meta;
+            public string[] General { init; get; }
+            public string[] Species { init; get; }
+            public string[] Character { init; get; }
+            public string[] Artist { init; get; }
+            public string[] Invalid { init; get; }
+            public string[] Lore { init; get; }
+            public string[] Meta { init; get; }
         }
 
         public class Score
         {
-            public int Total;
+            public int Total { init; get; }
         }
 
         /*

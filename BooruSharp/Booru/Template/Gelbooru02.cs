@@ -84,15 +84,15 @@ namespace BooruSharp.Booru.Template
 
         public class SearchResult
         {
-            public string Directory;
-            public string Image;
-            public int Id;
-            public bool Sample;
-            public string Rating;
-            public string Tags;
-            public int Height;
-            public int Width;
-            public int Score;
+            public string Directory { init; get; }
+            public string Image { init; get; }
+            public int Id { init; get; }
+            public bool Sample { init; get; }
+            public string Rating { init; get; }
+            public string Tags { init; get; }
+            public int Height { init; get; }
+            public int Width { init; get; }
+            public int Score { init; get; }
         }
 
         protected async Task<XmlDocument> GetXmlAsync(string url)

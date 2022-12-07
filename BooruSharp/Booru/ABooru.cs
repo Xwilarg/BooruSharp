@@ -77,6 +77,11 @@ namespace BooruSharp.Booru
 
         // TODO: Handle limitrate
 
+        private protected Task<string> GetJsonAsync(Uri url)
+        {
+            return GetJsonAsync(url.AbsoluteUri);
+        }
+
         private protected async Task<string> GetJsonAsync(string url)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -94,11 +99,6 @@ namespace BooruSharp.Booru
             msg.EnsureSuccessStatusCode();
 
             return await msg.Content.ReadAsStringAsync();
-        }
-
-        private protected Task<string> GetJsonAsync(Uri url)
-        {
-            return GetJsonAsync(url.AbsoluteUri);
         }
 
         protected Uri CreateUrl(Uri url, params string[] args)

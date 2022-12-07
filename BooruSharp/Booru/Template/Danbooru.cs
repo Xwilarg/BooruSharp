@@ -79,24 +79,24 @@ namespace BooruSharp.Booru.Template
 
         public class SearchResult
         {
-            public string FileUrl { set; get; }
-            public string PreviewFileUrl { set; get; }
-            public string LargeFileUrl { set; get; }
-            public int? Id { set; get; }
-            public string Md5 { set; get; }
-            public string Rating { set; get; }
-            public string TagString { set; get; }
-            public string TagStringGeneral { set; get; }
-            public string TagStringCharacter { set; get; }
-            public string TagStringCopyright { set; get; }
-            public string TagStringArtist { set; get; }
-            public string TagStringMeta { set; get; }
-            public int FileSize { set; get; }
-            public int ImageHeight { set; get; }
-            public int ImageWidth { set; get; }
-            public DateTime CreatedAt { set; get; }
-            public string Source { set; get; }
-            public int Score { set; get; }
+            public string FileUrl { init; get; }
+            public string PreviewFileUrl { init; get; }
+            public string LargeFileUrl { init; get; }
+            public int? Id { init; get; }
+            public string Md5 { init; get; }
+            public string Rating { init; get; }
+            public string TagString { init; get; }
+            public string TagStringGeneral { init; get; }
+            public string TagStringCharacter { init; get; }
+            public string TagStringCopyright { init; get; }
+            public string TagStringArtist { init; get; }
+            public string TagStringMeta { init; get; }
+            public int FileSize { init; get; }
+            public int ImageHeight { init; get; }
+            public int ImageWidth { init; get; }
+            public DateTime CreatedAt { init; get; }
+            public string Source { init; get; }
+            public int Score { init; get; }
         }
 
         /*

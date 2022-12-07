@@ -2,7 +2,6 @@
 using BooruSharp.Search.Post;
 using BooruSharp.Search.Tag;
 using System;
-using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -78,36 +77,35 @@ namespace BooruSharp.Booru.Template
 
         public class SearchResult
         {
-            public string FileUrl;
-            public string PreviewUrl;
-            public string SampleUrl;
-            public int Id;
-            public string Rating;
-            public Tag[] Tags;
-            public int FileSize;
-            public int Height;
-            public int Width;
-            public int PreviewHeight;
-            public int PreviewWidth;
-            public CreationInfo CreatedAt;
-            public string Source;
-            public int TotalScore;
-            public string Md5;
+            public string FileUrl { init; get; }
+            public string PreviewUrl { init; get; }
+            public string SampleUrl { init; get; }
+            public int Id { init; get; }
+            public string Rating { init; get; }
+            public Tag[] Tags { init; get; }
+            public int FileSize { init; get; }
+            public int Height { init; get; }
+            public int Width { init; get; }
+            public int PreviewHeight { init; get; }
+            public int PreviewWidth { init; get; }
+            public CreationInfo CreatedAt { init; get; }
+            public string Source { init; get; }
+            public int TotalScore { init; get; }
+            public string Md5 { init; get; }
         }
 
         public class Tag
         {
-            public int Id;
-            public string NameEn;
-            public int Type;
-            public int PostCount;
+            public int Id { init; get; }
+            public string NameEn { init; get; }
+            public int Type { init; get; }
+            public int PostCount { init; get; }
         }
 
         public class CreationInfo
         {
-            public int S;
+            public int S { init; get; }
         }
-
 
         private static TagType GetTagType(int type)
         {

@@ -89,23 +89,23 @@ namespace BooruSharp.Booru.Template
 
         public class SearchResult
         {
-            public Representations Representations { set; get; }
-            public int Id { set; get; }
-            public string Rating { set; get; }
-            public string[] Tags { set; get; }
-            public int Size { set; get; }
-            public int Width { set; get; }
-            public int Height { set; get; }
-            public DateTime CreatedAt { set; get; }
-            public string SourceUrl { set; get; }
-            public int Score { set; get; }
-            public string Sha512Hash { set; get; }
+            public Representations Representations { init; get; }
+            public int Id { init; get; }
+            public string Rating { init; get; }
+            public string[] Tags { init; get; }
+            public int Size { init; get; }
+            public int Width { init; get; }
+            public int Height { init; get; }
+            public DateTime CreatedAt { init; get; }
+            public string SourceUrl { init; get; }
+            public int Score { init; get; }
+            public string Sha512Hash { init; get; }
         }
 
         public class Representations
         {
-            public string Full { set; get; }
-            public string Thumb { set; get; }
+            public string Full { init; get; }
+            public string Thumb { init; get; }
         }
 
         /*

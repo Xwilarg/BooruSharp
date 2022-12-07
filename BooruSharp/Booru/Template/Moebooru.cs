@@ -69,21 +69,21 @@ namespace BooruSharp.Booru.Template
 
         public class SearchResult
         {
-            public string FileUrl;
-            public string PreviewUrl;
-            public string SampleUrl;
-            public int Id;
-            public string Rating;
-            public string Tags;
-            public int FileSize;
-            public int Height;
-            public int Width;
-            public int PreviewHeight;
-            public int PreviewWidth;
-            public int CreatedAt;
-            public string Source;
-            public int Score;
-            public string Md5;
+            public string FileUrl { init; get; }
+            public string PreviewUrl { init; get; }
+            public string SampleUrl { init; get; }
+            public int Id { init; get; }
+            public string Rating { init; get; }
+            public string Tags { init; get; }
+            public int FileSize { init; get; }
+            public int Height { init; get; }
+            public int Width { init; get; }
+            public int PreviewHeight { init; get; }
+            public int PreviewWidth { init; get; }
+            public int CreatedAt { init; get; }
+            public string Source { init; get; }
+            public int Score { init; get; }
+            public string Md5 { init; get; }
         }
 
         /*
