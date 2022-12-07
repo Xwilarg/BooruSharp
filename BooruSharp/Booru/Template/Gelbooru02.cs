@@ -92,7 +92,7 @@ namespace BooruSharp.Booru.Template
             public string Tags { init; get; }
             public int Height { init; get; }
             public int Width { init; get; }
-            public int Score { init; get; }
+            public int? Score { init; get; }
         }
 
         protected async Task<XmlDocument> GetXmlAsync(string url)
