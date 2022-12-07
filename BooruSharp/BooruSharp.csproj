@@ -14,6 +14,7 @@
     <PackageReleaseNotes></PackageReleaseNotes>
     <PackageTags>Booru Gelbooru Image C-Sharp Atfbooru DanbooruDonmai Danbooru E621 E926 FurryBooru Konachan Lolibooru Realbooru Rule34 SankakuComplex Safebooru Sakugabooru Xbooru Yandere</PackageTags>
     <DocumentationFile>.\xmldoc\$(TargetFramework)\BooruSharp.xml</DocumentationFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
