@@ -8,7 +8,6 @@
     <Company />
     <Description>BooruSharp is a C# library to browse Booru websites (Gelbooru, Konachan, etc...) easily</Description>
     <Copyright>GNU General Public License v3.0</Copyright>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/Xwilarg/BooruSharp</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Xwilarg/BooruSharp</RepositoryUrl>
     <RepositoryType>Library</RepositoryType>

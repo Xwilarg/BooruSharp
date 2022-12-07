@@ -1,5 +1,4 @@
 ﻿using BooruSharp.Booru;
-using BooruSharp.Others;
 using System.Collections.Generic;
 
 namespace BooruSharp.UnitTests
@@ -26,7 +25,7 @@ namespace BooruSharp.UnitTests
             new BooruTestData() { BooruType = typeof(Twibooru) },
             new BooruTestData() { BooruType = typeof(Xbooru) },
             new BooruTestData() { BooruType = typeof(Yandere) },
-            new BooruTestData() { BooruType = typeof(Pixiv) }
+            //new BooruTestData() { BooruType = typeof(Pixiv) }
         };
     }
 }

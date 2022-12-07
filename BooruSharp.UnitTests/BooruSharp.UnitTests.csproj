@@ -11,7 +11,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BooruSharp.Others\BooruSharp.Others.csproj" />
     <ProjectReference Include="..\BooruSharp\BooruSharp.csproj" />
   </ItemGroup>
 
