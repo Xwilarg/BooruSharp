@@ -10,7 +10,7 @@ namespace BooruSharp.Booru.Template
     /// <summary>
     /// Template booru based on Philomena https://github.com/ZizzyDizzyMC/philomena . This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract class Philomena : ABooru
+    public abstract class Philomena : BooruOnRails
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Philomena"/> template class.
@@ -32,88 +32,9 @@ namespace BooruSharp.Booru.Template
             return new($"{BaseUrl}api/v1/json/search/{query}s");
         }
 
-        protected override Task<Uri> CreateRandomPostUriAsync(string[] tags)
-        {
-            if (!tags.Any())
-            {
-                return Task.FromResult(CreateUrl(_imageUrl, "per_page=1", "q=id.gte:0", "sf=random"));
-            }
-            return Task.FromResult(CreateUrl(_imageUrl, "per_page=1", "q=" + string.Join(",", tags.Select(Uri.EscapeDataString)).ToLowerInvariant(), "sf=random"));
-        }
-
-        /// <summary>
-        /// ID used to set filter and have access to as many posts as possible
-        /// </summary>
-        protected abstract int FilterID { get; }
-
-        /// <inheritdoc/>
-        protected override void PreRequest(HttpRequestMessage message)
-        {
-            var uriBuilder = new UriBuilder(message.RequestUri.AbsoluteUri);
-            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
-            query["filter_id"] = $"{FilterID}";
-            if (Auth != null)
-            {
-                query["key"] = Auth.PasswordHash;
-            }
-            uriBuilder.Query = query.ToString();
-            message.RequestUri = new Uri(uriBuilder.ToString());
-        }
-
-        private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
-        {
-            var parsingData = (await GetDataAsync<PostContainer>(uri)).Images[0];
-
-            Rating rating;
-            if (parsingData.Tags.Contains("explicit")) rating = Rating.Explicit;
-            else if (parsingData.Tags.Contains("questionable")) rating = Rating.Questionable;
-            else if (parsingData.Tags.Contains("suggestive")) rating = Rating.Safe;
-            else if (parsingData.Tags.Contains("safe")) rating = Rating.General;
-            else rating = (Rating)(-1); // Some images doesn't have a rating
-            return new PostSearchResult(
-                fileUrl: new(parsingData.Representations.Full),
-                previewUrl: null,
-                postUrl: new($"{BaseUrl}images/{parsingData.Id}"),
-                sampleUri: new(parsingData.Representations.Thumb),
-                rating: rating,
-                tags: parsingData.Tags,
-                detailedTags: null,
-                id: parsingData.Id,
-                size: parsingData.Size,
-                height: parsingData.Height,
-                width: parsingData.Width,
-                previewHeight: null,
-                previewWidth: null,
-                creation: parsingData.CreatedAt,
-                sources: string.IsNullOrEmpty(parsingData.SourceUrl) ? Array.Empty<string>() : new[] { parsingData.SourceUrl },
-                score: parsingData.Score,
-                hash: parsingData.Sha512Hash
-            );
-        }
-
         public class PostContainer
         {
             public SearchResult[] Images { init; get; }
-        }
-
-        public class SearchResult
-        {
-            public Representations Representations { init; get; }
-            public int Id { init; get; }
-            public string[] Tags { init; get; }
-            public int Size { init; get; }
-            public int Width { init; get; }
-            public int Height { init; get; }
-            public DateTime CreatedAt { init; get; }
-            public string SourceUrl { init; get; }
-            public int Score { init; get; }
-            public string Sha512Hash { init; get; }
-        }
-
-        public class Representations
-        {
-            public string Full { init; get; }
-            public string Thumb { init; get; }
         }
 
         /*

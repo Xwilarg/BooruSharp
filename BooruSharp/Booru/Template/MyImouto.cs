@@ -10,7 +10,7 @@ namespace BooruSharp.Booru.Template
     /// <summary>
     /// Template booru based on MyImouto. This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract class MyImouto : ABooru
+    public abstract class MyImouto : Moebooru
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MyImouto"/> template class.
@@ -22,25 +22,6 @@ namespace BooruSharp.Booru.Template
         protected MyImouto(string domain)
             : base(domain)
         { }
-
-        protected override Uri CreateQueryString(string query, string squery = "index")
-        {
-            return new($"{BaseUrl}{query}/{squery}.json");
-        }
-
-        protected override Task<Uri> CreateRandomPostUriAsync(string[] tags)
-        {
-            return Task.FromResult(CreateUrl(_imageUrl, "limit=1", string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant() + "+order:random"));
-        }
-
-        /// <inheritdoc/>
-        protected override void PreRequest(HttpRequestMessage message)
-        {
-            if (Auth != null)
-            {
-                message.Headers.Add("Cookie", "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash);
-            }
-        }
 
         private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
         {
