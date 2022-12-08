@@ -1,4 +1,5 @@
-﻿using BooruSharp.Search.Post;
+﻿using BooruSharp.Search;
+using BooruSharp.Search.Post;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,6 +29,11 @@ namespace BooruSharp.Booru
             string[] tags = tagsArg != null
                 ? tagsArg.Where(tag => !string.IsNullOrWhiteSpace(tag)).ToArray()
                 : Array.Empty<string>();
+
+            if (!tags.Any() && !CanSearchWithNoTag)
+            {
+                throw new FeatureUnavailable("This booru doesn't support search with no tag");
+            }
 
             var url = await CreateRandomPostUriAsync(tags);
             return await GetPostSearchResultAsync(url);

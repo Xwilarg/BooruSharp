@@ -24,10 +24,8 @@ namespace BooruSharp.Booru
 
         protected override async Task<Uri> CreateRandomPostUriAsync(string[] tags)
         {
-            if (!tags.Any())
-            {
-                throw new FeatureUnavailable("Rule34 doesn't support searchs with no tag");
-            }
+            // We don't have to handle what happen when there is no tag because it'll throw before
+
             var url = CreateUrl(new(_imageUrl.AbsoluteUri.Replace("index.json", "index.xml")), "limit=1", string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant());
             XmlDocument xml = await GetXmlAsync(url.AbsoluteUri);
             int max = int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
@@ -47,7 +45,7 @@ namespace BooruSharp.Booru
 
         private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
         {
-            var parsingData = await GetDataAsync<SearchResult>(uri);
+            var parsingData = (await GetDataAsync<SearchResult[]>(uri))[0];
 
             return new PostSearchResult(
                 fileUrl: new($"{BaseUrl}images/{parsingData.Directory}/{parsingData.Image}"),

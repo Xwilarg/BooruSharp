@@ -32,6 +32,37 @@ namespace BooruSharp.Booru.Template
             return new($"{BaseUrl}api/v1/json/search/{query}s");
         }
 
+        private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
+        {
+            var parsingData = (await GetDataAsync<PostContainer>(uri)).Images[0];
+
+            Rating rating;
+            if (parsingData.Tags.Contains("explicit")) rating = Rating.Explicit;
+            else if (parsingData.Tags.Contains("questionable")) rating = Rating.Questionable;
+            else if (parsingData.Tags.Contains("suggestive")) rating = Rating.Safe;
+            else if (parsingData.Tags.Contains("safe")) rating = Rating.General;
+            else rating = (Rating)(-1); // Some images doesn't have a rating
+            return new PostSearchResult(
+                fileUrl: new(parsingData.Representations.Full),
+                previewUrl: null,
+                postUrl: new($"{BaseUrl}images/{parsingData.Id}"),
+                sampleUri: new(parsingData.Representations.Thumb),
+                rating: rating,
+                tags: parsingData.Tags,
+                detailedTags: null,
+                id: parsingData.Id,
+                size: parsingData.Size,
+                height: parsingData.Height,
+                width: parsingData.Width,
+                previewHeight: null,
+                previewWidth: null,
+                creation: parsingData.CreatedAt,
+                sources: string.IsNullOrEmpty(parsingData.SourceUrl) ? Array.Empty<string>() : new[] { parsingData.SourceUrl },
+                score: parsingData.Score,
+                hash: parsingData.Sha512Hash
+            );
+        }
+
         public class PostContainer
         {
             public SearchResult[] Images { init; get; }

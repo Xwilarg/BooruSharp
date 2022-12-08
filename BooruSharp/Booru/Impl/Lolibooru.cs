@@ -4,7 +4,7 @@
     /// Lolibooru.
     /// <para>https://lolibooru.moe/</para>
     /// </summary>
-    public sealed class Lolibooru : Template.Moebooru
+    public sealed class Lolibooru : Template.MyImouto
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Lolibooru"/> class.

@@ -49,7 +49,7 @@ namespace BooruSharp.Booru.Template
 
         private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
         {
-            var parsingData = await GetDataAsync<SearchResult>(uri);
+            var parsingData = (await GetDataAsync<SearchResult[]>(uri))[0];
 
             return new PostSearchResult(
                 fileUrl: parsingData.FileUrl != null ? new(parsingData.FileUrl) : null,
@@ -87,8 +87,8 @@ namespace BooruSharp.Booru.Template
             public int FileSize { init; get; }
             public int Height { init; get; }
             public int Width { init; get; }
-            public int PreviewHeight { init; get; }
-            public int PreviewWidth { init; get; }
+            public int? PreviewHeight { init; get; }
+            public int? PreviewWidth { init; get; }
             public CreationInfo CreatedAt { init; get; }
             public string Source { init; get; }
             public int TotalScore { init; get; }

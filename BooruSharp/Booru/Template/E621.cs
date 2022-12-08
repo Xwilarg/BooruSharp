@@ -58,10 +58,10 @@ namespace BooruSharp.Booru.Template
 
         private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
         {
-            var parsingData = await GetDataAsync<SearchResult>(uri);
+            var parsingData = (await GetDataAsync<DataContainer>(uri)).Posts[0];
 
             return new PostSearchResult(
-                fileUrl: parsingData.Url.Url != null ? new Uri(parsingData.Url.Url) : null,
+                fileUrl: parsingData.File.Url != null ? new Uri(parsingData.File.Url) : null,
                 previewUrl: parsingData.Preview.Url != null ? new Uri(parsingData.Preview.Url) : null,
                 postUrl: new Uri($"{BaseUrl}posts/{parsingData.Id}"),
                 sampleUri: parsingData.Sample.Url != null ? new Uri(parsingData.Sample.Url) : null,
@@ -80,21 +80,26 @@ namespace BooruSharp.Booru.Template
                     .Concat(parsingData.Tags.Lore.Select(x => new TagSearchResult(-1, x, TagType.Lore, -1)))
                     .Concat(parsingData.Tags.Meta.Select(x => new TagSearchResult(-1, x, TagType.Metadata, -1))),
                 id: parsingData.Id,
-                size: parsingData.Url.Size,
-                height: parsingData.Url.Height,
-                width: parsingData.Url.Width,
+                size: parsingData.File.Size,
+                height: parsingData.File.Height,
+                width: parsingData.File.Width,
                 previewHeight: parsingData.Preview.Height,
                 previewWidth: parsingData.Preview.Width,
                 creation: parsingData.CreatedAt,
                 sources: parsingData.Sources ?? Array.Empty<string>(),
                 score: parsingData.Score.Total,
-                hash: parsingData.Url.Md5
+                hash: parsingData.File.Md5
             );
+        }
+
+        public class DataContainer
+        {
+            public SearchResult[] Posts { init; get; }
         }
 
         public class SearchResult
         {
-            public ImageData Url { init; get; }
+            public ImageData File { init; get; }
             public ImageData Preview { init; get; }
             public ImageData Sample { init; get; }
             public Tags Tags { init; get; }
