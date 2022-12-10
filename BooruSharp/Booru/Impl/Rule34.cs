@@ -50,10 +50,10 @@ namespace BooruSharp.Booru
             var parsingData = (await GetDataAsync<SearchResult[]>(uri))[0];
 
             return new PostSearchResult(
-                fileUrl: new($"{FileBaseUrl}images/{parsingData.Directory}/{parsingData.Image}"),
-                previewUrl: new($"{PreviewBaseUrl}thumbnails/{parsingData.Directory}/thumbnail_{GetUrlBody(parsingData.Image)}.jpg"),
+                fileUrl: new($"{parsingData.FileUrl}"),
+                previewUrl: new($"{parsingData.PreviewUrl}"),
                 postUrl: new($"{PostBaseUrl}index.php?page=post&s=view&id={parsingData.Id}"),
-                sampleUri: parsingData.Sample == 1 ? new($"{SampleBaseUrl}samples/{parsingData.Directory}/sample_{GetUrlBody(parsingData.Image)}") : null,
+                sampleUri: parsingData.Sample == 1 ? new($"{parsingData.SampleUrl}") : null,
                 rating: GetRating(parsingData.Rating[0]),
                 tags: parsingData.Tags.Split(),
                 detailedTags: null,
@@ -72,7 +72,9 @@ namespace BooruSharp.Booru
 
         public class SearchResult
         {
-            public string Directory { init; get; }
+            public string PreviewUrl { init; get; }
+            public string SampleUrl { init; get; }
+            public string FileUrl { init; get; }
             public string Image { init; get; }
             public int Id { init; get; }
             public int Sample { init; get; }

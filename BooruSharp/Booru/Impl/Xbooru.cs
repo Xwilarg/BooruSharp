@@ -18,6 +18,8 @@ namespace BooruSharp.Booru
         /// <inheritdoc/>
         public override bool IsSafe => false;
 
+        public override Uri FileBaseUrl => new("https://img.xbooru.com");
         public override Uri PreviewBaseUrl => new("https://img.xbooru.com");
+        public override Uri SampleBaseUrl => new("https://img.xbooru.com");
     }
 }

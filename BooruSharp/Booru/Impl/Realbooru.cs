@@ -24,11 +24,11 @@ namespace BooruSharp.Booru
         {
             var parsingData = (await GetDataAsync<SearchResult[]>(uri))[0];
 
-            return new PostSearchResult(
-                fileUrl: new($"{FileBaseUrl}images/{parsingData.Directory}/{parsingData.Image}"),
-                previewUrl: new($"{PreviewBaseUrl}thumbnails/{parsingData.Directory}/thumbnail_{GetUrlBody(parsingData.Image)}.jpg"),
+            return new PostSearchResult( // Somehow Realbooru must take the hash instead of directly using the image?
+                fileUrl: new($"{FileBaseUrl}images/{parsingData.Directory}/{parsingData.Hash}.{parsingData.Image.Split('.')[1]}"),
+                previewUrl: new($"{PreviewBaseUrl}thumbnails/{parsingData.Directory}/thumbnail_{parsingData.Hash}.jpg"),
                 postUrl: new($"{PostBaseUrl}index.php?page=post&s=view&id={parsingData.Id}"),
-                sampleUri: parsingData.Sample == 1 ? new($"{SampleBaseUrl}samples/{parsingData.Directory}/sample_{GetUrlBody(parsingData.Image)}.jpg") : null,
+                sampleUri: parsingData.Sample == 1 ? new($"{SampleBaseUrl}samples/{parsingData.Directory}/sample_{parsingData.Hash}.jpg") : null,
                 rating: GetRating(parsingData.Rating[0]),
                 tags: parsingData.Tags.Split(),
                 detailedTags: null,
