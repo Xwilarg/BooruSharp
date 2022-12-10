@@ -1,4 +1,5 @@
-﻿using BooruSharp.Search.Post;
+﻿using BooruSharp.Search;
+using BooruSharp.Search.Post;
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -34,7 +35,8 @@ namespace BooruSharp.Booru.Template
             {
                 return Task.FromResult(CreateUrl(_imageUrl, "per_page=1", "q=id.gte:0", "sf=random"));
             }
-            return Task.FromResult(CreateUrl(_imageUrl, "per_page=1", "q=" + string.Join(",", tags.Select(Uri.EscapeDataString)).ToLowerInvariant(), "sf=random"));
+            // Booru on rails use '+' as separator within a tag instead of '_'
+            return Task.FromResult(CreateUrl(_imageUrl, "per_page=1", "q=" + string.Join(",", tags.Select(Uri.EscapeDataString).Select(x => x.Replace('_', '+'))).ToLowerInvariant(), "sf=random"));
         }
 
         /// <summary>
@@ -58,7 +60,12 @@ namespace BooruSharp.Booru.Template
 
         private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
         {
-            var parsingData = (await GetDataAsync<PostContainer>(uri)).Posts[0];
+            var posts = await GetDataAsync<PostContainer>(uri);
+            if (!posts.Posts.Any())
+            {
+                throw new InvalidTags();
+            }
+            var parsingData = posts.Posts[0];
 
             Rating rating;
             if (parsingData.Tags.Contains("explicit")) rating = Rating.Explicit;
