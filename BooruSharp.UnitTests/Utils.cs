@@ -3,6 +3,7 @@ using BooruSharp.Search.Post;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
@@ -177,7 +178,8 @@ namespace BooruSharp.UnitTests
             }
 
             var response = await Client.SendAsync(new HttpRequestMessage(HttpMethod.Head, url));
-            return response.IsSuccessStatusCode;
+            return response.IsSuccessStatusCode
+                || response.StatusCode == HttpStatusCode.UnavailableForLegalReasons; // Takedown request on danbooru returns 451 code
         }
 
         public static async Task ValidatePostAsync(PostSearchResult res, string[] inputTags)
