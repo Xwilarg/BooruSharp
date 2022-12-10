@@ -1,4 +1,6 @@
-﻿namespace BooruSharp.Booru
+﻿using System;
+
+namespace BooruSharp.Booru
 {
     /// <summary>
     /// Xbooru.
@@ -15,5 +17,7 @@
 
         /// <inheritdoc/>
         public override bool IsSafe => false;
+
+        public override Uri PreviewBaseUrl => new("https://img.xbooru.com");
     }
 }

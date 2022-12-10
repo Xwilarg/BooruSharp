@@ -25,10 +25,10 @@ namespace BooruSharp.Booru
             var parsingData = (await GetDataAsync<SearchResult[]>(uri))[0];
 
             return new PostSearchResult(
-                fileUrl: new($"{BaseUrl}images/{parsingData.Directory}/{parsingData.Image}"),
-                previewUrl: new($"{BaseUrl}thumbnails/{parsingData.Directory}/thumbnails_{parsingData.Image}"),
-                postUrl: new($"{BaseUrl}index.php?page=post&s=view&id={parsingData.Id}"),
-                sampleUri: parsingData.Sample == 1 ? new($"{BaseUrl}samples/{parsingData.Directory}/sample_{parsingData.Image}.jpg") : null,
+                fileUrl: new($"{FileBaseUrl}images/{parsingData.Directory}/{parsingData.Image}"),
+                previewUrl: new($"{PreviewBaseUrl}thumbnails/{parsingData.Directory}/thumbnails_{parsingData.Image}"),
+                postUrl: new($"{PostBaseUrl}index.php?page=post&s=view&id={parsingData.Id}"),
+                sampleUri: parsingData.Sample == 1 ? new($"{SampleBaseUrl}samples/{parsingData.Directory}/sample_{parsingData.Image}.jpg") : null,
                 rating: GetRating(parsingData.Rating[0]),
                 tags: parsingData.Tags.Split(),
                 detailedTags: null,

@@ -25,9 +25,9 @@ namespace BooruSharp.Booru.Template
         {
             if (query == "post")
             {
-                return new($"{BaseUrl}api/v1/json/search");
+                return new($"{APIBaseUrl}api/v1/json/search");
             }
-            return new($"{BaseUrl}api/v1/json/search/{query}s");
+            return new($"{APIBaseUrl}api/v1/json/search/{query}s");
         }
 
         private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
@@ -43,7 +43,7 @@ namespace BooruSharp.Booru.Template
             return new PostSearchResult(
                 fileUrl: new(parsingData.Representations.Full),
                 previewUrl: new(parsingData.Representations.Thumb),
-                postUrl: new($"{BaseUrl}images/{parsingData.Id}"),
+                postUrl: new($"{PostBaseUrl}images/{parsingData.Id}"),
                 sampleUri: new(parsingData.Representations.Large),
                 rating: rating,
                 tags: parsingData.Tags,

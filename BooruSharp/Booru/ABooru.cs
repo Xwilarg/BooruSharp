@@ -15,6 +15,11 @@ namespace BooruSharp.Booru
     {
         public virtual bool CanSearchWithNoTag => true;
 
+        public virtual Uri FileBaseUrl => APIBaseUrl;
+        public virtual Uri PreviewBaseUrl => APIBaseUrl;
+        public virtual Uri PostBaseUrl => APIBaseUrl;
+        public virtual Uri SampleBaseUrl => APIBaseUrl;
+
         /// <inheritdoc/>
         public abstract bool IsSafe { get; }
 
@@ -86,12 +91,12 @@ namespace BooruSharp.Booru
         /// <param name="options">
         /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
         /// </param>
-        protected ABooru(string domain)
+        protected ABooru(string apiDomain)
         {
             Auth = null;
             HttpClient = null;
 
-            BaseUrl = new Uri("https://" + domain, UriKind.Absolute);
+            APIBaseUrl = new Uri("https://" + apiDomain, UriKind.Absolute);
             _imageUrl = CreateQueryString("post");
 
             _tagUrl = CreateQueryString("tag");
@@ -187,7 +192,7 @@ namespace BooruSharp.Booru
         /// <summary>
         /// Gets the base API request URL.
         /// </summary>
-        public Uri BaseUrl { get; }
+        public Uri APIBaseUrl { get; }
 
         private HttpClient _client;
         protected readonly Uri _imageUrl, _tagUrl, _wikiUrl, _relatedUrl, _commentUrl; // URLs for differents endpoints

@@ -25,7 +25,7 @@ namespace BooruSharp.Booru.Template
 
         protected override Uri CreateQueryString(string query, string squery = "index")
         {
-            return new($"{BaseUrl}{query}/{squery}.json");
+            return new($"{APIBaseUrl}{query}/{squery}.json");
         }
 
         protected override Task<Uri> CreateRandomPostUriAsync(string[] tags)
@@ -49,7 +49,7 @@ namespace BooruSharp.Booru.Template
             return new PostSearchResult(
                 fileUrl: new(parsingData.FileUrl),
                 previewUrl: new(parsingData.PreviewUrl),
-                postUrl: new Uri($"{BaseUrl}post/show/{parsingData.Id}"),
+                postUrl: new Uri($"{PostBaseUrl}post/show/{parsingData.Id}"),
                 sampleUri: parsingData.SampleUrl != null ? new Uri(parsingData.SampleUrl) : null,
                 rating: GetRating(parsingData.Rating[0]),
                 tags: parsingData.Tags.Split().Select(HttpUtility.HtmlDecode),

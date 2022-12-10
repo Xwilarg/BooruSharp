@@ -28,13 +28,13 @@ namespace BooruSharp.Booru.Template
         {
             if (query == "tag" && squery == "related")
             {
-                return new($"{BaseUrl}related_tag.json");
+                return new($"{APIBaseUrl}related_tag.json");
             }
             if (query == "tag" && squery == "wiki")
             {
-                return new($"{BaseUrl}wiki_pages.json");
+                return new($"{APIBaseUrl}wiki_pages.json");
             }
-            return new($"{BaseUrl}{query}s.json");
+            return new($"{APIBaseUrl}{query}s.json");
         }
 
         protected override Task<Uri> CreateRandomPostUriAsync(string[] tags)
@@ -63,7 +63,7 @@ namespace BooruSharp.Booru.Template
             return new PostSearchResult(
                 fileUrl: parsingData.File.Url != null ? new Uri(parsingData.File.Url) : null,
                 previewUrl: parsingData.Preview.Url != null ? new Uri(parsingData.Preview.Url) : null,
-                postUrl: new Uri($"{BaseUrl}posts/{parsingData.Id}"),
+                postUrl: new Uri($"{PostBaseUrl}posts/{parsingData.Id}"),
                 sampleUri: parsingData.Sample.Url != null ? new Uri(parsingData.Sample.Url) : null,
                 rating: GetRating(parsingData.Rating[0]),
                 tags: parsingData.Tags.General

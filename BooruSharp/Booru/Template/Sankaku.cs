@@ -27,9 +27,9 @@ namespace BooruSharp.Booru.Template
         {
             if (query == "wiki")
             {
-                return new($"{BaseUrl}{query}");
+                return new($"{APIBaseUrl}{query}");
             }
-            return new($"{BaseUrl}{query}s");
+            return new($"{APIBaseUrl}{query}s");
         }
 
         protected override Task<Uri> CreateRandomPostUriAsync(string[] tags)
@@ -53,11 +53,7 @@ namespace BooruSharp.Booru.Template
             return new PostSearchResult(
                 fileUrl: parsingData.FileUrl != null ? new(parsingData.FileUrl) : null,
                 previewUrl: parsingData.PreviewUrl != null ? new(parsingData.PreviewUrl) : null,
-                postUrl: new UriBuilder(BaseUrl)
-                {
-                    Host = BaseUrl.Host.Replace("capi-v2", "beta"),
-                    Path = $"/post/show/{parsingData.Id}",
-                }.Uri,
+                postUrl: new($"{PostBaseUrl}/post/show/{parsingData.Id}"),
                 sampleUri: parsingData.SampleUrl != null && parsingData.SampleUrl.Contains("/preview/") ? new Uri(parsingData.SampleUrl) : null,
                 rating: GetRating(parsingData.Rating[0]),
                 tags: parsingData.Tags.Select(x => x.NameEn),
