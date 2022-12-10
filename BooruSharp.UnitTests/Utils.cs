@@ -51,13 +51,6 @@ namespace BooruSharp.UnitTests
             new object[] {
                 new BooruTestData()
                 {
-                    BooruType = typeof(Furrybooru),
-                    Tags = new[] { "kantai_collection", "clothing", "blush" }
-                }
-            },
-            new object[] {
-                new BooruTestData()
-                {
                     BooruType = typeof(Gelbooru),
                     Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" }
                 }
@@ -203,8 +196,8 @@ namespace BooruSharp.UnitTests
             if (res.Size != null) Assert.NotEqual(0, res.Size);
             foreach (var tag in inputTags)
             {
-                Assert.Contains(tag, res.Tags);
-                if (res.DetailedTags != null) Assert.Contains(tag, res.DetailedTags.Select(x => x.Name));
+                Assert.Contains(tag.Replace('_', ' '), res.Tags.Select(x => x.Replace('_', ' ')));
+                if (res.DetailedTags != null) Assert.Contains(tag.Replace('_', ' '), res.DetailedTags.Select(x => x.Name.Replace('_', ' ')));
             }
         }
     }
