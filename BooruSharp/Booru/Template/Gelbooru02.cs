@@ -58,15 +58,20 @@ namespace BooruSharp.Booru.Template
             }
         }
 
+        protected string GetUrlBody(string url)
+        {
+            return url.Split('.')[0];
+        }
+
         private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
         {
             var parsingData = (await GetDataAsync<SearchResult[]>(uri))[0];
 
             return new PostSearchResult(
                 fileUrl: new($"{FileBaseUrl}images/{parsingData.Directory}/{parsingData.Image}"),
-                previewUrl: new($"{PreviewBaseUrl}thumbnails/{parsingData.Directory}/thumbnail_{parsingData.Image}"),
+                previewUrl: new($"{PreviewBaseUrl}thumbnails/{parsingData.Directory}/thumbnail_{GetUrlBody(parsingData.Image)}.jpg"),
                 postUrl: new($"{PostBaseUrl}index.php?page=post&s=view&id={parsingData.Id}"),
-                sampleUri: parsingData.Sample ? new($"{SampleBaseUrl}samples/{parsingData.Directory}/sample_{parsingData.Image}") : null,
+                sampleUri: parsingData.Sample ? new($"{SampleBaseUrl}samples/{parsingData.Directory}/sample_{GetUrlBody(parsingData.Image)}.jpg") : null,
                 rating: GetRating(parsingData.Rating[0]),
                 tags: parsingData.Tags.Split(),
                 detailedTags: null,
@@ -79,7 +84,7 @@ namespace BooruSharp.Booru.Template
                 creation: null,
                 sources: null,
                 score: parsingData.Score,
-                hash: null
+                hash: parsingData.Hash
             );
         }
 
@@ -94,6 +99,7 @@ namespace BooruSharp.Booru.Template
             public int Height { init; get; }
             public int Width { init; get; }
             public int? Score { init; get; }
+            public string Hash { init; get; }
         }
 
         protected async Task<XmlDocument> GetXmlAsync(string url)

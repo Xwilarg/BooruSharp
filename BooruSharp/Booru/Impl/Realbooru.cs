@@ -26,9 +26,9 @@ namespace BooruSharp.Booru
 
             return new PostSearchResult(
                 fileUrl: new($"{FileBaseUrl}images/{parsingData.Directory}/{parsingData.Image}"),
-                previewUrl: new($"{PreviewBaseUrl}thumbnails/{parsingData.Directory}/thumbnails_{parsingData.Image}"),
+                previewUrl: new($"{PreviewBaseUrl}thumbnails/{parsingData.Directory}/thumbnail_{GetUrlBody(parsingData.Image)}.jpg"),
                 postUrl: new($"{PostBaseUrl}index.php?page=post&s=view&id={parsingData.Id}"),
-                sampleUri: parsingData.Sample == 1 ? new($"{SampleBaseUrl}samples/{parsingData.Directory}/sample_{parsingData.Image}.jpg") : null,
+                sampleUri: parsingData.Sample == 1 ? new($"{SampleBaseUrl}samples/{parsingData.Directory}/sample_{GetUrlBody(parsingData.Image)}.jpg") : null,
                 rating: GetRating(parsingData.Rating[0]),
                 tags: parsingData.Tags.Split(),
                 detailedTags: null,
@@ -41,7 +41,7 @@ namespace BooruSharp.Booru
                 creation: null,
                 sources: null,
                 score: parsingData.Score,
-                hash: null
+                hash: parsingData.Hash
             );
         }
 
@@ -56,6 +56,7 @@ namespace BooruSharp.Booru
             public int Height { init; get; }
             public int Width { init; get; }
             public int? Score { init; get; }
+            public string Hash { init; get; }
         }
     }
 }
