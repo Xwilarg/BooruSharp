@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
@@ -27,7 +28,7 @@ namespace BooruSharp.Booru.Template
 
         protected override Uri CreateQueryString(string query, string squery = "index")
         {
-            return new($"{APIBaseUrl}index.php?page=dapi&s={query}&q=index&json=1");
+            return new($"{APIBaseUrl}index.php?page=dapi&s={query}&q=index");
         }
 
         protected override async Task<Uri> CreateRandomPostUriAsync(string[] tags)
@@ -37,16 +38,16 @@ namespace BooruSharp.Booru.Template
                 // We need to request /index.php?page=post&s=random and get the id given by the redirect
                 HttpResponseMessage msg = await HttpClient.GetAsync($"{APIBaseUrl}index.php?page=post&s=random");
                 msg.EnsureSuccessStatusCode();
-                return CreateUrl(_imageUrl, "limit=1", "id=" + HttpUtility.ParseQueryString(msg.RequestMessage.RequestUri.Query).Get("id"));
+                return CreateUrl(_imageUrl, "limit=1", "id=" + HttpUtility.ParseQueryString(msg.RequestMessage.RequestUri.Query).Get("id"), "json=1");
             }
-            var url = CreateUrl(new(_imageUrl.AbsoluteUri.Replace("index.json", "index.xml")), "limit=1", string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant());
+            var url = CreateUrl(_imageUrl, "limit=1", "tags=" + string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant(), "json=0");
             XmlDocument xml = await GetXmlAsync(url.AbsoluteUri);
             int max = int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
 
             if (max == 0)
                 throw new Search.InvalidTags();
 
-            return CreateUrl(_imageUrl, "limit=1", "tags=" + string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant(), "pid=" + Random.Next(0, max));
+            return CreateUrl(_imageUrl, "limit=1", "tags=" + string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant(), "pid=" + Random.Next(0, max), "json=1");
         }
 
         /// <inheritdoc/>

@@ -1,6 +1,7 @@
 ﻿using BooruSharp.Search;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -28,6 +29,19 @@ namespace BooruSharp.UnitTests
             {
                 await Assert.ThrowsAsync<FeatureUnavailable>(async () => { await booru.GetRandomPostAsync(); });
             }
+        }
+
+        [Theory]
+        [MemberData(nameof(BooruParams))]
+        public async Task GetRandomImageWith1TagAsync(BooruTestData data)
+        {
+            var booru = await Utils.GetAsync(data.BooruType);
+            var targetTag = data.Tags.Take(1).ToArray();
+            var res = await booru.GetRandomPostAsync(targetTag);
+            var res2 = await booru.GetRandomPostAsync(targetTag);
+            await Utils.ValidatePostAsync(res, targetTag);
+            await Utils.ValidatePostAsync(res2, targetTag);
+            Assert.NotEqual(res.ID, res2.ID);
         }
     }
 }

@@ -4,6 +4,7 @@ namespace BooruSharp.UnitTests
 {
     public record BooruTestData
     {
-        public Type BooruType;
+        public required Type BooruType;
+        public required string[] Tags;
     }
 }
