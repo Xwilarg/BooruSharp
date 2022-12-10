@@ -58,7 +58,12 @@ namespace BooruSharp.Booru.Template
 
         private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
         {
-            var parsingData = (await GetDataAsync<DataContainer>(uri)).Posts[0];
+            var posts = await GetDataAsync<SearchResult[]>(uri);
+            if (!posts.Any())
+            {
+                throw new InvalidTags();
+            }
+            var parsingData = posts[0];
 
             return new PostSearchResult(
                 fileUrl: parsingData.File.Url != null ? new Uri(parsingData.File.Url) : null,
@@ -69,12 +74,14 @@ namespace BooruSharp.Booru.Template
                 tags: parsingData.Tags.General
                     .Concat(parsingData.Tags.Species)
                     .Concat(parsingData.Tags.Character)
+                    .Concat(parsingData.Tags.Copyright)
                     .Concat(parsingData.Tags.Artist)
                     .Concat(parsingData.Tags.Invalid)
                     .Concat(parsingData.Tags.Lore)
                     .Concat(parsingData.Tags.Meta),
                 detailedTags: parsingData.Tags.Species.Select(x => new TagSearchResult(-1, x, TagType.Species, -1))
                     .Concat(parsingData.Tags.Character.Select(x => new TagSearchResult(-1, x, TagType.Character, -1)))
+                    .Concat(parsingData.Tags.Copyright.Select(x => new TagSearchResult(-1, x, TagType.Copyright, -1)))
                     .Concat(parsingData.Tags.Artist.Select(x => new TagSearchResult(-1, x, TagType.Artist, -1)))
                     .Concat(parsingData.Tags.Invalid.Select(x => new TagSearchResult(-1, x, TagType.Invalid, -1)))
                     .Concat(parsingData.Tags.Lore.Select(x => new TagSearchResult(-1, x, TagType.Lore, -1)))
@@ -124,6 +131,7 @@ namespace BooruSharp.Booru.Template
             public string[] General { init; get; }
             public string[] Species { init; get; }
             public string[] Character { init; get; }
+            public string[] Copyright { init; get; }
             public string[] Artist { init; get; }
             public string[] Invalid { init; get; }
             public string[] Lore { init; get; }

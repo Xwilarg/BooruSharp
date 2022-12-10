@@ -43,5 +43,13 @@ namespace BooruSharp.UnitTests
             await Utils.ValidatePostAsync(res2, targetTag);
             Assert.NotEqual(res.ID, res2.ID);
         }
+
+        [Theory]
+        [MemberData(nameof(BooruParams))]
+        public async Task GetInvalidImageAsync(BooruTestData data)
+        {
+            var booru = await Utils.GetAsync(data.BooruType);
+            await Assert.ThrowsAsync<InvalidTags>(async () => { await booru.GetRandomPostAsync("azeazeazeazeaze"); });
+        }
     }
 }

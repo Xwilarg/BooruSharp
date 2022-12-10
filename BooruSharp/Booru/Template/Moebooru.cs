@@ -1,4 +1,5 @@
-﻿using BooruSharp.Search.Post;
+﻿using BooruSharp.Search;
+using BooruSharp.Search.Post;
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -44,7 +45,12 @@ namespace BooruSharp.Booru.Template
 
         private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
         {
-            var parsingData = (await GetDataAsync<SearchResult[]>(uri))[0];
+            var posts = await GetDataAsync<SearchResult[]>(uri);
+            if (!posts.Any())
+            {
+                throw new InvalidTags();
+            }
+            var parsingData = posts[0];
 
             return new PostSearchResult(
                 fileUrl: new(parsingData.FileUrl),

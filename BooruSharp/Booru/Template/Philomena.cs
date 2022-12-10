@@ -1,4 +1,5 @@
-﻿using BooruSharp.Search.Post;
+﻿using BooruSharp.Search;
+using BooruSharp.Search.Post;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,7 +33,12 @@ namespace BooruSharp.Booru.Template
 
         private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
         {
-            var parsingData = (await GetDataAsync<PostContainer>(uri)).Images[0];
+            var posts = await GetDataAsync<PostContainer>(uri);
+            if (!posts.Images.Any())
+            {
+                throw new InvalidTags();
+            }
+            var parsingData = posts.Images[0];
 
             Rating rating;
             if (parsingData.Tags.Contains("explicit")) rating = Rating.Explicit;
