@@ -1,7 +1,6 @@
 ﻿using BooruSharp.Search;
 using BooruSharp.Search.Post;
 using System;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;

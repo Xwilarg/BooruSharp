@@ -42,9 +42,9 @@ namespace BooruSharp.Booru.Template
             else rating = (Rating)(-1); // Some images doesn't have a rating
             return new PostSearchResult(
                 fileUrl: new(parsingData.Representations.Full),
-                previewUrl: null,
+                previewUrl: new(parsingData.Representations.Thumb),
                 postUrl: new($"{BaseUrl}images/{parsingData.Id}"),
-                sampleUri: new(parsingData.Representations.Thumb),
+                sampleUri: new(parsingData.Representations.Large),
                 rating: rating,
                 tags: parsingData.Tags,
                 detailedTags: null,

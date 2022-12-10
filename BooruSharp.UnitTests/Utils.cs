@@ -1,7 +1,11 @@
 ﻿using BooruSharp.Booru;
+using BooruSharp.Search.Post;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace BooruSharp.UnitTests
 {
@@ -29,6 +33,8 @@ namespace BooruSharp.UnitTests
             new object[] {  new BooruTestData() { BooruType = typeof(Yandere) } },
             //new BooruTestData() { BooruType = typeof(Pixiv) }
         };
+
+        public static HttpClient Client;
 
         private static readonly Dictionary<Type, Task<ABooru>> _boorus = new();
 
@@ -60,6 +66,38 @@ namespace BooruSharp.UnitTests
             }*/
 
             return booru;
+        }
+
+        private static async Task<bool> ValidateUrlAsync(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+            {
+                return false;
+            }
+
+            var response = await Client.SendAsync(new HttpRequestMessage(HttpMethod.Head, url));
+            return response.IsSuccessStatusCode;
+        }
+
+        public static async Task ValidatePostAsync(PostSearchResult res, string[] inputTags)
+        {
+            Assert.True(await ValidateUrlAsync(res.FileUrl.AbsoluteUri), $"Invalid URL {res.FileUrl.AbsoluteUri}");
+            Assert.True(await ValidateUrlAsync(res.PreviewUrl.AbsoluteUri), $"Invalid URL {res.PreviewUrl.AbsoluteUri}");
+            Assert.True(await ValidateUrlAsync(res.PostUrl.AbsoluteUri), $"Invalid URL {res.PostUrl.AbsoluteUri}");
+            if (res.SampleUri != null) Assert.True(await ValidateUrlAsync(res.SampleUri.AbsoluteUri), $"Invalid URL {res.SampleUri.AbsoluteUri}");
+            Assert.InRange(res.Rating, Rating.General, Rating.Explicit);
+            Assert.NotEmpty(res.Tags);
+            Assert.NotEqual(0, res.ID);
+            Assert.NotEqual(0, res.Width);
+            Assert.NotEqual(0, res.Height);
+            if (res.PreviewWidth != null) Assert.NotEqual(0, res.PreviewWidth);
+            if (res.PreviewHeight != null) Assert.NotEqual(0, res.PreviewHeight);
+            if (res.Size != null) Assert.NotEqual(0, res.Size);
+            foreach (var tag in inputTags)
+            {
+                Assert.Contains(tag, res.Tags);
+                if (res.DetailedTags != null) Assert.Contains(tag, res.DetailedTags.Select(x => x.Name));
+            }
         }
     }
 }

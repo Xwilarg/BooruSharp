@@ -64,7 +64,7 @@ namespace BooruSharp.Booru.Template
 
             return new PostSearchResult(
                 fileUrl: new($"{BaseUrl}images/{parsingData.Directory}/{parsingData.Image}"),
-                previewUrl: new($"{BaseUrl}thumbnails/{parsingData.Directory}/thumbnails_{parsingData.Image}"),
+                previewUrl: new($"{BaseUrl}thumbnails/{parsingData.Directory}/thumbnail_{parsingData.Image}"),
                 postUrl: new($"{BaseUrl}index.php?page=post&s=view&id={parsingData.Id}"),
                 sampleUri: parsingData.Sample ? new($"{BaseUrl}samples/{parsingData.Directory}/sample_{parsingData.Image}.jpg") : null,
                 rating: GetRating(parsingData.Rating[0]),
