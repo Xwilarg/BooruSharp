@@ -1,4 +1,5 @@
-﻿using BooruSharp.Search.Post;
+﻿using BooruSharp.Search;
+using BooruSharp.Search.Post;
 using BooruSharp.Search.Tag;
 using System;
 using System.Linq;

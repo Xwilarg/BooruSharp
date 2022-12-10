@@ -1,4 +1,5 @@
 ﻿using BooruSharp.Search;
+using BooruSharp.Search.Post;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,15 +13,15 @@ namespace BooruSharp.UnitTests
         // Because of compile error
         public static IEnumerable<object[]> BooruParams => Utils.BooruParams;
 
-        [Theory]
+        [SkippableTheory]
         [MemberData(nameof(BooruParams))]
         public async Task GetRandomImageAsync(BooruTestData data)
         {
             var booru = await Utils.GetAsync(data.BooruType);
             if (booru.CanSearchWithNoTag)
             {
-                var res = await booru.GetRandomPostAsync();
-                var res2 = await booru.GetRandomPostAsync();
+                var res = await Utils.DoWebRequest(async () => { return await booru.GetRandomPostAsync(); });
+                var res2 = await Utils.DoWebRequest(async () => { return await booru.GetRandomPostAsync(); });
                 await Utils.ValidatePostAsync(res, Array.Empty<string>());
                 await Utils.ValidatePostAsync(res2, Array.Empty<string>());
                 Assert.NotEqual(res.ID, res2.ID);
@@ -31,25 +32,27 @@ namespace BooruSharp.UnitTests
             }
         }
 
-        [Theory]
+        [SkippableTheory]
         [MemberData(nameof(BooruParams))]
         public async Task GetRandomImageWith1TagAsync(BooruTestData data)
         {
             var booru = await Utils.GetAsync(data.BooruType);
             var targetTag = data.Tags.Take(1).ToArray();
-            var res = await booru.GetRandomPostAsync(targetTag);
-            var res2 = await booru.GetRandomPostAsync(targetTag);
+            var res = await Utils.DoWebRequest(async () => { return await booru.GetRandomPostAsync(targetTag); });
+            var res2 = await Utils.DoWebRequest(async () => { return await booru.GetRandomPostAsync(targetTag); });
             await Utils.ValidatePostAsync(res, targetTag);
             await Utils.ValidatePostAsync(res2, targetTag);
             Assert.NotEqual(res.ID, res2.ID);
         }
 
-        [Theory]
+        [SkippableTheory]
         [MemberData(nameof(BooruParams))]
         public async Task GetInvalidImageAsync(BooruTestData data)
         {
             var booru = await Utils.GetAsync(data.BooruType);
-            await Assert.ThrowsAsync<InvalidTags>(async () => { await booru.GetRandomPostAsync("azeazeazeazeaze"); });
+            await Assert.ThrowsAsync<InvalidTags>(async () => {
+                await Utils.DoWebRequest(async () => { return await booru.GetRandomPostAsync("azazazazaz"); });
+            });
         }
     }
 }

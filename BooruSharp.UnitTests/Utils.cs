@@ -182,6 +182,19 @@ namespace BooruSharp.UnitTests
                 || response.StatusCode == HttpStatusCode.UnavailableForLegalReasons; // Takedown request on danbooru returns 451 code
         }
 
+        public static async Task<T> DoWebRequest<T>(Func<Task<T>> method)
+        {
+            try
+            {
+                return await method();
+            }
+            catch (HttpRequestException hre)
+            {
+                Skip.If(hre.StatusCode == HttpStatusCode.ServiceUnavailable, "Service returned 503 error");
+                throw;
+            }
+        }
+
         public static async Task ValidatePostAsync(PostSearchResult res, string[] inputTags)
         {
             if (res.FileUrl != null) Assert.True(await ValidateUrlAsync(res.FileUrl.AbsoluteUri), $"Invalid URL {res.FileUrl.AbsoluteUri}");
