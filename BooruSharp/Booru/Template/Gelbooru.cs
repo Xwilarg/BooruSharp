@@ -31,7 +31,7 @@ namespace BooruSharp.Booru.Template
 
         protected override Task<Uri> CreateRandomPostUriAsync(string[] tags)
         {
-            return Task.FromResult(CreateUrl(_imageUrl, "limit=1", string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant() + "+sort:random"));
+            return Task.FromResult(CreateUrl(_imageUrl, "limit=1", "tags=" + string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant() + "+sort:random"));
         }
 
         /// <inheritdoc/>

@@ -46,7 +46,7 @@ namespace BooruSharp.Booru.Template
             if (max == 0)
                 throw new Search.InvalidTags();
 
-            return CreateUrl(_imageUrl, "limit=1", string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant(), "pid=" + Random.Next(0, max));
+            return CreateUrl(_imageUrl, "limit=1", "tags=" + string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant(), "pid=" + Random.Next(0, max));
         }
 
         /// <inheritdoc/>
@@ -66,7 +66,7 @@ namespace BooruSharp.Booru.Template
                 fileUrl: new($"{BaseUrl}images/{parsingData.Directory}/{parsingData.Image}"),
                 previewUrl: new($"{BaseUrl}thumbnails/{parsingData.Directory}/thumbnail_{parsingData.Image}"),
                 postUrl: new($"{BaseUrl}index.php?page=post&s=view&id={parsingData.Id}"),
-                sampleUri: parsingData.Sample ? new($"{BaseUrl}samples/{parsingData.Directory}/sample_{parsingData.Image}.jpg") : null,
+                sampleUri: parsingData.Sample ? new($"{BaseUrl}samples/{parsingData.Directory}/sample_{parsingData.Image}") : null,
                 rating: GetRating(parsingData.Rating[0]),
                 tags: parsingData.Tags.Split(),
                 detailedTags: null,

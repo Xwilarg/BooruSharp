@@ -19,7 +19,10 @@ namespace BooruSharp.UnitTests
             if (booru.CanSearchWithNoTag)
             {
                 var res = await booru.GetRandomPostAsync();
+                var res2 = await booru.GetRandomPostAsync();
                 await Utils.ValidatePostAsync(res, Array.Empty<string>());
+                await Utils.ValidatePostAsync(res2, Array.Empty<string>());
+                Assert.NotEqual(res.ID, res2.ID);
             }
             else
             {

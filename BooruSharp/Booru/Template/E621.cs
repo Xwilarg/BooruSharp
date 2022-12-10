@@ -43,7 +43,7 @@ namespace BooruSharp.Booru.Template
             {
                 throw new Search.TooManyTags();
             }
-            return Task.FromResult(CreateUrl(_imageUrl, "limit=1", "tags=" + string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant(), "random=true"));
+            return Task.FromResult(CreateUrl(_imageUrl, "limit=1", "tags=" + string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant() + "+order:random"));
         }
 
         /// <inheritdoc/>
