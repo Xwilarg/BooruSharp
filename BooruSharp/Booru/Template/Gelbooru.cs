@@ -51,7 +51,7 @@ namespace BooruSharp.Booru.Template
                 fileUrl: new(parsingData.FileUrl),
                 previewUrl: new(parsingData.PreviewUrl),
                 postUrl: new Uri($"{BaseUrl}index.php?page=post&s=view&id={parsingData.Id}"),
-                sampleUri: parsingData.SampleUrl != null ? new Uri(parsingData.SampleUrl) : null,
+                sampleUri: !string.IsNullOrEmpty(parsingData.SampleUrl) ? new Uri(parsingData.SampleUrl) : null,
                 rating: GetRating(parsingData.Rating[0]),
                 tags: parsingData.Tags.Split().Select(HttpUtility.HtmlDecode),
                 detailedTags: null,
