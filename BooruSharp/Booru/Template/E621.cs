@@ -59,12 +59,12 @@ namespace BooruSharp.Booru.Template
 
         private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
         {
-            var posts = await GetDataAsync<SearchResult[]>(uri);
-            if (!posts.Any())
+            var posts = await GetDataAsync<DataContainer>(uri);
+            if (!posts.Posts.Any())
             {
                 throw new InvalidTags();
             }
-            var parsingData = posts[0];
+            var parsingData = posts.Posts[0];
 
             return new PostSearchResult(
                 fileUrl: parsingData.File.Url != null ? new Uri(parsingData.File.Url) : null,
