@@ -47,7 +47,7 @@ namespace BooruSharp.Booru.Template
         private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
         {
             var posts = await GetDataAsync<DataContainer>(uri);
-            if (!posts.Post.Any())
+            if (posts.Post == null)
             {
                 throw new InvalidTags();
             }
