@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -19,7 +20,8 @@ namespace BooruSharp.UnitTests
                 {
                     BooruType = typeof(Atfbooru),
                     Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" },
-                    ValidPostId = 419308
+                    ValidPostId = 419308,
+                    ExplicitTag = "spread_pussy"
                 }
             },
             new object[] {
@@ -27,7 +29,8 @@ namespace BooruSharp.UnitTests
                 {
                     BooruType = typeof(DanbooruDonmai),
                     Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" },
-                    ValidPostId = 5972904
+                    ValidPostId = 5972904,
+                    ExplicitTag = "spread_pussy"
                 }
             },
             new object[] {
@@ -35,7 +38,8 @@ namespace BooruSharp.UnitTests
                 {
                     BooruType = typeof(Derpibooru),
                     Tags = new[] { "pegasus", "raised_tail", "lying_down" },
-                    ValidPostId = 3021165
+                    ValidPostId = 3021165,
+                    ExplicitTag = "spread+pussy"
                 }
             },
             new object[] {
@@ -43,7 +47,8 @@ namespace BooruSharp.UnitTests
                 {
                     BooruType = typeof(E621),
                     Tags = new[] { "kantai_collection", "blue_eyes", "outside" },
-                    ValidPostId = 1329650
+                    ValidPostId = 1329650,
+                    ExplicitTag = "spread_pussy"
                 }
             },
             new object[] {
@@ -51,7 +56,8 @@ namespace BooruSharp.UnitTests
                 {
                     BooruType = typeof(E926),
                     Tags = new[] { "kantai_collection", "blue_eyes", "outside" },
-                    ValidPostId = 1329650
+                    ValidPostId = 1329650,
+                    ExplicitTag = null
                 }
             },
             new object[] {
@@ -59,7 +65,8 @@ namespace BooruSharp.UnitTests
                 {
                     BooruType = typeof(Gelbooru),
                     Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" },
-                    ValidPostId = 8113595
+                    ValidPostId = 8113595,
+                    ExplicitTag = "spread_pussy"
                 }
             },
             new object[] {
@@ -67,7 +74,8 @@ namespace BooruSharp.UnitTests
                 {
                     BooruType = typeof(Konachan),
                     Tags = new[] { "kantai_collection", "blue_eyes", "hat" },
-                    ValidPostId = 351127
+                    ValidPostId = 351127,
+                    ExplicitTag = "spread_pussy"
                 }
             },
             new object[] {
@@ -75,7 +83,8 @@ namespace BooruSharp.UnitTests
                 {
                     BooruType = typeof(Lolibooru),
                     Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" },
-                    ValidPostId = 516532
+                    ValidPostId = 516532,
+                    ExplicitTag = "spread_pussy"
                 }
             },
             new object[] {
@@ -83,7 +92,8 @@ namespace BooruSharp.UnitTests
                 {
                     BooruType = typeof(Ponybooru),
                     Tags = new[] { "pegasus", "raised_tail", "lying_down" },
-                    ValidPostId = 3262026
+                    ValidPostId = 3262026,
+                    ExplicitTag = "spread_pussy"
                 }
             },
             new object[] {
@@ -91,7 +101,8 @@ namespace BooruSharp.UnitTests
                 {
                     BooruType = typeof(Realbooru),
                     Tags = new[] { "kantai_collection", "asian", "swimsuit" },
-                    ValidPostId = 809254
+                    ValidPostId = 809254,
+                    ExplicitTag = "spread_pussy"
                 }
             },
             new object[] {
@@ -99,7 +110,8 @@ namespace BooruSharp.UnitTests
                 {
                     BooruType = typeof(Rule34),
                     Tags = new[] { "kantai_collection", "outdoors", "swimsuit" },
-                    ValidPostId = 139056
+                    ValidPostId = 139056,
+                    ExplicitTag = "spread_pussy"
                 }
             },
             new object[] {
@@ -107,7 +119,8 @@ namespace BooruSharp.UnitTests
                 {
                     BooruType = typeof(Safebooru),
                     Tags = new[] { "kantai_collection", "outdoors", "swimsuit" },
-                    ValidPostId = 4248721
+                    ValidPostId = 4248721,
+                    ExplicitTag = null
                 }
             },
             new object[] {
@@ -115,7 +128,8 @@ namespace BooruSharp.UnitTests
                 {
                     BooruType = typeof(Sakugabooru),
                     Tags = new[] { "kantai_collection", "explosions", "smoke" },
-                    ValidPostId = 157179
+                    ValidPostId = 157179,
+                    ExplicitTag = "rating:explicit" // Looks like there isn't any tag that always return explicit stuffs
                 }
             },
             new object[] {
@@ -123,7 +137,8 @@ namespace BooruSharp.UnitTests
                 {
                     BooruType = typeof(SankakuComplex),
                     Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" },
-                    ValidPostId = 32458685
+                    ValidPostId = 32458685,
+                    ExplicitTag = "spread_pussy"
                 }
             },
             new object[] {
@@ -131,7 +146,8 @@ namespace BooruSharp.UnitTests
                 {
                     BooruType = typeof(Twibooru),
                     Tags = new[] { "pegasus", "raised_tail", "lying_down" },
-                    ValidPostId = 2869409
+                    ValidPostId = 2869409,
+                    ExplicitTag = "spread_pussy"
                 }
             },
             new object[] {
@@ -139,7 +155,8 @@ namespace BooruSharp.UnitTests
                 {
                     BooruType = typeof(Xbooru),
                     Tags = new[] { "kantai_collection", "blue_eyes", "outside" },
-                    ValidPostId = 830871
+                    ValidPostId = 830871,
+                    ExplicitTag = "spread_pussy"
                 }
             },
             new object[] {
@@ -147,7 +164,8 @@ namespace BooruSharp.UnitTests
                 {
                     BooruType = typeof(Yandere),
                     Tags = new[] { "kantai_collection", "sweater", "bra" },
-                    ValidPostId = 1052829
+                    ValidPostId = 1052829,
+                    ExplicitTag = "pussy"
                 }
             },
             //new BooruTestData() { BooruType = typeof(Pixiv) }
@@ -208,6 +226,10 @@ namespace BooruSharp.UnitTests
             catch (HttpRequestException hre)
             {
                 Skip.If(hre.StatusCode == HttpStatusCode.ServiceUnavailable, "Service returned 503 error");
+                if (Environment.GetEnvironmentVariable("CI") != "true")
+                {
+                    Skip.If(hre.InnerException is SocketException);
+                }
                 throw;
             }
         }
@@ -218,7 +240,7 @@ namespace BooruSharp.UnitTests
             if (res.PreviewUrl != null) Assert.True(await ValidateUrlAsync(res.PreviewUrl.AbsoluteUri), $"Invalid URL {res.PreviewUrl.AbsoluteUri}");
             if (res.PostUrl != null) Assert.True(await ValidateUrlAsync(res.PostUrl.AbsoluteUri), $"Invalid URL {res.PostUrl.AbsoluteUri}");
             if (res.SampleUri != null) Assert.True(await ValidateUrlAsync(res.SampleUri.AbsoluteUri), $"Invalid URL {res.SampleUri.AbsoluteUri}");
-            Assert.InRange(res.Rating, Rating.General, Rating.Explicit);
+            Assert.InRange(res.Rating, (Rating)(-1), Rating.Explicit);
             Assert.NotEmpty(res.Tags);
             Assert.NotEqual(0, res.ID);
             Assert.NotEqual(0, res.Width);

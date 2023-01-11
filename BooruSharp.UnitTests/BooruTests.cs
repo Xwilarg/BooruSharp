@@ -1,4 +1,5 @@
 ﻿using BooruSharp.Search;
+using BooruSharp.Search.Post;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,6 +70,19 @@ namespace BooruSharp.UnitTests
             await Assert.ThrowsAsync<InvalidTags>(async () => {
                 await Utils.DoWebRequest(async () => { return await booru.GetRandomPostAsync("azazazazaz"); });
             });
+        }
+
+        [SkippableTheory]
+        [MemberData(nameof(BooruParams))]
+        public async Task GetExplicitImageAsync(BooruTestData data)
+        {
+            var booru = await Utils.GetAsync(data.BooruType);
+            Assert.True((booru.IsSafe && data.ExplicitTag == null) || (!booru.IsSafe && data.ExplicitTag != null));
+            if (!booru.IsSafe)
+            {
+                var post = await Utils.DoWebRequest(async () => { return await booru.GetRandomPostAsync(data.ExplicitTag); });
+                Assert.Equal(Rating.Explicit, post.Rating);
+            }
         }
 
         [SkippableTheory]
