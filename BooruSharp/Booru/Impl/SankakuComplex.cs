@@ -17,7 +17,9 @@ namespace BooruSharp.Booru
 
         /// <inheritdoc/>
         public override bool IsSafe => false;
-
+        /// <inheritdoc/>
+        public override bool HasPostByIdAPI => false;
+        /// <inheritdoc/>
         public override Uri PostBaseUrl => new("https://beta.sankakucomplex.com");
     }
 }

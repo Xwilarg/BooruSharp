@@ -14,6 +14,7 @@ namespace BooruSharp.Booru
     public abstract partial class ABooru
     {
         public virtual bool CanSearchWithNoTag => true;
+        public virtual bool HasPostByIdAPI => true;
         public virtual int MaxNumberOfTags => -1;
 
         public virtual Uri FileBaseUrl => APIBaseUrl;
@@ -64,6 +65,7 @@ namespace BooruSharp.Booru
         /// </summary>
         /// <param name="tags">List of tags sent by the user</param>
         protected abstract Task<Uri> CreateRandomPostUriAsync(string[] tags);
+        protected abstract Task<Uri> CreatePostByIdUriAsync(int id);
 
         protected virtual async Task<T[]> GetDataArray<T>(Uri url)
         {
@@ -130,18 +132,6 @@ namespace BooruSharp.Booru
             msg.EnsureSuccessStatusCode();
 
             return await msg.Content.ReadAsStringAsync();
-        }
-
-        protected Uri CreateUrl(Uri url, params string[] args)
-        {
-            var builder = new UriBuilder(url);
-
-            if (builder.Query?.Length > 1)
-                builder.Query = builder.Query[1..] + "&" + string.Join("&", args);
-            else
-                builder.Query = string.Join("&", args);
-
-            return builder.Uri;
         }
 
         /*

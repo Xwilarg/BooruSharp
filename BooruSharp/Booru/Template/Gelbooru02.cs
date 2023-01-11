@@ -32,6 +32,11 @@ namespace BooruSharp.Booru.Template
             return new($"{APIBaseUrl}index.php?page=dapi&s={query}&q=index");
         }
 
+        protected override Task<Uri> CreatePostByIdUriAsync(int id)
+        {
+            return Task.FromResult(new Uri($"{_imageUrl}&limit=1&id={id}"));
+        }
+
         protected override async Task<Uri> CreateRandomPostUriAsync(string[] tags)
         {
             if (!tags.Any())
@@ -39,16 +44,16 @@ namespace BooruSharp.Booru.Template
                 // We need to request /index.php?page=post&s=random and get the id given by the redirect
                 HttpResponseMessage msg = await HttpClient.GetAsync($"{APIBaseUrl}index.php?page=post&s=random");
                 msg.EnsureSuccessStatusCode();
-                return CreateUrl(_imageUrl, "limit=1", "id=" + HttpUtility.ParseQueryString(msg.RequestMessage.RequestUri.Query).Get("id"), "json=1");
+                return new Uri($"{_imageUrl}&limit=1&id={HttpUtility.ParseQueryString(msg.RequestMessage.RequestUri.Query).Get("id")}&json=1");
             }
-            var url = CreateUrl(_imageUrl, "limit=1", "tags=" + string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant(), "json=0");
+            var url = new Uri($"{_imageUrl}&limit=1&tags={string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant()}&json=0");
             XmlDocument xml = await GetXmlAsync(url.AbsoluteUri);
             int max = int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
 
             if (max == 0)
                 throw new Search.InvalidTags();
 
-            return CreateUrl(_imageUrl, "limit=1", "tags=" + string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant(), "pid=" + Random.Next(0, max), "json=1");
+            return new Uri($"{_imageUrl}&limit=1&tags={string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant()}&pid={Random.Next(0, max)}&json=1");
         }
 
         /// <inheritdoc/>

@@ -15,6 +15,8 @@
 
         /// <inheritdoc/>
         public override bool IsSafe => false;
+        /// <inheritdoc/>
+        public override bool HasPostByIdAPI => false;
 
         /*
 

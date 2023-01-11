@@ -10,10 +10,12 @@
         /// Initializes a new instance of the <see cref="Sakugabooru"/> class.
         /// </summary>
         public Sakugabooru()
-            : base("sakugabooru.com")//TODO:, BooruOptions.NoLastComments)
+            : base("sakugabooru.com")
         { }
 
         /// <inheritdoc/>
         public override bool IsSafe => false;
+        /// <inheritdoc/>
+        public override bool HasPostByIdAPI => false;
     }
 }

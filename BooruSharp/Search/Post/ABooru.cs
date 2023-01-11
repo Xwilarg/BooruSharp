@@ -3,6 +3,7 @@ using BooruSharp.Search.Post;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using static BooruSharp.Booru.Template.E621;
 
 namespace BooruSharp.Booru
 {
@@ -42,6 +43,22 @@ namespace BooruSharp.Booru
             var url = await CreateRandomPostUriAsync(tags);
             return await GetPostSearchResultAsync(url);
         }
+
+        /// <summary>
+        /// Searches for a post using its ID.
+        /// </summary>
+        /// <param name="id">The ID of the post to search.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="Search.FeatureUnavailable"/>
+        /// <exception cref="System.Net.Http.HttpRequestException"/>
+        public virtual async Task<PostSearchResult> GetPostByIdAsync(int id)
+        {
+            if (!HasPostByIdAPI)
+                throw new FeatureUnavailable();
+
+            var url = await CreatePostByIdUriAsync(id);
+            return await GetPostSearchResultAsync(url);
+        }
         /*
         private const int _limitedTagsSearchCount = 2;
         private const int _increasedPostLimitCount = 20001;
@@ -68,24 +85,6 @@ namespace BooruSharp.Booru
             return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, GetLimit(1), "md5=" + md5));
         }
 
-        /// <summary>
-        /// Searches for a post using its ID.
-        /// </summary>
-        /// <param name="id">The ID of the post to search.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        /// <exception cref="Search.FeatureUnavailable"/>
-        /// <exception cref="System.Net.Http.HttpRequestException"/>
-        public virtual async Task<Search.Post.SearchResult> GetPostByIdAsync(int id)
-        {
-            if (!HasPostByIdAPI)
-                throw new Search.FeatureUnavailable();
-
-            if (_format == UrlFormat.Danbooru) return await GetSearchResultFromUrlAsync(BaseUrl + "posts/" + id + ".json");
-            if (_format == UrlFormat.Philomena) return await GetSearchResultFromUrlAsync($"{BaseUrl}api/v1/json/images/{id}");
-            if (_format == UrlFormat.BooruOnRails) return await GetSearchResultFromUrlAsync($"{BaseUrl}api/v3/posts/{id}");
-            if (_format == UrlFormat.PostIndexJson) return await GetSearchResultFromUrlAsync(_imageUrl + "?tags=id:" + id);
-            return await GetSearchResultFromUrlAsync(CreateUrl(_imageUrl, GetLimit(1), "id=" + id));
-        }
 
         /// <summary>
         /// Gets the total number of available posts. If <paramref name="tagsArg"/> array is specified

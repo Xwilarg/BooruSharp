@@ -33,10 +33,15 @@ namespace BooruSharp.Booru.Template
         {
             if (!tags.Any())
             {
-                return Task.FromResult(CreateUrl(_imageUrl, "per_page=1", "q=id.gte:0", "sf=random"));
+                return Task.FromResult(new Uri($"{_imageUrl}?per_page=1&q=id.gte:0&sf=random"));
             }
             // Booru on rails use '+' as separator within a tag instead of '_'
-            return Task.FromResult(CreateUrl(_imageUrl, "per_page=1", "q=" + string.Join(",", tags.Select(Uri.EscapeDataString).Select(x => x.Replace('_', '+'))).ToLowerInvariant(), "sf=random"));
+            return Task.FromResult(new Uri($"{_imageUrl}?per_page=1&q={string.Join(",", tags.Select(Uri.EscapeDataString).Select(x => x.Replace('_', '+'))).ToLowerInvariant()}&sf=random"));
+        }
+
+        protected override Task<Uri> CreatePostByIdUriAsync(int id)
+        {
+            return Task.FromResult(new Uri($"{_imageUrl}/{id}"));
         }
 
         /// <summary>

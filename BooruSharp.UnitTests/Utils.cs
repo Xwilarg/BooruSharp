@@ -18,119 +18,136 @@ namespace BooruSharp.UnitTests
                 new BooruTestData()
                 {
                     BooruType = typeof(Atfbooru),
-                    Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" }
+                    Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" },
+                    ValidPostId = 419308
                 }
             },
             new object[] {
                 new BooruTestData()
                 {
                     BooruType = typeof(DanbooruDonmai),
-                    Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" }
+                    Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" },
+                    ValidPostId = 5972904
                 }
             },
             new object[] {
                 new BooruTestData()
                 {
                     BooruType = typeof(Derpibooru),
-                    Tags = new[] { "pegasus", "raised_tail", "lying_down" }
+                    Tags = new[] { "pegasus", "raised_tail", "lying_down" },
+                    ValidPostId = 3021165
                 }
             },
             new object[] {
                 new BooruTestData()
                 {
                     BooruType = typeof(E621),
-                    Tags = new[] { "kantai_collection", "blue_eyes", "outside" }
+                    Tags = new[] { "kantai_collection", "blue_eyes", "outside" },
+                    ValidPostId = 1329650
                 }
             },
             new object[] {
                 new BooruTestData()
                 {
                     BooruType = typeof(E926),
-                    Tags = new[] { "kantai_collection", "blue_eyes", "outside" }
+                    Tags = new[] { "kantai_collection", "blue_eyes", "outside" },
+                    ValidPostId = 1329650
                 }
             },
             new object[] {
                 new BooruTestData()
                 {
                     BooruType = typeof(Gelbooru),
-                    Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" }
+                    Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" },
+                    ValidPostId = 8113595
                 }
             },
             new object[] {
                 new BooruTestData()
                 {
                     BooruType = typeof(Konachan),
-                    Tags = new[] { "kantai_collection", "blue_eyes", "hat" }
+                    Tags = new[] { "kantai_collection", "blue_eyes", "hat" },
+                    ValidPostId = 351127
                 }
             },
             new object[] {
                 new BooruTestData()
                 {
                     BooruType = typeof(Lolibooru),
-                    Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" }
+                    Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" },
+                    ValidPostId = 516532
                 }
             },
             new object[] {
                 new BooruTestData()
                 {
                     BooruType = typeof(Ponybooru),
-                    Tags = new[] { "pegasus", "raised_tail", "lying_down" }
+                    Tags = new[] { "pegasus", "raised_tail", "lying_down" },
+                    ValidPostId = 3262026
                 }
             },
             new object[] {
                 new BooruTestData()
                 {
                     BooruType = typeof(Realbooru),
-                    Tags = new[] { "kantai_collection", "asian", "swimsuit" }
+                    Tags = new[] { "kantai_collection", "asian", "swimsuit" },
+                    ValidPostId = 809254
                 }
             },
             new object[] {
                 new BooruTestData()
                 {
                     BooruType = typeof(Rule34),
-                    Tags = new[] { "kantai_collection", "outdoors", "swimsuit" }
+                    Tags = new[] { "kantai_collection", "outdoors", "swimsuit" },
+                    ValidPostId = 139056
                 }
             },
             new object[] {
                 new BooruTestData()
                 {
                     BooruType = typeof(Safebooru),
-                    Tags = new[] { "kantai_collection", "outdoors", "swimsuit" }
+                    Tags = new[] { "kantai_collection", "outdoors", "swimsuit" },
+                    ValidPostId = 4248721
                 }
             },
             new object[] {
                 new BooruTestData()
                 {
                     BooruType = typeof(Sakugabooru),
-                    Tags = new[] { "kantai_collection", "explosions", "smoke" }
+                    Tags = new[] { "kantai_collection", "explosions", "smoke" },
+                    ValidPostId = 157179
                 }
             },
             new object[] {
                 new BooruTestData()
                 {
                     BooruType = typeof(SankakuComplex),
-                    Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" }
+                    Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" },
+                    ValidPostId = 32458685
                 }
             },
             new object[] {
                 new BooruTestData()
                 {
                     BooruType = typeof(Twibooru),
-                    Tags = new[] { "pegasus", "raised_tail", "lying_down" }
+                    Tags = new[] { "pegasus", "raised_tail", "lying_down" },
+                    ValidPostId = 2869409
                 }
             },
             new object[] {
                 new BooruTestData()
                 {
                     BooruType = typeof(Xbooru),
-                    Tags = new[] { "kantai_collection", "blue_eyes", "outside" }
+                    Tags = new[] { "kantai_collection", "blue_eyes", "outside" },
+                    ValidPostId = 830871
                 }
             },
             new object[] {
                 new BooruTestData()
                 {
                     BooruType = typeof(Yandere),
-                    Tags = new[] { "kantai_collection", "sweater", "bra" }
+                    Tags = new[] { "kantai_collection", "sweater", "bra" },
+                    ValidPostId = 1052829
                 }
             },
             //new BooruTestData() { BooruType = typeof(Pixiv) }

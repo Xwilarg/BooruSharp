@@ -31,6 +31,11 @@ namespace BooruSharp.Booru.Template
             return new($"{APIBaseUrl}api/v1/json/search/{query}s");
         }
 
+        protected override Task<Uri> CreatePostByIdUriAsync(int id)
+        {
+            return Task.FromResult(new Uri($"{_imageUrl}/{id}"));
+        }
+
         private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
         {
             var posts = await GetDataAsync<PostContainer>(uri);

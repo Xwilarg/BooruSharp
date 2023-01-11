@@ -6,5 +6,6 @@ namespace BooruSharp.UnitTests
     {
         public required Type BooruType;
         public required string[] Tags;
+        public required int ValidPostId;
     }
 }

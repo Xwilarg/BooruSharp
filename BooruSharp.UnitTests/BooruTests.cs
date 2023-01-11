@@ -70,5 +70,21 @@ namespace BooruSharp.UnitTests
                 await Utils.DoWebRequest(async () => { return await booru.GetRandomPostAsync("azazazazaz"); });
             });
         }
+
+        [SkippableTheory]
+        [MemberData(nameof(BooruParams))]
+        public async Task GetImageByIdAsync(BooruTestData data)
+        {
+            var booru = await Utils.GetAsync(data.BooruType);
+            if (booru.HasPostByIdAPI)
+            {
+                var res = await Utils.DoWebRequest(async () => { return await booru.GetPostByIdAsync(data.ValidPostId); });
+                await Utils.ValidatePostAsync(res, Array.Empty<string>());
+            }
+            else
+            {
+                await Assert.ThrowsAsync<TooManyTags>(async () => { await booru.GetPostByIdAsync(data.ValidPostId); });
+            }
+        }
     }
 }
