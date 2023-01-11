@@ -1,5 +1,4 @@
 ﻿using BooruSharp.Search;
-using BooruSharp.Search.Post;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +42,23 @@ namespace BooruSharp.UnitTests
             await Utils.ValidatePostAsync(res, targetTag);
             await Utils.ValidatePostAsync(res2, targetTag);
             Assert.NotEqual(res.ID, res2.ID);
+        }
+
+        [SkippableTheory]
+        [MemberData(nameof(BooruParams))]
+        public async Task GetRandomImageWith3TagsAsync(BooruTestData data)
+        {
+            var booru = await Utils.GetAsync(data.BooruType);
+            var targetTag = data.Tags.Take(3).ToArray();
+            if (booru.MaxNumberOfTags == -1)
+            {
+                var res = await Utils.DoWebRequest(async () => { return await booru.GetRandomPostAsync(targetTag); });
+                await Utils.ValidatePostAsync(res, targetTag);
+            }
+            else
+            {
+                await Assert.ThrowsAsync<TooManyTags>(async () => { await booru.GetRandomPostAsync(targetTag); });
+            }
         }
 
         [SkippableTheory]

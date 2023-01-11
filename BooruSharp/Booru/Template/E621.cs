@@ -40,10 +40,6 @@ namespace BooruSharp.Booru.Template
 
         protected override Task<Uri> CreateRandomPostUriAsync(string[] tags)
         {
-            if (tags.Length > 2)
-            {
-                throw new Search.TooManyTags();
-            }
             return Task.FromResult(CreateUrl(_imageUrl, "limit=1", "tags=" + string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant() + "+order:random"));
         }
 
@@ -80,7 +76,8 @@ namespace BooruSharp.Booru.Template
                     .Concat(parsingData.Tags.Invalid)
                     .Concat(parsingData.Tags.Lore)
                     .Concat(parsingData.Tags.Meta),
-                detailedTags: parsingData.Tags.Species.Select(x => new TagSearchResult(-1, x, TagType.Species, -1))
+                detailedTags: parsingData.Tags.General.Select(x => new TagSearchResult(-1, x, TagType.Trivia, -1))
+                    .Concat(parsingData.Tags.Species.Select(x => new TagSearchResult(-1, x, TagType.Species, -1)))
                     .Concat(parsingData.Tags.Character.Select(x => new TagSearchResult(-1, x, TagType.Character, -1)))
                     .Concat(parsingData.Tags.Copyright.Select(x => new TagSearchResult(-1, x, TagType.Copyright, -1)))
                     .Concat(parsingData.Tags.Artist.Select(x => new TagSearchResult(-1, x, TagType.Artist, -1)))

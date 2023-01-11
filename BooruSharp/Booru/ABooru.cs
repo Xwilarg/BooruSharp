@@ -14,6 +14,7 @@ namespace BooruSharp.Booru
     public abstract partial class ABooru
     {
         public virtual bool CanSearchWithNoTag => true;
+        public virtual int MaxNumberOfTags => -1;
 
         public virtual Uri FileBaseUrl => APIBaseUrl;
         public virtual Uri PreviewBaseUrl => APIBaseUrl;
@@ -125,9 +126,6 @@ namespace BooruSharp.Booru
 
             if (msg.StatusCode == HttpStatusCode.Forbidden)
                 throw new AuthentificationRequired();
-
-            if (msg.StatusCode == (HttpStatusCode)422)
-                throw new TooManyTags();
 
             msg.EnsureSuccessStatusCode();
 

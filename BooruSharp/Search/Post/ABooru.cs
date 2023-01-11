@@ -34,6 +34,10 @@ namespace BooruSharp.Booru
             {
                 throw new FeatureUnavailable("This booru doesn't support search with no tag");
             }
+            if (MaxNumberOfTags != -1 && tags.Length > MaxNumberOfTags)
+            {
+                throw new TooManyTags(MaxNumberOfTags);
+            }
 
             var url = await CreateRandomPostUriAsync(tags);
             return await GetPostSearchResultAsync(url);

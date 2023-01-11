@@ -19,14 +19,12 @@ namespace BooruSharp.Booru
 
         protected override Task<Uri> CreateRandomPostUriAsync(string[] tags)
         {
-            if (tags.Length > 2)
-            {
-                throw new Search.TooManyTags();
-            }
             return base.CreateRandomPostUriAsync(tags);
         }
 
         /// <inheritdoc/>
         public override bool IsSafe => false;
+        /// <inheritdoc/>
+        public override int MaxNumberOfTags => 2;
     }
 }

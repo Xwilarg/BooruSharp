@@ -32,21 +32,21 @@ namespace BooruSharp.UnitTests
                 new BooruTestData()
                 {
                     BooruType = typeof(Derpibooru),
-                    Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" }
+                    Tags = new[] { "pegasus", "raised_tail", "lying_down" }
                 }
             },
             new object[] {
                 new BooruTestData()
                 {
                     BooruType = typeof(E621),
-                    Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" }
+                    Tags = new[] { "kantai_collection", "blue_eyes", "outside" }
                 }
             },
             new object[] {
                 new BooruTestData()
                 {
                     BooruType = typeof(E926),
-                    Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" }
+                    Tags = new[] { "kantai_collection", "blue_eyes", "outside" }
                 }
             },
             new object[] {
@@ -74,7 +74,7 @@ namespace BooruSharp.UnitTests
                 new BooruTestData()
                 {
                     BooruType = typeof(Ponybooru),
-                    Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" }
+                    Tags = new[] { "pegasus", "raised_tail", "lying_down" }
                 }
             },
             new object[] {
@@ -88,14 +88,14 @@ namespace BooruSharp.UnitTests
                 new BooruTestData()
                 {
                     BooruType = typeof(Rule34),
-                    Tags = new[] { "kantai_collection", "asian", "swimsuit" }
+                    Tags = new[] { "kantai_collection", "outdoors", "swimsuit" }
                 }
             },
             new object[] {
                 new BooruTestData()
                 {
                     BooruType = typeof(Safebooru),
-                    Tags = new[] { "kantai_collection", "asian", "swimsuit" }
+                    Tags = new[] { "kantai_collection", "outdoors", "swimsuit" }
                 }
             },
             new object[] {
@@ -116,21 +116,21 @@ namespace BooruSharp.UnitTests
                 new BooruTestData()
                 {
                     BooruType = typeof(Twibooru),
-                    Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" }
+                    Tags = new[] { "pegasus", "raised_tail", "lying_down" }
                 }
             },
             new object[] {
                 new BooruTestData()
                 {
                     BooruType = typeof(Xbooru),
-                    Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" }
+                    Tags = new[] { "kantai_collection", "blue_eyes", "outside" }
                 }
             },
             new object[] {
                 new BooruTestData()
                 {
                     BooruType = typeof(Yandere),
-                    Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" }
+                    Tags = new[] { "kantai_collection", "sweater", "bra" }
                 }
             },
             //new BooruTestData() { BooruType = typeof(Pixiv) }
