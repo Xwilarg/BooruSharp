@@ -39,7 +39,7 @@ namespace BooruSharp.UnitTests
                     BooruType = typeof(Derpibooru),
                     Tags = new[] { "pegasus", "raised_tail", "lying_down" },
                     ValidPostId = 3021165,
-                    ExplicitTag = "spread+pussy"
+                    ExplicitTag = "spread_pussy"
                 }
             },
             new object[] {
@@ -138,7 +138,7 @@ namespace BooruSharp.UnitTests
                     BooruType = typeof(SankakuComplex),
                     Tags = new[] { "kantai_collection", "blue_eyes", "outdoors" },
                     ValidPostId = 32458685,
-                    ExplicitTag = "spread_pussy"
+                    ExplicitTag = "spread_vagina"
                 }
             },
             new object[] {

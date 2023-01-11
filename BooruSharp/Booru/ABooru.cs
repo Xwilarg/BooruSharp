@@ -126,9 +126,6 @@ namespace BooruSharp.Booru
             PreRequest(message);
             var msg = await HttpClient.SendAsync(message);
 
-            if (msg.StatusCode == HttpStatusCode.Forbidden)
-                throw new AuthentificationRequired();
-
             msg.EnsureSuccessStatusCode();
 
             return await msg.Content.ReadAsStringAsync();
