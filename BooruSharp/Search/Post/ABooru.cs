@@ -57,7 +57,14 @@ namespace BooruSharp.Booru
                 throw new FeatureUnavailable();
 
             var url = await CreatePostByIdUriAsync(id);
-            return await GetPostSearchResultAsync(url);
+            try
+            {
+                return await GetPostSearchResultAsync(url);
+            }
+            catch (InvalidTags)
+            {
+                throw new InvalidPostId();
+            }
         }
         /*
         private const int _limitedTagsSearchCount = 2;
@@ -120,41 +127,6 @@ namespace BooruSharp.Booru
                 XmlDocument xml = await GetXmlAsync(url);
                 return int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
             }
-        }
-
-        /// <summary>
-        /// Searches for multiple random posts. If <paramref name="tagsArg"/> array is
-        /// specified and isn't empty, random posts containing those tags will be returned.
-        /// </summary>
-        /// <param name="limit">The number of posts to get.</param>
-        /// <param name="tagsArg">The optional array of tags that must be contained in the posts.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        /// <exception cref="Search.FeatureUnavailable"/>
-        /// <exception cref="System.Net.Http.HttpRequestException"/>
-        /// <exception cref="Search.TooManyTags"/>
-        public virtual async Task<Search.Post.SearchResult[]> GetRandomPostsAsync(int limit, params string[] tagsArg)
-        {
-            if (!HasMultipleRandomAPI)
-                throw new Search.FeatureUnavailable();
-
-            string[] tags = tagsArg != null
-                ? tagsArg.Where(tag => !string.IsNullOrWhiteSpace(tag)).ToArray()
-                : Array.Empty<string>();
-
-            if (NoMoreThanTwoTags && tags.Length > _limitedTagsSearchCount)
-                throw new Search.TooManyTags();
-
-            string tagString = TagsToString(tags);
-
-            if (_format == UrlFormat.IndexPhp)
-                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, GetLimit(limit), tagString) + "+sort:random");
-            if (_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails)
-                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, GetLimit(limit), tagString, "sf=random"));
-            else if (NoMoreThanTwoTags)
-                // +order:random count as a tag so we use random=true instead to save one
-                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, GetLimit(limit), tagString, "random=true"));
-            else
-                return await GetSearchResultsFromUrlAsync(CreateUrl(_imageUrl, GetLimit(limit), tagString) + "+order:random");
         }
 
         /// <summary>

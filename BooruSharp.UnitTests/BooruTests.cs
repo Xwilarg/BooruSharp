@@ -74,6 +74,16 @@ namespace BooruSharp.UnitTests
 
         [SkippableTheory]
         [MemberData(nameof(BooruParams))]
+        public async Task GetImageWithInvalidPostID(BooruTestData data)
+        {
+            var booru = await Utils.GetAsync(data.BooruType);
+            await Assert.ThrowsAsync<InvalidPostId>(async () => {
+                await Utils.DoWebRequest(async () => { return await booru.GetPostByIdAsync(int.MaxValue); });
+            });
+        }
+
+        [SkippableTheory]
+        [MemberData(nameof(BooruParams))]
         public async Task GetExplicitImageAsync(BooruTestData data)
         {
             var booru = await Utils.GetAsync(data.BooruType);
