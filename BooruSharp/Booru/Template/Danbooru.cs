@@ -4,6 +4,7 @@ using BooruSharp.Search.Tag;
 using System;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace BooruSharp.Booru.Template
@@ -43,7 +44,7 @@ namespace BooruSharp.Booru.Template
 
         protected override Task<Uri> CreatePostByIdUriAsync(int id)
         {
-            return Task.FromResult(new Uri($"{APIBaseUrl}/{id}.json"));
+            return Task.FromResult(new Uri($"{APIBaseUrl}posts/{id}.json"));
         }
 
         /// <inheritdoc/>
@@ -57,12 +58,28 @@ namespace BooruSharp.Booru.Template
 
         private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
         {
-            var posts = await GetDataAsync<SearchResult[]>(uri);
-            if (!posts.Any())
+            var json = await GetDataAsync<JsonElement>(uri);
+            SearchResult parsingData;
+
+            if (json.ValueKind == JsonValueKind.Array)
             {
-                throw new InvalidTags();
+                var posts = JsonSerializer.Deserialize<SearchResult[]>(json.GetRawText(), new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = new SnakeCaseNamingPolicy()
+                });
+                if (!posts.Any())
+                {
+                    throw new InvalidTags();
+                }
+                parsingData = posts[0];
             }
-            var parsingData = posts[0];
+            else
+            {
+                parsingData = JsonSerializer.Deserialize<SearchResult>(json.GetRawText(), new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = new SnakeCaseNamingPolicy()
+                });
+            }
 
             return new PostSearchResult(
                 fileUrl: parsingData.FileUrl != null ? new Uri(parsingData.FileUrl) : null,

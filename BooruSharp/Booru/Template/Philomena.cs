@@ -33,7 +33,7 @@ namespace BooruSharp.Booru.Template
 
         protected override Task<Uri> CreatePostByIdUriAsync(int id)
         {
-            return Task.FromResult(new Uri($"{APIBaseUrl}api/v1/posts/{id}"));
+            return Task.FromResult(new Uri($"{APIBaseUrl}api/v1/json/images/{id}"));
         }
 
         private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
