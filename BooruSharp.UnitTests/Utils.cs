@@ -225,6 +225,7 @@ namespace BooruSharp.UnitTests
             }
             catch (HttpRequestException hre)
             {
+                Skip.If(hre.StatusCode == HttpStatusCode.BadGateway, "Service returned 502 error");
                 Skip.If(hre.StatusCode == HttpStatusCode.ServiceUnavailable, "Service returned 503 error");
                 if (Environment.GetEnvironmentVariable("CI") != "true")
                 {

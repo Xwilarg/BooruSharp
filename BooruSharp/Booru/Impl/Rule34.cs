@@ -28,7 +28,7 @@ namespace BooruSharp.Booru
         {
             // We don't have to handle what happen when there is no tag because it'll throw before
 
-            var url = new Uri($"{_imageUrl}&limit=1&id={string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant()}&json=1");
+            var url = new Uri($"{_imageUrl}&limit=1&id={string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant()}&json=0");
             XmlDocument xml = await GetXmlAsync(url.AbsoluteUri);
             int max = int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
 
@@ -53,7 +53,7 @@ namespace BooruSharp.Booru
                 fileUrl: new($"{parsingData.FileUrl}"),
                 previewUrl: new($"{parsingData.PreviewUrl}"),
                 postUrl: new($"{PostBaseUrl}index.php?page=post&s=view&id={parsingData.Id}"),
-                sampleUri: parsingData.Sample == 1 ? new($"{parsingData.SampleUrl}") : null,
+                sampleUri: parsingData.Sample ? new($"{parsingData.SampleUrl}") : null,
                 rating: GetRating(parsingData.Rating[0]),
                 tags: parsingData.Tags.Split(),
                 detailedTags: null,
@@ -77,7 +77,7 @@ namespace BooruSharp.Booru
             public string FileUrl { init; get; }
             public string Image { init; get; }
             public int Id { init; get; }
-            public int Sample { init; get; }
+            public bool Sample { init; get; }
             public string Rating { init; get; }
             public string Tags { init; get; }
             public int Height { init; get; }

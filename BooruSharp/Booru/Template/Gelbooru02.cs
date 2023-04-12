@@ -51,7 +51,7 @@ namespace BooruSharp.Booru.Template
             int max = int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
 
             if (max == 0)
-                throw new Search.InvalidTags();
+                throw new InvalidTags();
 
             return new Uri($"{_imageUrl}&limit=1&tags={string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant()}&pid={Random.Next(0, max)}&json=1");
         }
