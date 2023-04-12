@@ -43,7 +43,7 @@ namespace BooruSharp.Booru.Template
 
         protected override Task<Uri> CreatePostByIdUriAsync(int id)
         {
-            return Task.FromResult(new Uri($"{_imageUrl}/{id}.json"));
+            return Task.FromResult(new Uri($"{APIBaseUrl}/{id}.json"));
         }
 
         /// <inheritdoc/>

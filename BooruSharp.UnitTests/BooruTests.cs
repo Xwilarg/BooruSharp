@@ -97,7 +97,7 @@ namespace BooruSharp.UnitTests
             }
             else
             {
-                await Assert.ThrowsAsync<TooManyTags>(async () => { await booru.GetPostByIdAsync(data.ValidPostId); });
+                await Assert.ThrowsAsync<FeatureUnavailable>(async () => { await booru.GetPostByIdAsync(data.ValidPostId); });
             }
         }
     }

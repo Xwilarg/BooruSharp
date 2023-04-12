@@ -34,7 +34,7 @@ namespace BooruSharp.Booru.Template
 
         protected override Task<Uri> CreatePostByIdUriAsync(int id)
         {
-            return Task.FromResult(new Uri($"{_imageUrl}&limit=1&id={id}"));
+            return Task.FromResult(new Uri($"{_imageUrl}&limit=1&id={id}&json=1"));
         }
 
         protected override async Task<Uri> CreateRandomPostUriAsync(string[] tags)
