@@ -28,11 +28,11 @@ namespace BooruSharp.Booru
         private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
         {
             var posts = await GetDataAsync<PostContainer>(uri);
-            if (!posts.Posts.Any())
+            if (posts.Posts != null && !posts.Posts.Any())
             {
                 throw new InvalidTags();
             }
-            var parsingData = posts.Posts[0];
+            var parsingData = posts.Posts == null ? posts.Post : posts.Posts[0];
 
             Rating rating;
             if (parsingData.Tags.Contains("explicit")) rating = Rating.Explicit;

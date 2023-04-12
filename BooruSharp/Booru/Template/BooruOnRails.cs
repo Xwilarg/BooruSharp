@@ -41,7 +41,7 @@ namespace BooruSharp.Booru.Template
 
         protected override Task<Uri> CreatePostByIdUriAsync(int id)
         {
-            return Task.FromResult(new Uri($"{_imageUrl}/{id}"));
+            return Task.FromResult(new Uri($"{APIBaseUrl}api/v3/posts/{id}"));
         }
 
         /// <summary>
@@ -66,11 +66,11 @@ namespace BooruSharp.Booru.Template
         private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
         {
             var posts = await GetDataAsync<PostContainer>(uri);
-            if (!posts.Posts.Any())
+            if (posts.Posts != null && !posts.Posts.Any())
             {
                 throw new InvalidTags();
             }
-            var parsingData = posts.Posts[0];
+            var parsingData = posts.Posts == null ? posts.Post : posts.Posts[0];
 
             Rating rating;
             if (parsingData.Tags.Contains("explicit")) rating = Rating.Explicit;
@@ -101,6 +101,7 @@ namespace BooruSharp.Booru.Template
 
         public class PostContainer
         {
+            public SearchResult Post { init; get; }
             public SearchResult[] Posts { init; get; }
         }
 
