@@ -237,10 +237,10 @@ namespace BooruSharp.UnitTests
 
         public static async Task ValidatePostAsync(PostSearchResult res, string[] inputTags)
         {
-            if (res.FileUrl != null) Assert.True(await ValidateUrlAsync(res.FileUrl.AbsoluteUri), $"Invalid URL {res.FileUrl.AbsoluteUri}");
-            if (res.PreviewUrl != null) Assert.True(await ValidateUrlAsync(res.PreviewUrl.AbsoluteUri), $"Invalid URL {res.PreviewUrl.AbsoluteUri}");
-            if (res.PostUrl != null) Assert.True(await ValidateUrlAsync(res.PostUrl.AbsoluteUri), $"Invalid URL {res.PostUrl.AbsoluteUri}");
-            if (res.SampleUri != null) Assert.True(await ValidateUrlAsync(res.SampleUri.AbsoluteUri), $"Invalid URL {res.SampleUri.AbsoluteUri}");
+            if (res.FileUrl != null) Assert.True(await ValidateUrlAsync(res.FileUrl.AbsoluteUri), $"Invalid URL {res.FileUrl.AbsoluteUri} for ID {res.ID}");
+            if (res.PreviewUrl != null) Assert.True(await ValidateUrlAsync(res.PreviewUrl.AbsoluteUri), $"Invalid URL {res.PreviewUrl.AbsoluteUri} for ID {res.ID}");
+            if (res.PostUrl != null) Assert.True(await ValidateUrlAsync(res.PostUrl.AbsoluteUri), $"Invalid URL {res.PostUrl.AbsoluteUri} for ID {res.ID}");
+            if (res.SampleUri != null) Assert.True(await ValidateUrlAsync(res.SampleUri.AbsoluteUri), $"Invalid URL {res.SampleUri.AbsoluteUri} for ID {res.ID}");
             Assert.InRange(res.Rating, (Rating)(-1), Rating.Explicit);
             Assert.NotEmpty(res.Tags);
             Assert.NotEqual(0, res.ID);
