@@ -28,7 +28,7 @@ namespace BooruSharp.Booru
         {
             // We don't have to handle what happen when there is no tag because it'll throw before
 
-            var url = new Uri($"{_imageUrl}&limit=1&id={string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant()}&json=0");
+            var url = new Uri($"{_imageUrl}&limit=1&tags={string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant()}&json=0");
             XmlDocument xml = await GetXmlAsync(url.AbsoluteUri);
             int max = int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
 
