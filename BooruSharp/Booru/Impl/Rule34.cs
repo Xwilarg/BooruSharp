@@ -47,7 +47,13 @@ namespace BooruSharp.Booru
 
         private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
         {
-            var parsingData = (await GetDataAsync<SearchResult[]>(uri))[0];
+            var data = await GetDataAsync<SearchResult[]>(uri);
+            if (!data.Any())
+            {
+                throw new InvalidTags();
+            }
+            var parsingData = data[0];
+
 
             return new PostSearchResult(
                 fileUrl: new($"{parsingData.FileUrl}"),
