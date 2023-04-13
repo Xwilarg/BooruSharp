@@ -74,16 +74,6 @@ namespace BooruSharp.UnitTests
 
         [SkippableTheory]
         [MemberData(nameof(BooruParams))]
-        public async Task GetImageWithInvalidPostID(BooruTestData data)
-        {
-            var booru = await Utils.GetAsync(data.BooruType);
-            await Assert.ThrowsAsync<InvalidPostId>(async () => {
-                await Utils.DoWebRequest(async () => { return await booru.GetPostByIdAsync(int.MaxValue); });
-            });
-        }
-
-        [SkippableTheory]
-        [MemberData(nameof(BooruParams))]
         public async Task GetExplicitImageAsync(BooruTestData data)
         {
             var booru = await Utils.GetAsync(data.BooruType);
@@ -108,6 +98,23 @@ namespace BooruSharp.UnitTests
             else
             {
                 await Assert.ThrowsAsync<FeatureUnavailable>(async () => { await booru.GetPostByIdAsync(data.ValidPostId); });
+            }
+        }
+
+        [SkippableTheory]
+        [MemberData(nameof(BooruParams))]
+        public async Task GetImageWithInvalidPostID(BooruTestData data)
+        {
+            var booru = await Utils.GetAsync(data.BooruType);
+            if (booru.HasPostByIdAPI)
+            {
+                await Assert.ThrowsAsync<InvalidPostId>(async () => {
+                    await Utils.DoWebRequest(async () => { return await booru.GetPostByIdAsync(int.MaxValue); });
+                });
+            }
+            else
+            {
+                await Assert.ThrowsAsync<FeatureUnavailable>(async () => { await booru.GetPostByIdAsync(int.MaxValue); });
             }
         }
     }
