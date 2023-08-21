@@ -44,6 +44,11 @@ namespace BooruSharp.Booru.Template
             return Task.FromResult(new Uri($"{APIBaseUrl}api/v3/posts/{id}"));
         }
 
+        protected override Task<Uri> CreatePostCountUrlAsync(string[] tags)
+        {
+            return Task.FromResult(new Uri($"{_imageUrl}?limit=1&q={string.Join(",", tags.Select(Uri.EscapeDataString).Select(x => x.Replace('_', '+'))).ToLowerInvariant()}"));
+        }
+
         /// <summary>
         /// ID used to set filter and have access to as many posts as possible
         /// </summary>
@@ -61,6 +66,12 @@ namespace BooruSharp.Booru.Template
             }
             uriBuilder.Query = query.ToString();
             message.RequestUri = new Uri(uriBuilder.ToString());
+        }
+
+        private protected override async Task<int> GetPostCountSearchResultAsync(Uri uri)
+        {
+            var data = await GetDataAsync<PostsCount>(uri);
+            return data.Total;
         }
 
         private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
@@ -97,6 +108,11 @@ namespace BooruSharp.Booru.Template
                 score: parsingData.Score,
                 hash: parsingData.Sha512Hash
             );
+        }
+
+        public class PostsCount
+        {
+            public int Total { init; get; }
         }
 
         public class PostContainer

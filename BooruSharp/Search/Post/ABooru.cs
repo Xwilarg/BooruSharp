@@ -3,6 +3,7 @@ using BooruSharp.Search.Post;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
 using static BooruSharp.Booru.Template.E621;
 
 namespace BooruSharp.Booru
@@ -59,6 +60,40 @@ namespace BooruSharp.Booru
             var url = await CreatePostByIdUriAsync(id);
             return await GetPostSearchResultAsync(url);
         }
+
+        /// <summary>
+        /// Gets the total number of available posts. If <paramref name="tagsArg"/> array is specified
+        /// and isn't empty, the total number of posts containing these tags will be returned.
+        /// </summary>
+        /// <param name="tagsArg">The optional array of tags.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <exception cref="Search.FeatureUnavailable"/>
+        /// <exception cref="System.Net.Http.HttpRequestException"/>
+        /// <exception cref="Search.TooManyTags"/>
+        public virtual async Task<int> GetPostCountAsync(params string[] tagsArg)
+        {
+            if (!HasPostCountAPI)
+                throw new FeatureUnavailable();
+
+            string[] tags = tagsArg != null
+                ? tagsArg.Where(tag => !string.IsNullOrWhiteSpace(tag)).ToArray()
+                : Array.Empty<string>();
+
+            if (MaxNumberOfTags != -1 && tags.Length > MaxNumberOfTags)
+            {
+                throw new TooManyTags(MaxNumberOfTags);
+            }
+
+            var url = await CreatePostCountUrlAsync(tags);
+            return await GetPostCountSearchResultAsync(url);
+            /*
+            else
+            {
+                var url = CreateUrl(_imageUrlXml, GetLimit(1), TagsToString(tags));
+                XmlDocument xml = await GetXmlAsync(url);
+                return int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
+            }*/
+        }
         /*
         private const int _limitedTagsSearchCount = 2;
         private const int _increasedPostLimitCount = 20001;
@@ -86,41 +121,6 @@ namespace BooruSharp.Booru
         }
 
 
-        /// <summary>
-        /// Gets the total number of available posts. If <paramref name="tagsArg"/> array is specified
-        /// and isn't empty, the total number of posts containing these tags will be returned.
-        /// </summary>
-        /// <param name="tagsArg">The optional array of tags.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        /// <exception cref="Search.FeatureUnavailable"/>
-        /// <exception cref="System.Net.Http.HttpRequestException"/>
-        /// <exception cref="Search.TooManyTags"/>
-        public virtual async Task<int> GetPostCountAsync(params string[] tagsArg)
-        {
-            if (!HasPostCountAPI)
-                throw new Search.FeatureUnavailable();
-
-            string[] tags = tagsArg != null
-                ? tagsArg.Where(tag => !string.IsNullOrWhiteSpace(tag)).ToArray()
-                : Array.Empty<string>();
-
-            if (NoMoreThanTwoTags && tags.Length > _limitedTagsSearchCount)
-                throw new Search.TooManyTags();
-
-            if (_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails)
-            {
-                var url = CreateUrl(_imageUrl, GetLimit(1), TagsToString(tags));
-                var json = await GetJsonAsync(url);
-                var token = (JToken)JsonConvert.DeserializeObject(json);
-                return token["total"].Value<int>();
-            }
-            else
-            {
-                var url = CreateUrl(_imageUrlXml, GetLimit(1), TagsToString(tags));
-                XmlDocument xml = await GetXmlAsync(url);
-                return int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
-            }
-        }
 
         /// <summary>
         /// Gets the latest posts on the website. If <paramref name="tagsArg"/> array is

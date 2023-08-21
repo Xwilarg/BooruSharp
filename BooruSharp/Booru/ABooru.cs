@@ -15,6 +15,7 @@ namespace BooruSharp.Booru
     {
         public virtual bool CanSearchWithNoTag => true;
         public virtual bool HasPostByIdAPI => true;
+        public virtual bool HasPostCountAPI => true;
         public virtual int MaxNumberOfTags => -1;
 
         public virtual Uri FileBaseUrl => APIBaseUrl;
@@ -25,10 +26,11 @@ namespace BooruSharp.Booru
         /// <inheritdoc/>
         public abstract bool IsSafe { get; }
 
-        private protected virtual Search.Comment.SearchResult GetCommentSearchResultAsync(Uri uri)
-            => throw new FeatureUnavailable();
+        private protected abstract Task<PostSearchResult> GetPostSearchResultAsync(Uri uri);
 
-        private protected virtual Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
+        private protected abstract Task<int> GetPostCountSearchResultAsync(Uri uri);
+
+        private protected virtual Search.Comment.SearchResult GetCommentSearchResultAsync(Uri uri)
             => throw new FeatureUnavailable();
 
         private protected virtual Search.Related.SearchResult GetRelatedSearchResultAsync(Uri uri)
@@ -66,6 +68,7 @@ namespace BooruSharp.Booru
         /// <param name="tags">List of tags sent by the user</param>
         protected abstract Task<Uri> CreateRandomPostUriAsync(string[] tags);
         protected abstract Task<Uri> CreatePostByIdUriAsync(int id);
+        protected abstract Task<Uri> CreatePostCountUrlAsync(string[] tags);
 
         protected virtual async Task<T[]> GetDataArray<T>(Uri url)
         {
