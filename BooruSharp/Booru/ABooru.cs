@@ -216,7 +216,7 @@ namespace BooruSharp.Booru
                     _autocompleteUrl = new Uri(BaseUrl + "autocomplete.php");
                     break;
                 case UrlFormat.Danbooru:
-                    _autocompleteUrl = new Uri(BaseUrl + "tags/" + "autocomplete.json");
+                    _autocompleteUrl = new Uri(BaseUrl + "tags/autocomplete.json");
                     break;
                 default:
                     _autocompleteUrl = CreateQueryString(_format, "autocomplete"); //this isn't supposed to work.

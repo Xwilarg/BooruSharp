@@ -147,8 +147,8 @@ namespace BooruSharp.Booru.Template
                 string name = item["name"].Value<string>();
                 int count = item["post_count"].Value<int>();
                 var type = GetTagType(item["category"].Value<int>());
-                string antecedent_name = item["antecedent_name"].Value<string>();
-                autoCompleteResults.Add(new Search.Autocomplete.SearchResult(id, name, name, type, count, antecedent_name));
+                string antecedentName = item["antecedent_name"].Value<string>();
+                autoCompleteResults.Add(new Search.Autocomplete.SearchResult(id, name, name, type, count, antecedentName));
             }
             return autoCompleteResults.ToArray();
         }
