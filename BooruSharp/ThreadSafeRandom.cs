@@ -6,9 +6,9 @@ namespace BooruSharp
 {
     internal sealed class ThreadSafeRandom : Random, IDisposable
     {
-        private static readonly RNGCryptoServiceProvider _global = new RNGCryptoServiceProvider();
+        private static readonly RNGCryptoServiceProvider _global = new();
 
-        private readonly ThreadLocal<Random> _localRandom = new ThreadLocal<Random>(() =>
+        private readonly ThreadLocal<Random> _localRandom = new(() =>
         {
             var buffer = new byte[4];
             // RNGCryptoServiceProvider is thread-safe for use in this manner

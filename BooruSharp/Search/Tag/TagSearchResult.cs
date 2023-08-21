@@ -3,16 +3,16 @@
     /// <summary>
     /// Represents a tag API search result.
     /// </summary>
-    public readonly struct SearchResult
+    public record TagSearchResult
     {
         /// <summary>
-        /// Initializes a <see cref="SearchResult"/> struct.
+        /// Initializes a <see cref="TagSearchResult"/> struct.
         /// </summary>
         /// <param name="id">The ID of the tag.</param>
         /// <param name="name">The name of the tag.</param>
         /// <param name="type">The type of the tag.</param>
         /// <param name="count">The number of occurences of the tag.</param>
-        public SearchResult(int id, string name, TagType type, int count)
+        public TagSearchResult(int id, string name, TagType type, int count)
         {
             ID = id;
             Name = name;

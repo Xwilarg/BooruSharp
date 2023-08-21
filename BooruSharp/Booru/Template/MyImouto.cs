@@ -2,51 +2,26 @@
 using BooruSharp.Search.Post;
 using System;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 
 namespace BooruSharp.Booru.Template
 {
     /// <summary>
-    /// Template booru based on Moebooru. This class is <see langword="abstract"/>.
+    /// Template booru based on MyImouto. This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract class Moebooru : ABooru
+    public abstract class MyImouto : Moebooru
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Moebooru"/> template class.
+        /// Initializes a new instance of the <see cref="MyImouto"/> template class.
         /// </summary>
         /// <param name="domain">
         /// The fully qualified domain name. Example domain
         /// name should look like <c>www.google.com</c>.
         /// </param>
-        protected Moebooru(string domain)
+        protected MyImouto(string domain)
             : base(domain)
         { }
-
-        protected override Uri CreateQueryString(string query, string squery = "index")
-        {
-            return new($"{APIBaseUrl}{query}/{squery}.json");
-        }
-
-        protected override Task<Uri> CreateRandomPostUriAsync(string[] tags)
-        {
-            return Task.FromResult(new Uri($"{_imageUrl}?limit=1&tags={string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant()}+order:random"));
-        }
-
-        protected override Task<Uri> CreatePostByIdUriAsync(int id)
-        {
-            return Task.FromResult(new Uri($"{_imageUrl}?tags=id:" + id));
-        }
-
-        /// <inheritdoc/>
-        protected override void PreRequest(HttpRequestMessage message)
-        {
-            if (Auth != null)
-            {
-                message.Headers.Add("Cookie", "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash);
-            }
-        }
 
         private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
         {
@@ -73,7 +48,7 @@ namespace BooruSharp.Booru.Template
                 previewWidth: parsingData.PreviewWidth,
                 creation: _unixTime.AddSeconds(parsingData.CreatedAt),
                 sources: string.IsNullOrEmpty(parsingData.Source) ? Array.Empty<string>() : new[] { parsingData.Source },
-                score: parsingData.Score,
+                score: int.Parse(parsingData.Score),
                 hash: parsingData.Md5
             );
         }
@@ -93,7 +68,7 @@ namespace BooruSharp.Booru.Template
             public int PreviewWidth { init; get; }
             public int CreatedAt { init; get; }
             public string Source { init; get; }
-            public int Score { init; get; }
+            public string Score { init; get; }
             public string Md5 { init; get; }
         }
 

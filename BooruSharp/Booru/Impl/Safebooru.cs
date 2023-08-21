@@ -10,7 +10,7 @@
         /// Initializes a new instance of the <see cref="Safebooru"/> class.
         /// </summary>
         public Safebooru()
-            : base("safebooru.org", BooruOptions.NoComment)
+            : base("safebooru.org")//TODO:, BooruOptions.NoComment)
         { }
 
         /// <inheritdoc/>

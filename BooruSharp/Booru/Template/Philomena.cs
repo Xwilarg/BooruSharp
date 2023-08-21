@@ -1,18 +1,15 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using BooruSharp.Search;
+using BooruSharp.Search.Post;
 using System;
-using System.Collections;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace BooruSharp.Booru.Template
 {
     /// <summary>
     /// Template booru based on Philomena https://github.com/ZizzyDizzyMC/philomena . This class is <see langword="abstract"/>.
     /// </summary>
-    public abstract class Philomena : ABooru
+    public abstract class Philomena : BooruOnRails
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Philomena"/> template class.
@@ -21,33 +18,67 @@ namespace BooruSharp.Booru.Template
         /// The fully qualified domain name. Example domain
         /// name should look like <c>www.google.com</c>.
         /// </param>
-        /// <param name="options">
-        /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
-        /// </param>
-        protected Philomena(string domain, BooruOptions options = BooruOptions.None)
-            : base(domain, UrlFormat.Philomena, options | BooruOptions.NoFavorite | BooruOptions.NoPostByMD5 | BooruOptions.NoPostByID
-                  | BooruOptions.NoLastComments | BooruOptions.NoWiki | BooruOptions.NoRelated)
+        protected Philomena(string domain)
+            : base(domain)
         { }
 
-        /// <summary>
-        /// ID used to set filter and have access to as many posts as possible
-        /// </summary>
-        protected abstract int FilterID { get; }
-
-        /// <inheritdoc/>
-        protected override void PreRequest(HttpRequestMessage message)
+        protected override Uri CreateQueryString(string query, string squery = "index")
         {
-            var uriBuilder = new UriBuilder(message.RequestUri.AbsoluteUri);
-            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
-            query["filter_id"] = $"{FilterID}";
-            if (Auth != null)
+            if (query == "post")
             {
-                query["key"] = Auth.PasswordHash;
+                return new($"{APIBaseUrl}api/v1/json/search");
             }
-            uriBuilder.Query = query.ToString();
-            message.RequestUri = new Uri(uriBuilder.ToString());
+            return new($"{APIBaseUrl}api/v1/json/search/{query}s");
         }
 
+        protected override Task<Uri> CreatePostByIdUriAsync(int id)
+        {
+            return Task.FromResult(new Uri($"{APIBaseUrl}api/v1/json/images/{id}"));
+        }
+
+        private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
+        {
+            var posts = await GetDataAsync<PostContainer>(uri);
+            if (posts.Images != null && !posts.Images.Any())
+            {
+                throw new InvalidPostException();
+            }
+            var parsingData = posts.Images == null ? posts.Image : posts.Images[0];
+
+            Rating rating;
+            if (parsingData.Tags.Contains("explicit")) rating = Rating.Explicit;
+            else if (parsingData.Tags.Contains("questionable")) rating = Rating.Questionable;
+            else if (parsingData.Tags.Contains("suggestive")) rating = Rating.Safe;
+            else if (parsingData.Tags.Contains("safe")) rating = Rating.General;
+            else rating = (Rating)(-1); // Some images doesn't have a rating
+            return new PostSearchResult(
+                fileUrl: new(parsingData.Representations.Full),
+                previewUrl: new(parsingData.Representations.Thumb),
+                postUrl: new($"{PostBaseUrl}images/{parsingData.Id}"),
+                sampleUri: new(parsingData.Representations.Large),
+                rating: rating,
+                tags: parsingData.Tags,
+                detailedTags: null,
+                id: parsingData.Id,
+                size: parsingData.Size,
+                height: parsingData.Height,
+                width: parsingData.Width,
+                previewHeight: null,
+                previewWidth: null,
+                creation: parsingData.CreatedAt,
+                sources: string.IsNullOrEmpty(parsingData.SourceUrl) ? Array.Empty<string>() : new[] { parsingData.SourceUrl },
+                score: parsingData.Score,
+                hash: parsingData.Sha512Hash
+            );
+        }
+
+        public class PostContainer
+        {
+            public SearchResult Image { init; get; }
+            public SearchResult[] Images { init; get; }
+        }
+
+        /*
         private protected override JToken ParseFirstPostSearchResult(object json)
         {
             var token = (JToken)json;
@@ -137,5 +168,6 @@ namespace BooruSharp.Booru.Template
                 default: return (Search.Tag.TagType)6;
             }
         }
+        */
     }
 }

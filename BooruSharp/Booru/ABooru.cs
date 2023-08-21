@@ -1,15 +1,10 @@
 ﻿using BooruSharp.Search;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using BooruSharp.Search.Post;
 using System;
-using System.Collections;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text.RegularExpressions;
+using System.Text.Json;
 using System.Threading.Tasks;
-using System.Web;
-using System.Xml;
 
 namespace BooruSharp.Booru
 {
@@ -18,131 +13,36 @@ namespace BooruSharp.Booru
     /// </summary>
     public abstract partial class ABooru
     {
-        /// <summary>
-        /// Gets whether this booru is considered safe (that is, all posts on
-        /// this booru have rating of <see cref="Search.Post.Rating.Safe"/>).
-        /// </summary>
+        public virtual bool CanSearchWithNoTag => true;
+        public virtual bool HasPostByIdAPI => true;
+        public virtual bool HasPostCountAPI => true;
+        public virtual int MaxNumberOfTags => -1;
+
+        public virtual Uri FileBaseUrl => APIBaseUrl;
+        public virtual Uri PreviewBaseUrl => APIBaseUrl;
+        public virtual Uri PostBaseUrl => APIBaseUrl;
+        public virtual Uri SampleBaseUrl => APIBaseUrl;
+
+        /// <inheritdoc/>
         public abstract bool IsSafe { get; }
 
-        private protected virtual Search.Comment.SearchResult GetCommentSearchResult(object json)
+        private protected abstract Task<PostSearchResult> GetPostSearchResultAsync(Uri uri);
+
+        private protected abstract Task<int> GetPostCountSearchResultAsync(Uri uri);
+
+        private protected virtual Search.Comment.SearchResult GetCommentSearchResultAsync(Uri uri)
             => throw new FeatureUnavailable();
 
-        private protected virtual Search.Post.SearchResult GetPostSearchResult(JToken obj)
+        private protected virtual Search.Related.SearchResult GetRelatedSearchResultAsync(Uri uri)
             => throw new FeatureUnavailable();
 
-        private protected virtual Search.Post.SearchResult[] GetPostsSearchResult(object json)
+        private protected virtual Search.Tag.TagSearchResult GetTagSearchResultAsync(Uri uri)
             => throw new FeatureUnavailable();
 
-        private protected virtual JToken ParseFirstPostSearchResult(object json)
+        private protected virtual Search.Wiki.SearchResult GetWikiSearchResultAsync(Uri uri)
             => throw new FeatureUnavailable();
 
-        private protected virtual Search.Related.SearchResult GetRelatedSearchResult(object json)
-            => throw new FeatureUnavailable();
-
-        private protected virtual Search.Tag.SearchResult GetTagSearchResult(object json)
-            => throw new FeatureUnavailable();
-
-        private protected virtual Search.Wiki.SearchResult GetWikiSearchResult(object json)
-            => throw new FeatureUnavailable();
-
-        private protected virtual async Task<IEnumerable> GetTagEnumerableSearchResultAsync(Uri url)
-        {
-            if (TagsUseXml)
-            {
-                var xml = await GetXmlAsync(url);
-                return xml.LastChild;
-            }
-            else
-            {
-                return JsonConvert.DeserializeObject<JArray>(await GetJsonAsync(url));
-            }
-        }
-
-        /// <summary>
-        /// Gets whether it is possible to search for related tags on this booru.
-        /// </summary>
-        public bool HasRelatedAPI => !_options.HasFlag(BooruOptions.NoRelated);
-
-        /// <summary>
-        /// Gets whether it is possible to search for wiki entries on this booru.
-        /// </summary>
-        public bool HasWikiAPI => !_options.HasFlag(BooruOptions.NoWiki);
-
-        /// <summary>
-        /// Gets whether it is possible to search for comments on this booru.
-        /// </summary>
-        public bool HasCommentAPI => !_options.HasFlag(BooruOptions.NoComment);
-
-        /// <summary>
-        /// Gets whether it is possible to search for tags by their IDs on this booru.
-        /// </summary>
-        public bool HasTagByIdAPI => !_options.HasFlag(BooruOptions.NoTagByID);
-
-        /// <summary>
-        /// Gets whether it is possible to search for the last comments on this booru.
-        /// </summary>
-        // As a failsafe also check for the availability of comment API.
-        public bool HasSearchLastComment => HasCommentAPI && !_options.HasFlag(BooruOptions.NoLastComments);
-
-        /// <summary>
-        /// Gets whether it is possible to search for posts by their MD5 on this booru.
-        /// </summary>
-        public bool HasPostByMd5API => !_options.HasFlag(BooruOptions.NoPostByMD5);
-
-        /// <summary>
-        /// Gets whether it is possible to search for posts by their ID on this booru.
-        /// </summary>
-        public bool HasPostByIdAPI => !_options.HasFlag(BooruOptions.NoPostByID);
-
-        /// <summary>
-        /// Gets whether it is possible to get the total number of posts on this booru.
-        /// </summary>
-        public bool HasPostCountAPI => !_options.HasFlag(BooruOptions.NoPostCount);
-
-        /// <summary>
-        /// Gets whether it is possible to get multiple random images on this booru.
-        /// </summary>
-        public bool HasMultipleRandomAPI => !_options.HasFlag(BooruOptions.NoMultipleRandom);
-
-        /// <summary>
-        /// Gets whether this booru supports adding or removing favorite posts.
-        /// </summary>
-        public bool HasFavoriteAPI => !_options.HasFlag(BooruOptions.NoFavorite);
-
-        /// <summary>
-        /// Gets whether this booru can't call post functions without search arguments.
-        /// </summary>
-        public bool NoEmptyPostSearch => _options.HasFlag(BooruOptions.NoEmptyPostSearch);
-
-        /// <summary>
-        /// Gets a value indicating whether searching by more than two tags at once is not allowed.
-        /// </summary>
-        public bool NoMoreThanTwoTags => _options.HasFlag(BooruOptions.NoMoreThan2Tags);
-
-        /// <summary>
-        /// Gets a value indicating whether http:// scheme is used instead of https://.
-        /// </summary>
-        protected bool UsesHttp => _options.HasFlag(BooruOptions.UseHttp);
-
-        /// <summary>
-        /// Gets a value indicating whether tags API uses XML instead of JSON.
-        /// </summary>
-        protected bool TagsUseXml => _options.HasFlag(BooruOptions.TagApiXml);
-
-        /// <summary>
-        /// Gets a value indicating whether comments API uses XML instead of JSON.
-        /// </summary>
-        protected bool CommentsUseXml => _options.HasFlag(BooruOptions.CommentApiXml);
-
-        /// <summary>
-        /// Gets a value indicating whether the max limit of posts per search is increased (used by Gelbooru).
-        /// </summary>
-        protected bool SearchIncreasedPostLimit => _options.HasFlag(BooruOptions.LimitOf20000);
-
-        /// <summary>
-        /// Checks for the booru availability.
-        /// Throws <see cref="HttpRequestException"/> if service isn't available.
-        /// </summary>
+        /// <inheritdoc/>
         public async Task CheckAvailabilityAsync()
         {
             await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Head, _imageUrl));
@@ -156,6 +56,42 @@ namespace BooruSharp.Booru
         { }
 
         /// <summary>
+        /// Create an URL to request the specified API
+        /// </summary>
+        /// <param name="query">Main query</param>
+        /// <param name="squery">Sub query</param>
+        protected abstract Uri CreateQueryString(string query, string squery = "index");
+
+        /// <summary>
+        /// Create the Uri to request a post from the API
+        /// </summary>
+        /// <param name="tags">List of tags sent by the user</param>
+        protected abstract Task<Uri> CreateRandomPostUriAsync(string[] tags);
+        protected abstract Task<Uri> CreatePostByIdUriAsync(int id);
+        protected abstract Task<Uri> CreatePostCountUrlAsync(string[] tags);
+
+        protected virtual async Task<T[]> GetDataArray<T>(Uri url)
+        {
+            return JsonSerializer.Deserialize<T[]>(await GetJsonAsync(url), new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = new SnakeCaseNamingPolicy()
+            });
+        }
+
+        protected virtual async Task<T> GetDataAsync<T>(Uri url)
+        {
+            var res = await GetJsonAsync(url);
+            if (string.IsNullOrEmpty(res))
+            {
+                throw new InvalidPostException();
+            }
+            return JsonSerializer.Deserialize<T>(res, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = new SnakeCaseNamingPolicy()
+            });
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ABooru"/> class.
         /// </summary>
         /// <param name="domain">
@@ -166,78 +102,29 @@ namespace BooruSharp.Booru
         /// <param name="options">
         /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
         /// </param>
-        protected ABooru(string domain, UrlFormat format, BooruOptions options)
+        protected ABooru(string apiDomain)
         {
             Auth = null;
             HttpClient = null;
-            _options = options;
 
-            bool useHttp = UsesHttp; // Cache returned value for faster access.
-            BaseUrl = new Uri("http" + (useHttp ? "" : "s") + "://" + domain, UriKind.Absolute);
-            _format = format;
-            _imageUrl = CreateQueryString(format, format == UrlFormat.Philomena ? string.Empty : "post");
+            APIBaseUrl = new Uri("https://" + apiDomain, UriKind.Absolute);
+            _imageUrl = CreateQueryString("post");
 
-            if (_format == UrlFormat.IndexPhp)
-                _imageUrlXml = new Uri(_imageUrl.AbsoluteUri.Replace("json=1", "json=0"));
-            else if (_format == UrlFormat.PostIndexJson)
-                _imageUrlXml = new Uri(_imageUrl.AbsoluteUri.Replace("index.json", "index.xml"));
-            else
-                _imageUrlXml = null;
+            _tagUrl = CreateQueryString("tag");
 
-            _tagUrl = CreateQueryString(format, "tag");
+            _wikiUrl = CreateQueryString("wiki");
 
-            if (HasWikiAPI)
-                _wikiUrl = format == UrlFormat.Danbooru
-                    ? CreateQueryString(format, "wiki_page")
-                    : CreateQueryString(format, "wiki");
+            _relatedUrl = CreateQueryString("tag", "related");
 
-            if (HasRelatedAPI)
-                _relatedUrl = format == UrlFormat.Danbooru
-                    ? CreateQueryString(format, "related_tag")
-                    : CreateQueryString(format, "tag", "related");
-
-            if (HasCommentAPI)
-                _commentUrl = CreateQueryString(format, "comment");
-        }
-
-        private protected Uri CreateQueryString(UrlFormat format, string query, string squery = "index")
-        {
-            string queryString;
-
-            switch (format)
-            {
-                case UrlFormat.PostIndexJson:
-                    queryString = query + "/" + squery + ".json";
-                    break;
-
-                case UrlFormat.IndexPhp:
-                    queryString = "index.php?page=dapi&s=" + query + "&q=index&json=1";
-                    break;
-
-                case UrlFormat.Danbooru:
-                    queryString = query == "related_tag" ? query + ".json" : query + "s.json";
-                    break;
-
-                case UrlFormat.Sankaku:
-                    queryString = query == "wiki" ? query : query + "s";
-                    break;
-
-                case UrlFormat.Philomena:
-                    queryString = $"api/v1/json/search/{query}{(string.IsNullOrEmpty(query) ? string.Empty : "s")}";
-                    break;
-
-                case UrlFormat.BooruOnRails:
-                    queryString = $"api/v3/search/{query}s";
-                    break;
-
-                default:
-                    return BaseUrl;
-            }
-
-            return new Uri(BaseUrl + queryString);
+            _commentUrl = CreateQueryString("comment");
         }
 
         // TODO: Handle limitrate
+
+        private protected Task<string> GetJsonAsync(Uri url)
+        {
+            return GetJsonAsync(url.AbsoluteUri);
+        }
 
         private protected async Task<string> GetJsonAsync(string url)
         {
@@ -247,72 +134,23 @@ namespace BooruSharp.Booru
             PreRequest(message);
             var msg = await HttpClient.SendAsync(message);
 
-            if (msg.StatusCode == HttpStatusCode.Forbidden)
-                throw new AuthentificationRequired();
-
-            if (msg.StatusCode == (HttpStatusCode)422)
-                throw new TooManyTags();
+            if (msg.StatusCode == HttpStatusCode.NotFound)
+            {
+                throw new InvalidPostException();
+            }
 
             msg.EnsureSuccessStatusCode();
 
             return await msg.Content.ReadAsStringAsync();
         }
 
-        private protected Task<string> GetJsonAsync(Uri url)
-        {
-            return GetJsonAsync(url.AbsoluteUri);
-        }
-
-        private async Task<XmlDocument> GetXmlAsync(string url)
-        {
-            var xmlDoc = new XmlDocument();
-            var xmlString = await GetJsonAsync(url);
-            // https://www.key-shortcut.com/en/all-html-entities/all-entities/
-            xmlDoc.LoadXml(Regex.Replace(xmlString, "&([a-zA-Z]+);", HttpUtility.HtmlDecode("$1")));
-            return xmlDoc;
-        }
-
-        private Task<XmlDocument> GetXmlAsync(Uri url)
-        {
-            return GetXmlAsync(url.AbsoluteUri);
-        }
-
-        private async Task<string> GetRandomIdAsync(string tags)
-        {
-            HttpResponseMessage msg = await HttpClient.GetAsync(BaseUrl + "index.php?page=post&s=random&tags=" + tags);
-            msg.EnsureSuccessStatusCode();
-            return HttpUtility.ParseQueryString(msg.RequestMessage.RequestUri.Query).Get("id");
-        }
-
-        private Uri CreateUrl(Uri url, params string[] args)
-        {
-            var builder = new UriBuilder(url);
-
-            if (builder.Query?.Length > 1)
-                builder.Query = builder.Query.Substring(1) + "&" + string.Join("&", args);
-            else
-                builder.Query = string.Join("&", args);
-
-            return builder.Uri;
-        }
-
-        private string TagsToString(string[] tags)
-        {
-            if (tags == null || !tags.Any())
-            {
-                // Philomena doesn't support search with no tag so we search for all posts with ID > 0
-                return _format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails ? "q=id.gte:0" : "tags=";
-            }
-            return (_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails ? "q=" : "tags=")
-                + string.Join(_format == UrlFormat.Philomena || _format == UrlFormat.BooruOnRails ? "," : "+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant();
-        }
-
+        /*
         private string SearchArg(string value)
         {
             return _format == UrlFormat.Danbooru
                 ? "search[" + value + "]="
                 : value + "=";
-        }
+        }*/
 
         /// <summary>
         /// Gets or sets authentication credentials.
@@ -352,15 +190,13 @@ namespace BooruSharp.Booru
         /// <summary>
         /// Gets the base API request URL.
         /// </summary>
-        public Uri BaseUrl { get; }
+        public Uri APIBaseUrl { get; }
 
         private HttpClient _client;
-        private readonly Uri _imageUrlXml, _imageUrl, _tagUrl, _wikiUrl, _relatedUrl, _commentUrl; // URLs for differents endpoints
+        protected readonly Uri _imageUrl, _tagUrl, _wikiUrl, _relatedUrl, _commentUrl; // URLs for differents endpoints
         // All options are stored in a bit field and can be retrieved using related methods/properties.
-        private readonly BooruOptions _options;
-        private readonly UrlFormat _format; // URL format
         private const string _userAgentHeaderValue = "Mozilla/5.0 BooruSharp";
-        private protected readonly DateTime _unixTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        private protected readonly DateTime _unixTime = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private static readonly Lazy<HttpClient> _lazyClient = new Lazy<HttpClient>(() =>
         {
             var handler = new HttpClientHandler

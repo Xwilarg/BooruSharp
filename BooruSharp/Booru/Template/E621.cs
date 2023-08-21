@@ -1,9 +1,11 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using BooruSharp.Search;
+using BooruSharp.Search.Post;
+using BooruSharp.Search.Tag;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BooruSharp.Booru.Template
 {
@@ -19,13 +21,32 @@ namespace BooruSharp.Booru.Template
         /// The fully qualified domain name. Example domain
         /// name should look like <c>www.google.com</c>.
         /// </param>
-        /// <param name="options">
-        /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
-        /// </param>
-        protected E621(string domain, BooruOptions options = BooruOptions.None)
-            : base(domain, UrlFormat.Danbooru, options | BooruOptions.NoWiki | BooruOptions.NoRelated | BooruOptions.NoComment 
-                  | BooruOptions.NoTagByID | BooruOptions.NoPostCount | BooruOptions.NoFavorite)
+        protected E621(string domain)
+            : base(domain)
         { }
+
+        protected override Uri CreateQueryString(string query, string squery = "index")
+        {
+            if (query == "tag" && squery == "related")
+            {
+                return new($"{APIBaseUrl}related_tag.json");
+            }
+            if (query == "tag" && squery == "wiki")
+            {
+                return new($"{APIBaseUrl}wiki_pages.json");
+            }
+            return new($"{APIBaseUrl}{query}s.json");
+        }
+
+        protected override Task<Uri> CreateRandomPostUriAsync(string[] tags)
+        {
+            return Task.FromResult(new Uri($"{_imageUrl}?limit=1&tags={string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant()}+order:random"));
+        }
+
+        protected override Task<Uri> CreatePostByIdUriAsync(int id)
+        {
+            return Task.FromResult(new Uri($"{_imageUrl}?limit=1&id={id}"));
+        }
 
         /// <inheritdoc/>
         protected override void PreRequest(HttpRequestMessage message)
@@ -37,6 +58,95 @@ namespace BooruSharp.Booru.Template
             }
         }
 
+        private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
+        {
+            var posts = await GetDataAsync<DataContainer>(uri);
+            if (!posts.Posts.Any())
+            {
+                throw new InvalidPostException();
+            }
+            var parsingData = posts.Posts[0];
+
+            return new PostSearchResult(
+                fileUrl: parsingData.File.Url != null ? new Uri(parsingData.File.Url) : null,
+                previewUrl: parsingData.Preview.Url != null ? new Uri(parsingData.Preview.Url) : null,
+                postUrl: new Uri($"{PostBaseUrl}posts/{parsingData.Id}"),
+                sampleUri: parsingData.Sample.Url != null ? new Uri(parsingData.Sample.Url) : null,
+                rating: GetRating(parsingData.Rating[0]),
+                tags: parsingData.Tags.General
+                    .Concat(parsingData.Tags.Species)
+                    .Concat(parsingData.Tags.Character)
+                    .Concat(parsingData.Tags.Copyright)
+                    .Concat(parsingData.Tags.Artist)
+                    .Concat(parsingData.Tags.Invalid)
+                    .Concat(parsingData.Tags.Lore)
+                    .Concat(parsingData.Tags.Meta),
+                detailedTags: parsingData.Tags.General.Select(x => new TagSearchResult(-1, x, TagType.Trivia, -1))
+                    .Concat(parsingData.Tags.Species.Select(x => new TagSearchResult(-1, x, TagType.Species, -1)))
+                    .Concat(parsingData.Tags.Character.Select(x => new TagSearchResult(-1, x, TagType.Character, -1)))
+                    .Concat(parsingData.Tags.Copyright.Select(x => new TagSearchResult(-1, x, TagType.Copyright, -1)))
+                    .Concat(parsingData.Tags.Artist.Select(x => new TagSearchResult(-1, x, TagType.Artist, -1)))
+                    .Concat(parsingData.Tags.Invalid.Select(x => new TagSearchResult(-1, x, TagType.Invalid, -1)))
+                    .Concat(parsingData.Tags.Lore.Select(x => new TagSearchResult(-1, x, TagType.Lore, -1)))
+                    .Concat(parsingData.Tags.Meta.Select(x => new TagSearchResult(-1, x, TagType.Metadata, -1))),
+                id: parsingData.Id,
+                size: parsingData.File.Size,
+                height: parsingData.File.Height,
+                width: parsingData.File.Width,
+                previewHeight: parsingData.Preview.Height,
+                previewWidth: parsingData.Preview.Width,
+                creation: parsingData.CreatedAt,
+                sources: parsingData.Sources ?? Array.Empty<string>(),
+                score: parsingData.Score.Total,
+                hash: parsingData.File.Md5
+            );
+        }
+
+        public class DataContainer
+        {
+            public SearchResult[] Posts { init; get; }
+        }
+
+        public class SearchResult
+        {
+            public ImageData File { init; get; }
+            public ImageData Preview { init; get; }
+            public ImageData Sample { init; get; }
+            public Tags Tags { init; get; }
+            public int Id { init; get; }
+            public string Rating { init; get; }
+            public DateTime CreatedAt { init; get; }
+            public string[] Sources { init; get; }
+            public Score Score { init; get; }
+        }
+
+        public class ImageData
+        {
+            public string Url { init; get; }
+            public int Width { init; get; }
+            public int Height { init; get; }
+            public int Size { init; get; }
+            public string Md5 { init; get; }
+        }
+
+        public class Tags
+        {
+            public string[] General { init; get; }
+            public string[] Species { init; get; }
+            public string[] Character { init; get; }
+            public string[] Copyright { init; get; }
+            public string[] Artist { init; get; }
+            public string[] Invalid { init; get; }
+            public string[] Lore { init; get; }
+            public string[] Meta { init; get; }
+        }
+
+        public class Score
+        {
+            public int Total { init; get; }
+        }
+
+        /*
         private protected override JToken ParseFirstPostSearchResult(object json)
         {
             JObject jObject = (JObject)json;
@@ -136,5 +246,6 @@ namespace BooruSharp.Booru.Template
         }
 
         // GetRelatedSearchResult not available // TODO: Available with credentials?
+        */
     }
 }

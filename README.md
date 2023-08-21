@@ -3,10 +3,6 @@
 | [![NuGet](https://img.shields.io/nuget/v/BooruSharp.svg)](https://www.nuget.org/packages/BooruSharp/) | [![NuGet](https://img.shields.io/nuget/v/BooruSharp.Others.svg)](https://www.nuget.org/packages/BooruSharp.Others/) |
 | ![Nuget](https://img.shields.io/nuget/dt/BooruSharp) | ![Nuget](https://img.shields.io/nuget/dt/BooruSharp.Others) |
 
-| CI | Code Quality | Coverage |
-| -- | ------------ | -------- |
-| [![Build (GitHub CI)](https://github.com/Xwilarg/BooruSharp/workflows/.NET%20Core/badge.svg)](https://github.com/Xwilarg/BooruSharp/actions) | [![Codacy Badge](https://app.codacy.com/project/badge/Grade/07be9e8c69cd4d87b20987b9fcec7a0e)](https://www.codacy.com/manual/Xwilarg/BooruSharp?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Xwilarg/BooruSharp&amp;utm_campaign=Badge_Grade) | [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/07be9e8c69cd4d87b20987b9fcec7a0e)](https://www.codacy.com/manual/Xwilarg/BooruSharp?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Xwilarg/BooruSharp&amp;utm_campaign=Badge_Coverage) |
-
 # BooruSharp
 BooruSharp is a C# library to browse Booru websites easily<br/>
 You can download it from [NuGet](https://www.nuget.org/packages/BooruSharp):
@@ -44,26 +40,27 @@ If you have any question, feel free to [contact me](#need-more-help)
 
 ## Features availability
 
-| Booru | Multiple Random Images | Post by ID | Post by MD5 | Tag by ID | Comment API | Last Comments API | Wiki API | Related Tag API | Post Count API | Favorite API |
-| ---           | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Atfbooru		| ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ❌ | ❌ |
-| Danbooru Donmai	| ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ❌ | ❌ |
-| Derpibooru	| ✔️ | ✔️ | ❌ | ❌ | ✔️ | ❌ | ❌ | ❌ | ✔️ | ❌ |
-| E621			| ✔️ | ✔️ | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| E926			| ✔️ | ✔️ | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| Gelbooru		| ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ✔️ |
-| Konachan		| ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ |
-| Lolibooru		| ✔️ | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ |
-| Ponybooru 	| ✔️ | ✔️ | ❌ | ❌ | ✔️ | ❌ | ❌ | ❌ | ✔️ | ❌ |
-| Realbooru		| ❌ | ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ✔️ |
-| Rule 34		| ❌ | ✔️ | ❌ | ✔️ | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ |
-| Safebooru		| ❌ | ✔️ | ❌ | ✔️ | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ |
-| Sakugabooru		| ✔️ | ❌ | ❌ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ❌ |
-| Sankaku Complex	| ✔️ | ❌ | ❌ | ❌ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ❌ |
-| Twibooru	    | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ❌ | ❌ | ❌ | ✔️ | ❌ |
-| Xbooru		| ❌ | ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ✔️ |
-| Yandere		| ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ❌ |
-| Pixiv		    | ❌ | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ |
+| Booru | Search with no Tag | Multiple Random Images | Post by ID | Post by MD5 | Tag by ID | Comment API | Last Comments API | Wiki API | Related Tag API | Post Count API | Favorite API |
+| ---           | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Atfbooru		| ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ❌ | ❌ |
+| Danbooru Donmai	| ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ❌ | ❌ |
+| Derpibooru	| ✔️ | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ❌ | ❌ | ❌ | ✔️ | ❌ |
+| E621			| ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| E926			| ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Furrybooru	| ✔️ | ❌ | ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ✔️ |
+| Gelbooru		| ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ✔️ |
+| Konachan		| ✔️ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ |
+| Lolibooru		| ✔️ | ✔️ | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ |
+| Ponybooru 	| ✔️ | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ❌ | ❌ | ❌ | ✔️ | ❌ |
+| Realbooru		| ✔️ | ❌ | ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ✔️ |
+| Rule 34		| ❌ | ❌ | ✔️ | ❌ | ✔️ | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ |
+| Safebooru		| ✔️ | ❌ | ✔️ | ❌ | ✔️ | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ |
+| Sakugabooru	| ✔️ | ✔️ | ❌ | ❌ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ❌ |
+| Sankaku Complex	| ✔️ | ✔️ | ❌ | ❌ | ❌ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ❌ |
+| Twibooru	    | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ❌ | ❌ | ❌ | ✔️ | ❌ |
+| Xbooru		| ✔️ | ❌ | ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ✔️ |
+| Yandere		| ✔️ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ✔️ | ❌ |
+| Pixiv		    | ❌ | ❌ | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ |
 
 ### Additional notes on Pixiv
 Pixiv also have 2 methods to download an image (ImageToByteArrayAsync) or a preview (PreviewToByteArrayAsync), it'll give you a byte array given a SearchResult

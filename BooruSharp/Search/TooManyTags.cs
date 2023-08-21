@@ -13,17 +13,8 @@ namespace BooruSharp.Search
         /// <summary>
         /// Initializes a new instance of the <see cref="TooManyTags"/> class.
         /// </summary>
-        public TooManyTags()
-            : base("You can't have more than 2 tags for a search with this booru.")
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TooManyTags"/>
-        /// class with a specified error message.
-        /// </summary>
-        /// <param name="message">The error message that explains the reason for the exception.</param>
-        public TooManyTags(string message) 
-            : base(message)
+        public TooManyTags(int maxTagCount)
+            : base($"You can't have more than {maxTagCount} tags for a search with this booru.")
         { }
 
         /// <summary>

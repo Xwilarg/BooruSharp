@@ -1,4 +1,8 @@
-﻿namespace BooruSharp.Booru
+﻿using System.Linq;
+using System.Threading.Tasks;
+using System;
+
+namespace BooruSharp.Booru
 {
     /// <summary>
     /// Danbooru.
@@ -10,10 +14,17 @@
         /// Initializes a new instance of the <see cref="DanbooruDonmai"/> class.
         /// </summary>
         public DanbooruDonmai()
-            : base("danbooru.donmai.us", BooruOptions.NoMoreThan2Tags)
+            : base("danbooru.donmai.us")
         { }
+
+        protected override Task<Uri> CreateRandomPostUriAsync(string[] tags)
+        {
+            return base.CreateRandomPostUriAsync(tags);
+        }
 
         /// <inheritdoc/>
         public override bool IsSafe => false;
+        /// <inheritdoc/>
+        public override int MaxNumberOfTags => 2;
     }
 }

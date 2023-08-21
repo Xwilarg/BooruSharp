@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,6 +7,7 @@ namespace BooruSharp.Booru
 {
     public abstract partial class ABooru
     {
+        /*
         /// <summary>
         /// Get the comments posted on a post.
         /// </summary>
@@ -103,5 +102,6 @@ namespace BooruSharp.Booru
                 return jsonArray.Select(GetCommentSearchResult).ToArray();
             }
         }
+        */
     }
 }

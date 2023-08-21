@@ -1,15 +1,11 @@
 ﻿using BooruSharp.Search;
-using BooruSharp.Search.Tag;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using BooruSharp.Search.Post;
 using System;
-using System.Collections;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
-using System.Xml;
 
 namespace BooruSharp.Booru.Template
 {
@@ -25,13 +21,24 @@ namespace BooruSharp.Booru.Template
         /// The fully qualified domain name. Example domain
         /// name should look like <c>www.google.com</c>.
         /// </param>
-        /// <param name="options">
-        /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
-        /// </param>
-        protected Gelbooru(string domain, BooruOptions options = BooruOptions.None)
-            : base(domain, UrlFormat.IndexPhp, options | BooruOptions.NoWiki | BooruOptions.NoRelated | BooruOptions.LimitOf20000
-                  | BooruOptions.CommentApiXml)
+        protected Gelbooru(string domain)
+            : base(domain)
         { }
+
+        protected override Uri CreateQueryString(string query, string squery = "index")
+        {
+            return new($"{APIBaseUrl}index.php?page=dapi&s={query}&q=index&json=1");
+        }
+
+        protected override Task<Uri> CreateRandomPostUriAsync(string[] tags)
+        {
+            return Task.FromResult(new Uri($"{_imageUrl}&limit=1&tags={string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant()}+sort:random"));
+        }
+
+        protected override Task<Uri> CreatePostByIdUriAsync(int id)
+        {
+            return Task.FromResult(new Uri($"{_imageUrl}?limit=1&id={id}"));
+        }
 
         /// <inheritdoc/>
         protected override void PreRequest(HttpRequestMessage message)
@@ -42,6 +49,58 @@ namespace BooruSharp.Booru.Template
             }
         }
 
+        private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
+        {
+            var posts = await GetDataAsync<DataContainer>(uri);
+            if (posts.Post == null)
+            {
+                throw new InvalidPostException();
+            }
+            var parsingData = posts.Post[0];
+
+            return new PostSearchResult(
+                fileUrl: new(parsingData.FileUrl),
+                previewUrl: new(parsingData.PreviewUrl),
+                postUrl: new Uri($"{PostBaseUrl}index.php?page=post&s=view&id={parsingData.Id}"),
+                sampleUri: !string.IsNullOrEmpty(parsingData.SampleUrl) ? new Uri(parsingData.SampleUrl) : null,
+                rating: GetRating(parsingData.Rating[0]),
+                tags: parsingData.Tags.Split().Select(HttpUtility.HtmlDecode),
+                detailedTags: null,
+                id: parsingData.Id,
+                size: null,
+                height: parsingData.Height,
+                width: parsingData.Width,
+                previewHeight: null,
+                previewWidth: null,
+                creation: DateTime.ParseExact(parsingData.CreatedAt, "ddd MMM dd HH:mm:ss zzz yyyy", CultureInfo.InvariantCulture),
+                sources: string.IsNullOrEmpty(parsingData.Source) ? Array.Empty<string>() : new[] { parsingData.Source },
+                score: parsingData.Score,
+                hash: parsingData.Md5
+            );
+        }
+
+        public class DataContainer
+        {
+            public SearchResult[] Post { init; get; }
+        }
+
+        public class SearchResult
+        {
+            public string FileUrl { init; get; }
+            public string PreviewUrl { init; get; }
+            public string SampleUrl { init; get; }
+            public int Id { init; get; }
+            public string Rating { init; get; }
+            public string Tags { init; get; }
+            public int Height { init; get; }
+            public int Width { init; get; }
+            public string CreatedAt { init; get; }
+            public string Source { init; get; }
+            public int Score { init; get; }
+            public string Md5 { init; get; }
+        }
+
+        /*
         /// <inheritdoc/>
         public async override Task<Search.Post.SearchResult> GetPostByMd5Async(string md5)
         {
@@ -146,5 +205,6 @@ namespace BooruSharp.Booru.Template
             }
             throw new InvalidTags();
         }
+        */
     }
 }

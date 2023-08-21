@@ -1,8 +1,11 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using BooruSharp.Search;
+using BooruSharp.Search.Post;
 using System;
-using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Web;
 using System.Xml;
 
 namespace BooruSharp.Booru.Template
@@ -19,14 +22,37 @@ namespace BooruSharp.Booru.Template
         /// The fully qualified domain name. Example domain
         /// name should look like <c>www.google.com</c>.
         /// </param>
-        /// <param name="options">
-        /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
-        /// </param>
-        protected Gelbooru02(string domain, BooruOptions options = BooruOptions.None) 
-            : base(domain, UrlFormat.IndexPhp, options | BooruOptions.NoRelated | BooruOptions.NoWiki | BooruOptions.NoPostByMD5
-                  | BooruOptions.CommentApiXml | BooruOptions.TagApiXml | BooruOptions.NoMultipleRandom)
+        protected Gelbooru02(string domain) 
+            : base(domain)
+        { }
+
+        protected override Uri CreateQueryString(string query, string squery = "index")
         {
-            _url = domain;
+            return new($"{APIBaseUrl}index.php?page=dapi&s={query}&q=index");
+        }
+
+        protected override Task<Uri> CreatePostByIdUriAsync(int id)
+        {
+            return Task.FromResult(new Uri($"{_imageUrl}&limit=1&id={id}&json=1"));
+        }
+
+        protected override async Task<Uri> CreateRandomPostUriAsync(string[] tags)
+        {
+            if (!tags.Any())
+            {
+                // We need to request /index.php?page=post&s=random and get the id given by the redirect
+                HttpResponseMessage msg = await HttpClient.GetAsync($"{APIBaseUrl}index.php?page=post&s=random");
+                msg.EnsureSuccessStatusCode();
+                return new Uri($"{_imageUrl}&limit=1&id={HttpUtility.ParseQueryString(msg.RequestMessage.RequestUri.Query).Get("id")}&json=1");
+            }
+            var url = new Uri($"{_imageUrl}&limit=1&tags={string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant()}&json=0");
+            XmlDocument xml = await GetXmlAsync(url.AbsoluteUri);
+            int max = int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
+
+            if (max == 0)
+                throw new InvalidPostException();
+
+            return new Uri($"{_imageUrl}&limit=1&tags={string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant()}&pid={Random.Next(0, max)}&json=1");
         }
 
         /// <inheritdoc/>
@@ -37,6 +63,61 @@ namespace BooruSharp.Booru.Template
                 message.Headers.Add("Cookie", "user_id=" + Auth.UserId + ";pass_hash=" + Auth.PasswordHash);
             }
         }
+
+        private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
+        {
+            var posts = await GetDataAsync<SearchResult[]>(uri);
+            if (!posts.Any())
+            {
+                throw new InvalidPostException();
+            }
+            var parsingData = posts[0];
+
+            return new PostSearchResult(
+                fileUrl: new($"{FileBaseUrl}images/{parsingData.Directory}/{parsingData.Image}"),
+                previewUrl: new($"{PreviewBaseUrl}thumbnails/{parsingData.Directory}/thumbnail_{parsingData.Image.Split('.')[0]}.jpg"),
+                postUrl: new($"{PostBaseUrl}index.php?page=post&s=view&id={parsingData.Id}"),
+                sampleUri: parsingData.Sample ? new($"{SampleBaseUrl}samples/{parsingData.Directory}/sample_{parsingData.Image.Split('.')[0]}.jpg") : null,
+                rating: GetRating(parsingData.Rating[0]),
+                tags: parsingData.Tags.Split(),
+                detailedTags: null,
+                id: parsingData.Id,
+                size: null,
+                height: parsingData.Height,
+                width: parsingData.Width,
+                previewHeight: null,
+                previewWidth: null,
+                creation: null,
+                sources: null,
+                score: parsingData.Score,
+                hash: parsingData.Hash
+            );
+        }
+
+        public class SearchResult
+        {
+            public string Directory { init; get; }
+            public string Image { init; get; }
+            public int Id { init; get; }
+            public bool Sample { init; get; }
+            public string Rating { init; get; }
+            public string Tags { init; get; }
+            public int Height { init; get; }
+            public int Width { init; get; }
+            public int? Score { init; get; }
+            public string Hash { init; get; }
+        }
+
+        protected async Task<XmlDocument> GetXmlAsync(string url)
+        {
+            var xmlDoc = new XmlDocument();
+            var xmlString = await GetJsonAsync(url);
+            // https://www.key-shortcut.com/en/all-html-entities/all-entities/
+            xmlDoc.LoadXml(Regex.Replace(xmlString, "&([a-zA-Z]+);", HttpUtility.HtmlDecode("$1")));
+            return xmlDoc;
+        }
+
+        /*
 
         private protected override JToken ParseFirstPostSearchResult(object json)
         {
@@ -111,5 +192,6 @@ namespace BooruSharp.Booru.Template
         // GetRelatedSearchResult not available
 
         private readonly string _url;
+        */
     }
 }

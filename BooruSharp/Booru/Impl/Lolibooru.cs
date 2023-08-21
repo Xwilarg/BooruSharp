@@ -1,22 +1,24 @@
-﻿using Newtonsoft.Json.Linq;
-
-namespace BooruSharp.Booru
+﻿namespace BooruSharp.Booru
 {
     /// <summary>
     /// Lolibooru.
     /// <para>https://lolibooru.moe/</para>
     /// </summary>
-    public sealed class Lolibooru : Template.Moebooru
+    public sealed class Lolibooru : Template.MyImouto
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Lolibooru"/> class.
         /// </summary>
         public Lolibooru()
-            : base("lolibooru.moe", BooruOptions.NoTagByID) // Tag search now returns 500 error
+            : base("lolibooru.moe")//TODO:, BooruOptions.NoTagByID) // Tag search now returns 500 error
         { }
 
         /// <inheritdoc/>
         public override bool IsSafe => false;
+        /// <inheritdoc/>
+        public override bool HasPostByIdAPI => false;
+
+        /*
 
         private protected override Search.Tag.SearchResult GetTagSearchResult(object json)
         {
@@ -27,6 +29,6 @@ namespace BooruSharp.Booru
                 (Search.Tag.TagType)elem["tag_type"].Value<int>(),
                 elem["post_count"].Value<int>()
                 );
-        }
+        }*/
     }
 }

@@ -1,8 +1,6 @@
 ﻿using BooruSharp.Booru;
 using BooruSharp.Search;
 using BooruSharp.Search.Post;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +9,7 @@ using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-
+/*
 namespace BooruSharp.Others
 {
     /// <summary>
@@ -451,3 +449,4 @@ namespace BooruSharp.Others
         private readonly string _hashSecret = "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c";
     }
 }
+*/

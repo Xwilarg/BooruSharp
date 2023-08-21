@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +9,7 @@ namespace BooruSharp.Booru
 {
     public abstract partial class ABooru
     {
+        /*
         /// <summary>
         /// Gets information about a tag.
         /// </summary>
@@ -140,5 +139,6 @@ namespace BooruSharp.Booru
 
             throw new ArgumentException($"Invalid tag '{value}'.", nameof(value));
         }
+        */
     }
 }

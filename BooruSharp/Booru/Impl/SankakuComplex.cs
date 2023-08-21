@@ -1,4 +1,6 @@
-﻿namespace BooruSharp.Booru
+﻿using System;
+
+namespace BooruSharp.Booru
 {
     /// <summary>
     /// Sankaku Complex.
@@ -15,5 +17,9 @@
 
         /// <inheritdoc/>
         public override bool IsSafe => false;
+        /// <inheritdoc/>
+        public override bool HasPostByIdAPI => false;
+        /// <inheritdoc/>
+        public override Uri PostBaseUrl => new("https://beta.sankakucomplex.com");
     }
 }

@@ -10,7 +10,7 @@
         /// Initializes a new instance of the <see cref="Yandere"/> class.
         /// </summary>
         public Yandere()
-            : base("yande.re", BooruOptions.NoLastComments)
+            : base("yande.re")//TODO:, BooruOptions.NoLastComments)
         { }
 
         /// <inheritdoc/>

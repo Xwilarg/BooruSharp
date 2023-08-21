@@ -1,13 +1,16 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using BooruSharp.Search;
+using BooruSharp.Search.Post;
+using BooruSharp.Search.Tag;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace BooruSharp.Booru.Template
 {
     /// <summary>
-    /// Template booru based on Danbooru. This class is <see langword="abstract"/>.
+    /// Template booru based on Danbooru https://github.com/danbooru/danbooru . This class is <see langword="abstract"/>.
     /// </summary>
     public abstract class Danbooru : ABooru
     {
@@ -18,13 +21,31 @@ namespace BooruSharp.Booru.Template
         /// The fully qualified domain name. Example domain
         /// name should look like <c>www.google.com</c>.
         /// </param>
-        /// <param name="options">
-        /// The options to use. Use <c>|</c> (bitwise OR) operator to combine multiple options.
-        /// </param>
-        protected Danbooru(string domain, BooruOptions options = BooruOptions.None)
-            : base(domain, UrlFormat.Danbooru, options | BooruOptions.NoLastComments | BooruOptions.NoPostCount
-                  | BooruOptions.NoFavorite)
+        protected Danbooru(string domain) : base(domain)
         { }
+
+        protected override Uri CreateQueryString(string query, string squery = "index")
+        {
+            if (query == "tag" && squery == "related")
+            {
+                return new($"{APIBaseUrl}related_tag.json");
+            }
+            if (query == "tag" && squery == "wiki")
+            {
+                return new($"{APIBaseUrl}wiki_pages.json");
+            }
+            return new($"{APIBaseUrl}{query}s.json");
+        }
+
+        protected override Task<Uri> CreateRandomPostUriAsync(string[] tags)
+        {
+            return Task.FromResult(new Uri($"{_imageUrl}?limit=1&tags={string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant()}+random:1"));
+        }
+
+        protected override Task<Uri> CreatePostByIdUriAsync(int id)
+        {
+            return Task.FromResult(new Uri($"{APIBaseUrl}posts/{id}.json"));
+        }
 
         /// <inheritdoc/>
         protected override void PreRequest(HttpRequestMessage message)
@@ -35,23 +56,79 @@ namespace BooruSharp.Booru.Template
             }
         }
 
-        private protected override JToken ParseFirstPostSearchResult(object json)
+        private protected override async Task<PostSearchResult> GetPostSearchResultAsync(Uri uri)
         {
-            JToken token = json is JArray array
-                ? array.FirstOrDefault()
-                : json as JToken;
+            var json = await GetDataAsync<JsonElement>(uri);
+            SearchResult parsingData;
 
-            return token ?? throw new Search.InvalidTags();
+            if (json.ValueKind == JsonValueKind.Array)
+            {
+                var posts = JsonSerializer.Deserialize<SearchResult[]>(json.GetRawText(), new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = new SnakeCaseNamingPolicy()
+                });
+                if (!posts.Any())
+                {
+                    throw new InvalidPostException();
+                }
+                parsingData = posts[0];
+            }
+            else
+            {
+                parsingData = JsonSerializer.Deserialize<SearchResult>(json.GetRawText(), new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = new SnakeCaseNamingPolicy()
+                });
+            }
+
+            return new PostSearchResult(
+                fileUrl: parsingData.FileUrl != null ? new Uri(parsingData.FileUrl) : null,
+                previewUrl: parsingData.PreviewFileUrl != null ? new Uri(parsingData.PreviewFileUrl) : null,
+                postUrl: parsingData.Id != null ? new Uri($"{PostBaseUrl}posts/{parsingData.Id}") : null,
+                sampleUri: parsingData.LargeFileUrl != null ? new Uri(parsingData.LargeFileUrl) : null,
+                rating: GetRating(parsingData.Rating[0]),
+                tags: parsingData.TagString.Split(),
+                detailedTags: parsingData.TagStringGeneral.Split().Select(x => new TagSearchResult(-1, x, TagType.Trivia, -1))
+                    .Concat(parsingData.TagStringCharacter.Split().Select(x => new TagSearchResult(-1, x, TagType.Character, -1)))
+                    .Concat(parsingData.TagStringCopyright.Split().Select(x => new TagSearchResult(-1, x, TagType.Copyright, -1)))
+                    .Concat(parsingData.TagStringArtist.Split().Select(x => new TagSearchResult(-1, x, TagType.Artist, -1)))
+                    .Concat(parsingData.TagStringMeta.Split().Select(x => new TagSearchResult(-1, x, TagType.Metadata, -1))),
+                id: parsingData.Id ?? 0,
+                size: parsingData.FileSize,
+                height: parsingData.ImageHeight,
+                width: parsingData.ImageWidth,
+                previewHeight: null,
+                previewWidth: null,
+                creation: parsingData.CreatedAt,
+                sources: string.IsNullOrEmpty(parsingData.Source) ? Array.Empty<string>() : new[] { parsingData.Source },
+                score: parsingData.Score,
+                hash: parsingData.Md5
+            );
         }
 
-        private protected override Search.Post.SearchResult GetPostSearchResult(JToken elem)
+        public class SearchResult
         {
-            var url = elem["file_url"];
-            var previewUrl = elem["preview_file_url"];
-            var sampleUrl = elem["large_file_url"];
-            var id = elem["id"]?.Value<int>();
-            var md5 = elem["md5"];
+            public string FileUrl { init; get; }
+            public string PreviewFileUrl { init; get; }
+            public string LargeFileUrl { init; get; }
+            public int? Id { init; get; }
+            public string Md5 { init; get; }
+            public string Rating { init; get; }
+            public string TagString { init; get; }
+            public string TagStringGeneral { init; get; }
+            public string TagStringCharacter { init; get; }
+            public string TagStringCopyright { init; get; }
+            public string TagStringArtist { init; get; }
+            public string TagStringMeta { init; get; }
+            public int FileSize { init; get; }
+            public int ImageHeight { init; get; }
+            public int ImageWidth { init; get; }
+            public DateTime CreatedAt { init; get; }
+            public string Source { init; get; }
+            public int Score { init; get; }
+        }
 
+        /*
             var detailedtags = new List<Search.Tag.SearchResult>();
             GetTags("tag_string_general", Search.Tag.TagType.Trivia);
             GetTags("tag_string_character", Search.Tag.TagType.Character);
@@ -149,6 +226,6 @@ namespace BooruSharp.Booru.Template
                 elem[0].Value<string>(),
                 elem[1].Value<int>()
                 );
-        }
+        }*/
     }
 }
