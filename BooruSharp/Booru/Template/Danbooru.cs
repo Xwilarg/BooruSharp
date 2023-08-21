@@ -69,7 +69,7 @@ namespace BooruSharp.Booru.Template
                 });
                 if (!posts.Any())
                 {
-                    throw new InvalidTags();
+                    throw new InvalidPostException();
                 }
                 parsingData = posts[0];
             }

@@ -77,7 +77,12 @@ namespace BooruSharp.Booru
 
         protected virtual async Task<T> GetDataAsync<T>(Uri url)
         {
-            return JsonSerializer.Deserialize<T>(await GetJsonAsync(url), new JsonSerializerOptions
+            var res = await GetJsonAsync(url);
+            if (string.IsNullOrEmpty(res))
+            {
+                throw new InvalidPostException();
+            }
+            return JsonSerializer.Deserialize<T>(res, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = new SnakeCaseNamingPolicy()
             });

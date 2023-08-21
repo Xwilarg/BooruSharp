@@ -63,7 +63,7 @@ namespace BooruSharp.Booru.Template
             var posts = await GetDataAsync<DataContainer>(uri);
             if (!posts.Posts.Any())
             {
-                throw new InvalidTags();
+                throw new InvalidPostException();
             }
             var parsingData = posts.Posts[0];
 

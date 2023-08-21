@@ -33,7 +33,7 @@ namespace BooruSharp.Booru
             int max = int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
 
             if (max == 0)
-                throw new InvalidTags();
+                throw new InvalidPostException();
 
             // The limit is in fact 200000 but search with tags make it incredibly hard to know what is really your pid
             if (max > 20001)
@@ -50,7 +50,7 @@ namespace BooruSharp.Booru
             var data = await GetDataAsync<SearchResult[]>(uri);
             if (!data.Any())
             {
-                throw new InvalidTags();
+                throw new InvalidPostException();
             }
             var parsingData = data[0];
 

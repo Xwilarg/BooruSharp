@@ -165,7 +165,7 @@ namespace BooruSharp.UnitTests
                     BooruType = typeof(Yandere),
                     Tags = new[] { "kantai_collection", "sweater", "bra" },
                     ValidPostId = 1052829,
-                    ExplicitTag = "pussy"
+                    ExplicitTag = "cervix"
                 }
             },
             //new BooruTestData() { BooruType = typeof(Pixiv) }

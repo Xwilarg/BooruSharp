@@ -67,7 +67,7 @@ namespace BooruSharp.UnitTests
         public async Task GetInvalidImageAsync(BooruTestData data)
         {
             var booru = await Utils.GetAsync(data.BooruType);
-            await Assert.ThrowsAsync<InvalidTags>(async () => {
+            await Assert.ThrowsAsync<InvalidPostException>(async () => {
                 await Utils.DoWebRequest(async () => { return await booru.GetRandomPostAsync("azazazazaz"); });
             });
         }
@@ -108,7 +108,7 @@ namespace BooruSharp.UnitTests
             var booru = await Utils.GetAsync(data.BooruType);
             if (booru.HasPostByIdAPI)
             {
-                await Assert.ThrowsAsync<InvalidPostId>(async () => {
+                await Assert.ThrowsAsync<InvalidPostException>(async () => {
                     await Utils.DoWebRequest(async () => { return await booru.GetPostByIdAsync(int.MaxValue); });
                 });
             }

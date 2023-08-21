@@ -51,7 +51,7 @@ namespace BooruSharp.Booru.Template
             int max = int.Parse(xml.ChildNodes.Item(1).Attributes[0].InnerXml);
 
             if (max == 0)
-                throw new InvalidTags();
+                throw new InvalidPostException();
 
             return new Uri($"{_imageUrl}&limit=1&tags={string.Join("+", tags.Select(Uri.EscapeDataString)).ToLowerInvariant()}&pid={Random.Next(0, max)}&json=1");
         }
@@ -70,7 +70,7 @@ namespace BooruSharp.Booru.Template
             var posts = await GetDataAsync<SearchResult[]>(uri);
             if (!posts.Any())
             {
-                throw new InvalidTags();
+                throw new InvalidPostException();
             }
             var parsingData = posts[0];
 

@@ -57,14 +57,7 @@ namespace BooruSharp.Booru
                 throw new FeatureUnavailable();
 
             var url = await CreatePostByIdUriAsync(id);
-            try
-            {
-                return await GetPostSearchResultAsync(url);
-            }
-            catch (InvalidTags)
-            {
-                throw new InvalidPostId();
-            }
+            return await GetPostSearchResultAsync(url);
         }
         /*
         private const int _limitedTagsSearchCount = 2;
