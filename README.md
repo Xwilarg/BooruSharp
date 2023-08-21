@@ -44,7 +44,7 @@ If you have any question, feel free to [contact me](#need-more-help)
 
 ## Features availability
 
-| Booru | Multiple Random Images | Post by ID | Post by MD5 | Tag by ID | Comment API | Last Comments API | Wiki API | Related Tag API | Post Count API | Favorite API | Autocomplete API
+| Booru | Multiple Random Images | Post by ID | Post by MD5 | Tag by ID | Comment API | Last Comments API | Wiki API | Related Tag API | Post Count API | Favorite API | Autocomplete API |
 | ---           | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Atfbooru		| ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ❌ | ❌ | ❌️ |
 | Danbooru Donmai	| ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ | ✔️ | ✔️ | ❌ | ❌ | ❌ |
