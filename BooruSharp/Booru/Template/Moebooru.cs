@@ -22,7 +22,7 @@ namespace BooruSharp.Booru.Template
         /// </param>
         protected Moebooru(string domain, BooruOptions options = BooruOptions.None)
             : base(domain, UrlFormat.PostIndexJson, options | BooruOptions.NoPostByMD5
-                  | BooruOptions.NoFavorite)
+                  | BooruOptions.NoFavorite | BooruOptions.NoAutocomplete)
         { }
 
         /// <inheritdoc/>

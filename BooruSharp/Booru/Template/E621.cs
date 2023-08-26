@@ -136,5 +136,36 @@ namespace BooruSharp.Booru.Template
         }
 
         // GetRelatedSearchResult not available // TODO: Available with credentials?
+
+        private protected override Search.Autocomplete.SearchResult[] GetAutocompleteResultAsync(object json)
+        {
+            var elem = (JArray)json;
+            var autoCompleteResults = new List<Search.Autocomplete.SearchResult>();
+            foreach (var item in elem.Children())
+            {
+                int id = item["id"].Value<int>();
+                string name = item["name"].Value<string>();
+                int count = item["post_count"].Value<int>();
+                var type = GetTagType(item["category"].Value<int>());
+                string antecedentName = item["antecedent_name"].Value<string>();
+                autoCompleteResults.Add(new Search.Autocomplete.SearchResult(id, name, name, type, count, antecedentName));
+            }
+            return autoCompleteResults.ToArray();
+        }
+
+        private Search.Tag.TagType GetTagType(int typeNum)
+        {
+            switch (typeNum)
+            {
+                case 5: return Search.Tag.TagType.Species;
+                case 8: return Search.Tag.TagType.Lore;
+                case 0: return Search.Tag.TagType.Trivia;
+                case 4: return Search.Tag.TagType.Character;
+                case 3: return Search.Tag.TagType.Copyright;
+                case 1: return Search.Tag.TagType.Artist;
+                case 7: return Search.Tag.TagType.Metadata;
+                default: return (Search.Tag.TagType)6; //i won't question...
+            }
+        }
     }
 }
